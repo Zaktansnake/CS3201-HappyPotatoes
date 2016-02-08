@@ -7,6 +7,7 @@
 
 // include your other headers here
 #include "AbstractWrapper.h"
+#include "../Happy Potatoes SPA Tool/Parser.h"
 
 class TestWrapper : public AbstractWrapper {
  public:
