@@ -17,3 +17,7 @@ int PKB::setProcToAST(PROC p, TNode* r) {
 TNode* PKB::getRootAST (PROC p){
 	return NULL;
 }
+
+int PKB::setProcToCFG(PROC p, GNode* r) {
+	return NULL;
+}
