@@ -122,6 +122,15 @@
     <ClCompile Include="Pattern.cpp" />
     <ClCompile Include="PatternClause.cpp" />
     <ClCompile Include="PatternNode.cpp" />
+    <ClCompile Include="DesignExtractor.cpp" />
+    <ClCompile Include="Parser.cpp" />
+    <ClCompile Include="PKB.cpp" />
+    <ClCompile Include="TNode.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="Parser.h" />
+    <ClInclude Include="PKB.h" />
+    <ClInclude Include="TNode.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
