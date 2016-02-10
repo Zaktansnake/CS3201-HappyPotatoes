@@ -1,6 +1,6 @@
 #pragma once
 
-#include<stdio.h>
+#include <stdio.h>
 #include <iostream>
 #include <string>
 #include <vector>
@@ -14,8 +14,18 @@ class GNode;
 class VarTable;  // no need to #include "VarTable.h" as all I need is pointer
 
 class PKB {
+private:
+	// AST
+	// CFG
+	// USES
+	// PARENTS
+	//FOLLOWS
+	//CALLS
+	//VARTABLE
+	//PROCTABLE
+	// PATTERNS
+
 public:
-	static VarTable* varTable; 
 	static int setProcToAST(PROC p, TNode* r);
 	static TNode* getRootAST (PROC p);
 	static int setProcToCFG (PROC p, GNode* g);
