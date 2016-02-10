@@ -110,6 +110,18 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="ParseResult.h" />
+    <ClInclude Include="Clause.h" />
+    <ClInclude Include="Pattern.h" />
+    <ClInclude Include="PatternClause.h" />
+    <ClInclude Include="PatternNode.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="Clause.cpp" />
+    <ClCompile Include="ParseResult.cpp" />
+    <ClCompile Include="Pattern.cpp" />
+    <ClCompile Include="PatternClause.cpp" />
+    <ClCompile Include="PatternNode.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
