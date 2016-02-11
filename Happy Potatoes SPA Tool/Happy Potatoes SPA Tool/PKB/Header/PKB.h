@@ -6,8 +6,9 @@
 #include <vector>
 
 using namespace std;
-typedef short PROC;
-typedef basic_string<char> VAR;
+typedef vector<string> PROC;
+typedef vector<string> VAR;
+typedef vector<int> STMT;
 
 class TNode;
 class GNode;
@@ -62,13 +63,51 @@ private:
 
 
 	// USES
-	bool isUses(VAR var, stat st);
+	bool isUses(VAR var, STMT stmt);
+	bool isUses(VAR var, PROC proc);
+
+	// return variables that used in stmtlist
+	VAR getUses(STMT stmt);
+
+	// return variables that used in procedure
+	VAR getUses(PROC proc);
+
+	// return stmtlst that used this variable
+	std::vector<string> getUses(VAR var);
+
+	// return procedure that used this variable
+	std::vector<string> getUses(VAR var);
+
+	// record statmentlst use variable
+	void setUses(STMT stmt, VAR var);
+
+	//record procedures that use this variable
+	void setUses(PROC proc, VAR var);
+
+
+
 
 	// PARENTS
+	// check whether stmt1 followed stmt2
+	bool isParent(STMT stmt1, STMT stmt2);
+
+	// get the parent statment
+	std::vector<string> getParent (STMT stmt);
+
+	// get the child stmt
+	std::vector<string> getChild(STMT stmt);
+	void setParent(STMT stmt1, STMT stmt2);
 
 	//FOLLOWS
 
+	bool isFollow(STMT stmt1, STMT stmt2);
+	void setFollow(STMT stmt1, STMT stmt2);
+	std::vector<int> getFollower(STMT stmt);
+	std::vector<int> getFollow(STMT stmt);
+
 	//CALLS
+
+
 
 	//VARTABLE
 
