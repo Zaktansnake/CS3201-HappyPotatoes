@@ -7,9 +7,9 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Happy Potatoes SPA Tool", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AutoTesterInUse", "..\AutoTester\AutoTesterInUse.vcxproj", "{4641A4C9-A430-4361-9B47-8E08C8155177}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IntegrationTesting", "IntegrationTesting\IntegrationTesting.vcxproj", "{09AD1D74-2D3C-42AE-B4E0-52A792A27E60}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "IntegrationTesting", "..\IntegrationTesting\IntegrationTesting.vcxproj", "{09AD1D74-2D3C-42AE-B4E0-52A792A27E60}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTesting", "UnitTesting\UnitTesting.vcxproj", "{74CA3A41-F84C-4C47-B882-5EBF60895525}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UnitTesting", "..\UnitTesting\UnitTesting.vcxproj", "{74CA3A41-F84C-4C47-B882-5EBF60895525}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
