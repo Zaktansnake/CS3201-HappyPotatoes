@@ -9,6 +9,7 @@ using namespace std;
 typedef vector<string> PROC;
 typedef vector<string> VAR;
 typedef vector<int> STMT;
+typedef int PROG_LINE;
 
 class TNode;
 class GNode;
@@ -131,14 +132,38 @@ private:
 	// return true is Modifies(var, proc) otherwise, false
 	bool isModified (VAR var, PROC proc);
 
+	
 	std::vector<string> getModifies (STMT stmt);
 	std::vector<string> getModifies (PROC proc);
-	std::vector<int> getModifies (VAR var);
+	// std::vector<int> getModifies (VAR var);
+	std::vector<string> getModifies (VAR var);
 
+	//record Modifies(STMT, var)
+	void setModifies (STMT stmt, VAR var);
+
+	//record Modifies(PROC var);
+	void setModifies (PROC proc, VAR var);
 
 	//Next
-	//Affect
+	// return true is Next(l1, l2) otherwise, false
+	bool isNext (PROG_LINE l1, PROG_LINE l2);
 
+	// return the next program line of l
+	int getNext(PROG_LINE l);
+
+	// Record Next(l1, l2)
+	void setNext(PROG_LINE l1, PROG_LINE l2);
+
+
+	//Affect
+	//return true if Affect(stmt1, stmt2) otherwise, false
+	bool isAffect (STMT stmt1, STMT stmt2);
+	
+	//return a set of stmtlst that Affect(stmt1, _)
+	std::vector<int> getAffect(STMT stmt1);
+
+	//return a set of stmtlst that Affect(_,stmt1)
+	std::vector<int> getAffected(STMT stmt1);
 
 	//VARTABLE
 

@@ -19,6 +19,11 @@ static TNode* getRootAST(PROC p);
 static int setProcToCFG(PROC p, GNode* g);
 
 
+std::vector<int> PKB::getModifies(VAR var)
+{
+	return std::vector<int>();
+}
+
 int PKB::setProcToAST(PROC p, TNode* r) {
 	return NULL;
 }
