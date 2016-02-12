@@ -1,0 +1,24 @@
+procedure main {
+  if x then {
+    z = x + 1; }
+  else {
+    x = z + x; } }
+
+procedure one_level_while {
+   x = x+y+z;
+   while i {
+      y = x+i*2; } }
+
+procedure nested_while {
+  x = 2;
+  z = 3;
+  i = 5;
+  while i {
+    x = x - 1;
+    while x {
+        z = x + 1;
+    	while y {
+           y = z + x; } }
+    z = z + x + i;
+    i = i - 1; }
+  call one_level_while ; }
