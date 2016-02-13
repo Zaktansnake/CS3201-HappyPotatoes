@@ -1,6 +1,6 @@
 #include "./Header/ProcTable.h"
-#include "Header\Call.h"
-#include "Header\Calls.h"
+#include "./Header/Call.h"
+#include "./Header/Calls.h"
 
 using namespace std;
 std::vector<std::vector<string>> arrAnsForCall;

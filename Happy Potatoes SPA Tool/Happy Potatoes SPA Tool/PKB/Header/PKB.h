@@ -19,47 +19,15 @@ class ProcTable;
 
 class PKB {
 private:
+
 	// AST
-
-	// get the Parent node
-	TNode getParent();
-
-	//set current node as parent node
-	void setParent();
-
-	//get first child
-	TNode getFirstChild();
-
-	//set the current node as child
-	void setFirstChild(TNode p, TNode c);
-
-	// create AST node for procedure 
-    void createTNodeProc();
-
-	// get TNode for procedure
-	TNode getTNodeProc();
-
-	//set TNode as root of AST
-	void setAsRoot(TNode node);
-
-	//create TNode statement
-	void createTNodeStmtLst();
-	// get the stmtlst() of Tnode
-	TNode getTNodeStmtLst();
-
-
 
 	// CFG
 	GNode getNext();
-
 	void setNext();
-
 	GNode getPred();
-
-	void setPred ();
-
+	void setPred();
 	GNode getSuccessor();
-
 	void setSuccessor();
 
 
@@ -73,9 +41,6 @@ private:
 	// return variables that used in procedure
 	VAR getUses(PROC proc);
 
-	// return stmtlst that used this variable
-	std::vector<string> getUses(VAR var);
-
 	// return procedure that used this variable
 	std::vector<string> getUses(VAR var);
 
@@ -86,14 +51,12 @@ private:
 	void setUses(PROC proc, VAR var);
 
 
-
-
 	// PARENTS
 	// check whether stmt1 followed stmt2
 	bool isParent(STMT stmt1, STMT stmt2);
 
 	// get the parent statment
-	std::vector<string> getParent (STMT stmt);
+	std::vector<string> getParent(STMT stmt);
 
 	// get the child stmt
 	std::vector<string> getChild(STMT stmt);
@@ -127,26 +90,24 @@ private:
 	// Modifies
 
 	// return true is Modifies(var, stmt) otherwise, false
-	bool isModified (VAR var, STMT stmt);
+	bool isModified(VAR var, STMT stmt);
 
 	// return true is Modifies(var, proc) otherwise, false
-	bool isModified (VAR var, PROC proc);
-
-	
-	std::vector<string> getModifies (STMT stmt);
-	std::vector<string> getModifies (PROC proc);
+	bool isModified(VAR var, PROC proc);
+	std::vector<string> getModifies(STMT stmt);
+	std::vector<string> getModifies(PROC proc);
 	// std::vector<int> getModifies (VAR var);
-	std::vector<string> getModifies (VAR var);
+	std::vector<string> getModifies(VAR var);
 
 	//record Modifies(STMT, var)
-	void setModifies (STMT stmt, VAR var);
+	void setModifies(STMT stmt, VAR var);
 
 	//record Modifies(PROC var);
-	void setModifies (PROC proc, VAR var);
+	void setModifies(PROC proc, VAR var);
 
 	//Next
 	// return true is Next(l1, l2) otherwise, false
-	bool isNext (PROG_LINE l1, PROG_LINE l2);
+	bool isNext(PROG_LINE l1, PROG_LINE l2);
 
 	// return the next program line of l
 	int getNext(PROG_LINE l);
@@ -157,8 +118,8 @@ private:
 
 	//Affect
 	//return true if Affect(stmt1, stmt2) otherwise, false
-	bool isAffect (STMT stmt1, STMT stmt2);
-	
+	bool isAffect(STMT stmt1, STMT stmt2);
+
 	//return a set of stmtlst that Affect(stmt1, _)
 	std::vector<int> getAffect(STMT stmt1);
 
@@ -171,9 +132,13 @@ private:
 
 	// PATTERNS
 
+
+	
 public:
 	static int setProcToAST(PROC p, TNode* r);
 	static TNode* getRootAST (PROC p);
 	static int setProcToCFG (PROC p, GNode* g);
+
+	static void create(string fileName);
 
 };

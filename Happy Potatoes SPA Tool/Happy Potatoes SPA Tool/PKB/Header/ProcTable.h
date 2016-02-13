@@ -12,17 +12,15 @@ class ProcTable
 {
 public:
 //	ProcTable();
-//	~ProcTable();
+	~ProcTable();
 
     // get reference to procedure table
 	static ProcTable* getProcTable();
 
-
 	//add data
-	void addTableData(string procName);
+	static void addTableData(string procName);
 
 	// get data
-
 	int getProcIndex (string key);
 	std::vector<string> getCallAns(int index);
 	string getProcName (int index);
@@ -32,14 +30,14 @@ public:
 	int getSize();
 
 	//delete data
-	void RemoveProcData ();
+	void RemoveProcData();
 
 	//print proc data
 	void PrintProcTable();
 
 private: 
-    std::map<string, int> ProcMap;
-	std::vector<string> ProcIndex;
+    static std::map<string, int> ProcMap;
+	static std::vector<string> ProcIndex;
 	ProcTable();
 };
 
