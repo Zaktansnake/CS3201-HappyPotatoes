@@ -1,4 +1,4 @@
-#include "PatternNode.h"
+#include "./Header/PatternNode.h"
 
 PatternNode PatternNode::getLeftChild() { return *left_; }
 PatternNode PatternNode::getRightChild() { return *right_; }

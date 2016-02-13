@@ -1,5 +1,5 @@
-#include "Pattern.h"
-#include "PatternNode.h"
+#include "./Header/Pattern.h"
+#include "./Header/PatternNode.h"
 
 PatternNode Pattern::getRoot() { return root_; }
 
