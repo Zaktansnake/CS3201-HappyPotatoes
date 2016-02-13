@@ -1,4 +1,4 @@
-#include "PatternClause.h"
+#include "./Header/PatternClause.h"
 
 PatternType PatternClause::getPatternOperation() { return patternType_; }
 Parameter1 PatternClause::getFirstParameter() { return parameter1_; }

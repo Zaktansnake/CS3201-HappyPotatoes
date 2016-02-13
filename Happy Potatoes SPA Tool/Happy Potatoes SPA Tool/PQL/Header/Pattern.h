@@ -1,5 +1,7 @@
 #pragma once
+
 #include <string>
+#include "PatternNode.h"
 
 using namespace std;
 

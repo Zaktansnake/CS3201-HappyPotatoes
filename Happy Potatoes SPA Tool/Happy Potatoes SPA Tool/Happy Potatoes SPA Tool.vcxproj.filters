@@ -75,6 +75,7 @@
     <ClCompile Include="PQL\PatternNode.cpp">
       <Filter>PQL</Filter>
     </ClCompile>
+    <ClCompile Include="Main.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PKB\Header\Affects.h">
