@@ -48,13 +48,13 @@ void findMethod(string file_contents) {
 		stmtLst();
 	} else if (file_contents.compare("else") == 0) {
 		stmtLst();
-		getNextWord();
-		if (str.compare("{") != 0){
-			throw std::runtime_error("Error: wrong Structure");
-		} else {
-			getNextWord();
-			findMethod(str);
-		}
+	//	getNextWord();
+	//	if (str.compare("{") != 0){
+	//		throw std::runtime_error("Error: wrong Structure");
+	//	} else {
+	//		getNextWord();
+	//		findMethod(str);
+	//	}
 	}else if (file_contents.compare("calls") == 0) {
 		calls();
 	} else if (file_contents.compare("while") == 0) {
@@ -86,6 +86,8 @@ void procedure() {
 	getNextWord();
 	// if ProcTable contains value
 		// throw std::runtime_error("Error: Duplication of Procedure Name");
+
+	if ()
 		/*if (ProcTable::getProcTable()->getProcIndex(temp) != -1) {
 		if (input.is_open()) {
 		input.close();
@@ -137,7 +139,7 @@ static void stmt() {
 		TCALL,
 	};
 
-	int line = 0;
+	int line;
 
 	switch (line) {
 	case 0:
