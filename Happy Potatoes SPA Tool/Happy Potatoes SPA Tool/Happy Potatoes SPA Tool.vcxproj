@@ -19,6 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="Main.cpp" />
     <ClCompile Include="PKB\Affects.cpp" />
     <ClCompile Include="PKB\AST.cpp" />
     <ClCompile Include="PKB\Call.cpp" />
