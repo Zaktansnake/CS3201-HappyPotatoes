@@ -4,6 +4,7 @@
 
 using namespace std;
 std::vector<std::vector<string>> arrAnsForCall;
+std::vector<int> stmtPosition;
 Call call;
 
 ProcTable::ProcTable()
@@ -24,26 +25,32 @@ ProcTable::~ProcTable()
 */
 }
 
-void ProcTable::addTableData(string procName) {
-   map<string,int>::iterator iter;
-   int index;
-   iter = ProcMap.find(procName);
-   if (iter != ProcMap.end()) {
-	   index = iter->second;
-   }
-   else {
-       index = -1;
-   }
+void ProcTable::addTableData(string procName, int stmtLine) {
+   ProcTable pt;
+   int index = pt.findPosition(procName);
    if (index = -1) {
 	   index = ProcIndex.size();
 	   std::vector<string> callAns;
 	   ProcMap.insert(pair<string, int>(procName, index));
 	   ProcIndex.push_back(procName);
+	   stmtPosition[index] = stmtLine;
 	   arrAnsForCall[index] = call.getCall(procName);
    }
    else {
 
    }
+}
+
+// return the index of the procName in the map
+int ProcTable::findPosition(string procName) {
+	map<string, int>::iterator iter;
+	iter = ProcMap.find(procName);
+	if (iter != ProcMap.end()) {
+		return  iter->second;
+	}
+	else {
+	return -1;
+	}
 }
 
 // retrun the size of proc table
@@ -56,11 +63,16 @@ std::vector<string> ProcTable::getCallAns(int index) {
    return arrAnsForCall[index];
 }
 
+// return the program line for the procedure
+int ProcTable::getProgLine(string procName) {
+    int index = findPosition(procName);
+	return stmtPosition[index];
+}
+
 // return procedure index
 int ProcTable::getProcIndex(string key) {
-	map<string, int>::iterator iter;
-	iter = ProcMap.find(key);
-	return iter->second;
+	int index = findPosition(key);
+	return index;
 }
 
 // get the procedure name by knowing the index

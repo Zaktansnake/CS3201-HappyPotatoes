@@ -18,11 +18,13 @@ public:
 	static ProcTable* getProcTable();
 
 	//add data
-	static void addTableData(string procName);
+	static void addTableData(string procName, int stmtLine);
 
 	// get data
 	int getProcIndex (string key);
 	std::vector<string> getCallAns(int index);
+	int getProgLine (string procName);
+	int findPosition (string ProcName);
 	string getProcName (int index);
 	TNode* getProcNode (int index);
 

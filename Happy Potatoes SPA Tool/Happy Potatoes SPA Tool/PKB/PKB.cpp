@@ -109,6 +109,7 @@ void procedure() {
 	} else {
 		bracstack.push("{");
 	}
+
 }
 
 void stmtLst() {
@@ -180,6 +181,7 @@ static void stmt(int num) {
 	case 2: // while
 		if (v[1].compare("{") == 0) {
 			// v[0]-> varTable
+			v
 		} else {
 			bracstack.push("{");
 		}
@@ -192,6 +194,7 @@ static void stmt(int num) {
 
 static void calls(string procedurName) {
 	// save procedure name, stmt #
+	//ProcTable::addTableData(procedureName, stmtLine)
 	ProcTable::addTableData(procedurName);
 }
 

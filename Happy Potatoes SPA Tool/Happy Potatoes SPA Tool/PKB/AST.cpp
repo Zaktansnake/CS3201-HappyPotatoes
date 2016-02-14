@@ -1,4 +1,9 @@
 #include "./Header/AST.h"
+#include <cstdio>
+#include <iostream>
+#include <queue>
+
+using namespace std;
 
 AST::AST()
 {
