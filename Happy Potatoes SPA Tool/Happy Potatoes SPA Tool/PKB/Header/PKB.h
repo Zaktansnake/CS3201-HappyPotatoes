@@ -19,9 +19,8 @@ class ProcTable;
 
 class PKB {
 private:
-
+	/*
 	// AST
-
 	// CFG
 	GNode getNext();
 	void setNext();
@@ -132,8 +131,8 @@ private:
 
 	// PATTERNS
 
+	*/
 
-	
 public:
 	static int setProcToAST(PROC p, TNode* r);
 	static TNode* getRootAST (PROC p);

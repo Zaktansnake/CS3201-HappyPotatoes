@@ -15,6 +15,7 @@
 #include "./Header/PKB.h"
 #include "./Header/TNode.h"
 #include "./Header/ProcTable.h"
+#include "./Header/VarTable.h"
 // #include "Header/Pattern_PKB.h"
 
 using namespace std;
@@ -35,18 +36,20 @@ static void stmt(int num);
 
 static void findMethod(string file_contents);
 vector<string> split(string str, char delimiter);
+vector<string> splitTheString(string line);
 bool is_number(const std::string& s);
+static void calls(string procedurName, int stmtLine);
 
 void PKB::create(string fileName) {
 	firstTime = true;
 	program();
 	myFile.open(fileName);
-	stmtLine = 0;
+	stmtLine = 1;
 	while (!myFile.eof()) {
 		getline(myFile, str);
-		cout << str << endl;
+		//cout << str << endl;
 		findMethod(str);
-		stmtLine ++;
+		stmtLine++;
 	}
 	myFile.close();
 }
@@ -65,9 +68,11 @@ void findMethod(string file_contents) {
 		}
 		procedure();
 		firstTime = false;
-	} else if (word.compare("if") == 0 || word.compare("else") == 0 
+	} else if (word.compare("if") == 0 || word.compare("else") == 0
 		|| (word.compare("calls") == 0) || (word.compare("while") == 0)) {
 		stmtLst();
+	} else if (word.compare("") == 0) {
+		return;
 	} else {
 		// save them into 2d array, pass to pql, to build tree
 		assign();
@@ -89,29 +94,36 @@ void program() {
 }
 
 void procedure() {
-	TNode* proc;
-	string str = oss.str();
-	istringstream iss{ str };
 
-	// if ProcTable contains value
-		// throw std::runtime_error("Error: Duplication of Procedure Name");
+	TNode* proc;
+	vector<string> v = splitTheString(str);
+
+	if (v.size() > 3) {
+		throw std::runtime_error("Error: Structure");
+	}
+
+	if (ProcTable::isContains(v[1])) {
+		throw std::runtime_error("Error: Duplication of Procedure Name");
 		/*if (ProcTable::getProcTable()->getProcIndex(temp) != -1) {
 		if (input.is_open()) {
 		input.close();
 		}
 		PKBParser::cleanUp();
 		}*/
-		// else
-			// add to ProcTable
-			// int procIdx = ProcTable::getProcTable()->insertProc(temp);
-			// TNode* proc;
-			// proc = new TNode(procIdx, PROCEDURE_NAME);  // insert name to node
-			// create TNode* stmtLst
-	oss << iss.rdbuf(); // get the remain words
-	if (oss.str().compare("{") != 0) {
-		throw std::runtime_error("Error: Structure");
-	} else {
-		bracstack.push("{");
+	}
+	else {
+		ProcTable::addTableData(v[1], stmtLine);
+		// int procIdx = ProcTable::getProcTable()->insertProc(temp);
+		// TNode* proc;
+		// proc = new TNode(procIdx, procName);  // insert name to node
+		// create TNode* stmtLst
+
+		if (v[2].compare("{") != 0) {
+			throw std::runtime_error("Error: Structure");
+		}
+		else {
+			bracstack.push("{");
+		}
 	}
 
 }
@@ -121,11 +133,14 @@ void stmtLst() {
 	int num = 0;
 	if (word.compare("if") == 0) {
 		num = 0;
-	} else if (word.compare("else") == 0) {
+	}
+	else if (word.compare("else") == 0) {
 		num = 1;
-	} else if (word.compare("while") == 0) {
+	}
+	else if (word.compare("while") == 0) {
 		num = 2;
-	} else if (word.compare("call") == 0) {
+	}
+	else if (word.compare("call") == 0) {
 		num = 3;
 	}
 	stmt(num);
@@ -133,38 +148,50 @@ void stmtLst() {
 }
 
 void assign() {
-	// save them to a table
+	string lineWithVar = str;
 	vector<string> v;
-	istringstream buf(str);
-	for (string word; buf >> word; )
-		v.push_back(word);
-
+	int ln = str.length() - 1;
+	for (int n = 0; n <= ln; n++) {
+		string letter(1, lineWithVar[n]);
+		if (letter.compare(" ") != 0) {
+			v.push_back(letter);
+		}
+	}
+	
 	for (int i = 0; i < v.size(); i++) {
 		std::string var = v.at(i);
-		if (isalpha(var.at(i))) {
-			// check whether exists
-			// save to varTable
-		} else if (v[i].compare("}")) {
-			bracstack.pop();
+
+		if (var.compare("=") == 0 || var.compare("+") == 0 || var.compare("-") == 0 || var.compare(";") == 0) {
+
+		} else {
+			if (var.compare("}") == 0) {
+				bracstack.pop();
+			} else {
+				/*if (isalpha(var.at(i))) {
+					if (VarTable::isContains(var)) {
+						// add the line number
+					}
+					else {
+						//VarTable::addTableData(var, stmtLine);
+					}
+				}*/
+			}
 		}
 	}
 }
 
 static void stmt(int num) {
 	TNode* stmt;
-	vector<string> v;
-	istringstream buf(oss.str());
-	for (string word; buf >> word; )
-		v.push_back(word);
+	vector<string> v = splitTheString(str);
 
 	switch (num) {
 	case 0:
 		// TNode *stmtLst, *curNode, *nextNode;
 		// stmtLst = new TNode(str);
-		// set v[0]
+		// set v[1]
 		// add to VarTable
 		// set then node
-		if (v[1].compare("then") == 0 && (v[2].compare("{")) == 0) {
+		if (v[2].compare("then") == 0 && (v[3].compare("{")) == 0) {
 			// assign node
 			bracstack.push("{");
 		}
@@ -176,22 +203,23 @@ static void stmt(int num) {
 
 		break;
 	case 1: // else
-		if (v[0].compare("{") != 0) {
+		if (v[1].compare("{") != 0) {
 			throw std::runtime_error("Error: Structure");
-		} else {
+		}
+		else {
 			bracstack.push("{");
 		}
 		break;
 	case 2: // while
-		if (v[1].compare("{") == 0) {
+		if (v[2].compare("{") == 0) {
 			// v[0]-> varTable
-			v
-		} else {
+		}
+		else {
 			bracstack.push("{");
 		}
 		break;
 	case 3: // call
-		calls(v[0], stmtLine);
+		calls(v[2], stmtLine);
 		break;
 	}
 }
@@ -211,10 +239,19 @@ bool is_number(const std::string& s)
 
 bool lettersOnly(std::string text)
 {
-	for (int i = 0; i<text.length(); i++)
+	for (int i = 0; i < text.length(); i++)
 	{
 		if (!isalpha(text.at(i)))
 			return false;
 	}
 	return true;
+}
+
+vector<string> splitTheString(string line) {
+	vector<string> v;
+	istringstream buf(str);
+	for (string word; buf >> word; )
+		v.push_back(word);
+
+	return v;
 }

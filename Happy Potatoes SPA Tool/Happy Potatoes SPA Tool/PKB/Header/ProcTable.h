@@ -35,7 +35,7 @@ public:
 	void RemoveProcData();
 
 	//check if the table contains procedure
-	bool isContains (string procName);
+	static bool isContains (string procName);
 
 	//print proc data
 	void PrintProcTable();

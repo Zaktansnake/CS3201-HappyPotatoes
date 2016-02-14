@@ -9,17 +9,17 @@
 
 using namespace std;
 
-std::vector<std::vector<string>> arrAnsForUses;
-std::vector<std::vector<string>> arrAnsForFollows;
-std::vector<std::vector<string>> arrAnsForModifies;
-std::vector<std::vector<string>> arrAnsForAffects;
-std::vector<std::vector<string>> arrAnsForParents;
+map<string, int> VarTable::VarMap;
+vector<string> VarTable::VarIndex;
+vector<std::vector<string>> arrAnsForUses;
+vector<std::vector<string>> arrAnsForFollows;
+vector<std::vector<string>> arrAnsForModifies;
+vector<std::vector<string>> arrAnsForAffects;
+vector<std::vector<string>> arrAnsForParents;
 
 struct varTable {
-	
 
 };
-
 
 VarTable::VarTable(){
 }
@@ -28,19 +28,11 @@ VarTable::~VarTable()
 {
 }
 
-void VarTable::addTableData(string varName) {
-	map<string, int>::iterator iter;
-	int index;
-	iter = VarMap.find(varName);
-	if (iter != VarMap.end()) {
-		index = iter->second;
-	}
-	else {
-		index = -1;
-	}
+void VarTable::addTableData(string varName, int stmtLine) {
+	VarTable pt;
+	int index = pt.findPosition(varName);
 	if (index = -1) {
 		index = VarIndex.size();
-		std::vector<string> callAns;
 		VarMap.insert(pair<string, int>(varName, index));
 		VarIndex.push_back(varName);
 	}
@@ -86,5 +78,33 @@ string getVarName(int index);
 
 // get the varNode 
 TNode* getVarNode(int index);
+
+// return true if procName alr in the table otherwise, false
+bool VarTable::isContains(string name) {
+	map<string, int>::iterator iter;
+	int index;
+	iter = VarMap.find(name);
+	if (VarMap.size() > 0) {
+		if (iter != VarMap.end()) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
+}
+
+// return the index of the procName in the map
+int VarTable::findPosition(string varName) {
+	map<string, int>::iterator iter;
+	iter = VarMap.find(varName);
+	if (iter != VarMap.end()) {
+		return  iter->second;
+	}
+	else {
+		return -1;
+	}
+}
 
 

@@ -3,6 +3,9 @@
 #include "./Header/Calls.h"
 
 using namespace std;
+
+map<string, int> ProcTable::ProcMap;
+vector<string> ProcTable::ProcIndex;
 std::vector<std::vector<string>> arrAnsForCall;
 std::vector<int> stmtPosition;
 Call call;
@@ -33,10 +36,9 @@ void ProcTable::addTableData(string procName, int stmtLine) {
 	   std::vector<string> callAns;
 	   ProcMap.insert(pair<string, int>(procName, index));
 	   ProcIndex.push_back(procName);
-	   stmtPosition[index] = stmtLine;
-	   arrAnsForCall[index] = call.getCall(procName);
-   }
-   else {
+	   //stmtPosition[index] = stmtLine;
+	   //arrAnsForCall[index] = call.getCall(procName);
+   } else {
 
    }
 }
@@ -86,11 +88,14 @@ bool ProcTable::isContains(string name) {
 	map<string, int>::iterator iter;
 	int index;
 	iter = ProcMap.find(name);
-	if (iter != ProcMap.end()) {
-	    return false;
-	}
-	else {
-		return true;
+	if (ProcMap.size() > 0) {
+		if (iter != ProcMap.end()) {
+			return true;
+		} else {
+			return false;
+		}
+	} else {
+		return false;
 	}
 }
 

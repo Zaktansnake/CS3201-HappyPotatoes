@@ -18,6 +18,7 @@ static ifstream myFile;
 static int next_token;
 static string str;
 static string file_contents;
+static int statusFile;
 
 static bool is_file_empty(ifstream file);
 static bool is_file_exist(string file);
@@ -51,18 +52,18 @@ int Parser::parse(string fileName)
 	if (is_file_exist(fileName)) {
 		myFile.open(fileName);
 		if (!myFile.fail()) {
-			cout << fileName;
 			PKB::create(fileName);
-			return 1;
+			statusFile = 1;
 		}
 	}
 	else {
 		if (myFile.is_open()) {
 			myFile.close();
-			cout << "Error";
-			return -1;
 		}
+		statusFile = -1;
 	}
+	
+	return statusFile;
 }
 
 // detect file exists

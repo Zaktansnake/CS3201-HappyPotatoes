@@ -2,6 +2,7 @@
 
 #include <map>
 #include <iostream>
+#include<vector>
 #include "./TNode.h"
 
 using namespace std;
@@ -15,10 +16,12 @@ public:
 	static VarTable* getVarTable();
 
 	//add data
-	static void addTableData(string varName);
+	static void addTableData(string varName, int stmtLine);
 
 	// get data
 	int getVarIndex(string key);
+
+	int findPosition(string varName);
 
 	std::vector<string> getUsesAns(int index);
 	std::vector<string> getModifiesAns(int index);
@@ -34,6 +37,9 @@ public:
 
 	//delete data
 	void RemoveVarData();
+
+	//check if the table contains procedure
+	static bool isContains(string varName);
 
 	//print proc data
 	void PrintVarTable();
