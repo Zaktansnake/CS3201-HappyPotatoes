@@ -19,8 +19,6 @@ private:
 
 public:
 	static int parse(string filename);
-	static bool is_file_exist(string file);
-	static bool is_file_empty(ifstream file);
 };
 
 

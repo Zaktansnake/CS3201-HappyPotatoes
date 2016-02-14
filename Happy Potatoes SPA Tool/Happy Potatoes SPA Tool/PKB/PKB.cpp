@@ -1,7 +1,8 @@
 #pragma once
 
 #include <stdio.h>
-#include <stdlib.h> 
+#include <stdlib.h>
+#include <ctype.h>
 #include <iostream>
 #include <algorithm>
 #include <locale>  
@@ -9,35 +10,38 @@
 #include <vector>
 #include <fstream>
 #include <sstream>
+#include <stack>
 
 #include "./Header/PKB.h"
 #include "./Header/TNode.h"
-#include "Header\ProcTable.h"
+#include "./Header/ProcTable.h"
 
 using namespace std;
 
 static ifstream myFile;
-static string str;
+static string str, word;
+static ostringstream oss;
+stack<string> bracstack;
+bool firstTime;
 
 static void program();
 static void procedure();
 static void stmtLst();
 static void assign();
-static void calls();
-static void stmt();
-
-ProcTable proctable;
+static void calls(string procedureName);
+static void stmt(int num);
 
 static void findMethod(string file_contents);
 vector<string> split(string str, char delimiter);
 bool is_number(const std::string& s);
-static void getNextWord();
 
-// Create AST node
-void create(string fileName) {
+void PKB::create(string fileName) {
+	firstTime = true;
 	program();
 	myFile.open(fileName);
-	while (myFile >> str) {
+	while (!myFile.eof()) {
+		getline(myFile, str);
+		cout << str << endl;
 		findMethod(str);
 	}
 	myFile.close();
@@ -45,27 +49,22 @@ void create(string fileName) {
 
 void findMethod(string file_contents) {
 
-	if (file_contents.compare("procedure") == 0) {
+	istringstream iss(file_contents);
+	iss >> word; // get the first word
+	oss << iss.rdbuf(); // get the remain words
+
+	if (word.compare("procedure") == 0) {
+		if (!firstTime) {
+			if (!bracstack.empty()) {
+				throw std::runtime_error("Error: Structure");
+			}
+		}
 		procedure();
-	} else if (file_contents.compare("if") == 0) {
+		firstTime = false;
+	} else if (word.compare("if") == 0 || word.compare("else") == 0 
+		|| (word.compare("calls") == 0) || (word.compare("while") == 0)) {
 		stmtLst();
-	} else if (file_contents.compare("else") == 0) {
-		stmtLst();
-	//	getNextWord();
-	//	if (str.compare("{") != 0){
-	//		throw std::runtime_error("Error: wrong Structure");
-	//	} else {
-	//		getNextWord();
-	//		findMethod(str);
-	//	}
-	}else if (file_contents.compare("calls") == 0) {
-		calls();
-	} else if (file_contents.compare("while") == 0) {
-		stmt();
-	}
-	else {
-		// add myFile.getLine();
-		// ammend??
+	} else {
 		// save them into 2d array, pass to pql, to build tree
 		assign();
 	}
@@ -82,128 +81,119 @@ void program() {
 	prevProc->setRightSibling(procedure());  // find another procedures
 	}*/
 	//buildCFG();
+	//checkCalls();
 }
 
 void procedure() {
 	TNode* proc;
-	getNextWord();
+	string str = oss.str();
+	istringstream iss{ str };
+
 	// if ProcTable contains value
 		// throw std::runtime_error("Error: Duplication of Procedure Name");
-
-	if (proctable.isContains(str)) {
-	    throw std::exception("Error: Duplication of Procedure Name");
-	}
-	else {
-		proctable.addTableData(str);
-		stmtLst();
-	}
-	
 		/*if (ProcTable::getProcTable()->getProcIndex(temp) != -1) {
 		if (input.is_open()) {
 		input.close();
 		}
 		PKBParser::cleanUp();
 		}*/
-	// else
-		// add to ProcTable
-		// int procIdx = ProcTable::getProcTable()->insertProc(temp);
-		// TNode* proc;
-		// proc = new TNode(PROCEDURE, procIdx);  // insert name to node
-		// TNode* stmtLst
-	getNextWord();
-	if (str.compare("{") == 0) {
-		// set first child
-		getNextWord();
-		findMethod(str);
+		// else
+			// add to ProcTable
+			// int procIdx = ProcTable::getProcTable()->insertProc(temp);
+			// TNode* proc;
+			// proc = new TNode(procIdx, PROCEDURE_NAME);  // insert name to node
+			// create TNode* stmtLst
+	oss << iss.rdbuf(); // get the remain words
+	if (oss.str().compare("{") != 0) {
+		throw std::runtime_error("Error: Structure");
+	} else {
+		bracstack.push("{");
 	}
-	else {
-		throw std::exception();
-	}
-
 }
 
 void stmtLst() {
 	TNode* stmtLst;
-	stmt();
-	if (str.compare(";")) {
-		//continue
+	int num = 0;
+	if (word.compare("if") == 0) {
+		num = 0;
+	} else if (word.compare("else") == 0) {
+		num = 1;
+	} else if (word.compare("while") == 0) {
+		num = 2;
+	} else if (word.compare("call") == 0) {
+		num = 3;
 	}
+	stmt(num);
+
 }
 
 void assign() {
-	/* while (getNextWord() && str.compare("}") == 0) {
-	nextNode = stmt();
-	curNode->setRightSibling(nextNode);
-	curNode = nextNode;
+	// save them to a table
+	vector<string> v;
+	istringstream buf(str);
+	for (string word; buf >> word; )
+		v.push_back(word);
+
+	for (int i = 0; i < v.size(); i++) {
+		std::string var = v.at(i);
+		if (isalpha(var.at(i))) {
+			// check whether exists
+			// save to varTable
+		} else if (v[i].compare("}")) {
+			bracstack.pop();
+		}
 	}
-	*/
 }
 
-static void calls() {
-	// save procedure name, stmt #
-}
-
-static void stmt() {
+static void stmt(int num) {
 	TNode* stmt;
-	enum tokenType {
-		TIF = 0,
-		TELSE,
-		TWHILE,
-		TCALL,
-	};
+	vector<string> v;
+	istringstream buf(oss.str());
+	for (string word; buf >> word; )
+		v.push_back(word);
 
-	int line = 0;
-
-	switch (line) {
+	switch (num) {
 	case 0:
 		// TNode *stmtLst, *curNode, *nextNode;
-		getNextWord();
-		if (str.compare("(") == 0) {
-			while (str.compare(")") != 0) {
-				if (str.compare("=") == 0 ) {
-					getNextWord();
-				}
-			}
-		}
 		// stmtLst = new TNode(str);
-		// set x:variable
+		// set v[0]
 		// add to VarTable
 		// set then node
-		getNextWord();
-		if (str.compare("then")) {
+		if (v[1].compare("then") == 0 && (v[2].compare("{")) == 0) {
 			// assign node
-			getNextWord();
-			if (str.compare("{")) {
-				getNextWord();
-				findMethod(str);
-			}
+			bracstack.push("{");
 		}
 		else {
 			throw std::runtime_error("Error: then");
 		}
-
 		//curNode = stmt();
 		//stmtLst->setFirstChild(curNode);
 
 		break;
 	case 1: // else
-		if (str.compare("{")) {
-			getNextWord();
-			findMethod(str);
+		if (v[0].compare("{") != 0) {
+			throw std::runtime_error("Error: Structure");
+		} else {
+			bracstack.push("{");
 		}
 		break;
 	case 2: // while
-		if (str.compare("{")) {
-			getNextWord();
-			findMethod(str);
+		if (v[1].compare("{") == 0) {
+			// v[0]-> varTable
+		} else {
+			bracstack.push("{");
 		}
-		case 3: // call
-			calls();
-			break;
+		break;
+	case 3: // call
+		calls(v[0]);
+		break;
 	}
-
 }
 
+static void calls(string procedurName) {
+	// save procedure name, stmt #
+	ProcTable::addTableData(procedurName);
+}
 
 // is number
 bool is_number(const std::string& s)
@@ -212,6 +202,12 @@ bool is_number(const std::string& s)
 		s.end(), [](char c) { return !::isdigit(c); }) == s.end();
 }
 
-void getNextWord() {
-	str = myFile.get();
+bool lettersOnly(std::string text)
+{
+	for (int i = 0; i<text.length(); i++)
+	{
+		if (!isalpha(text.at(i)))
+			return false;
+	}
+	return true;
 }
