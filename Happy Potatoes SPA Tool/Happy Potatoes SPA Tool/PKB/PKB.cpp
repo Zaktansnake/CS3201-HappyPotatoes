@@ -23,6 +23,7 @@ static string str, word;
 static ostringstream oss;
 stack<string> bracstack;
 bool firstTime;
+static int stmtLine;
 
 static void program();
 static void procedure();
@@ -39,10 +40,12 @@ void PKB::create(string fileName) {
 	firstTime = true;
 	program();
 	myFile.open(fileName);
+	stmtLine = 0;
 	while (!myFile.eof()) {
 		getline(myFile, str);
 		cout << str << endl;
 		findMethod(str);
+		stmtLine ++;
 	}
 	myFile.close();
 }
@@ -187,15 +190,15 @@ static void stmt(int num) {
 		}
 		break;
 	case 3: // call
-		calls(v[0]);
+		calls(v[0], stmtLine);
 		break;
 	}
 }
 
-static void calls(string procedurName) {
+static void calls(string procedurName, int stmtLine) {
 	// save procedure name, stmt #
-	//ProcTable::addTableData(procedureName, stmtLine)
-	ProcTable::addTableData(procedurName);
+	ProcTable::addTableData(procedurName, stmtLine);
+	//ProcTable::addTableData(procedurName);
 }
 
 // is number
