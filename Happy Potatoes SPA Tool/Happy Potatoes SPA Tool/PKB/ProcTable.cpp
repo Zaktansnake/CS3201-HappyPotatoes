@@ -69,6 +69,19 @@ string getProcName(int index);
 // get the procNode 
 TNode* getProcNode(int index);
 
+// return true if procName alr in the table otherwise, false
+bool ProcTable::isContains(string name) {
+	map<string, int>::iterator iter;
+	int index;
+	iter = ProcMap.find(name);
+	if (iter != ProcMap.end()) {
+	    return false;
+	}
+	else {
+		return true;
+	}
+}
+
 // print out the proceTable
 void PrintProcTable() {
 	for (int i = 0; i < arrAnsForCall.size(); i++) {
@@ -78,5 +91,6 @@ void PrintProcTable() {
 		cout <<endl;
 	}
 }
+
 
 

@@ -12,6 +12,7 @@
 
 #include "./Header/PKB.h"
 #include "./Header/TNode.h"
+#include "Header\ProcTable.h"
 
 using namespace std;
 
@@ -24,6 +25,8 @@ static void stmtLst();
 static void assign();
 static void calls();
 static void stmt();
+
+ProcTable proctable;
 
 static void findMethod(string file_contents);
 vector<string> split(string str, char delimiter);
@@ -87,7 +90,14 @@ void procedure() {
 	// if ProcTable contains value
 		// throw std::runtime_error("Error: Duplication of Procedure Name");
 
-	if ()
+	if (proctable.isContains(str)) {
+	    throw std::exception("Error: Duplication of Procedure Name");
+	}
+	else {
+		proctable.addTableData(str);
+		stmtLst();
+	}
+	
 		/*if (ProcTable::getProcTable()->getProcIndex(temp) != -1) {
 		if (input.is_open()) {
 		input.close();
@@ -105,6 +115,9 @@ void procedure() {
 		// set first child
 		getNextWord();
 		findMethod(str);
+	}
+	else {
+		throw std::exception();
 	}
 
 }
@@ -139,12 +152,19 @@ static void stmt() {
 		TCALL,
 	};
 
-	int line;
+	int line = 0;
 
 	switch (line) {
 	case 0:
 		// TNode *stmtLst, *curNode, *nextNode;
 		getNextWord();
+		if (str.compare("(") == 0) {
+			while (str.compare(")") != 0) {
+				if (str.compare("=") == 0 ) {
+					getNextWord();
+				}
+			}
+		}
 		// stmtLst = new TNode(str);
 		// set x:variable
 		// add to VarTable
