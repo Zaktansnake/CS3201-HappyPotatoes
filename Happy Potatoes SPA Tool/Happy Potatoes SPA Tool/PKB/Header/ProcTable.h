@@ -21,7 +21,7 @@ public:
 
 	// get data
 	int getProcIndex (string key);
-	std::vector<string> getCallAns(int index);
+	std::vector<string> getCallAns(string procName);
 	int getProgLine (string procName);
 	int findPosition (string ProcName);
 	string getProcName (int index);
@@ -40,8 +40,8 @@ public:
 	void PrintProcTable();
 
 private: 
-    static std::map<string, int> ProcMap;
-	static std::vector<string> ProcIndex;
+    static std::map<string, int> ProcMap;   //procName, index of the procName in the map
+	static std::vector<string> ProcIndex;   // store the index of map
 	ProcTable();
 };
 

@@ -31,10 +31,11 @@ ProcTable::~ProcTable()
 void ProcTable::addTableData(string procName, int stmtLine) {
    ProcTable pt;
    int index = pt.findPosition(procName);
+   // index = -1 means there is no same proc name in the table
    if (index == -1) {
-	   index = ProcIndex.size();
-	   std::vector<string> callAns;
-	   ProcMap.insert(pair<string, int>(procName, index));
+	   index = ProcIndex.size();   // set the index be the size of vertor
+	   std::vector<string> callAns; //vector used to store the answer of call
+	   ProcMap.insert(pair<string, int>(procName, index)); 
 	   ProcIndex.push_back(procName);
 	   stmtPosition.push_back(stmtLine);
 	   arrAnsForCall.push_back(call.getCall(procName));
@@ -61,8 +62,9 @@ int ProcTable::getSize(){
 }
 
 // return call answer
-std::vector<string> ProcTable::getCallAns(int index) {
-   return arrAnsForCall[index];
+std::vector<string> ProcTable::getCallAns(string procName) {
+   
+   return arrAnsForCall[findPosition(procName)];
 }
 
 // return the program line for the procedure
