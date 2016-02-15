@@ -134,9 +134,9 @@ private:
 	*/
 
 public:
-	static int setProcToAST(PROC p, TNode* r);
-	static TNode* getRootAST (PROC p);
-	static int setProcToCFG (PROC p, GNode* g);
+//	static int setProcToAST(PROC p, TNode* r);
+//	static TNode* getRootAST (PROC p);
+//	static int setProcToCFG (PROC p, GNode* g);
 
 	static void create(string fileName);
 

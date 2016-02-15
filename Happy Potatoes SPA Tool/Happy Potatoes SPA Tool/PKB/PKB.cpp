@@ -13,7 +13,7 @@
 #include <stack>
 
 #include "./Header/PKB.h"
-#include "./Header/TNode.h"
+//#include "./Header/TNode.h"
 #include "./Header/ProcTable.h"
 #include "./Header/VarTable.h"
 // #include "Header/Pattern_PKB.h"
@@ -80,7 +80,7 @@ void findMethod(string file_contents) {
 }
 
 void program() {
-	TNode* program;
+	//TNode* program;
 	/*TNode* program = new TNode(TPROGRAM); // set program
 	TNode* firstProc = procedure();			// set first procedure
 	program->setFirstChild(firstProc);		// program -> 1st Proc
@@ -95,7 +95,7 @@ void program() {
 
 void procedure() {
 
-	TNode* proc;
+	//TNode* proc;
 	vector<string> v = splitTheString(str);
 
 	if (v.size() > 3) {
@@ -129,7 +129,7 @@ void procedure() {
 }
 
 void stmtLst() {
-	TNode* stmtLst;
+//	TNode* stmtLst;
 	int num = 0;
 	if (word.compare("if") == 0) {
 		num = 0;
@@ -181,7 +181,7 @@ void assign() {
 }
 
 static void stmt(int num) {
-	TNode* stmt;
+	//TNode* stmt;
 	vector<string> v = splitTheString(str);
 
 	switch (num) {

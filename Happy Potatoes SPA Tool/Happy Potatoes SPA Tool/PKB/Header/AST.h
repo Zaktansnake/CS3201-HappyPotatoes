@@ -7,7 +7,7 @@ class AST
 public:
 	AST();
 	~AST();
-	static TNode* getParent();
+/*	static TNode* getParent();
 	static void setParent();
 	static TNode* getFirstChild();
 	static void setFirstChild(TNode P, TNode C);
@@ -17,6 +17,6 @@ public:
 	static TNode* getRoot();
 	static TNode* createTNodeStmtLst();
 	static TNode* getTNodeStmtLst();
-
+*/
 };
 

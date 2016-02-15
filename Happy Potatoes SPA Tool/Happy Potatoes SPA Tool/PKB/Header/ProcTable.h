@@ -4,7 +4,6 @@
 #include<vector>
 #include "AST.h"
 #include "Call.h"
-#include "TNode.h"
 
 using namespace std;
 
@@ -26,7 +25,7 @@ public:
 	int getProgLine (string procName);
 	int findPosition (string ProcName);
 	string getProcName (int index);
-	TNode* getProcNode (int index);
+	//TNode* getProcNode (int index);
 
 	//get the size of proctable
 	int getSize();
