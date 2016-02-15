@@ -31,13 +31,13 @@ ProcTable::~ProcTable()
 void ProcTable::addTableData(string procName, int stmtLine) {
    ProcTable pt;
    int index = pt.findPosition(procName);
-   if (index = -1) {
+   if (index == -1) {
 	   index = ProcIndex.size();
 	   std::vector<string> callAns;
 	   ProcMap.insert(pair<string, int>(procName, index));
 	   ProcIndex.push_back(procName);
-	   //stmtPosition[index] = stmtLine;
-	   //arrAnsForCall[index] = call.getCall(procName);
+	   stmtPosition.push_back(stmtLine);
+	   arrAnsForCall.push_back(call.getCall(procName));
    } else {
 
    }
