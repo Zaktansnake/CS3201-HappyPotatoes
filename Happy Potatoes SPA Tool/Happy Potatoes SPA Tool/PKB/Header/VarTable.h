@@ -4,50 +4,29 @@
 #include <iostream>
 #include<vector>
 
-
 using namespace std;
+
+class Modifies;
 
 class VarTable
 {
 public:
 	~VarTable();
 
-	// get reference to procedure table
-	static VarTable* getVarTable();
+	// get ModifiesTable
+	static std::vector<int> getModifiesTable(string varName);
 
-	//add data
-	static void addTableData(string varName, int stmtLine);
+	// add ModifiesTable
+	static void addDataToModifies(string varName, int stmtLine);
 
-	// get data
-	int getVarIndex(string key);
+	// get UsesTable
+	static std::vector<int> getUsesTable(string varName);
 
-	int findPosition(string varName);
-
-	std::vector<string> getUsesAns(int index);
-	std::vector<string> getModifiesAns(int index);
-	std::vector<string> getFollowsAns(int index);
-	std::vector<string> getAffectsAns(int index);
-	std::vector<string> getParentsAns(int index);
-
-	string getVarName(int index);
-	TNode* getVarNode(int index);
-
-	//get the size of proctable
-	int getSize();
-
-	//delete data
-	void RemoveVarData();
-
-	//check if the table contains procedure
-	static bool isContains(string varName);
-
-	//print proc data
-	void PrintVarTable();
-
+	// add UsesTable
+	static void addDataToUses(string varName, int stmtLine);
 
 private:
-	static std::map<string, int> VarMap;
-	static std::vector<string> VarIndex;
+	
 	VarTable();
 };
 

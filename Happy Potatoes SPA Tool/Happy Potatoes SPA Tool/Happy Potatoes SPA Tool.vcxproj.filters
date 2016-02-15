@@ -51,29 +51,11 @@
     <ClCompile Include="PKB\ProcTable.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
-    <ClCompile Include="PKB\TNode.cpp">
-      <Filter>PKB</Filter>
-    </ClCompile>
     <ClCompile Include="PKB\Uses.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
     <ClCompile Include="PKB\VarTable.cpp">
       <Filter>PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="PQL\Clause.cpp">
-      <Filter>PQL</Filter>
-    </ClCompile>
-    <ClCompile Include="PQL\ParseResult.cpp">
-      <Filter>PQL</Filter>
-    </ClCompile>
-    <ClCompile Include="PQL\Pattern.cpp">
-      <Filter>PQL</Filter>
-    </ClCompile>
-    <ClCompile Include="PQL\PatternClause.cpp">
-      <Filter>PQL</Filter>
-    </ClCompile>
-    <ClCompile Include="PQL\PatternNode.cpp">
-      <Filter>PQL</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp" />
   </ItemGroup>
@@ -111,29 +93,11 @@
     <ClInclude Include="PKB\Header\ProcTable.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
-    <ClInclude Include="PKB\Header\TNode.h">
-      <Filter>PKB\Header</Filter>
-    </ClInclude>
     <ClInclude Include="PKB\Header\Uses.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
     <ClInclude Include="PKB\Header\VarTable.h">
       <Filter>PKB\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PQL\Header\Clause.h">
-      <Filter>PQL\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PQL\Header\ParseResult.h">
-      <Filter>PQL\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PQL\Header\Pattern.h">
-      <Filter>PQL\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PQL\Header\PatternClause.h">
-      <Filter>PQL\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PQL\Header\PatternNode.h">
-      <Filter>PQL\Header</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

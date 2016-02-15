@@ -13,10 +13,8 @@
 #include <stack>
 
 #include "./Header/PKB.h"
-//#include "./Header/TNode.h"
 #include "./Header/ProcTable.h"
 #include "./Header/VarTable.h"
-// #include "Header/Pattern_PKB.h"
 
 using namespace std;
 
@@ -47,7 +45,6 @@ void PKB::create(string fileName) {
 	stmtLine = 1;
 	while (!myFile.eof()) {
 		getline(myFile, str);
-		//cout << str << endl;
 		findMethod(str);
 		stmtLine++;
 	}
@@ -167,14 +164,13 @@ void assign() {
 			if (var.compare("}") == 0) {
 				bracstack.pop();
 			} else {
-				/*if (isalpha(var.at(i))) {
-					if (VarTable::isContains(var)) {
-						// add the line number
+				if (!is_number(var)) {
+					if (i == 0) {
+						VarTable::addDataToModifies(var, stmtLine);
+					} else {
+						VarTable::addDataToUses(var, stmtLine);
 					}
-					else {
-						//VarTable::addTableData(var, stmtLine);
-					}
-				}*/
+				}
 			}
 		}
 	}

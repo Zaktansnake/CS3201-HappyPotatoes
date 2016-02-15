@@ -15,3 +15,4 @@ public:
 private:
 	PatternNode root_;
 };
+*/
