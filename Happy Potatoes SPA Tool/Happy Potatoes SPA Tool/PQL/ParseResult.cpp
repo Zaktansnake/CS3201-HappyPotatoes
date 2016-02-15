@@ -25,7 +25,7 @@ vector<ParseResult> ParseResult::startQueryParsing() {
 	string filename = "test_PQL_parser.txt";
 	infile.open(filename);
 	vector<ParseResult> resultSet;
-	while (!infile.eof) {
+	while (!infile.eof()) {
 		string dummy, synonym, query;
 		getline(infile, dummy); // skip the comment line
 		getline(infile, synonym);
