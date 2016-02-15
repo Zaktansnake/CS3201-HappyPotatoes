@@ -8,7 +8,10 @@ class Call
 public:
 	Call();
 	~Call();
+	void setCall(string procName, int index);
+	std::vector<string> getCall(int index);
 
-	std::vector<string> getCall(string procname);
+	// print out the call answer table
+	void PrintProcTable();
 };
 

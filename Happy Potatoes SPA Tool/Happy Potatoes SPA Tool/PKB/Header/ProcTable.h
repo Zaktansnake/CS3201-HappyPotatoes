@@ -36,9 +36,7 @@ public:
 	//check if the table contains procedure
 	static bool isContains (string procName);
 
-	//print proc data
-	void PrintProcTable();
-
+	
 private: 
     static std::map<string, int> ProcMap;   //procName, index of the procName in the map
 	static std::vector<string> ProcIndex;   // store the index of map

@@ -6,7 +6,6 @@ using namespace std;
 
 map<string, int> ProcTable::ProcMap;
 vector<string> ProcTable::ProcIndex;
-std::vector<std::vector<string>> arrAnsForCall;
 std::vector<int> stmtPosition;
 Call call;
 
@@ -38,7 +37,7 @@ void ProcTable::addTableData(string procName, int stmtLine) {
 	   ProcMap.insert(pair<string, int>(procName, index)); 
 	   ProcIndex.push_back(procName);
 	   stmtPosition.push_back(stmtLine);
-	   arrAnsForCall.push_back(call.getCall(procName));
+	   call.setCall(procName, index);
    } else {
 
    }
@@ -64,9 +63,10 @@ int ProcTable::getSize(){
 // return call answer
 std::vector<string> ProcTable::getCallAns(string procName) {
    
-   return arrAnsForCall[findPosition(procName)];
+   return call.getCall(findPosition(procName));
 }
 
+/*
 // return the program line for the procedure
 int ProcTable::getProgLine(string procName) {
     int index = findPosition(procName);
@@ -78,12 +78,7 @@ int ProcTable::getProcIndex(string key) {
 	int index = findPosition(key);
 	return index;
 }
-
-// get the procedure name by knowing the index
-string getProcName(int index);
-
-// get the procNode 
-TNode* getProcNode(int index);
+*/
 
 // return true if procName alr in the table otherwise, false
 bool ProcTable::isContains(string name) {
@@ -101,15 +96,6 @@ bool ProcTable::isContains(string name) {
 	}
 }
 
-// print out the proceTable
-void PrintProcTable() {
-	for (int i = 0; i < arrAnsForCall.size(); i++) {
-		for (int j = 0; j < arrAnsForCall[i].size(); j++) {
-			std::cout << arrAnsForCall[i].at(j) <<" ";
-		}
-		cout <<endl;
-	}
-}
 
 
 
