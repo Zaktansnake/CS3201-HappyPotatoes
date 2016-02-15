@@ -1,6 +1,7 @@
 #pragma once
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include "Clause.h"
 #include "PatternClause.h"
 
@@ -17,15 +18,19 @@ public:
 	PatternSet getPatterns();
 	// constructors
 	ParseResult();
-	ParseResult(ParameterSet selectParameter, ClauseSet condClauses, PatternSet patterns);
+	ParseResult(ParameterSet, ClauseSet, PatternSet);
 	// for query evaluator to call
 	vector<ParseResult> startQueryParsing();
-	// helper functions
-	ParseResult generateParseResult(string assignment, string query);
-	bool checkDeclaration(vector<string> declaration);
-	void signalErrorAndStop();
 private:
+	// helper functions
+	ParseResult generateParseResult(string, string);
+	bool checkDeclaration(vector<string>);
+	void signalErrorAndStop();
+	ParseResult checkAndParseQuery(unordered_map<string, string>, vector<string>);
+
+	// attributes
 	ParameterSet selectParameter_;
 	ClauseSet condClauses_;
 	PatternSet patterns_;
+	
 };

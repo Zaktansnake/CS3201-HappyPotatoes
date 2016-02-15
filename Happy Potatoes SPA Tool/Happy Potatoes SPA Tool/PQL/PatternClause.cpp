@@ -1,13 +1,12 @@
-#include "./Header/PatternClause.h"
+/*
+#include "../PQL/Header/Pattern.h"
+#include "../PQL/Header/PatternNode.h"
 
-PatternType PatternClause::getPatternOperation() { return patternType_; }
-Parameter1 PatternClause::getFirstParameter() { return parameter1_; }
-Parameter2 PatternClause::getSecondParameter() { return parameter2_; }
-Parameter3 PatternClause::getThirdParameter() { return parameter3_; }
+PatternNode Pattern::getRoot() { return root_; }
 
-PatternClause::PatternClause() {};
-PatternClause::PatternClause(Parameter1 p1, Parameter2 p2, Parameter3 p3) {
-	parameter1_ = p1;
-	parameter2_ = p2;
-	parameter3_ = p3;
-};
+Pattern::Pattern() {}
+
+Pattern::Pattern(string content) {
+	root_ = (PatternNode) nullptr;
+	root_.setContent(content);
+}

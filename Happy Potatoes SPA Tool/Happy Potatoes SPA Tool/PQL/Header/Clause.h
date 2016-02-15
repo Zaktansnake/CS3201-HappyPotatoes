@@ -13,10 +13,10 @@ public:
 	Parameter2 getSecondParameter();
 
 	Clause();
-	Clause(Parameter1 parameter1_, Parameter2 parameter2_);
+	Clause(ClauseType,Parameter1,Parameter2);
 
 private:
-	ClauseType clauseOp_;
+	ClauseType clauseType_;
 	Parameter1 parameter1_;
 	Parameter2 parameter2_;
 };

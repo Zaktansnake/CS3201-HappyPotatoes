@@ -1,11 +1,14 @@
-#include "./Header/Pattern.h"
-#include "./Header/PatternNode.h"
+#include "../PQL/Header/Pattern.h"
 
-PatternNode Pattern::getRoot() { return root_; }
+PatternType Pattern::getPatternOperation() { return patternType_; }
+Parameter1 Pattern::getFirstParameter() { return parameter1_; }
+Parameter2 Pattern::getSecondParameter() { return parameter2_; }
+Parameter3 Pattern::getThirdParameter() { return parameter3_; }
 
-Pattern::Pattern() {}
-
-Pattern::Pattern(string content) {
-	root_ = (PatternNode) nullptr;
-	root_.setContent(content);
-}
+Pattern::Pattern() {};
+Pattern::Pattern(PatternType type, Parameter1 p1, Parameter2 p2, Parameter3 p3) {
+	patternType_ = type;
+	parameter1_ = p1;
+	parameter2_ = p2;
+	parameter3_ = p3;
+};
