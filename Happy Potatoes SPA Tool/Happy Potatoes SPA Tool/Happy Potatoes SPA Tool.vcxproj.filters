@@ -51,9 +51,6 @@
     <ClCompile Include="PKB\ProcTable.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
-    <ClCompile Include="PKB\TNode.cpp">
-      <Filter>PKB</Filter>
-    </ClCompile>
     <ClCompile Include="PKB\Uses.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
@@ -76,8 +73,30 @@
       <Filter>PQL</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PKB\Pattern.cpp">
+      <Filter>PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="PKB\stmtTable.cpp">
+      <Filter>PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="PQL\Header\Clause.h">
+      <Filter>PQL\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PQL\Header\ParseResult.h">
+      <Filter>PQL\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PQL\Header\Pattern.h">
+      <Filter>PQL\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PQL\Header\PatternClause.h">
+      <Filter>PQL\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PQL\Header\PatternNode.h">
+      <Filter>PQL\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="resource.h" />
     <ClInclude Include="PKB\Header\Affects.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
@@ -111,29 +130,20 @@
     <ClInclude Include="PKB\Header\ProcTable.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
-    <ClInclude Include="PKB\Header\TNode.h">
-      <Filter>PKB\Header</Filter>
-    </ClInclude>
     <ClInclude Include="PKB\Header\Uses.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
     <ClInclude Include="PKB\Header\VarTable.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
-    <ClInclude Include="PQL\Header\Clause.h">
-      <Filter>PQL\Header</Filter>
+    <ClInclude Include="PKB\Header\Pattern.h">
+      <Filter>PKB\Header</Filter>
     </ClInclude>
-    <ClInclude Include="PQL\Header\ParseResult.h">
-      <Filter>PQL\Header</Filter>
+    <ClInclude Include="PKB\Header\stmtTable.h">
+      <Filter>PKB\Header</Filter>
     </ClInclude>
-    <ClInclude Include="PQL\Header\Pattern.h">
-      <Filter>PQL\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PQL\Header\PatternClause.h">
-      <Filter>PQL\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PQL\Header\PatternNode.h">
-      <Filter>PQL\Header</Filter>
-    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Happy Potatoes SPA Tool.rc" />
   </ItemGroup>
 </Project>
