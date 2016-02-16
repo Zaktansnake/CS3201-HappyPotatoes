@@ -23,6 +23,9 @@ public:
 	// add data to parent table
 	void addParentTable(string stmtLine, int stmtNo, int nestLevel);
 
+	bool isFollow(int s1, int s2);
+	bool isParent (int s1, int s2);
+
 	// get data
 	std::vector<int> getFollow (int stmtNo);
 	std::vector<int> getParent (int stmtNo);

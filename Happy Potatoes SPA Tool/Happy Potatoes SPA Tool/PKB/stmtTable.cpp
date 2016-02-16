@@ -68,8 +68,14 @@ void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
 std::vector<int> stmtTable::getFollow(int stmtNo) {
     return follow.getAns(stmtNo);
 }
+bool stmtTable::isFollow(int s1, int s2) {
+	return follow.isFollows(s1,s2);
+}
 std::vector<int> stmtTable::getParent(int stmtNo) {
     return parent.getAns(stmtNo);
+}
+bool stmtTable::isParent(int s1, int s2) {
+	return parent.isParent(s1,s2);
 }
 
 bool isCondition(string stmtLine) {
