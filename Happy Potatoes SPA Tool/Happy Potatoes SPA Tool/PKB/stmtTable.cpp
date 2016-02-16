@@ -1,104 +1,93 @@
 #pragma once
-#include<map>
 #include<string>
 #include<vector>
-#include "Header\stmtTable.h"
+#include <algorithm>
+#include "Header\stmtTable.h";
+
 
 using namespace std;
 static int nestLevel = 0;
 bool flagForNextLevel = false;
+bool loopFlag;
+int endLoopNo = 0;
 bool isFirstElse = false;  // the first stmtNo after else do not have follow
 std::vector<int> stmtLst;
 int condition;
 Follows follow;
+Parent parent;
 
 enum stmtType {
 	IF = 1,
 	ELSE,
-	WHILE,
-	ASSIGN
+	WHILE
 };
 
+// get reference to procedure table
+	static stmtTable* getFollowTable();
 
-class stmtTable
-{
-public:
-	stmtTable();
-	~stmtTable();
-
-	// get reference to procedure table
-	//static stmtTable* getFollowTable();
-
-	//add data
-	void  stmtTable::addStmtTable(string stmtLine, int stmtNo) {
-	// check whether it is condition line 
-	// if it is condition line, nestLevel+1, else nestLevel not change
-	    int temp = nestLevel;
-		isCondition(stmtLine); 
-		
+//add data
+void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
+    // check if it is a condition stmt
+	bool isCon = isCondition(stmtLine);
+	loopFlag = false;
+	if (isCon) {
 		switch (condition) {
 			case IF: 
-			  flagForNextLevel = true;
-			  break;
+				flagForNextLevel = true;
+			    break;
 			case ELSE:
-			  isFirstElse = true;
-			 // addElse(stmtLine, stmtNo);
-			  break;
+				flagForNextLevel = true;
+			    break;
 			case WHILE:
-			  flagForNextLevel = true;
-			//  addWhile(stmtLine, stmtNo);
-			  break;
-			default: break;
-			  
+			    flagForNextLevel = true;
+				break;
 		}
-		if (isFirstElse = false) {
-			addFollowTable(stmtLine, stmtNo, nestLevel);
-			if (flagForNextLevel == true) {
-				nestLevel++;
-				flagForNextLevel = false;
-			}
-			// get the previous stmtno's nestlevel, if 
-			int prevLevel = follow.getPrevLevelStmt(stmtNo);
-			if (preLevel - nestLevel == 1) {
-				addParentTable(stmtLine, stmtNo, nestLevel);
-			}
+		loopFlag = true;
+	}
+	endLoopNo = std::count(stmtLine.begin(), stmtLine.end(), '}');
+	addFollowTable(stmtLine, stmtNo, nestLevel);
+	addParentTable(stmtLine,stmtNo, nestLevel);
+	if (flagForNextLevel == true) {
+		nestLevel ++ ;
+	} 
+	// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
+	nestLevel = nestLevel - endLoopNo;
+	if (nestLevel < 0) {
+		throw exception("extra } in the program");
+	}
+}
 
-			if (stmtLine.find("}") != string::npos) {  //found "}"
-				nestLevel--;
-			}
-		}
-		
-		
+void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
+     follow.setFollow(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo);
+}
+void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
+	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo);
+}
+
+std::vector<int> stmtTable::getFollow(int stmtNo) {
+    return follow.getAns(stmtNo);
+}
+std::vector<int> stmtTable::getParent(int stmtNo) {
+    return parent.getAns(stmtNo);
+}
+
+bool isCondition(string stmtLine) {
+	if (stmtLine.find("if") != std::string::npos) {
+	    condition = 1;
+		return true;
 
 	}
-
-	int isCondition(string stmtLine) {
-		if (stmtLine.find("if") != string::npos) {
-			return 1;
-		}
-		else if (stmtLine.find("else") != string::npos) {
-			return 2;
-		}
-		else if (stmtLine.find("while") != string::npos) {
-			return 3;
-		}
-		else {
-		    return 4;
-		}
-	}
-
-
-	void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
-	    
-	    
-	}
-	void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
+	else if (stmtLine.find("else") != std::string::npos) {
+	    condition = 2;
+		return true;
 
 	}
+	else if (stmtLine.find("while") != std::string::npos) {
+	    condition = 3;
+		return true;
 
-	// get data
-	std::vector<int> getFollow(int stmtLine);
-	std::vector<int> getParent(int stmtLine);
-};
+	}
+	return false;
+}
 
 
