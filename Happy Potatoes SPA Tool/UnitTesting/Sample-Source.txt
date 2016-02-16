@@ -1,8 +1,7 @@
 procedure main {
-  if x then {
-    z = x + 1; }
-  else {
-    x = z + x; } }
+  z = x + 1; 
+  x = z + x; 
+  call nested_while; }
 
 procedure one_level_while {
    x = x+y+z;
