@@ -32,6 +32,7 @@
     <ClCompile Include="PKB\Parser.cpp" />
     <ClCompile Include="PKB\PKB.cpp" />
     <ClCompile Include="PKB\ProcTable.cpp" />
+    <ClCompile Include="PKB\stmtTable.cpp" />
     <ClCompile Include="PKB\Uses.cpp" />
     <ClCompile Include="PKB\VarTable.cpp" />
   </ItemGroup>
@@ -47,6 +48,7 @@
     <ClInclude Include="PKB\Header\Parser.h" />
     <ClInclude Include="PKB\Header\PKB.h" />
     <ClInclude Include="PKB\Header\ProcTable.h" />
+    <ClInclude Include="PKB\Header\stmtTable.h" />
     <ClInclude Include="PKB\Header\Uses.h" />
     <ClInclude Include="PKB\Header\VarTable.h" />
   </ItemGroup>

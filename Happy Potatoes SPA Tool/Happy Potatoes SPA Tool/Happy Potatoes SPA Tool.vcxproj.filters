@@ -58,6 +58,9 @@
       <Filter>PKB</Filter>
     </ClCompile>
     <ClCompile Include="Main.cpp" />
+    <ClCompile Include="PKB\stmtTable.cpp">
+      <Filter>PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PKB\Header\Affects.h">
@@ -97,6 +100,9 @@
       <Filter>PKB\Header</Filter>
     </ClInclude>
     <ClInclude Include="PKB\Header\VarTable.h">
+      <Filter>PKB\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PKB\Header\stmtTable.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
   </ItemGroup>
