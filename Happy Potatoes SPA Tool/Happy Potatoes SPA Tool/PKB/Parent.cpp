@@ -46,6 +46,7 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			}
 			else {
 				throw exception("Error: parent not found");
+				abort();
 			}
 			arrAns.at(index).push_back(stmtNo);
 
@@ -74,6 +75,16 @@ void setToParent(string stmtLine, int stmtNo) {
 	loopStmtNo.push(stmtNo);
 }
 
+bool Parent::isParent(int stmt1, int stmt2) {
+	std::vector<int> temp;
+	temp = getAns(stmt1);
+	if (std::find(temp.begin(), temp.end(), stmt2) != temp.end()) {
+		return true;
+	}
+	return false;
+
+}
+
 
 std::vector<int> Parent::getAns(int stmtNo) {
     int index = 0;
@@ -84,7 +95,8 @@ std::vector<int> Parent::getAns(int stmtNo) {
 	}
 	else {
 		throw exception("Error: parent not found");
+		abort();
 	}
 
-	return arrAns.at(index);
+	return arrAns.at(index-1);
 }

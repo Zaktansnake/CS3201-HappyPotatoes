@@ -54,6 +54,7 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 	nestLevel = nestLevel - endLoopNo;
 	if (nestLevel < 0) {
 		throw exception("extra } in the program");
+		abort();
 	}
 }
 
