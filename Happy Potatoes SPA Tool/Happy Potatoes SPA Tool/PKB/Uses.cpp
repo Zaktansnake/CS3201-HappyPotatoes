@@ -13,6 +13,8 @@ using namespace std;
 map<string, int> UsesMap;
 vector<vector<int>> UsesTable;
 
+int insertToMap(string varName);
+
 Uses::Uses()
 {
 }
@@ -25,10 +27,12 @@ void Uses::addUsesTable(string varName, int stmtLine) {
 	int index;
 	if (UsesMap.size() > 0) {
 		index = findPosition(varName);
+		if (index == -1) {
+			index = insertToMap(varName);
+		}
 	}
 	else {
-		index = UsesMap.size();   // set the index be the size of vertor
-		UsesMap.insert(pair<string, int>(varName, index));
+		index = insertToMap(varName);
 	}
 	UsesTable[index].push_back(stmtLine);
 }
@@ -63,4 +67,10 @@ bool Uses::isContains(string varName) {
 std::vector<int> Uses::getUsesTable(string varName)
 {
 	return UsesTable[findPosition(varName)];
+}
+
+int insertToMap(string varName) {
+	int index = UsesMap.size();   // set the index be the size of vertor
+	UsesMap.insert(pair<string, int>(varName, index));
+	return index;
 }

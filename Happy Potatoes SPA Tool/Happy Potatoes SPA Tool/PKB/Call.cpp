@@ -6,6 +6,8 @@ using namespace std;
 
 std::vector<std::vector<string> > arrAnsForCall;
 
+bool isContains(string procName, int index);
+
 Call::Call()
 {
 }

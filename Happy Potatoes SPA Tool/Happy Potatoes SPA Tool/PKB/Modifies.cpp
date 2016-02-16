@@ -13,6 +13,8 @@ using namespace std;
 map<string, int> ModifiesMap;
 vector<vector<int>> ModifiesTable;
 
+int insertToMap(string varName);
+
 Modifies::Modifies()
 {
 }
@@ -25,9 +27,11 @@ void Modifies::addModifiesTable(string varName, int stmtLine) {
 	int index;
 	if (ModifiesMap.size() > 0) {
 		index = findPosition(varName);
+		if (index == -1) {
+			index = insertToMap(varName);
+		}
 	} else {
-		index = ModifiesMap.size();   // set the index be the size of vertor
-		ModifiesMap.insert(pair<string, int>(varName, index));
+		index = insertToMap(varName);
 	}
 	ModifiesTable[index].push_back(stmtLine);
 }
@@ -62,5 +66,11 @@ bool Modifies::isContains(string varName) {
 std::vector<int> Modifies::getModifiesTable(string varName)
 {
 	return ModifiesTable[findPosition(varName)];
+}
+
+int insertToMap(string varName) {
+	int index = ModifiesMap.size();   // set the index be the size of vertor
+	ModifiesMap.insert(pair<string, int>(varName, index));
+	return index;
 }
 

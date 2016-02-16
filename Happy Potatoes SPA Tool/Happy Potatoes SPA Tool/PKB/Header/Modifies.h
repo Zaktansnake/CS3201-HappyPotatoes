@@ -19,10 +19,9 @@ public:
 	// add item to ModifiesTable
 	static void addModifiesTable(string varName, int stmtLine);
 
-	static bool isContains(string varName);
-
 private:
 
+	static bool isContains(string varName);
 	static int findPosition(string varName);
 };
 
