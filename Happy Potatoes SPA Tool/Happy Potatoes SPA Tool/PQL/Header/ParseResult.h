@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include "Clause.h"
-#include "PatternClause.h"
+#include "./Header/PatternClause.h"
 
 using namespace std;
 typedef vector<string> ParameterSet;

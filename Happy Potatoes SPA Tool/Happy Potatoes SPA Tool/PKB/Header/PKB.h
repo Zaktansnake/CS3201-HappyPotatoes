@@ -6,12 +6,12 @@
 #include <vector>
 
 using namespace std;
+
 typedef vector<string> PROC;
 typedef vector<string> VAR;
 typedef vector<int> STMT;
 typedef int PROG_LINE;
 
-class TNode;
 class GNode;
 
 class VarTable;  // no need to #include "VarTable.h" as all I need is pointer

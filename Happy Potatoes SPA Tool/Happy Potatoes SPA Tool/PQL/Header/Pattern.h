@@ -7,6 +7,10 @@ typedef string Parameter1;
 typedef string Parameter2;
 typedef string Parameter3;
 
+class PatternNode;
+
+class PatternNode;
+
 class Pattern {
 public:
 	// getters
