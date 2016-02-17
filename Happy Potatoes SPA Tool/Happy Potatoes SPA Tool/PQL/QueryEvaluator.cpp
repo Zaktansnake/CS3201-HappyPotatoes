@@ -1,10 +1,10 @@
-#include "QueryEvaluator.h"
+#include "Header\QueryEvaluator.h"
 #include <vector>
-#include "../Header/Clause.h"
+#include "Header\Clause.h"
 #include <algorithm>
 #include <iterator>
-#include "..PKB/Header/PKB.h"
-#include "../Header/ParseResult.h"
+#include "../PKB/Header/PKB.h"
+#include "Header\ParseResult.h"
 #include <string>
 
 using namespace std;

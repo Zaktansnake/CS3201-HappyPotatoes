@@ -61,6 +61,9 @@
     <ClCompile Include="PKB\Parent.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
+    <ClCompile Include="PKB\Pattern.cpp">
+      <Filter>PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PKB\Header\Affects.h">
@@ -103,6 +106,9 @@
       <Filter>PKB\Header</Filter>
     </ClInclude>
     <ClInclude Include="PKB\Header\Parent.h">
+      <Filter>PKB\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PKB\Header\Pattern.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
   </ItemGroup>
