@@ -3,12 +3,12 @@
 #include <vector>
 #include <unordered_map>
 #include "Clause.h"
-#include "./Header/PatternClause.h"
+#include "Pattern.h"
 
 using namespace std;
 typedef vector<string> ParameterSet;
 typedef vector<Clause> ClauseSet;
-typedef vector<PatternClause> PatternSet;
+typedef vector<Pattern> PatternSet;
 
 class ParseResult {
 public:
@@ -18,15 +18,18 @@ public:
 	PatternSet getPatterns();
 	// constructors
 	ParseResult();
+	ParseResult(ParameterSet);
+	ParseResult(ParameterSet, ClauseSet);
+	ParseResult(ParameterSet, PatternSet);
 	ParseResult(ParameterSet, ClauseSet, PatternSet);
 	// for query evaluator to call
 	vector<ParseResult> startQueryParsing();
 private:
 	// helper functions
 	ParseResult generateParseResult(string, string);
-	bool checkDeclaration(vector<string>);
+	bool checkAndParseDeclaration(string);
 	void signalErrorAndStop();
-	ParseResult checkAndParseQuery(unordered_map<string, string>, vector<string>);
+	ParseResult checkAndParseQuery(string);
 
 	// attributes
 	ParameterSet selectParameter_;

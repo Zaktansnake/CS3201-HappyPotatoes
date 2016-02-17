@@ -23,6 +23,8 @@
     <ClCompile Include="PKB\Affects.cpp" />
     <ClCompile Include="PKB\AST.cpp" />
     <ClCompile Include="PKB\Call.cpp" />
+    <ClCompile Include="PKB\Calls.cpp" />
+    <ClCompile Include="PKB\CallsStar.cpp" />
     <ClCompile Include="PKB\CFG.cpp" />
     <ClCompile Include="PKB\DesignExtractor.cpp" />
     <ClCompile Include="PKB\Follows.cpp" />
@@ -30,27 +32,38 @@
     <ClCompile Include="PKB\Modifies.cpp" />
     <ClCompile Include="PKB\Parent.cpp" />
     <ClCompile Include="PKB\Parser.cpp" />
+    <ClCompile Include="PKB\Pattern.cpp" />
     <ClCompile Include="PKB\PKB.cpp" />
     <ClCompile Include="PKB\ProcTable.cpp" />
     <ClCompile Include="PKB\stmtTable.cpp" />
     <ClCompile Include="PKB\Uses.cpp" />
     <ClCompile Include="PKB\VarTable.cpp" />
+    <ClCompile Include="PQL\Clause.cpp" />
+    <ClCompile Include="PQL\ParseResult.cpp" />
+    <ClCompile Include="PQL\Pattern.cpp" />
+    <ClCompile Include="PQL\QueryEvaluator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PKB\Header\Affects.h" />
     <ClInclude Include="PKB\Header\AST.h" />
     <ClInclude Include="PKB\Header\Call.h" />
+    <ClInclude Include="PKB\Header\Calls.h" />
     <ClInclude Include="PKB\Header\CFG.h" />
     <ClInclude Include="PKB\Header\Follows.h" />
     <ClInclude Include="PKB\Header\GNode.h" />
     <ClInclude Include="PKB\Header\Modifies.h" />
     <ClInclude Include="PKB\Header\Parent.h" />
     <ClInclude Include="PKB\Header\Parser.h" />
+    <ClInclude Include="PKB\Header\Pattern.h" />
     <ClInclude Include="PKB\Header\PKB.h" />
     <ClInclude Include="PKB\Header\ProcTable.h" />
     <ClInclude Include="PKB\Header\stmtTable.h" />
     <ClInclude Include="PKB\Header\Uses.h" />
     <ClInclude Include="PKB\Header\VarTable.h" />
+    <ClInclude Include="PQL\Header\Clause.h" />
+    <ClInclude Include="PQL\Header\ParseResult.h" />
+    <ClInclude Include="PQL\Header\Pattern.h" />
+    <ClInclude Include="PQL\Header\QueryEvaluator.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0491BAFA-89E9-469E-9BE1-D7EA8E21533C}</ProjectGuid>
