@@ -11,6 +11,7 @@
 #include <fstream>
 #include <sstream>
 #include <stack>
+#include <utility>
 
 #include "./Header/PKB.h"
 #include "./Header/ProcTable.h"
@@ -21,7 +22,7 @@ using namespace std;
 static ifstream myFile;
 static string str, word;
 static ostringstream oss;
-stack<string> bracstack;
+stack<pair<string, int>> bracstack;
 bool firstTime;
 static int stmtLine;
 
@@ -42,13 +43,15 @@ void PKB::create(string fileName) {
 	firstTime = true;
 	program();
 	myFile.open(fileName);
-	stmtLine = 1;
+	stmtLine = 0;
 	while (!myFile.eof()) {
 		getline(myFile, str);
 		findMethod(str);
 		stmtLine++;
 	}
 	myFile.close();
+
+	// update uses table one more time
 }
 
 void findMethod(string file_contents) {
@@ -69,6 +72,7 @@ void findMethod(string file_contents) {
 		|| (word.compare("calls") == 0) || (word.compare("while") == 0)) {
 		stmtLst();
 	} else if (word.compare("") == 0) {
+		stmtLine--;
 		return;
 	} else {
 		// save them into 2d array, pass to pql, to build tree
@@ -77,22 +81,11 @@ void findMethod(string file_contents) {
 }
 
 void program() {
-	//TNode* program;
-	/*TNode* program = new TNode(TPROGRAM); // set program
-	TNode* firstProc = procedure();			// set first procedure
-	program->setFirstChild(firstProc);		// program -> 1st Proc
-	TNode* prevProc;
-	while (next_token != EOF) {
-	prevProc = currProc;					// build the lists
-	prevProc->setRightSibling(procedure());  // find another procedures
-	}*/
-	//buildCFG();
-	//checkCalls();
+	
 }
 
 void procedure() {
 
-	//TNode* proc;
 	vector<string> v = splitTheString(str);
 
 	if (v.size() > 3) {
@@ -101,32 +94,20 @@ void procedure() {
 
 	if (ProcTable::isContains(v[1])) {
 		throw std::runtime_error("Error: Duplication of Procedure Name");
-		/*if (ProcTable::getProcTable()->getProcIndex(temp) != -1) {
-		if (input.is_open()) {
-		input.close();
-		}
-		PKBParser::cleanUp();
-		}*/
 	}
 	else {
 		ProcTable::addTableData(v[1], stmtLine);
-		// int procIdx = ProcTable::getProcTable()->insertProc(temp);
-		// TNode* proc;
-		// proc = new TNode(procIdx, procName);  // insert name to node
-		// create TNode* stmtLst
 
 		if (v[2].compare("{") != 0) {
 			throw std::runtime_error("Error: Structure");
 		}
 		else {
-			bracstack.push("{");
+			bracstack.push(make_pair("{", 0));
 		}
 	}
-
 }
 
 void stmtLst() {
-//	TNode* stmtLst;
 	int num = 0;
 	if (word.compare("if") == 0) {
 		num = 0;
@@ -162,6 +143,20 @@ void assign() {
 
 		} else {
 			if (var.compare("}") == 0) {
+				pair<string, int> temp = bracstack.top();
+
+				if (temp.second != 0) {
+					if (stmtLine - temp.second > 1) {
+						while (stmtLine-temp.second == 0) {
+							vector<string> tempArrayList = VarTable::findVariableLeft(temp.second,  stmtLine);
+
+							for (int i = 0; i < tempArrayList.size(); i++) {
+								VarTable::addDataToModifies(v[i], temp.second);
+							}
+						}
+					}
+					VarTable::addDataToModifies(v[0], temp.second);
+				}
 				bracstack.pop();
 			} else {
 				if (!is_number(var)) {
@@ -177,56 +172,62 @@ void assign() {
 }
 
 static void stmt(int num) {
-	//TNode* stmt;
 	vector<string> v = splitTheString(str);
 
 	switch (num) {
-	case 0:
-		// TNode *stmtLst, *curNode, *nextNode;
-		// stmtLst = new TNode(str);
-		// set v[1]
-		// add to VarTable
-		// set then node
+	case 0: // if
 		if (v[2].compare("then") == 0 && (v[3].compare("{")) == 0) {
-			// assign node
-			bracstack.push("{");
+			//PKB::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop);
+			VarTable::addDataToUses(v[1], stmtLine);
+			bracstack.push(make_pair("{", stmtLine));
 		}
 		else {
 			throw std::runtime_error("Error: then");
 		}
-		//curNode = stmt();
-		//stmtLst->setFirstChild(curNode);
-
 		break;
 	case 1: // else
 		if (v[1].compare("{") != 0) {
 			throw std::runtime_error("Error: Structure");
 		}
 		else {
-			bracstack.push("{");
+			bracstack.push(make_pair("{",0));
 		}
 		break;
 	case 2: // while
 		if (v[2].compare("{") == 0) {
-			// v[0]-> varTable
+			VarTable::addDataToModifies(v[1],stmtLine);
+			bracstack.push(make_pair("{", stmtLine));
 		}
 		else {
-			bracstack.push("{");
+			throw std::runtime_error("Error: Structure");
 		}
 		break;
 	case 3: // call
-		calls(v[2], stmtLine);
+		calls(str, stmtLine);
 		break;
 	}
 }
 
-static void calls(string procedurName, int stmtLine) {
+static void calls(string str, int stmtLine) {
+	vector<string> v = splitTheString(str);
+
 	// save procedure name, stmt #
-	ProcTable::addTableData(procedurName, stmtLine);
-	//ProcTable::addTableData(procedurName);
+	if (v.size() > 3) {
+		//throw std::runtime_error("Error: Structure");
+	} else {
+
+		//create a loop iterate all the [i]
+
+		string procName = v[1].substr(0, v[1].size() - 1);
+		ProcTable::addTableData(procName, stmtLine);
+
+		if (v[2].compare("}") == 0) {
+			bracstack.pop();
+		}
+	}
 }
 
-// is number
+// check string is a number
 bool is_number(const std::string& s)
 {
 	return !s.empty() && std::find_if(s.begin(),

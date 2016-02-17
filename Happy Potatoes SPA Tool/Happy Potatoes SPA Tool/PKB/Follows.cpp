@@ -14,6 +14,7 @@ std::stack<int> loopStack;
 
 static int stmtListNo = 1;  // same level same stmtList, change with loop
 
+bool isSameStmtList(int s1, int s2);
 
 Follows::Follows()
 {
@@ -81,7 +82,7 @@ bool Follows::isFollows(int s1, int s2) {
 		return true;
 	}
 	else {
-		return false
+		return false;
 	}
 }
 

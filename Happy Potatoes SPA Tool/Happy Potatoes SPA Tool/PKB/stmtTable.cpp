@@ -16,6 +16,8 @@ int condition;
 Follows follow;
 Parent parent;
 
+bool isCondition(string stmtLine);
+
 enum stmtType {
 	IF = 1,
 	ELSE,

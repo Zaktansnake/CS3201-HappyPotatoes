@@ -7,11 +7,16 @@
 using namespace std;
 
 class Modifies;
+class Uses;
 
 class VarTable
 {
 public:
 	~VarTable();
+
+	static vector<string> findVariableLeft(int stmtLine1, int stmtLine2);
+
+	static vector<string> findVariableRight(int stmtLine1, int stmtLine2);
 
 	// get ModifiesTable
 	static std::vector<int> getModifiesTable(string varName);

@@ -11,9 +11,9 @@
 using namespace std;
 
 map<string, int> UsesMap;
-vector<vector<int>> UsesTable;
+map<int, vector<int>> UsesTable;
 
-int insertToMap(string varName);
+int insertToUsesMap(string varName);
 
 Uses::Uses()
 {
@@ -28,11 +28,11 @@ void Uses::addUsesTable(string varName, int stmtLine) {
 	if (UsesMap.size() > 0) {
 		index = findPosition(varName);
 		if (index == -1) {
-			index = insertToMap(varName);
+			index = insertToUsesMap(varName);
 		}
 	}
 	else {
-		index = insertToMap(varName);
+		index = insertToUsesMap(varName);
 	}
 	UsesTable[index].push_back(stmtLine);
 }
@@ -69,7 +69,7 @@ std::vector<int> Uses::getUsesTable(string varName)
 	return UsesTable[findPosition(varName)];
 }
 
-int insertToMap(string varName) {
+int insertToUsesMap(string varName) {
 	int index = UsesMap.size();   // set the index be the size of vertor
 	UsesMap.insert(pair<string, int>(varName, index));
 	return index;

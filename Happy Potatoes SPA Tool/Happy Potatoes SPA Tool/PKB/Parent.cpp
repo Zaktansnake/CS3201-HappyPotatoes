@@ -11,14 +11,19 @@ std::vector<std::vector<int> > arrAns;
 std::stack<string> loopParent;
 std::stack<int> loopStmtNo;
 
+void setToParent(string stmtLine, int stmtNo);
+void deleteParent(int endloop);
+void deleteStmtNo(int endloop);
+
 Parent::Parent()
 {
 }
 
 
-Parent::Parent()
+Parent::~Parent()
 {
 }
+
 void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop) {
   // check whether is is a loop parent "while""if""else"
     int index = 0;
@@ -64,12 +69,14 @@ void deleteParent(int endloop) {
 		loopParent.pop();
 	}
 }
+
 void deleteStmtNo(int endloop) {
 	while (endloop > 0) {
 		loopStmtNo.pop();
 		endloop--;
 	}
 }
+
 void setToParent(string stmtLine, int stmtNo) {
 	loopParent.push(stmtLine);
 	loopStmtNo.push(stmtNo);

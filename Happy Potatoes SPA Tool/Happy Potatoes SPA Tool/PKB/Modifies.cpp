@@ -11,7 +11,7 @@
 using namespace std;
 
 map<string, int> ModifiesMap;
-vector<vector<int>> ModifiesTable;
+map<int, vector<int>> ModifiesTable;
 
 int insertToMap(string varName);
 
@@ -73,4 +73,5 @@ int insertToMap(string varName) {
 	ModifiesMap.insert(pair<string, int>(varName, index));
 	return index;
 }
+
 
