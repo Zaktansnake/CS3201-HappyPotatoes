@@ -26,17 +26,11 @@ public:
 	//get data 
 
 	static std::vector<int> stmtTable::getFollow(int stmtNo);
-	static bool stmtTable::isFollow(int s1, int s2);
-	static std::vector<int> stmtTable::getParent(int stmtNo);
-	static bool stmtTable::isParent(int s1, int s2);
-
 	static bool isFollow(int s1, int s2);
-	static bool isParent (int s1, int s2);
+	static std::vector<int> stmtTable::getParent(int stmtNo);
+	static bool isParent(int s1, int s2);
 
-	// get data
-	static std::vector<int> getFollow (int stmtNo);
-	static std::vector<int> getParent (int stmtNo);
-
+	
 };
 
 

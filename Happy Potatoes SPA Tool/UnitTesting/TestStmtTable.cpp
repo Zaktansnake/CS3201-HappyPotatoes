@@ -11,10 +11,10 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTesting
 {
-	TEST_CLASS(TestModifies)
+	TEST_CLASS(TestStmtTable)
 	{
 	public:
-		TEST_METHOD(TestModifiesTable)
+		TEST_METHOD(TestFollow)
 		{
 			int expected_result01 = 2;
 			int result;

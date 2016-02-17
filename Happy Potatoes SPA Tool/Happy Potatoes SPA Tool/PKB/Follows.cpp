@@ -53,7 +53,7 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 	
 }
 
-std::vector<int> getAns(int stmtNo) {
+std::vector<int> Follows::getAns(int stmtNo) {
     bool checkStmtList = false;
 	int ans = 0;
     int level = stmtRecord.at(stmtNo-1); // get the nesting level of the vector
