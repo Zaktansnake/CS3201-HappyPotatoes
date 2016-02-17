@@ -52,7 +52,7 @@ namespace UnitTesting
 
 			//test for getChild
 
-			expectedChildren = "34689";
+			expectedChildren = "3489";
 			resultChild = stmtTable::getChild(2);
 
 			for (std::vector<int>::iterator it = resultChild.begin(); it != resultChild.end(); ++it) {
@@ -66,14 +66,19 @@ namespace UnitTesting
 
 		TEST_METHOD(TestFollow)
 		{
-			int expected_result01 = 2;
+			
 			int result;
 			bool expectedIsFollow;
 			bool resultIsFollow;
-			
+			string expectFollowStar;
+			string resultFollowSatr;
+			std::vector<int>followSatr;
+
 			Parser::parse("C:\\Users\\feifei\\Downloads\\TestFollow.txt");
 
 			// test for getFollow
+
+			int expected_result01 = 2;
 			vector<int> getFollow = stmtTable::getFollow(1);
 			result = getFollow.front();
 
@@ -82,20 +87,30 @@ namespace UnitTesting
 			result = 0;
 			getFollow.clear();
 			expected_result01 = 8;
-			getFollow = stmtTable::getFollow(6);
+			getFollow = stmtTable::getFollow(4);
 			result = getFollow.front();
 
-			Assert::AreEqual(expected_result01, result);
+			Assert::AreEqual(expected_result01, result); 
 
 			//test for isFollow
 
-			expectedIsFollow = true;
-			resultIsFollow = stmtTable::isFollow(5, 7);
+			expectedIsFollow = false;
+			resultIsFollow = stmtTable::isFollow(4, 7);
 
 			Assert::AreEqual(expectedIsFollow, resultIsFollow);
 
 
+	/*		
+			//test for follow start
+			expectFollowStar = "489";
+			followSatr = stmtTable::getFollowStar(3);
 
+			for (std::vector<int>::iterator it = followSatr.begin(); it != followSatr.end(); ++it) {
+				resultFollowSatr.append(std::to_string(*it));
+				//result.append(", ");
+			}
+			Assert::AreEqual(expectFollowStar, resultFollowSatr);
+*/
 		} 
 	}; 
 }
