@@ -14,6 +14,18 @@ namespace UnitTesting
 	TEST_CLASS(TestStmtTable)
 	{
 	public:
+		TEST_METHOD(TEST_PARENT) {
+			int expected_result01 = 2;
+			int result;
+			Parser::parse("C:\\Users\\feifei\\Downloads\\TestFollow.txt");
+
+			vector<int> getParent = stmtTable::getParent(4);
+			result = getParent.front();
+
+			Assert::AreEqual(expected_result01, result);
+
+		}
+
 		TEST_METHOD(TestFollow)
 		{
 			int expected_result01 = 2;
@@ -27,8 +39,8 @@ namespace UnitTesting
 
 			result = 0;
 			getFollow.clear();
-			expected_result01 = 1;
-			getFollow = stmtTable::getFollow(12);
+			expected_result01 = 3;
+			getFollow = stmtTable::getFollow(4);
 			result = getFollow.front();
 
 			Assert::AreEqual(expected_result01, result);
@@ -68,7 +80,6 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expected_result01, result);
-*/
-		}
-	};
+*/		} 
+	}; 
 }

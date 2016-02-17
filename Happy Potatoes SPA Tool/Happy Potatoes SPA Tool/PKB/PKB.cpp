@@ -47,10 +47,10 @@ void PKB::create(string fileName) {
 	stmtLine = 0;
 	while (!myFile.eof()) {
 		getline(myFile, str);
+		findMethod(str);
 		if (stmtLine > 0) {
 			stmtTable::addStmtTable(str, stmtLine);
 		}
-		findMethod(str);
 		stmtLine++;
 		
 	}

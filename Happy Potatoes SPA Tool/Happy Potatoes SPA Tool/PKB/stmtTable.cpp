@@ -51,13 +51,13 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 	addParentTable(stmtLine,stmtNo, nestLevel);
 	if (flagForNextLevel == true) {
 		nestLevel ++ ;
+		flagForNextLevel = false;
 	} 
 	// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
-	nestLevel = nestLevel - endLoopNo;
-	if (nestLevel < 0) {
-		throw exception("extra } in the program");
-		abort();
+	if (endLoopNo > 0) {
+		nestLevel = nestLevel - endLoopNo;
 	}
+
 }
 
 void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
@@ -68,13 +68,15 @@ void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
 }
 
 std::vector<int> stmtTable::getFollow(int stmtNo) {
-    return follow.getAns(stmtNo);
+    std::vector<int> ans = follow.getAns(stmtNo);
+    return ans;
 }
 bool stmtTable::isFollow(int s1, int s2) {
 	return follow.isFollows(s1,s2);
 }
 std::vector<int> stmtTable::getParent(int stmtNo) {
-    return parent.getAns(stmtNo);
+	std::vector<int> ans = parent.getAns(stmtNo);
+    return ans;
 }
 bool stmtTable::isParent(int s1, int s2) {
 	return parent.isParent(s1,s2);
