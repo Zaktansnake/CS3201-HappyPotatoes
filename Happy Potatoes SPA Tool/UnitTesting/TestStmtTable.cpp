@@ -18,7 +18,7 @@ namespace UnitTesting
 		{
 			int expected_result01 = 2;
 			int result;
-			Parser::parse("C:\\Users\\feifei\\Downloads\\prototype_sample_SIMPLE_source.txt");
+			Parser::parse("C:\\Users\\feifei\\Downloads\\TestFollow.txt");
 
 			vector<int> getFollow = stmtTable::getFollow(1);
 			result = getFollow.front();

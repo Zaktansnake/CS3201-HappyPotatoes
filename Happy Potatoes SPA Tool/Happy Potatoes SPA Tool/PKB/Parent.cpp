@@ -27,6 +27,7 @@ Parent::~Parent()
 void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop) {
   // check whether is is a loop parent "while""if""else"
     int index = 0;
+	int parent;
 	std::vector<int> temp;
 	if (loopFlag && endLoop == 0) {
 		setToParent(stmtLine,stmtNo);
@@ -34,7 +35,13 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 	else {
 	    //first call
 		if (AnsMap.empty()) {
-		    int parent = loopStmtNo.top();
+			if (loopStmtNo.size() == 0) {
+			   parent = 0;
+			}
+			else {
+               parent = loopStmtNo.top();
+			}
+		    
 			if (arrAns.empty()) {
 			   index = 0;
 			}
@@ -43,7 +50,12 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			arrAns.push_back(temp);
 		}
 		else {  // not first call
-		    int parent = loopStmtNo.top();
+			if (loopStmtNo.size() == 0) {
+				parent = 0;
+			}
+			else {
+				parent = loopStmtNo.top();
+			}
 			map<int, int>::iterator iter;
 			iter = AnsMap.find(parent);
 			if (iter != AnsMap.end()) {
