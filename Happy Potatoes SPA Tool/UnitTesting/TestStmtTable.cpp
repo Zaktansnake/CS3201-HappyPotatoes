@@ -12,7 +12,7 @@ namespace UnitTesting
 	{
 	public:
 		void testStmtTable() {
-			cout << "Test "
+			cout << "Test ";
 		}
 
 	};

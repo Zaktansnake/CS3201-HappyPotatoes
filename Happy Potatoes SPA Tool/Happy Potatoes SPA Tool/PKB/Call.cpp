@@ -1,5 +1,5 @@
 #include "./Header/Call.h"
-#include "Header\PKB.h"
+#include "./Header/PKB.h"
 #include <string>
 
 using namespace std;
@@ -12,10 +12,10 @@ Call::Call()
 {
 }
 
-
 Call::~Call()
 {
 }
+
 std::vector<string> Call::getCall(int index) {
 	if (index > arrAnsForCall.size()) {
 		throw exception ();
@@ -23,7 +23,7 @@ std::vector<string> Call::getCall(int index) {
 	return arrAnsForCall.at(index);
 }
 
-void setCall(string procName, int index) {
+void Call::setCall(string procName, int index) {
 
      // check the size of vector and compare with index
 	 // if index > size, create a new vector otherwise, add the procName at the back of the ans

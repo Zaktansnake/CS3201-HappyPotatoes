@@ -1,4 +1,5 @@
-#pragma once
+#ifndef MODIFIES_H
+#define MODIFIES_H
 
 #include <stdio.h>
 #include <iostream>
@@ -10,8 +11,6 @@ using namespace std;
 class Modifies
 {
 public:
-	Modifies();
-	~Modifies();
 
 	// get ModifiesTable
 	static std::vector<int> getModifiesTable(string varName);
@@ -20,8 +19,15 @@ public:
 	static void addModifiesTable(string varName, int stmtLine);
 
 private:
+	int index;
+	vector<int> ansModifiesTable;
+
+	Modifies();
+	~Modifies();
 
 	static bool isContains(string varName);
 	static int findPosition(string varName);
 };
+
+#endif
 

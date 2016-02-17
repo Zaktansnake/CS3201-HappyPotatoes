@@ -21,7 +21,6 @@ public:
 
 	static bool isContains(string varName);
 
-
 private:
 	static int findPosition(string varName);
 
