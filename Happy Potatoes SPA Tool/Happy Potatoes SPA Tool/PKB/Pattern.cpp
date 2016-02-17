@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include<iostream>
+#include <iostream>
 #include <string>
 #include <vector>
 
@@ -9,6 +9,10 @@
 using namespace std;
 
 static string statement;
+
+string patternAssignment(string assignment);
+bool multiplicationDetermine(string statement, int marker);
+bool plusDetermine(string statement, int marker);
 
 string patternAssignment(string assignment) {
 
@@ -20,17 +24,17 @@ string patternAssignment(string assignment) {
 
 	statement = assignment;
 
-	if (statement.size >= 3) {
+	if (statement.size() >= 3) {
 		return statement;
 	}
 
-	for (int i = 0; i < statement.size; ++i) {
-		cout << statement.size;
+	for (int i = 0; i < statement.size(); ++i) {
+		//cout << statement.size();
 
 		char arr[statement.size];
 		strcpy(arr, statement.c_str());
 
-		char c = arr[i];
+		char &c = arr[i];
 
 		if (c == '*') {
 			if (multiplicationDetermine(statement, i)) {

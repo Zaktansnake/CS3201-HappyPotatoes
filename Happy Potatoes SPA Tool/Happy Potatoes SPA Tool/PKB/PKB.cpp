@@ -52,7 +52,6 @@ void PKB::create(string fileName) {
 			stmtTable::addStmtTable(str, stmtLine);
 		}
 		stmtLine++;
-		
 	}
 	myFile.close();
 
@@ -70,15 +69,23 @@ void findMethod(string file_contents) {
 			if (!bracstack.empty()) {
 				throw std::runtime_error("Error: Structure");
 			}
+			if (stmtLine > 0) {
+				stmtLine--;
+			}
 		}
 		procedure();
 		firstTime = false;
-	} else if (word.compare("if") == 0 || word.compare("else") == 0
+	}
+	else if (word.compare("if") == 0 || word.compare("else") == 0
 		|| (word.compare("calls") == 0) || (word.compare("while") == 0)) {
 		stmtLst();
-	} else if (word.compare("") == 0) {
+	}
+	else if (word.compare("") == 0) {
 		stmtLine--;
 		return;
+	}
+	else if (word.compare("}") == 0) {
+		
 	} else {
 		// save them into 2d array, pass to pql, to build tree
 		assign();
@@ -86,11 +93,10 @@ void findMethod(string file_contents) {
 }
 
 void program() {
-	
+
 }
 
 void procedure() {
-
 	vector<string> v = splitTheString(str);
 
 	if (v.size() > 3) {
@@ -108,6 +114,10 @@ void procedure() {
 		}
 		else {
 			bracstack.push(make_pair("{", 0));
+		}
+		
+		if (stmtLine > 0) {
+			stmtLine--;
 		}
 	}
 }
@@ -140,37 +150,36 @@ void assign() {
 			v.push_back(letter);
 		}
 	}
-	
+
 	for (int i = 0; i < v.size(); i++) {
 		std::string var = v.at(i);
 
-		if (var.compare("=") == 0 || var.compare("+") == 0 || var.compare("-") == 0 || var.compare(";") == 0) {
+		if (var.compare("}") == 0) {
+			pair<string, int> temp = bracstack.top();
 
-		} else {
-			if (var.compare("}") == 0) {
-				pair<string, int> temp = bracstack.top();
+			if (temp.second != 0) {
+				vector<string> tempArrayListLeft = VarTable::findVariableLeft(temp.second, stmtLine);
 
-				if (temp.second != 0) {
-					if (stmtLine - temp.second > 1) {
-						while (stmtLine-temp.second == 0) {
-							vector<string> tempArrayList = VarTable::findVariableLeft(temp.second,  stmtLine);
-
-							for (int i = 0; i < tempArrayList.size(); i++) {
-								VarTable::addDataToModifies(v[i], temp.second);
-							}
-						}
-					}
-					VarTable::addDataToModifies(v[0], temp.second);
+				for (int i = 0; i < tempArrayListLeft.size(); i++) {
+					VarTable::addDataToModifies(tempArrayListLeft[i], temp.second);
 				}
-				bracstack.pop();
+
+				VarTable::addDataToModifies(v[0], temp.second);
+
+				vector<string> tempArrayListRight = VarTable::findVariableRight(temp.second, stmtLine);
+
+				for (int i = 0; i < tempArrayListRight.size(); i++) {
+					VarTable::addDataToUses(tempArrayListRight[i], temp.second);
+				}
+			}
+			bracstack.pop();
+		} else if (!is_number(var)) {
+			if (i == 0) {
+				VarTable::addDataToModifies(var, stmtLine);
+			} else if (var.compare("=") == 0 || var.compare("+") == 0 || var.compare("-") == 0 || var.compare(";") == 0 || var.compare("*") == 0){
+				
 			} else {
-				if (!is_number(var)) {
-					if (i == 0) {
-						VarTable::addDataToModifies(var, stmtLine);
-					} else {
-						VarTable::addDataToUses(var, stmtLine);
-					}
-				}
+				VarTable::addDataToUses(var, stmtLine);
 			}
 		}
 	}
@@ -182,7 +191,6 @@ static void stmt(int num) {
 	switch (num) {
 	case 0: // if
 		if (v[2].compare("then") == 0 && (v[3].compare("{")) == 0) {
-			//PKB::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop);
 			VarTable::addDataToUses(v[1], stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
 		}
@@ -191,16 +199,17 @@ static void stmt(int num) {
 		}
 		break;
 	case 1: // else
+		stmtLine--;
 		if (v[1].compare("{") != 0) {
 			throw std::runtime_error("Error: Structure");
 		}
 		else {
-			bracstack.push(make_pair("{",0));
+			bracstack.push(make_pair("{", stmtLine));
 		}
 		break;
 	case 2: // while
 		if (v[2].compare("{") == 0) {
-			VarTable::addDataToModifies(v[1],stmtLine);
+			VarTable::addDataToModifies(v[1], stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
 		}
 		else {
@@ -219,7 +228,8 @@ static void calls(string str, int stmtLine) {
 	// save procedure name, stmt #
 	if (v.size() > 3) {
 		//throw std::runtime_error("Error: Structure");
-	} else {
+	}
+	else {
 
 		//create a loop iterate all the [i]
 

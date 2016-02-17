@@ -7,22 +7,22 @@
 
 #include "../Happy Potatoes SPA Tool/PKB/Header/Parser.h"
 #include "../Happy Potatoes SPA Tool/PKB/Header/PKB.h"
-#include "../Happy Potatoes SPA Tool/PKB/Header/Modifies.h"
+#include "../Happy Potatoes SPA Tool/PKB/Header/Uses.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTesting
-{
-	TEST_CLASS(TestModifies)
+{		
+	TEST_CLASS(TestUSES)
 	{
 	public:
-		TEST_METHOD(TestModifiesTable)
+		TEST_METHOD(TestUses)
 		{
-			string expected_result01 = "2, 3, 6, 9, 10, 11, "; 
+			string expected_result01 = "1, 2, 3, 4, 5, 9, 10, 11, 12, 13, 14, 15, ";
 			string result;
 			Parser::parse("C:\\Users\\jiaminn\\Desktop\\NUS\\Y2S2\\CS3201 & CS3202\\Project\\CS3201-HappyPotatoes\\Happy Potatoes SPA Tool\\UnitTesting\\Sample-Source.txt");
 
-			vector<int> modifiesTable = Modifies::getModifiesTable("x");
+			vector<int> modifiesTable = Uses::getUsesTable("x");
 			std::sort(modifiesTable.begin(), modifiesTable.end());
 			for (std::vector<int>::iterator it = modifiesTable.begin(); it != modifiesTable.end(); ++it) {
 				result.append(std::to_string(*it));
