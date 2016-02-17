@@ -17,18 +17,25 @@ public:
 	//static stmtTable* getFollowTable();
 
 	//add data
-	void addStmtTable (string stmtLine, int stmtNo);
+	static void addStmtTable (string stmtLine, int stmtNo);
 	// add data to follow table
-	void addFollowTable(string stmtLine, int stmtNo, int nestLevel);
+	static void addFollowTable(string stmtLine, int stmtNo, int nestLevel);
 	// add data to parent table
-	void addParentTable(string stmtLine, int stmtNo, int nestLevel);
+	static void addParentTable(string stmtLine, int stmtNo, int nestLevel);
 
-	bool isFollow(int s1, int s2);
-	bool isParent (int s1, int s2);
+	//get data 
+
+	static std::vector<int> stmtTable::getFollow(int stmtNo);
+	static bool stmtTable::isFollow(int s1, int s2);
+	static std::vector<int> stmtTable::getParent(int stmtNo);
+	static bool stmtTable::isParent(int s1, int s2);
+
+	static bool isFollow(int s1, int s2);
+	static bool isParent (int s1, int s2);
 
 	// get data
-	std::vector<int> getFollow (int stmtNo);
-	std::vector<int> getParent (int stmtNo);
+	static std::vector<int> getFollow (int stmtNo);
+	static std::vector<int> getParent (int stmtNo);
 
 };
 

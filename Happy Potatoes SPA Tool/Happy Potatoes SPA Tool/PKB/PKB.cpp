@@ -16,6 +16,7 @@
 #include "./Header/PKB.h"
 #include "./Header/ProcTable.h"
 #include "./Header/VarTable.h"
+#include "Header\stmtTable.h"
 
 using namespace std;
 
@@ -47,7 +48,11 @@ void PKB::create(string fileName) {
 	while (!myFile.eof()) {
 		getline(myFile, str);
 		findMethod(str);
+		if (stmtLine > 0) {
+			stmtTable::addStmtTable(str, stmtLine);
+		}
 		stmtLine++;
+		
 	}
 	myFile.close();
 

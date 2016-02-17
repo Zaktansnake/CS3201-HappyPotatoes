@@ -14,6 +14,7 @@ typedef int PROG_LINE;
 
 class VarTable;  // no need to #include "VarTable.h" as all I need is pointer
 class ProcTable;
+class stmtTable;
 
 class PKB {
 private:
