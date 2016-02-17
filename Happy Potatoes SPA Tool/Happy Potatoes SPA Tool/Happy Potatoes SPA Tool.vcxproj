@@ -41,8 +41,6 @@
     <ClCompile Include="PQL\Clause.cpp" />
     <ClCompile Include="PQL\ParseResult.cpp" />
     <ClCompile Include="PQL\Pattern.cpp" />
-    <ClCompile Include="PQL\PatternClause.cpp" />
-    <ClCompile Include="PQL\PatternNode.cpp" />
     <ClCompile Include="PQL\QueryEvaluator.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -65,8 +63,6 @@
     <ClInclude Include="PQL\Header\Clause.h" />
     <ClInclude Include="PQL\Header\ParseResult.h" />
     <ClInclude Include="PQL\Header\Pattern.h" />
-    <ClInclude Include="PQL\Header\PatternClause.h" />
-    <ClInclude Include="PQL\Header\PatternNode.h" />
     <ClInclude Include="PQL\Header\QueryEvaluator.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
