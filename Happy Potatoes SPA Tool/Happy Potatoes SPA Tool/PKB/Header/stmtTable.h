@@ -28,6 +28,7 @@ public:
 	static std::vector<int> stmtTable::getFollow(int stmtNo);
 	static bool isFollow(int s1, int s2);
 	static std::vector<int> stmtTable::getParent(int stmtNo);
+	static std::vector<int> stmtTable::getChild(int stmtNo);
 	static bool isParent(int s1, int s2);
 
 	

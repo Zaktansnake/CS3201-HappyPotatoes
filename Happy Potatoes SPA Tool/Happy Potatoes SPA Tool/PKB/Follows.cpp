@@ -48,7 +48,7 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 		stmtListNo++;
 	}
 	else if (!loopFlag && endLoopNo > 0) {
-		for (int i = 0; i <= endLoopNo; i++) {
+		for (int i = 0; i < endLoopNo; i++) {
 			stmtListNo--;
 			if (stmtListNo < 0) {
 				stmtListNo = 0;

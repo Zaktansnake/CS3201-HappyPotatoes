@@ -15,14 +15,52 @@ namespace UnitTesting
 	{
 	public:
 		TEST_METHOD(TEST_PARENT) {
-			int expected_result01 = 2;
+		    
+			// test for getParent
 			int result;
+			bool isparent;
+			bool expectBool;
+			string expectedChildren;
+			string resultChildren;
+			std::vector<int> resultChild;
+			int expected_result01 = 0;
 			Parser::parse("C:\\Users\\feifei\\Downloads\\TestFollow.txt");
 
-			vector<int> getParent = stmtTable::getParent(4);
+			vector<int> getParent = stmtTable::getParent(1);
 			result = getParent.front();
 
 			Assert::AreEqual(expected_result01, result);
+
+
+			expected_result01 = 2;
+			getParent = stmtTable::getParent(8);
+			result = getParent.front();
+
+			Assert::AreEqual(expected_result01, result);
+
+			//test for isParent
+
+			expectBool = true;
+			isparent = stmtTable::isParent(2, 8);
+
+			Assert::AreEqual(expectBool, isparent);
+
+			expectBool = false;
+			isparent = stmtTable::isParent(1, 2);
+
+			Assert::AreEqual(expectBool, isparent);
+
+			//test for getChild
+
+			expectedChildren = "34689";
+			resultChild = stmtTable::getChild(2);
+
+			for (std::vector<int>::iterator it = resultChild.begin(); it != resultChild.end(); ++it) {
+				resultChildren.append(std::to_string(*it));
+				//result.append(", ");
+			}
+			Assert::AreEqual(expectedChildren, resultChildren);
+
 
 		}
 
@@ -30,8 +68,12 @@ namespace UnitTesting
 		{
 			int expected_result01 = 2;
 			int result;
+			bool expectedIsFollow;
+			bool resultIsFollow;
+			
 			Parser::parse("C:\\Users\\feifei\\Downloads\\TestFollow.txt");
 
+			// test for getFollow
 			vector<int> getFollow = stmtTable::getFollow(1);
 			result = getFollow.front();
 
@@ -39,47 +81,21 @@ namespace UnitTesting
 
 			result = 0;
 			getFollow.clear();
-			expected_result01 = 3;
-			getFollow = stmtTable::getFollow(4);
+			expected_result01 = 8;
+			getFollow = stmtTable::getFollow(6);
 			result = getFollow.front();
 
 			Assert::AreEqual(expected_result01, result);
-/*
-			result = "";
-			modifiesTable.clear();
-			expected_result01 = "368";
-			modifiesTable = Modifies::getModifiesTable("i");
 
-			for (std::vector<int>::iterator it = modifiesTable.begin(); it != modifiesTable.end(); ++it) {
-				result.append(std::to_string(*it));
-				//result.append(", ");
-			}
+			//test for isFollow
 
-			Assert::AreEqual(expected_result01, result);
+			expectedIsFollow = true;
+			resultIsFollow = stmtTable::isFollow(5, 7);
 
-			result = "";
-			modifiesTable.clear();
-			expected_result01 = "34";
-			modifiesTable = Modifies::getModifiesTable("z");
+			Assert::AreEqual(expectedIsFollow, resultIsFollow);
 
-			for (std::vector<int>::iterator it = modifiesTable.begin(); it != modifiesTable.end(); ++it) {
-				result.append(std::to_string(*it));
-				//result.append(", ");
-			}
 
-			Assert::AreEqual(expected_result01, result);
 
-			result = "";
-			modifiesTable.clear();
-			expected_result01 = "359";
-			modifiesTable = Modifies::getModifiesTable("t");
-
-			for (std::vector<int>::iterator it = modifiesTable.begin(); it != modifiesTable.end(); ++it) {
-				result.append(std::to_string(*it));
-				//result.append(", ");
-			}
-
-			Assert::AreEqual(expected_result01, result);
-*/		} 
+		} 
 	}; 
 }

@@ -78,6 +78,12 @@ std::vector<int> stmtTable::getParent(int stmtNo) {
 	std::vector<int> ans = parent.getAns(stmtNo);
     return ans;
 }
+
+std::vector<int> stmtTable::getChild(int stmtNo) {
+	std::vector<int> ans = parent.getChild(stmtNo);
+	return ans;
+}
+
 bool stmtTable::isParent(int s1, int s2) {
 	return parent.isParent(s1,s2);
 }

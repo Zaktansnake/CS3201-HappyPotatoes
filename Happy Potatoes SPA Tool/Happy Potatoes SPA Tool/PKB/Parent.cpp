@@ -92,8 +92,8 @@ void setToParent(string stmtLine, int stmtNo) {
 
 bool Parent::isParent(int stmt1, int stmt2) {
 	std::vector<int> temp;
-	temp = getAns(stmt1);
-	if (std::find(temp.begin(), temp.end(), stmt2) != temp.end()) {
+	temp = getAns(stmt2);
+	if (std::find(temp.begin(), temp.end(), stmt1) != temp.end()) {
 		return true;
 	}
 	return false;
@@ -114,5 +114,23 @@ std::vector<int> Parent::getAns(int stmtNo) {
 	}
     std::vector<int> result;
 	result.push_back(index);
+	return result;
+}
+
+std::vector<int> Parent::getChild(int stmtNo) {
+     
+    std::vector<int> result;
+	int index;
+	for (int i = 0; i < AnsMap.size(); i++) {
+		map<int, int>::iterator iter;
+		iter = AnsMap.find(i);
+		if (iter != AnsMap.end()) {
+			index = iter ->second;
+			if (index == stmtNo) {
+			   result.push_back(i);
+			}
+		}
+
+	}
 	return result;
 }
