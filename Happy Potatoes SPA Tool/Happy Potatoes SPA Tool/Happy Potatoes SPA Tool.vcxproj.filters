@@ -24,9 +24,6 @@
     <ClCompile Include="PKB\Call.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
-    <ClCompile Include="PKB\Calls.cpp">
-      <Filter>PKB</Filter>
-    </ClCompile>
     <ClCompile Include="PKB\CFG.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
@@ -61,6 +58,9 @@
     <ClCompile Include="PKB\stmtTable.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
+    <ClCompile Include="PKB\Parent.cpp">
+      <Filter>PKB</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PKB\Header\Affects.h">
@@ -70,9 +70,6 @@
       <Filter>PKB\Header</Filter>
     </ClInclude>
     <ClInclude Include="PKB\Header\Call.h">
-      <Filter>PKB\Header</Filter>
-    </ClInclude>
-    <ClInclude Include="PKB\Header\Calls.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
     <ClInclude Include="PKB\Header\CFG.h">
@@ -103,6 +100,9 @@
       <Filter>PKB\Header</Filter>
     </ClInclude>
     <ClInclude Include="PKB\Header\stmtTable.h">
+      <Filter>PKB\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PKB\Header\Parent.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
   </ItemGroup>
