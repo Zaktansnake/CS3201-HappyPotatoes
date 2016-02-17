@@ -10,7 +10,7 @@ namespace UnitTesting
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		TEST_METHOD(TestASTTREE)
 		{
 			//TNode T;
 			// TODO: Your test code here

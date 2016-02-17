@@ -32,7 +32,15 @@ vector<string> VarTable::findVariableLeft(int stmtLine1, int stmtLine2) {
 		pair<int, string> tempVector =  varTableLeft.at(i);
 
 		if (tempVector.first > stmtLine1 && tempVector.first < stmtLine2) {
-			ans.push_back(tempVector.second);
+			if (!ans.empty()) {
+				if (std::find(ans.begin(), ans.end(), tempVector.second) != ans.end()) {
+					
+				} else {
+					ans.push_back(tempVector.second);
+				}
+			} else {
+				ans.push_back(tempVector.second);
+			}
 		}
 	}
 
@@ -45,8 +53,18 @@ vector<string> VarTable::findVariableRight(int stmtLine1, int stmtLine2) {
 	for (int i = 0; i < varTableRight.size(); i++) {
 		pair<int, string> tempVector = varTableRight.at(i);
 
-		if (tempVector.first > stmtLine1 && tempVector.first < stmtLine2) {
-			ans.push_back(tempVector.second);
+		int temp = stmtLine2 - stmtLine1;
+
+		if (temp == 1) {
+			if (tempVector.first == stmtLine2) {
+				ans.push_back(tempVector.second);
+			}
+		} else if (tempVector.first > stmtLine1 && tempVector.first < stmtLine2) {
+			if (std::find(ans.begin(), ans.end(), tempVector.second) != ans.end()) {
+
+			} else {
+				ans.push_back(tempVector.second);
+			}
 		}
 	}
 
