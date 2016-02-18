@@ -15,10 +15,14 @@ bool minusDetermine(string statement, int marker);
 
 Pattern::Pattern()
 {
+	
 }
 
 Pattern::~Pattern()
 {
+}
+
+void foo() {
 }
 
 string Pattern::patternAssignment(string assignment) {

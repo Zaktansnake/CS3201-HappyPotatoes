@@ -1,3 +1,6 @@
+#ifndef PATTERN_H
+#define PATTERN_H
+
 #pragma once
 
 #include <stdio.h>
@@ -11,10 +14,12 @@ public:
 	Pattern();
 	~Pattern();
 
-	string patternAssignment(string assignment);
+	static string patternAssignment(string assignment);
 
 private:
-	bool multiplicationDetermine(string statement, int marker);
-	bool plusDetermine(string statement, int marker);
-	bool minusDetermine(string statement, int marker);
+	static bool multiplicationDetermine(string statement, int marker);
+	static bool plusDetermine(string statement, int marker);
+	static bool minusDetermine(string statement, int marker);
 };
+
+#endif

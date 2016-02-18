@@ -11,25 +11,23 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTesting
 {
-	TEST_CLASS(TestPATTERN)
+	TEST_CLASS(TestPattern)
 	{
 	public:
-		TEST_METHOD(TestPattern) {
+		TEST_METHOD(TestP) {
 			Pattern p;
 			string testPattern, expectedPattern, returnedPattern;
 
 			// test for patternAssignment
 			testPattern = "a+b+c+d";
 			expectedPattern = "(a+b)+c+d";
-			Parser::parse("C:\\Users\\David_Chong\\Desktop\\TestPattern.txt");
 
 			returnedPattern = p.patternAssignment(testPattern);
-			
+
 			Assert::AreEqual(expectedPattern, returnedPattern);
 
 			testPattern = "a*b+c+d";
 			expectedPattern = "(a*b)+c+d";
-			Parser::parse("C:\\Users\\David_Chong\\Desktop\\TestPattern.txt");
 
 			returnedPattern = p.patternAssignment(testPattern);
 
@@ -37,10 +35,10 @@ namespace UnitTesting
 
 			testPattern = "a*b+(c-d)";
 			expectedPattern = "(a*b)+(c-d)";
-			Parser::parse("C:\\Users\\David_Chong\\Desktop\\TestPattern.txt");
 
 			returnedPattern = p.patternAssignment(testPattern);
 
 			Assert::AreEqual(expectedPattern, returnedPattern);
 		}
+	};
 }
