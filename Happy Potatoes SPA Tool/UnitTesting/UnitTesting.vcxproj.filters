@@ -41,11 +41,10 @@
     <ClCompile Include="TestUses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-<<<<<<< HEAD
     <ClCompile Include="TestPattern.cpp">
-=======
+	  <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="TestPQLParser.cpp">
->>>>>>> origin/master
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
