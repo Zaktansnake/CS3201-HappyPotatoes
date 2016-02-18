@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Header/Pattern.h"
+#include "Header/Patterns.h"
 
 using namespace std;
 
@@ -13,19 +13,19 @@ bool multiplicationDetermine(string statement, int marker);
 bool plusDetermine(string statement, int marker);
 bool minusDetermine(string statement, int marker);
 
-Pattern::Pattern()
+Patterns::Patterns()
 {	
 }
 
-Pattern::~Pattern()
+Patterns::~Patterns()
 {
 }
 
-string Pattern::patternAssignment(string assignment) {
+string Patterns::patternAssignment(string assignment) {
 
 	//In-order traversal is given by assignment statement
 	//To understand the depth of each node, we can do a left to right reading and put a bracket around trees have a variable and or constant 
-	
+
 	//In example, we get a string assignment, we need to read it left to right, once we encounter a higher order of operation we bracket the variables aroud it
 	//Once completed, method will return the updated string to PKB for storage
 
@@ -39,8 +39,8 @@ string Pattern::patternAssignment(string assignment) {
 		//cout << statement.size();
 
 		string temp = statement;
-		string c = statement.substr(i, i);
-		
+		string c = statement.substr(i, i + 1);
+
 		if (c.compare("*")) {
 			if (multiplicationDetermine(statement, i)) {
 				if (i == 1) {
@@ -84,7 +84,7 @@ string Pattern::patternAssignment(string assignment) {
 	return statement;
 }
 
-bool Pattern::multiplicationDetermine(string statement, int marker) {
+bool Patterns::multiplicationDetermine(string statement, int marker) {
 
 	string c1, c2;
 
@@ -92,7 +92,7 @@ bool Pattern::multiplicationDetermine(string statement, int marker) {
 		return true;
 	}
 	else {
-		c1 = statement.substr(marker - 2, marker - 2);
+		c1 = statement.substr(marker - 2, marker - 1);
 	}
 
 	if (c1.compare("+")) {
@@ -106,22 +106,22 @@ bool Pattern::multiplicationDetermine(string statement, int marker) {
 	}
 }
 
-bool Pattern::plusDetermine(string statement, int marker) {
+bool Patterns::plusDetermine(string statement, int marker) {
 
 	string c1, c2;
 
 	if (marker == 1) {
-		c1 = statement.substr(marker - 1, marker - 1);
+		c1 = statement.substr(marker - 1, marker);
 	}
 	else {
-		c1 = statement.substr(marker - 2, marker - 2);
+		c1 = statement.substr(marker - 2, marker - 1);
 	}
 
 	if (marker == statement.size() - 1) {
-		c2 = statement.substr(marker + 1, marker + 1);
+		c2 = statement.substr(marker, marker + 1);
 	}
 	else {
-		c2 = statement.substr(marker + 2, marker + 2);
+		c2 = statement.substr(marker + 2, marker + 3);
 	}
 
 	if (c2.compare("+")) {
@@ -145,22 +145,22 @@ bool Pattern::plusDetermine(string statement, int marker) {
 	}
 }
 
-bool Pattern::minusDetermine(string statement, int marker) {
+bool Patterns::minusDetermine(string statement, int marker) {
 
 	string c1, c2;
 
 	if (marker == 1) {
-		c1 = statement.substr(marker - 1, marker - 1);
+		c1 = statement.substr(marker - 1, marker);
 	}
 	else {
-		c1 = statement.substr(marker - 2, marker - 2);
+		c1 = statement.substr(marker - 2, marker - 1);
 	}
 
 	if (marker == statement.size() - 1) {
-		c2 = statement.substr(marker + 1, marker + 1);
+		c2 = statement.substr(marker, marker + 1);
 	}
 	else {
-		c2 = statement.substr(marker + 2, marker + 2);
+		c2 = statement.substr(marker + 2, marker + 3);
 	}
 
 	if (c2.compare("+")) {

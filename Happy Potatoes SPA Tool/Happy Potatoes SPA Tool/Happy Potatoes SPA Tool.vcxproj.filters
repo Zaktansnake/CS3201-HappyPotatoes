@@ -61,7 +61,7 @@
     <ClCompile Include="PKB\Parent.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
-    <ClCompile Include="PKB\Pattern.cpp">
+    <ClCompile Include="PKB\Patterns.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
     <ClCompile Include="PQL\Clause.cpp">
@@ -120,7 +120,7 @@
     <ClInclude Include="PKB\Header\Parent.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
-    <ClInclude Include="PKB\Header\Pattern.h">
+    <ClInclude Include="PKB\Header\Patterns.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
     <ClInclude Include="PQL\Header\Clause.h">

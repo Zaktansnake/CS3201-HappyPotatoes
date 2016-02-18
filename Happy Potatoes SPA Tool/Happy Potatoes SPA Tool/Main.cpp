@@ -1,7 +1,7 @@
 #include <iostream>
 #include <fstream>
 #include <vector>
-#include "./PKB/Header/Parser.h"
+#include "../AutoTester/TestWrapper.h"
 
 using namespace std;
 
@@ -10,6 +10,7 @@ void printExit();
 
 int main() {
 	string fileName = "../Testing/testcases/testIndex.txt";
+	TestWrapper w;
 	cout << "*********************************" << endl;
 	cout << "*        SPA Tool v1.0.0        *" << endl;
 	cout << "*    Happy Potatoes - Team 1    *" << endl;
@@ -22,7 +23,7 @@ int main() {
 		getline(cin, fileName);
 		if (fileName == "0") { printExit(); return 0; }
 		try {
-			Parser::parse(fileName);
+			w.parse(fileName);
 			cout << "Parse OK." << endl << endl;
 			break;
 		}
@@ -32,7 +33,7 @@ int main() {
 		}
 	}
 
-	string q; vector<string> result;
+	string q; list<string> result;
 	cout << ">> Please enter your PQL queries here:" << endl;
 	cout << ">> If you do not wish to enter any queries, simple press 0 to exit." << endl;
 	while (true) {
@@ -40,6 +41,7 @@ int main() {
 		getline(cin, q);
 		if (q == "0") { printExit(); return 0; }
 		try {
+			w.evaluate(q, result);
 		}
 		catch (exception& e) {
 			cout << e.what() << endl;
