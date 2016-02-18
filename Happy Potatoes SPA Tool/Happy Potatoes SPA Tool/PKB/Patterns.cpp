@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "Header/Pattern.h"
+#include "Header/Patterns.h"
 
 using namespace std;
 
@@ -13,15 +13,15 @@ bool multiplicationDetermine(string statement, int marker);
 bool plusDetermine(string statement, int marker);
 bool minusDetermine(string statement, int marker);
 
-Pattern::Pattern()
+Patterns::Patterns()
 {	
 }
 
-Pattern::~Pattern()
+Patterns::~Patterns()
 {
 }
 
-string Pattern::patternAssignment(string assignment) {
+string Patterns::patternAssignment(string assignment) {
 
 	//In-order traversal is given by assignment statement
 	//To understand the depth of each node, we can do a left to right reading and put a bracket around trees have a variable and or constant 
@@ -84,7 +84,7 @@ string Pattern::patternAssignment(string assignment) {
 	return statement;
 }
 
-bool Pattern::multiplicationDetermine(string statement, int marker) {
+bool Patterns::multiplicationDetermine(string statement, int marker) {
 
 	string c1, c2;
 
@@ -106,7 +106,7 @@ bool Pattern::multiplicationDetermine(string statement, int marker) {
 	}
 }
 
-bool Pattern::plusDetermine(string statement, int marker) {
+bool Patterns::plusDetermine(string statement, int marker) {
 
 	string c1, c2;
 
@@ -145,7 +145,7 @@ bool Pattern::plusDetermine(string statement, int marker) {
 	}
 }
 
-bool Pattern::minusDetermine(string statement, int marker) {
+bool Patterns::minusDetermine(string statement, int marker) {
 
 	string c1, c2;
 

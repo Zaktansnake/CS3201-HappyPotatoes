@@ -1,5 +1,5 @@
-#ifndef PATTERN_H
-#define PATTERN_H
+#ifndef PATTERNS_H
+#define PATTERNS_H
 
 #pragma once
 
@@ -8,11 +8,11 @@
 
 using namespace std;
 
-class Pattern
+class Patterns
 {
 public:
-	Pattern();
-	~Pattern();
+	Patterns();
+	~Patterns();
 
 	static string patternAssignment(string assignment);
 
