@@ -1,4 +1,3 @@
-
 #include "Header\QueryEvaluator.h"
 #include <vector>
 #include "Header\Clause.h"
