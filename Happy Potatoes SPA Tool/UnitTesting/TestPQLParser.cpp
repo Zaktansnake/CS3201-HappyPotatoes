@@ -30,9 +30,9 @@ namespace TestPQLParser_VS2015 {
 			string patT = pattern.getPatternOperation();
 			string patP1 = pattern.getFirstParameter();
 			string patP2 = pattern.getSecondParameter();
-			string check = "s";
+			string check = "s,stmt";
 			Assert::AreEqual(select, check);
-			check = "Parent";
+			check = "Parentss";
 			Assert::AreEqual(cType,check);
 			check = "2";
 			Assert::AreEqual(cP1, check);

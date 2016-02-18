@@ -109,12 +109,20 @@ ParseResult ParseResult::checkAndParseQuery(string query) {
 	
 	string checker;
 	checker = sm[1];	// parameter of "Select"
-	if (declarationTable[checker] == "") {
+	if (declarationTable[checker] == "" && checker != "BOOLEAN") {
 		signalErrorAndStop();
 		return ParseResult();
 	}
-	string selectT = declarationTable[sm[1]];
-	string selectP = sm[1];
+	string selectT;
+	string selectP;
+	if (checker == "BOOLEAN") {
+		selectT = "BOOLEAN";
+		selectP = "BOOLEAN";
+	}
+	else {
+		selectT = declarationTable[sm[1]];
+		selectP = sm[1];
+	}
 	selectPSet.push_back(selectP+","+selectT);
 	
 	string conditionT, conditionP1, conditionP2, appendP1, appendP2;
