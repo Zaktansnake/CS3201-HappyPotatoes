@@ -24,16 +24,16 @@ public:
 	ParseResult(ParameterSet, ClauseSet, PatternSet);
 	// for query evaluator to call
 	vector<ParseResult> startQueryParsing();
+	// originally private but made public for unit test
+	bool checkAndParseDeclaration(string);
+	ParseResult checkAndParseQuery(string);
 private:
 	// helper functions
 	ParseResult generateParseResult(string, string);
-	bool checkAndParseDeclaration(string);
 	void signalErrorAndStop();
-	ParseResult checkAndParseQuery(string);
-
+	
 	// attributes
 	ParameterSet selectParameter_;
 	ClauseSet condClauses_;
 	PatternSet patterns_;
-	
 };

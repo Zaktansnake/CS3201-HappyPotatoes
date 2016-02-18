@@ -172,7 +172,11 @@
     <ClCompile Include="TestAST.cpp" />
     <ClCompile Include="TestModifies.cpp" />
     <ClCompile Include="TestParser.cpp" />
+<<<<<<< HEAD
     <ClCompile Include="TestPattern.cpp" />
+=======
+    <ClCompile Include="TestPQLParser.cpp" />
+>>>>>>> origin/master
     <ClCompile Include="TestStmtTable.cpp" />
     <ClCompile Include="TestUses.cpp">
       <SubType>
