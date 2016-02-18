@@ -31,7 +31,7 @@ string Patterns::patternAssignment(string assignment) {
 
 	string statement = assignment;
 
-	if (statement.size() >= 3) {
+	if (statement.size() <= 3) {
 		return statement;
 	}
 
@@ -39,41 +39,41 @@ string Patterns::patternAssignment(string assignment) {
 		//cout << statement.size();
 
 		string temp = statement;
-		string c = statement.substr(i, i + 1);
+		string c = statement.substr(i, i);
 
-		if (c.compare("*")) {
+		if (c.compare("*") == 0) {
 			if (multiplicationDetermine(statement, i)) {
 				if (i == 1) {
 					temp.insert(0, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 				else {
 					temp.insert(i - 2, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 			}
 		}
-		else if (c.compare("+")) {
+		else if (c.compare("+") == 0) {
 			if (plusDetermine(statement, i)) {
 				if (i == 1) {
 					temp.insert(0, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 				else {
 					temp.insert(i - 2, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 			}
 		}
-		else if (c.compare("-")) {
+		else if (c.compare("-") == 0) {
 			if (minusDetermine(statement, i)) {
 				if (i == 1) {
 					temp.insert(0, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 				else {
 					temp.insert(i - 2, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 			}
 		}
@@ -95,16 +95,16 @@ bool Patterns::multiplicationDetermine(string statement, int marker) {
 		return true;
 	}
 	else {
-		c = statement.substr(marker + 2, marker + 3);
+		c = statement.substr(marker + 2, marker + 2);
 	}
 
-	if (c.compare("*")) {
+	if (c.compare("*") == 0) {
 		return true;
 	}
-	else if (c.compare("+")) {
+	else if (c.compare("+") == 0) {
 		return true;
 	}
-	else if (c.compare("-")) {
+	else if (c.compare("-") == 0) {
 		return true;
 	}
 	else {
@@ -123,13 +123,13 @@ bool Patterns::plusDetermine(string statement, int marker) {
 		return false;
 	}
 	else {
-		c = statement.substr(marker + 2, marker + 3);
+		c = statement.substr(marker + 2, marker + 2);
 	}
 
-	if (c.compare("+")) {
+	if (c.compare("+") == 0) {
 		return true;
 	}
-	else if (c.compare("-")) {
+	else if (c.compare("-") == 0) {
 		return true;
 	}
 	else {
@@ -148,13 +148,13 @@ bool Patterns::minusDetermine(string statement, int marker) {
 		return false;
 	}
 	else {
-		c = statement.substr(marker + 2, marker + 3);
+		c = statement.substr(marker + 2, marker + 2);
 	}
 
-	if (c.compare("+")) {
+	if (c.compare("+") == 0) {
 		return true;
 	}
-	else if (c.compare("-")) {
+	else if (c.compare("-") == 0) {
 		return true;
 	}
 	else {

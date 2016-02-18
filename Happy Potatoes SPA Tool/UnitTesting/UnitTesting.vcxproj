@@ -173,7 +173,6 @@
     <ClCompile Include="TestModifies.cpp" />
     <ClCompile Include="TestParser.cpp" />
     <ClCompile Include="TestPattern.cpp" />
-    <ClCompile Include="TestPQLParser.cpp" />
     <ClCompile Include="TestStmtTable.cpp" />
     <ClCompile Include="TestUses.cpp">
       <SubType>
