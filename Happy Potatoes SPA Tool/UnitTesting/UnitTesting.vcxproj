@@ -173,6 +173,10 @@
     <ClCompile Include="TestModifies.cpp" />
     <ClCompile Include="TestParser.cpp" />
     <ClCompile Include="TestStmtTable.cpp" />
+    <ClCompile Include="TestUses.cpp">
+      <SubType>
+      </SubType>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Happy Potatoes SPA Tool\Happy Potatoes SPA Tool.vcxproj">

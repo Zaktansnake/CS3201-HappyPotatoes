@@ -14,9 +14,12 @@ public:
 
 	// get ModifiesTable
 	static std::vector<int> getModifiesTable(string varName);
+	static std::vector<string> getModifiesProcTable(string procName);
 
 	// add item to ModifiesTable
 	static void addModifiesTable(string varName, int stmtLine);
+
+	static void addModifiesProcedureTable(string procedure, string varName);
 
 private:
 	int index;
