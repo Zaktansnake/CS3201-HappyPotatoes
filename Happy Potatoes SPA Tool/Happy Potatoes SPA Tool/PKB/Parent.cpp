@@ -113,7 +113,9 @@ std::vector<int> Parent::getAns(int stmtNo) {
 		abort();
 	}
     std::vector<int> result;
-	result.push_back(index);
+	if (index != 0) {
+        result.push_back(index);
+	}
 	return result;
 }
 
@@ -121,13 +123,14 @@ std::vector<int> Parent::getChild(int stmtNo) {
      
     std::vector<int> result;
 	int index;
-	for (int i = 0; i < AnsMap.size(); i++) {
+	for (int i = 1; i <= AnsMap.size(); i++) {
 		map<int, int>::iterator iter;
 		iter = AnsMap.find(i);
 		if (iter != AnsMap.end()) {
 			index = iter ->second;
 			if (index == stmtNo) {
-			   result.push_back(i);
+			   result.push_back(iter->first);
+			
 			}
 		}
 

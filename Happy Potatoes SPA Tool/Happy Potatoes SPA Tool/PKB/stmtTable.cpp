@@ -71,12 +71,12 @@ std::vector<int> stmtTable::getFollow(int stmtNo) {
     std::vector<int> ans = follow.getAns(stmtNo);
     return ans;
 }
-/*
-std::vector<int> stmtTable::getFollowStar(int stmtNo) {
-	std::vector<int> ans = follow.getFollowStar(stmtNo);
+
+std::vector<int> stmtTable::getFollowFan(int stmtNo) {
+	std::vector<int> ans = follow.getFollowFan(stmtNo);
 	return ans;
 }
-*/
+
 bool stmtTable::isFollow(int s1, int s2) {
 	return follow.isFollows(s1,s2);
 }

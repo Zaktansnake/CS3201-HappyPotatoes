@@ -1,4 +1,5 @@
 #include "./Header/Follows.h"
+#include "Header/stmtTable.h"
 #include <string>
 #include <vector>
 #include <stack>
@@ -11,6 +12,7 @@ std::vector<std::vector<int> > ansList; //store ans for stmtNo 1 to end
 std::vector<int> stmtRecord; // record all the nesting level in order
 std::vector<int> stmtListTable;
 std::stack<int> loopStack;
+Parent pa;
 
 static int stmtListNo = 1;  // same level same stmtList, change with loop
 
@@ -61,7 +63,6 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 }
 
 std::vector<int> Follows::getAns(int stmtNo) {
-	bool checkStmtList = false;
 	std::vector<int> ans;
 	ans.clear();
 	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
@@ -73,10 +74,45 @@ std::vector<int> Follows::getAns(int stmtNo) {
 	for (int i = 0; i < temp.size(); i++) {
 		if (temp.at(i) == stmtNo) {
 			if (i == temp.size() - 1) {
-				return {0};
+				return ans;
 			}
 			else {
-			     ans.push_back(temp.at(i+1));
+				if (isSameStmtList(stmtNo, temp.at(i + 1))) {
+                    ans.push_back(temp.at(i+1));
+				}
+				else {
+					return ans;
+				}
+			     
+				return ans;
+			}
+			break;
+		}
+	}
+}
+
+std::vector<int> Follows::getFollowFan(int stmtNo) {
+	std::vector<int> ans;
+	ans.clear();
+	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
+	if (level > levelList.size()) {
+		throw exception("Error, stmtRecord wrong");
+		abort();
+	}
+	std::vector<int> temp = levelList.at(level);
+	for (int i = 0; i < temp.size(); i++) {
+		if (temp.at(i) == stmtNo) {
+			if (i - 1 < 0) {
+				return ans;
+			}
+			else {
+				if (isSameStmtList(stmtNo, temp.at(i - 1))) {
+					ans.push_back(temp.at(i - 1));
+				}
+				else {
+					return ans;
+				}
+
 				return ans;
 			}
 			break;
@@ -93,12 +129,21 @@ bool Follows::isFollows(int s1, int s2) {
 	}
 }
 
-bool isSameStmtList(int s1, int s2, int level) {
-    bool s1Boll = false; 
-	bool s2Bool = false;
-	std::vector<int> temp = levelList.at(level);
-	for (int i = 0; i < levelList.at(level).size(); i++){
-	   
-    }
-	return false;
+bool isSameStmtList(int s1, int s2) {
+    std::vector<int> parentS1;
+	std::vector<int> parentS2;
+	parentS1 = pa.getAns(s1);
+	parentS2 = pa.getAns(s2);
+	if (parentS1.size() == 0 && parentS2.size() == 0) {
+		return true;
+	}
+	else if (parentS1.size() != parentS2.size()) {
+		return false;
+	}
+	else if (parentS1.at(0) == parentS2.at(0)) {
+		return true;
+	}
+	else {
+		return false;
+	}
 }

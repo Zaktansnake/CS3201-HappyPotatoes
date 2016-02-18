@@ -26,7 +26,7 @@ public:
 	//get data 
 
 	static std::vector<int> stmtTable::getFollow(int stmtNo);
-	static std::vector<int> stmtTable::getFollowStar(int stmtNo);
+	static std::vector<int> stmtTable::getFollowFan(int stmtNo);
 	static bool isFollow(int s1, int s2);
 	static std::vector<int> stmtTable::getParent(int stmtNo);
 	static std::vector<int> stmtTable::getChild(int stmtNo);

@@ -23,25 +23,34 @@ namespace UnitTesting
 			string expectedChildren;
 			string resultChildren;
 			std::vector<int> resultChild;
-			int expected_result01 = 0;
+			int expected_result01 = 4;
 			Parser::parse("C:\\Users\\feifei\\Downloads\\TestFollow.txt");
 
-			vector<int> getParent = stmtTable::getParent(1);
+			vector<int> getParent = stmtTable::getParent(5);
 			result = getParent.front();
 
 			Assert::AreEqual(expected_result01, result);
 
 
-			expected_result01 = 2;
-			getParent = stmtTable::getParent(8);
+			expected_result01 = 6;
+			getParent = stmtTable::getParent(7);
 			result = getParent.front();
 
 			Assert::AreEqual(expected_result01, result);
+
+			expected_result01 = 0;
+			getParent = stmtTable::getParent(1);
+			if (getParent.size() == 0) {
+				result = 0;
+			}
+
+			Assert::AreEqual(expected_result01, result);
+
 
 			//test for isParent
 
 			expectBool = true;
-			isparent = stmtTable::isParent(2, 8);
+			isparent = stmtTable::isParent(2, 9);
 
 			Assert::AreEqual(expectBool, isparent);
 
@@ -52,9 +61,9 @@ namespace UnitTesting
 
 			//test for getChild
 
-			expectedChildren = "3489";
+			expectedChildren = "34689";
 			resultChild = stmtTable::getChild(2);
-
+		//	resultChildren = std::to_string(resultChild.size());
 			for (std::vector<int>::iterator it = resultChild.begin(); it != resultChild.end(); ++it) {
 				resultChildren.append(std::to_string(*it));
 				//result.append(", ");
@@ -70,9 +79,9 @@ namespace UnitTesting
 			int result;
 			bool expectedIsFollow;
 			bool resultIsFollow;
-			string expectFollowStar;
-			string resultFollowSatr;
-			std::vector<int>followSatr;
+			int expectFollowFan;
+			int resultFollowFan;
+			std::vector<int>followFan;
 
 			Parser::parse("C:\\Users\\feifei\\Downloads\\TestFollow.txt");
 
@@ -86,12 +95,17 @@ namespace UnitTesting
 
 			result = 0;
 			getFollow.clear();
-			expected_result01 = 8;
-			getFollow = stmtTable::getFollow(4);
-			result = getFollow.front();
+			expected_result01 = 0;
+			getFollow = stmtTable::getFollow(5);
+			if (getFollow.size() == 0) {
+				result = 0;
+			}
+			else {
+				result = getFollow.front();
+			}
 
 			Assert::AreEqual(expected_result01, result); 
-
+		
 			//test for isFollow
 
 			expectedIsFollow = false;
@@ -99,18 +113,19 @@ namespace UnitTesting
 
 			Assert::AreEqual(expectedIsFollow, resultIsFollow);
 
-
-	/*		
+	
+			
 			//test for follow start
-			expectFollowStar = "489";
-			followSatr = stmtTable::getFollowStar(3);
-
-			for (std::vector<int>::iterator it = followSatr.begin(); it != followSatr.end(); ++it) {
-				resultFollowSatr.append(std::to_string(*it));
-				//result.append(", ");
+			expectFollowFan = 0;
+			followFan = stmtTable::getFollowFan(3);
+			if (followFan.size() == 0) {
+				resultFollowFan = 0;
 			}
-			Assert::AreEqual(expectFollowStar, resultFollowSatr);
-*/
+			else {
+				resultFollowFan = followFan.front();
+			}
+			Assert::AreEqual(expectFollowFan, resultFollowFan);
+
 		} 
 	}; 
 }
