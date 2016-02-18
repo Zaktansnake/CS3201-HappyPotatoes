@@ -8,7 +8,7 @@
 ParameterSet ParseResult::getSelectParameter() { return selectParameter_; }
 ClauseSet ParseResult::getClauses() { return condClauses_; };
 PatternSet ParseResult::getPatterns() { return patterns_; }
-	
+
 ParseResult::ParseResult() {}
 ParseResult::ParseResult(ParameterSet selectParameter) {
 	selectParameter_ = selectParameter;
@@ -39,7 +39,7 @@ const regex queryRegex2(selectClause + patternClause + conditionClause);
 // hashmap for storing declarations
 unordered_map<string, string> declarationTable;
 // read file according to the standard required
-vector<ParseResult> ParseResult::startQueryParsing() {
+/* vector<ParseResult> ParseResult::startQueryParsing() {
 	ifstream infile;
 	string filename = "test_PQL_parser.txt";
 	infile.open(filename);
@@ -54,7 +54,7 @@ vector<ParseResult> ParseResult::startQueryParsing() {
 		getline(infile, dummy); // skip the time limit line
 	}
 	return resultSet;
-}
+} */
 
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
 	bool correct = checkAndParseDeclaration(declarationSentence);
@@ -78,7 +78,7 @@ bool ParseResult::checkAndParseDeclaration(string declaration) {
 	}
 	// populate the hashmap
 	string synType;
-	for (int i = 0; i < decWord.size(); i++) {
+	for (int i = 0; i < decWord.size()-1; i++) {
 		string current = decWord.at(i);
 		char lastChar = current.back();
 		if (lastChar != ',' || lastChar != ';') {
