@@ -1,6 +1,3 @@
-#ifndef PATTERN_H
-#define PATTERN_H
-
 #pragma once
 
 #include <stdio.h>
@@ -10,30 +7,14 @@ using namespace std;
 
 class Pattern
 {
-	struct node
-	{
-		string key_value;
-		int stmtNo;
-		node *left;
-		node *right;
-	};
-
 public:
 	Pattern();
 	~Pattern();
 
-	void insert (string node, int stmtNo);
-	int  search (string key);
-	void destroy_tree();
+	string patternAssignment(string assignment);
 
 private:
-    void insert (string key, node *leaf);
-	node *search (string key, node *leaf);
-
-
-	node *root;
-
+	bool multiplicationDetermine(string statement, int marker);
+	bool plusDetermine(string statement, int marker);
+	bool minusDetermine(string statement, int marker);
 };
-
-#endif
-
