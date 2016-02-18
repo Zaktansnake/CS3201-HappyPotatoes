@@ -1,6 +1,8 @@
 #include "TestWrapper.h"
 #include "../Happy Potatoes SPA Tool/PKB/Header/Parser.h"
-
+#include "../Happy Potatoes SPA Tool/PQL/Header/ParseResult.h";
+#include <string>
+#include "../Happy Potatoes SPA Tool/PQL/Header/QueryEvaluator.h"
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
 AbstractWrapper* WrapperFactory::createWrapper() {
@@ -27,7 +29,15 @@ void TestWrapper::parse(std::string filename) {
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 // call your evaluator to evaluate the query here
   // ...code to evaluate query...
-
+	size_t pos;
+	query.find_last_of(";");
+	string declarationSenctence, QuerySentence;
+	declarationSenctence = query.substr(0, pos + 1);
+	QuerySentence = query.substr(pos, query.size() - pos);
+	ParseResult pr = ParseResult();
+	ParseResult mustpr =  pr.generateParseResult(declarationSenctence,QuerySentence);
+	QueryEvaluator Qe;
+	Qe.startEvaluator(mustpr);
   // store the answers to the query in the results list (it is initially empty)
   // each result must be a string.
 }

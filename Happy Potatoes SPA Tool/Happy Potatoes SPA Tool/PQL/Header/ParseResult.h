@@ -3,7 +3,7 @@
 #include <vector>
 #include <unordered_map>
 #include "Clause.h"
-#include "Pattern.h"
+#include "../Header/Pattern.h";
 
 using namespace std;
 typedef vector<string> ParameterSet;
@@ -27,10 +27,11 @@ public:
 	// originally private but made public for unit test
 	bool checkAndParseDeclaration(string);
 	ParseResult checkAndParseQuery(string);
-private:
-	// helper functions
 	ParseResult generateParseResult(string, string);
 	void signalErrorAndStop();
+private:
+	// helper functions
+	
 	
 	// attributes
 	ParameterSet selectParameter_;

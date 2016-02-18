@@ -1,4 +1,5 @@
 
+#include "../PQL/Header/Pattern.h"
 #include "Header\QueryEvaluator.h"
 #include <vector>
 #include "Header\Clause.h"
@@ -15,9 +16,8 @@
 #include <ctype.h>
 
 using namespace std;
-vector<ParseResult> prv;
-std::vector<std::string> resultVector;
-std::string resultString;
+ParseResult pr;
+
 //all the boolean results for all conditions in a single query will be stored here
 std::vector<bool> BooleanClausesQueryResults;
 //all the variable results for all conditions in a single query will be stored here
@@ -47,7 +47,7 @@ void StmtIntersection();
 void ProcIntersection();
 void VarIntersection();
 void findBoolean();
-std::string MakeFinalString(std::vector<std::string> SelectParameter);
+void MakeFinalString(std::vector<std::string> SelectParameter);
 std::string removeDoubleQuote(std::string s);
 void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType);
@@ -63,65 +63,66 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType);
 void FollowStarResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeter);
+void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector);
 //assess parseResultVector
-void assessParseResult(vector<ParseResult> prv) {
 
-	for (int resultIndex = 0; resultIndex < prv.size(); resultIndex++) {
-		ParseResult pr = prv.at(resultIndex);
-		BooleanClausesQueryResults.clear();
-		StmtLineClausesQueryResults.clear();
-		ProcedureClausesQueryResults.clear();
-		VariableClausesQueryResults.clear();
-		//get vector of select parameter from parseResult object
-		std::vector<std::string> SelectParameterVector = pr.getSelectParameter();
-		//get vector of clauses object from parseResult object
-		std::vector<Clause> ClausesVector = pr.getClauses();
-		//get the vector of pattern queries
-		std::vector<Pattern> PatternQueryVector = pr.getPatterns();
 
-		for (int ClausesVectorIndex = 0; ClausesVectorIndex < ClausesVector.size(); ClausesVectorIndex++) {
-			Clause clauses = ClausesVector.at(ClausesVectorIndex);
-			std::string clausesOperation = clauses.getClauseOperation();
-			int clausesSize = clausesOperation.size();
-			char firstParameterType = clausesOperation.at(clausesSize - 2);
-			char secondParameterType = clausesOperation.at(clausesSize - 1);
-			std::string firstSecondParameterType = "";
-			firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
-			Parameter1 firstParameter = clauses.getFirstParameter();
-			Parameter2 secondParameter = clauses.getSecondParameter();
-			char firstLetter = clausesOperation.at(0);
-			if (clausesOperation.find('*')) {
-				
-				if (firstLetter == 'P') {
-					ParentStarResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
-				}
-				if (firstLetter == 'F') {
-					FollowStarResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
-				}
-			}
-			else {
 
-				if (firstLetter == 'M') {
-					ModifiesResults(SelectParameterVector, firstParameter, secondParameter,firstSecondParameterType);
-				}
-				if (firstLetter == 'F') {
-					FollowsResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
-				}
-				if (firstLetter = 'U'){
-					UsesResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
-				}
-				if (firstLetter = 'P') {
-					ParentResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
-				}
-			}
+void assessParseResult(ParseResult pr) {
 
+	//get vector of select parameter from parseResult object
+	std::vector<std::string> SelectParameterVector = pr.getSelectParameter();
+	//get vector of clauses object from parseResult object
+	std::vector<Clause> ClausesVector = pr.getClauses();
+	//get the vector of pattern queries
+	std::vector<Pattern> PatternQueryVector = pr.getPatterns();
+	assessClauses(ClausesVector, SelectParameterVector);
+	Pattern(PatternQueryVector, SelectParameterVector);
+	MakeFinalString(SelectParameterVector);
+}
+
+void Pattern(std::vector<Pattern> PatternQueryVector, std::vector<std::string> SelectParameterVector)
+{
+	std::string firstPatternParameter = PatternQueryVector.at(0).getFirstParameter();
+	std::string secondPatternParameter = PatternQueryVector.at(0).getSecondParameter();
+	std::string thridPatternParameter = PatternQueryVector.at(0).getThirdParameter();
+	PatternResults(SelectParameterVector, firstPatternParameter, secondPatternParameter);
+}
+
+void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector) {
+
+	Clause clauses = ClausesVector.at(0);
+	std::string clausesOperation = clauses.getClauseOperation();
+	int clausesSize = clausesOperation.size();
+	char firstParameterType = clausesOperation.at(clausesSize - 2);
+	char secondParameterType = clausesOperation.at(clausesSize - 1);
+	std::string firstSecondParameterType = "";
+	firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
+	Parameter1 firstParameter = clauses.getFirstParameter();
+	Parameter2 secondParameter = clauses.getSecondParameter();
+	char firstLetter = clausesOperation.at(0);
+	if (clausesOperation.find('*')) {
+
+		if (firstLetter == 'P') {
+			ParentStarResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
 		}
+		if (firstLetter == 'F') {
+			FollowStarResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
+		}
+	}
+	else {
 
-		for (int index2 = 0; index2 < PatternQueryVector.size(); index2++) {
-			std::string firstPatternParameter = PatternQueryVector.at(index2).getFirstParameter();
-			std::string secondPatternParameter = PatternQueryVector.at(index2).getSecondParameter();
-			std::string thridPatternParameter = PatternQueryVector.at(index2).getThirdParameter();
-			PatternResults(SelectParameterVector, firstPatternParameter, secondPatternParameter);
+		if (firstLetter == 'M') {
+			ModifiesResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
+		}
+		if (firstLetter == 'F') {
+			FollowsResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
+		}
+		if (firstLetter = 'U') {
+			UsesResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
+		}
+		if (firstLetter = 'P') {
+			ParentResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
 		}
 	}
 }
@@ -159,12 +160,12 @@ void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter
 				BooleanClausesQueryResults.push_back(false);
 			}
 		}
-		if ((is_number(firstPerimeter)) && (is_number(secondPerimeter))){
-			
+		if ((is_number(firstPerimeter)) && (is_number(secondPerimeter))) {
+
 		}
 	}
 	else {
-		
+
 		if ((is_number(firstPerimeter))) {
 			std::vector<int> child = st.getChild(changeStringToInt(firstPerimeter));
 			if (st.getChild(changeStringToInt(firstPerimeter)).size() == 0) {
@@ -177,8 +178,8 @@ void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter
 			}
 		}
 		else {
-			
-				StmtLineClausesQueryResults.push_back(getAllParent(st.getParent(
+
+			StmtLineClausesQueryResults.push_back(getAllParent(st.getParent(
 				changeStringToInt(secondPerimeter))));
 		}
 	}
@@ -195,7 +196,7 @@ bool checkIfParentStar(std::string first, std::string second) {
 		}
 		else {
 			while (temp.size() != 0) {
-				if (temp.at(0) != firstInt){
+				if (temp.at(0) != firstInt) {
 					temp = st.getParent(temp.at(0));
 				}
 				else {
@@ -210,15 +211,15 @@ bool checkIfParentStar(std::string first, std::string second) {
 std::vector<int> getAllParent(std::vector<int> v) {
 
 	vector<int> toReturn;
-	while (v.size() !=0 ) {
+	while (v.size() != 0) {
 		toReturn.push_back(v.at(0));
 		v = st.getParent(v.at(0));
 	}
 	return toReturn;
 }
 
-std::vector<int> combineList(std::vector<std::vector<int>> toCombine){
-	
+std::vector<int> combineList(std::vector<std::vector<int>> toCombine) {
+
 	std::vector<int> toReturn;
 	for (int index = 0; index < toCombine.size(); index++) {
 		for (int index2 = 0; index2 < toCombine.at(index).size(); index++) {
@@ -250,8 +251,8 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 	int secondPerimeterInt;
 	vector<int> temp;
 	if (SelectParameterVector.at(0) == "boolean") {
-		
-		if ((!is_number(firstPerimeter)) && (!is_number(secondPerimeter))){
+
+		if ((!is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
 			for (int index = 1; index < pkb.getStmtNum(); index++) {
 				if (st.getParent(index).size() != 0) {
 					BooleanClausesQueryResults.push_back(true);
@@ -268,7 +269,7 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 				BooleanClausesQueryResults.push_back(false);
 			}
 		}
-		if ((is_number(firstPerimeter)) && (!is_number(secondPerimeter))){
+		if ((is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
 			if (st.getChild(changeStringToInt(firstPerimeter)).size() != 0) {
 				BooleanClausesQueryResults.push_back(true);
 			}
@@ -294,15 +295,18 @@ void PatternResults(std::vector<std::string> SelectParameterVector, std::string 
 
 	std::string SelectParameter = SelectParameterVector.at(noTuple);
 	//if the selectparameter is a boolean
-	if (SelectParameter == "assign"){
-		//StmtLineClausesQueryResults.push_back(Pattern::getPattern(firstPerimeter, secondPerimeter));
+	if (SelectParameter == "assign") {
+		StmtLineClausesQueryResults.push_back(Pattern::getPattern(firstPerimeter, secondPerimeter));
+	}
+	if (SelectParameter == "Boolean") {
+		BooleanClausesQueryResults.push_back(Pattern::isttern(firstPerimeter, secondPerimeter));
 	}
 }
 
 
 void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
-	
+
 	if (SelectParameterVector.at(0) == "proc") {
 
 		ProcedureClausesQueryResults.push_back(VarTable::getUsesProc(removeDoubleQuote(secondPerimeter)));
@@ -312,7 +316,7 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 		StmtLineClausesQueryResults.push_back(VarTable::getUsesAssig(removeDoubleQuote(secondPerimeter)));
 	}
 	if (SelectParameterVector.at(0) == "stmt") {
-		
+
 		StmtLineClausesQueryResults.push_back(VarTable::getUsesStmt(removeDoubleQuote(secondPerimeter)));
 	}
 	if (SelectParameterVector.at(0) == "while") {
@@ -320,12 +324,12 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 		StmtLineClausesQueryResults.push_back(VarTable::getUsesWhile(removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "pv")) {
-		
+
 		BooleanClausesQueryResults.push_back(VarTable::isUsesProc(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "av")) {
-			
+
 		BooleanClausesQueryResults.push_back(VarTable::isUsesAssign(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
@@ -349,7 +353,7 @@ void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 f
 	if (SelectParameterVector.at(0) == "Boolean") {
 		BooleanClausesQueryResults.push_back(st.isFollow(changeStringToInt(firstPerimeter),
 			changeStringToInt(secondPerimeter)));
-		
+
 	}
 	//if querying for a stmt s such as for example follows(s,1),need to change
 	if ((SelectParameterVector.at(0) == "Stmt") && (is_number(secondPerimeter))) {
@@ -363,25 +367,25 @@ void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 f
 
 void FollowStarResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeter) {
-	
+
 	if (SelectParameterVector.at(0) == "Boolean") {
-		checkIfFollowStar(firstPerimeter,secondPerimeter);
+		checkIfFollowStar(firstPerimeter, secondPerimeter);
 	}
 	if ((SelectParameterVector.at(0) == "stmt") && (is_number(firstPerimeter))) {
 		getAllFollowers(firstPerimeter, secondPerimeter);
 	}
-	if ((SelectParameterVector.at(0) == "stmt") && (is_number(secondPerimeter))){
+	if ((SelectParameterVector.at(0) == "stmt") && (is_number(secondPerimeter))) {
 		getAllInFront(firstPerimeter, secondPerimeter);
 	}
 }
 
-std::vector<int> getAllInFront(std::string firstPerimeter, std::string secondPerimeter){
+std::vector<int> getAllInFront(std::string firstPerimeter, std::string secondPerimeter) {
 	int firstInt = changeStringToInt(firstPerimeter);
 	int secondInt = changeStringToInt(secondPerimeter);
 	vector<int> temp;
 	vector<int> getFollowFan = st.getFollowFan(secondInt);
 
-	while (getFollowFan.size() != 0){
+	while (getFollowFan.size() != 0) {
 
 		temp.push_back(getFollowFan.at(0));
 		getFollowFan = st.getFollowFan(getFollowFan.at(0));
@@ -405,7 +409,7 @@ std::vector<int> getAllFollowers(std::string firstPerimeter, std::string secondP
 	return temp;
 }
 
-bool checkIfFollowStar(std::string first,std::string second){
+bool checkIfFollowStar(std::string first, std::string second) {
 
 	int firstInt = changeStringToInt(first);
 	int secondInt = changeStringToInt(second);
@@ -471,7 +475,7 @@ void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 
 }
 
 std::string removeDoubleQuote(std::string s) {
-	
+
 	if (!s.find("\"")) {
 		return s;
 	}
@@ -525,7 +529,7 @@ void StmtIntersection() {
 			toBeIntersect = StmtLineClausesQueryResults.at(0);
 			toBeIntersect2 = StmtLineClausesQueryResults.at(1);
 		}
-		else {
+		if (index != 1) {
 			toBeIntersect = store;
 			toBeIntersect2 = StmtLineClausesQueryResults.at(index);
 		}
@@ -561,7 +565,7 @@ void ProcIntersection() {
 			toBeIntersect = ProcedureClausesQueryResults.at(0);
 			toBeIntersect2 = ProcedureClausesQueryResults.at(1);
 		}
-		else {
+		if (index != 1) {
 			toBeIntersect = store;
 			toBeIntersect2 = ProcedureClausesQueryResults.at(index);
 		}
@@ -597,7 +601,7 @@ void VarIntersection() {
 			toBeIntersect = VariableClausesQueryResults.at(0);
 			toBeIntersect2 = VariableClausesQueryResults.at(1);
 		}
-		else {
+		if (index != 1) {
 			toBeIntersect = store;
 			toBeIntersect2 = VariableClausesQueryResults.at(index);
 		}
@@ -638,42 +642,70 @@ std::string changeIntToString(int StmtList) {
 	return Result;
 }
 
-std::string MakeFinalString(std::vector<std::string> SelectParameter) {
+void  MakeFinalString(std::vector<std::string> SelectParameter) {
 
-	std::string stmtLine = "";
-	std::string variables = "";
-	std::vector<char> scat;
-	if (SelectParameter.at(0) == "Boolean") {
-		if (BooleanClausesQueryResults.at(0)) {
-			return "true";
-		}
-		else {
-			return "false";
-		}
+	if (SelectParameter.at(0) == "stmt") {
+		stmtFinalString();
 	}
-	if (SelectParameter.at(0) == "Stmt") {
-		for (int i = 0; i < StmtLineClausesQueryResults.at(0).size(); i++) {
-			stmtLine = changeIntToString(StmtLineClausesQueryResults.at(0).at(i)) + " , ";
-		}
-		return stmtLine;
+	if (SelectParameter.at(0) == "proc") {
+		ProcedureFinalString();
 	}
-	if (SelectParameter.at(0) == "Variable") {
-		for (int j = 0; j < VariableClausesQueryResults.at(0).size(); j++) {
-			variables = VariableClausesQueryResults.at(0).at(j) + " , ";
-		}
-		return variables;
+	if (SelectParameter.at(0) == "while") {
+		stmtFinalString();
 	}
-
+	if (SelectParameter.at(0) == "assign") {
+		stmtFinalString();
+	}
+	if (SelectParameter.at(0) == "variable") {
+		variableFinalString();
+	}
 
 }
 
+void stmtFinalString() {
 
-std::vector<std::string> QueryEvaluator::startEvaluator()
+	if (StmtLineClausesQueryResults.size() == 0) {
+		finalStringVector.push_back("none");
+	}
+	else {
+		vector<int> v = StmtLineClausesQueryResults.at(0);
+		for (int i = 0; i < v.size(); i++) {
+			finalStringVector.push_back(changeIntToString(v.at(i)));
+		}
+	}
+
+}
+void variableFinalString() {
+
+	if (VariableClausesQueryResults.size() == 0) {
+		finalStringVector.push_back("none");
+	}
+	else {
+		vector<std::string> v = VariableClausesQueryResults.at(0);
+		for (int i = 0; i < v.size(); i++) {
+			finalStringVector.push_back(v.at(i));
+		}
+	}
+
+}
+void ProcedureFinalString() {
+
+	if (ProcedureClausesQueryResults.size() == 0) {
+		finalStringVector.push_back("none");
+	}
+	else {
+		vector<std::string> v = ProcedureClausesQueryResults.at(0);
+		for (int i = 0; i < v.size(); i++) {
+			finalStringVector.push_back(v.at(i));
+		}
+	}
+
+}
+std::vector<std::string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
-	ParseResult pr;
-	prv = pr.startQueryParsing();
-	assessParseResult(prv);
-	return std::vector<std::string>();
+
+	assessParseResult(mustPr);
+	return finalStringVector;
 }
 
 QueryEvaluator::QueryEvaluator()
