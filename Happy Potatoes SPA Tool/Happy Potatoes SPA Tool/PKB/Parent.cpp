@@ -92,7 +92,7 @@ void setToParent(string stmtLine, int stmtNo) {
 
 bool Parent::isParent(int stmt1, int stmt2) {
 	std::vector<int> temp;
-	temp = getAns(stmt2);
+	temp = getParent(stmt2);
 	if (std::find(temp.begin(), temp.end(), stmt1) != temp.end()) {
 		return true;
 	}
@@ -101,7 +101,7 @@ bool Parent::isParent(int stmt1, int stmt2) {
 }
 
 
-std::vector<int> Parent::getAns(int stmtNo) {
+std::vector<int> Parent::getParent(int stmtNo) {
     int index = 0;
 	map<int, int>::iterator iter;
 	iter = AnsMap.find(stmtNo);

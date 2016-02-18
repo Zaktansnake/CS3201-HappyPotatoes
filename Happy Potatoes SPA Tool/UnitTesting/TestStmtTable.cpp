@@ -14,7 +14,7 @@ namespace UnitTesting
 	TEST_CLASS(TestStmtTable)
 	{
 	public:
-		TEST_METHOD(TEST_PARENT) {
+		TEST_METHOD(TestParent) {
 		    
 			// test for getParent
 			int result;

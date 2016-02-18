@@ -62,7 +62,7 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 
 }
 
-std::vector<int> Follows::getAns(int stmtNo) {
+std::vector<int> Follows::getFollow(int stmtNo) {
 	std::vector<int> ans;
 	ans.clear();
 	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
@@ -121,7 +121,7 @@ std::vector<int> Follows::getFollowFan(int stmtNo) {
 }
 
 bool Follows::isFollows(int s1, int s2) {
-	if (getAns(s1).at(0) == s2) {
+	if (getFollow(s1).at(0) == s2) {
 		return true;
 	}
 	else {
@@ -132,8 +132,8 @@ bool Follows::isFollows(int s1, int s2) {
 bool isSameStmtList(int s1, int s2) {
     std::vector<int> parentS1;
 	std::vector<int> parentS2;
-	parentS1 = pa.getAns(s1);
-	parentS2 = pa.getAns(s2);
+	parentS1 = pa.getParent(s1);
+	parentS2 = pa.getParent(s2);
 	if (parentS1.size() == 0 && parentS2.size() == 0) {
 		return true;
 	}

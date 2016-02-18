@@ -68,7 +68,7 @@ void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
 }
 
 std::vector<int> stmtTable::getFollow(int stmtNo) {
-    std::vector<int> ans = follow.getAns(stmtNo);
+    std::vector<int> ans = follow.getFollow(stmtNo);
     return ans;
 }
 
@@ -81,7 +81,7 @@ bool stmtTable::isFollow(int s1, int s2) {
 	return follow.isFollows(s1,s2);
 }
 std::vector<int> stmtTable::getParent(int stmtNo) {
-	std::vector<int> ans = parent.getAns(stmtNo);
+	std::vector<int> ans = parent.getParent(stmtNo);
     return ans;
 }
 

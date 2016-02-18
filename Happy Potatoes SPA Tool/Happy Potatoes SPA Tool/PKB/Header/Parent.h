@@ -11,7 +11,7 @@ public:
 	Parent();
 	~Parent();
 	void setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLopp);
-	std::vector<int> getAns(int stmtNo);
+	std::vector<int> getParent(int stmtNo);
 	std::vector<int> getChild(int stmtNo);
 
 	bool isParent(int stmt1, int stmt2);
