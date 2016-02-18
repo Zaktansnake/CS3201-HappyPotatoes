@@ -8,13 +8,20 @@
 
 using namespace std;
 
-static string statement;
-
 string patternAssignment(string assignment);
 bool multiplicationDetermine(string statement, int marker);
 bool plusDetermine(string statement, int marker);
+bool minusDetermine(string statement, int marker);
 
-string patternAssignment(string assignment) {
+Pattern::Pattern()
+{
+}
+
+Pattern::~Pattern()
+{
+}
+
+string Pattern::patternAssignment(string assignment) {
 
 	//In-order traversal is given by assignment statement
 	//To understand the depth of each node, we can do a left to right reading and put a bracket around trees have a variable and or constant 
@@ -22,7 +29,7 @@ string patternAssignment(string assignment) {
 	//In example, we get a string assignment, we need to read it left to right, once we encounter a higher order of operation we bracket the variables aroud it
 	//Once completed, method will return the updated string to PKB for storage
 
-	statement = assignment;
+	string statement = assignment;
 
 	if (statement.size() >= 3) {
 		return statement;
@@ -58,6 +65,18 @@ string patternAssignment(string assignment) {
 				}
 			}
 		}
+		else if (c.compare("-")) {
+			if (minusDetermine(statement, i)) {
+				if (i == 1) {
+					temp.insert(0, "(");
+					temp.insert(i + 2, ")");
+				}
+				else {
+					temp.insert(i - 2, "(");
+					temp.insert(i + 2, ")");
+				}
+			}
+		}
 
 		statement = temp;
 	}
@@ -65,7 +84,7 @@ string patternAssignment(string assignment) {
 	return statement;
 }
 
-bool multiplicationDetermine(string statement, int marker) {
+bool Pattern::multiplicationDetermine(string statement, int marker) {
 
 	string c1, c2;
 
@@ -79,12 +98,15 @@ bool multiplicationDetermine(string statement, int marker) {
 	if (c1.compare("+")) {
 		return true;
 	}
+	else if (c1.compare("-")) {
+		return true;
+	}
 	else {
 		return false;
 	}
 }
 
-bool plusDetermine(string statement, int marker) {
+bool Pattern::plusDetermine(string statement, int marker) {
 
 	string c1, c2;
 
@@ -103,6 +125,53 @@ bool plusDetermine(string statement, int marker) {
 	}
 
 	if (c2.compare("+")) {
+		if (c1.compare(")")) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	else if (c2.compare("-")) {
+		if (c1.compare(")")) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
+bool Pattern::minusDetermine(string statement, int marker) {
+
+	string c1, c2;
+
+	if (marker == 1) {
+		c1 = statement.substr(marker - 1, marker - 1);
+	}
+	else {
+		c1 = statement.substr(marker - 2, marker - 2);
+	}
+
+	if (marker == statement.size() - 1) {
+		c2 = statement.substr(marker + 1, marker + 1);
+	}
+	else {
+		c2 = statement.substr(marker + 2, marker + 2);
+	}
+
+	if (c2.compare("+")) {
+		if (c1.compare(")")) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	else if (c2.compare("-")) {
 		if (c1.compare(")")) {
 			return false;
 		}
