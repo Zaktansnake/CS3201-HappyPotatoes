@@ -131,7 +131,8 @@ ParseResult ParseResult::checkAndParseQuery(string query) {
 		}
 		else {
 			conditionP1 = checker;
-			appendP1 = declarationTable[checker];
+			if (regex_match(checker, regex("\\d+"))) appendP1 = "stmt";
+			else appendP1 = declarationTable[checker];
 		}
 		checker = sm[5];
 		if (conditionT == "Uses" || conditionT == "Modifies") {
@@ -187,7 +188,8 @@ ParseResult ParseResult::checkAndParseQuery(string query) {
 			}
 			else {
 				conditionP1 = checker;
-				appendP1 = declarationTable[checker];
+				if (regex_match(checker, regex("\\d+"))) appendP1 = "stmt";
+				else appendP1 = declarationTable[checker];
 			}
 			checker = sm[10];
 			if (conditionT == "Uses" || conditionT == "Modifies") {
