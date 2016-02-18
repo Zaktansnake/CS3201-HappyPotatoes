@@ -14,6 +14,8 @@ using namespace std;
 
 vector<pair<int, string>> varTableLeft;  // (Modifies) int -> stmtLine, string -> variable
 vector<pair<int, string>> varTableRight; // ()
+map<string, vector<int>> whileTable;
+map<string, vector<int>> assignTable;
 
 void addToVarTable(int position, string varName, int stmtLine);
 
@@ -23,6 +25,13 @@ VarTable::VarTable(){
 VarTable::~VarTable()
 {
 }
+
+// ---------------------- while table ---------------------------------
+
+
+
+
+// ------------------------ Modifies ----------------------------------
 
 // stmtLine1 = parent; stmtLine2 = the position of bracket end
 vector<string> VarTable::findVariableLeft(int stmtLine1, int stmtLine2) {
@@ -60,15 +69,35 @@ void VarTable::addModifiesProcTable(string varName, string procedure) {
 	return Modifies::addModifiesProcedureTable(varName, procedure);
 }
 
-bool VarTable::isModifiesBoolean(string stmtLine, string variable) {
+//--------------------------- PQL -------------------------------------
+
+vector<string> VarTable::getModifiesProc(string secondPerimeter) {
+	vector<string> ans = Modifies::getModifiesProcTable(secondPerimeter);
+	return ans;
+}
+
+vector<int>  VarTable::getModifiesAssign(string secondPerimeter) {
+	vector<int> ans = Modifies::getModifiesTable(secondPerimeter);
+	return ans;
+}
+
+vector<int> VarTable::getModifiesStmt(string firstPerimeter) {
+	return Modifies::getModifiesTable(firstPerimeter);
+}
+
+vector<int> VarTable::getModifiesWhile(string secondPerimeter) {
+	return Modifies::getModifiesTable(secondPerimeter);
+}
+
+bool VarTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
 	bool result;
-	vector<int> tempVector = Modifies::getModifiesTable(variable);
+	vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
 	if (tempVector.size() == 0) {
 		result = false;
 	}
 	else {
 		int numbValue;
-		istringstream(stmtLine) >> numbValue;
+		istringstream(firstPerimeter) >> numbValue;
 		for (int i = 0; i < tempVector.size(); i++) {
 			if (tempVector[i] == numbValue) {
 				result = true;
@@ -81,36 +110,69 @@ bool VarTable::isModifiesBoolean(string stmtLine, string variable) {
 	return result;
 }
 
-vector<string> VarTable::getModifiesPV(string firstPerimeter) {
-	vector<string> ans = Modifies::getModifiesProcTable(firstPerimeter);
-	return ans;
-}
-
-vector<string> VarTable::getModifiesVariable(string firstPerimeter) {
-	int stmtLine;
-	istringstream(firstPerimeter) >> stmtLine;
-	vector<string> ans;
-
-	for (int i = 0; i < varTableLeft.size(); i++) {
-		if (varTableLeft[i].first == stmtLine) {
-			ans.push_back(varTableLeft[i].second);
+bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
+	bool result;
+	vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
+	if (tempVector.size() == 0) {
+		result = false;
+	}
+	else {
+		int numbValue;
+		istringstream(firstPerimeter) >> numbValue;
+		for (int i = 0; i < tempVector.size(); i++) {
+			if (tempVector[i] == numbValue) {
+				result = true;
+			}
+			else {
+				result = false;
+			}
 		}
 	}
-	return ans;
+	return result;
 }
 
-vector<string> VarTable::getModifiesProc(string firstPerimeter) {
-	vector<string> ans = Modifies::getModifiesProcTable(firstPerimeter);
-	return ans;
+bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
+	bool result;
+	vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
+	if (tempVector.size() == 0) {
+		result = false;
+	}
+	else {
+		int numbValue;
+		istringstream(firstPerimeter) >> numbValue;
+		for (int i = 0; i < tempVector.size(); i++) {
+			if (tempVector[i] == numbValue) {
+				result = true;
+			}
+			else {
+				result = false;
+			}
+		}
+	}
+	return result;
 }
 
-vector<int> VarTable::getModifiesStmt(string firstPerimeter) {
-	return Modifies::getModifiesTable(firstPerimeter);
+bool VarTable::isModifiesWhile(string firstPerimeter, string secondPerimeter) {
+	bool result;
+	vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
+	if (tempVector.size() == 0) {
+		result = false;
+	}
+	else {
+		int numbValue;
+		istringstream(firstPerimeter) >> numbValue;
+		for (int i = 0; i < tempVector.size(); i++) {
+			if (tempVector[i] == numbValue) {
+				result = true;
+			}
+			else {
+				result = false;
+			}
+		}
+	}
+	return result;
 }
 
-vector<int> VarTable::getModifiesAssg(string firstPerimeter) {
-	return Modifies::getModifiesTable(firstPerimeter);
-}
 
 //-------------------------------Uses---------------------------
 
@@ -142,43 +204,14 @@ vector<string> VarTable::findVariableRight(int stmtLine1, int stmtLine2) {
 
 //--------------------------- PQL SIDE ----------------------------------
 
-bool VarTable::isUsesBoolean(string stmtLine, string variable) {
-	bool result;
-	vector<int> tempVector = Uses::getUsesTable(variable);
-	if (tempVector.size() == 0) {
-		result = false;
-	} else {
-		int numbValue;
-		istringstream(stmtLine) >> numbValue;
-		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i] == numbValue) {
-				result = true;
-			} else {
-				result = false;
-			}
-		}
-	}
-	return result;
+vector<string> VarTable::getUsesProc(string stmt1) {
+	// stmt1 -> variable
+	return Uses::getUsesProcTable(stmt1);
 }
 
-vector<string> VarTable::isUsesVariable(string stmt1) {
+vector<int> VarTable::getUsesAssig(string stmt1) {
 	// stmt1 -> stmtLine
-	int stmtLine;
-	istringstream(stmt1) >> stmtLine;
-	vector<string> ans;
-
-	for (int i = 0; i < varTableRight.size(); i++) {
-		if (varTableRight[i].first == stmtLine) {
-			ans.push_back(varTableRight[i].second);
-		}
-	}
-	return ans;
-}
-
-vector<string> VarTable::isUsesProcTable(string stmt1) {
-	// stmt1 -> procName
-	vector<string> ans = Uses::getUsesProcTable(stmt1);
-	return ans;
+	return Uses::getUsesTable(stmt1);
 }
 
 vector<int> VarTable::getUsesStmt(string stmt1) {
@@ -186,17 +219,95 @@ vector<int> VarTable::getUsesStmt(string stmt1) {
 	return Uses::getUsesTable(stmt1);
 }
 
-vector<int> VarTable::getUsesAssg(string stmt1) {
+vector<int> VarTable::getUsesWhile(string stmt1) {
 	// stmt1 -> stmtLine
 	return Uses::getUsesTable(stmt1);
 }
 
-vector<string> VarTable::getUsesProc(string stmt1) {
-	// stmt1 -> variable
-	return Uses::getUsesProcTable(stmt1);
+bool VarTable::isUsesProc(string stmtLine, string variable) {
+	bool result;
+	vector<int> tempVector = Uses::getUsesTable(variable);
+	if (tempVector.size() == 0) {
+		result = false;
+	}
+	else {
+		int numbValue;
+		istringstream(stmtLine) >> numbValue;
+		for (int i = 0; i < tempVector.size(); i++) {
+			if (tempVector[i] == numbValue) {
+				result = true;
+			}
+			else {
+				result = false;
+			}
+		}
+	}
+	return result;
 }
 
-//------------------------------------------------------------------------
+bool VarTable::isUsesAssign(string stmtLine, string variable) {
+	bool result;
+	vector<int> tempVector = Uses::getUsesTable(variable);
+	if (tempVector.size() == 0) {
+		result = false;
+	}
+	else {
+		int numbValue;
+		istringstream(stmtLine) >> numbValue;
+		for (int i = 0; i < tempVector.size(); i++) {
+			if (tempVector[i] == numbValue) {
+				result = true;
+			}
+			else {
+				result = false;
+			}
+		}
+	}
+	return result;
+}
+
+bool VarTable::isUsesStmt(string stmtLine, string variable) {
+	bool result;
+	vector<int> tempVector = Uses::getUsesTable(variable);
+	if (tempVector.size() == 0) {
+		result = false;
+	}
+	else {
+		int numbValue;
+		istringstream(stmtLine) >> numbValue;
+		for (int i = 0; i < tempVector.size(); i++) {
+			if (tempVector[i] == numbValue) {
+				result = true;
+			}
+			else {
+				result = false;
+			}
+		}
+	}
+	return result;
+}
+
+bool VarTable::isUsesWhile(string stmtLine, string variable) {
+	bool result;
+	vector<int> tempVector = Uses::getUsesTable(variable);
+	if (tempVector.size() == 0) {
+		result = false;
+	}
+	else {
+		int numbValue;
+		istringstream(stmtLine) >> numbValue;
+		for (int i = 0; i < tempVector.size(); i++) {
+			if (tempVector[i] == numbValue) {
+				result = true;
+			}
+			else {
+				result = false;
+			}
+		}
+	}
+	return result;
+}
+
 
 vector<int> VarTable::getUsesTable(string varName) {
 	return Uses::getUsesTable(varName);
@@ -210,7 +321,6 @@ void VarTable::addDataToUses(string varName, int stmtLine) {
 void VarTable::addUsesProcTable(string varName, string procedure) {
 	return Uses::addUsesProcedureTable(varName,procedure);
 }
-
 
 // add the var to varTableLeft or varTableRight
 void addToVarTable(int position, string varName, int stmtLine) {
