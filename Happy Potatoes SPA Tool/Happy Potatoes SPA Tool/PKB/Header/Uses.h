@@ -15,14 +15,18 @@ public:
 
 	// get UsesTable
 	static std::vector<int> getUsesTable(string varName);
+	static std::vector<string> Uses::getUsesProcTable(string procName);
 
 	// add item to UsesTable
 	static void addUsesTable(string varName, int stmtLine);
 
+	static void addUsesProcedureTable(string procedure, string varName);
+
 	static bool isContains(string varName);
 
-private:
 	static int findPosition(string varName);
+
+private:
 
 };
 

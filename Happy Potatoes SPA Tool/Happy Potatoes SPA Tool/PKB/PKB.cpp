@@ -21,7 +21,7 @@
 using namespace std;
 
 static ifstream myFile;
-static string str, word;
+static string str, word, procname;
 static ostringstream oss;
 stack<pair<string, int>> bracstack;
 bool firstTime;
@@ -113,7 +113,7 @@ void procedure() {
 	}
 	else {
 		ProcTable::addTableData(v[1], stmtLine);
-
+		procname = v[1];
 		if (v[2].compare("{") != 0) {
 			throw std::runtime_error("Error: Structure");
 		}
@@ -181,10 +181,12 @@ void assign() {
 		} else if (!is_number(var)) {
 			if (i == 0) {
 				VarTable::addDataToModifies(var, stmtLine);
+				VarTable::addModifiesProcTable(procname, v[i]);
 			} else if (var.compare("=") == 0 || var.compare("+") == 0 || var.compare("-") == 0 || var.compare(";") == 0 || var.compare("*") == 0){
 				
 			} else {
 				VarTable::addDataToUses(var, stmtLine);
+				VarTable::addUsesProcTable(procname, v[i]);
 			}
 		}
 	}

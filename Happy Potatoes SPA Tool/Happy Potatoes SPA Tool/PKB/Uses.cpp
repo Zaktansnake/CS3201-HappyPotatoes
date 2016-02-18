@@ -10,10 +10,12 @@
 
 using namespace std;
 
-map<string, int> UsesMap;
+map<string, int> UsesMap; // variable name
 map<int, vector<int>> UsesTable;
+map<string, vector<string>> UsesProcedureTable;
 
 int insertToUsesMap(string varName);
+vector<string> findPositionProc(string procName);
 
 Uses::Uses()
 {
@@ -37,6 +39,17 @@ void Uses::addUsesTable(string varName, int stmtLine) {
 	UsesTable[index].push_back(stmtLine);
 }
 
+void Uses::addUsesProcedureTable(string procedure, string varName) {
+	if (UsesProcedureTable.size() > 0) {
+		vector<string> ans = findPositionProc(procedure);
+		if (ans.size() > 0) {
+			UsesProcedureTable[procedure].push_back(varName);
+		}
+	} else {
+		UsesProcedureTable[procedure].push_back(varName);
+	}
+}
+
 // return the index of the varName in the map
 int Uses::findPosition(string varName) {
 	map<string, int>::iterator iter;
@@ -46,6 +59,18 @@ int Uses::findPosition(string varName) {
 	}
 	else {
 		return -1;
+	}
+}
+
+// return vector<string> of the varName in the map
+vector<string> findPositionProc(string procName) {
+	map<string, vector<string>>::iterator i = UsesProcedureTable.find(procName);
+	if (i == UsesProcedureTable.end()) {
+		vector<string> ans;
+		return ans;
+	}
+	else {
+		return i->second;
 	}
 }
 
@@ -66,7 +91,18 @@ bool Uses::isContains(string varName) {
 
 std::vector<int> Uses::getUsesTable(string varName)
 {
-	return UsesTable[findPosition(varName)];
+	int index = findPosition(varName);
+	if (index == -1) {
+		vector<int> ans;
+		return ans;
+	} else {
+		return UsesTable[index];
+	}
+}
+
+std::vector<string> Uses::getUsesProcTable(string procName)
+{
+	return findPositionProc(procName);
 }
 
 int insertToUsesMap(string varName) {

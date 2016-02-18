@@ -125,14 +125,14 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 	int secondPerimeterInt;
 
 	if (SelectParameterVector.at(0) == "boolean") {
-		
-		if ((!is_number(firstPerimeter)) && (!is_number(secondPerimeter))){
-		
+
+		if ((!is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
+
 		}
 		if ((!is_number(firstPerimeter)) && (is_number(secondPerimeter))) {
-			
+
 		}
-		if ((is_number(firstPerimeter)) && (!is_number(secondPerimeter))){
+		if ((is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
 
 		}
 	}
@@ -158,39 +158,44 @@ void PatternResults(std::vector<std::string> SelectParameterVector, std::string 
 	}
 }
 
-
-
 void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	//if there is no tuple	
+	if (SelectParameterVector.size() == noTuple) {
+
+		std::string SelectParameter = SelectParameterVector.at(noTuple);
+		//if the selectparameter is a boolean
+		if (SelectParameter == "Boolean") {
+			BooleanClausesQueryResults.push_back(VarTable::isUsesBoolean(firstPerimeter, secondPerimeter));
+		}
+		//if the selectParameter is a variable and the first and second perimeter is stmt and variable 
+		if ((SelectParameter == "Variable") && (firstSecondPerimeterType == "SV")) {
+			VariableClausesQueryResults.push_back(VarTable::isUsesVariable(firstPerimeter));
+		}
+		//if the selectParameter is a variable and the first and second perimeter is proc and variable
+		if ((SelectParameter == "Variable") && (firstSecondPerimeterType == "PV")) {
+			VariableClausesQueryResults.push_back(VarTable::isUsesProcTable(firstPerimeter));
+		}
+		//if the selectParameter is a stmt
+		if ((SelectParameter == "Stmt")) {
+			StmtLineClausesQueryResults.push_back(VarTable::getUsesStmt(firstPerimeter));
+		}
+		if ((SelectParameter == "Assignment")) {
+			StmtLineClausesQueryResults.push_back(VarTable::getUsesAssg(firstPerimeter));
+		}
+		//if the selectParameter is a proc
+		if ((SelectParameter == "Proc")) {
+			ProcedureClausesQueryResults.push_back(VarTable::getUsesProc(firstPerimeter));
+		}
+	}
+	// if there are a tuple
+	else {
 
 
-	std::string SelectParameter = SelectParameterVector.at(noTuple);
-	//if the selectparameter is a boolean
-	if (SelectParameter == "Boolean") {
-		BooleanClausesQueryResults.push_back(isUses(firstPerimeter, secondPerimeter));
+
 	}
-	//if the selectParameter is a variable and the first and second perimeter is stmt and variable 
-	if ((SelectParameter == "Variable") && (firstSecondPerimeterType == "SV")) {
-		VariableClausesQueryResults.push_back(isUses(firstPerimeter));
-	}
-	//if the selectParameter is a variable and the first and second perimeter is proc and variable
-	if ((SelectParameter == "Variable") && (firstSecondPerimeterType == "PV")) {
-		VariableClausesQueryResults.push_back(isUses(firstPerimeter));
-	}
-	//if the selectParameter is a stmt
-	if ((SelectParameter == "Stmt")) {
-		StmtLineClausesQueryResults.push_back(getUses(firstPerimeter));
-	}
-	if ((SelectParameter == "Assignment")) {
-		StmtLineClausesQueryResults.push_back(getUses(firstPerimeter));
-	}
-	//if the selectParameter is a proc
-	if ((SelectParameter == "Procedure")) {
-		ProcedureClausesQueryResults.push_back(getUses(firstPerimeter));
-	}
+
 }
-
 
 
 void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
@@ -214,26 +219,31 @@ void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 f
 void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 
+	if (SelectParameterVector.size() == 1) {
 
+		if (SelectParameterVector.at(0) == "Boolean") {
+			BooleanClausesQueryResults.push_back(VarTable::isModifiesBoolean(firstPerimeter, secondPerimeter));
+		}
+		if ((SelectParameterVector.at(0) == "Variable") && (firstSecondPerimeterType == "PV")) {
+			VariableClausesQueryResults.push_back(VarTable::getModifiesPV(firstPerimeter));
+		}
+		if ((SelectParameterVector.at(0) == "Variable") && (firstSecondPerimeterType == "SV")) {
+			VariableClausesQueryResults.push_back(VarTable::getModifiesVariable(firstPerimeter));
+		}
+		if ((SelectParameterVector.at(0) == "Procedure")) {
+			ProcedureClausesQueryResults.push_back(VarTable::getModifiesProc(firstPerimeter));
+		}
+		if ((SelectParameterVector.at(0) == "Stmt")) {
+			StmtLineClausesQueryResults.push_back(VarTable::getModifiesStmt(firstPerimeter));
+		}
+		if ((SelectParameterVector.at(0) == "Assignment")) {
+			StmtLineClausesQueryResults.push_back(VarTable::getModifiesAssg(firstPerimeter));
+		}
+	}
+	else {
 
-	if (SelectParameterVector.at(0) == "Boolean") {
-		BooleanClausesQueryResults.push_back(isModifies(firstPerimeter, secondPerimeter));
 	}
-	if ((SelectParameterVector.at(0) == "Variable") && (firstSecondPerimeterType == "PV")) {
-		VariableClausesQueryResults.push_back(getModifies(firstPerimeter));
-	}
-	if ((SelectParameterVector.at(0) == "Variable") && (firstSecondPerimeterType == "SV")) {
-		VariableClausesQueryResults.push_back(getModifies(firstPerimeter));
-	}
-	if ((SelectParameterVector.at(0) == "Procedure")) {
-		ProcedureClausesQueryResults.push_back(getModifies(firstPerimeter));
-	}
-	if ((SelectParameterVector.at(0) == "Stmt")) {
-		StmtLineClausesQueryResults.push_back(getModifies(firstPerimeter));
-	}
-	if ((SelectParameterVector.at(0) == "Assignment")) {
-		StmtLineClausesQueryResults.push_back(getModifies(firstPerimeter));
-	}
+
 }
 
 
@@ -443,7 +453,6 @@ QueryEvaluator::QueryEvaluator()
 QueryEvaluator::~QueryEvaluator()
 {
 }
-
 
 
 
