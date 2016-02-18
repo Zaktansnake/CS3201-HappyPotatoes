@@ -31,7 +31,7 @@ string Patterns::patternAssignment(string assignment) {
 
 	string statement = assignment;
 
-	if (statement.size() >= 3) {
+	if (statement.size() <= 3) {
 		return statement;
 	}
 
@@ -39,41 +39,41 @@ string Patterns::patternAssignment(string assignment) {
 		//cout << statement.size();
 
 		string temp = statement;
-		string c = statement.substr(i, i + 1);
+		string c = statement.substr(i, 1);
 
-		if (c.compare("*")) {
+		if (c.compare("*") == 0) {
 			if (multiplicationDetermine(statement, i)) {
 				if (i == 1) {
 					temp.insert(0, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 				else {
 					temp.insert(i - 2, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 			}
 		}
-		else if (c.compare("+")) {
+		else if (c.compare("+") == 0) {
 			if (plusDetermine(statement, i)) {
 				if (i == 1) {
 					temp.insert(0, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 				else {
 					temp.insert(i - 2, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 			}
 		}
-		else if (c.compare("-")) {
+		else if (c.compare("-") == 0) {
 			if (minusDetermine(statement, i)) {
 				if (i == 1) {
 					temp.insert(0, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 				else {
 					temp.insert(i - 2, "(");
-					temp.insert(i + 2, ")");
+					temp.insert(i + 3, ")");
 				}
 			}
 		}
@@ -86,26 +86,63 @@ string Patterns::patternAssignment(string assignment) {
 
 bool Patterns::multiplicationDetermine(string statement, int marker) {
 
-	string c;
+	string c1, c2;
 
 	if (marker == 1) {
-		return true;
+		c2 = statement.substr(marker + 2, 1);
+	}
+	else if (marker == 2) {
+		return false;
 	}
 	else if (marker == statement.size() - 1) {
 		return true;
 	}
 	else {
-		c = statement.substr(marker + 2, marker + 3);
+		c1 = statement.substr(marker - 3, 1);
+		c2 = statement.substr(marker + 2, 1);
 	}
 
-	if (c.compare("*")) {
-		return true;
+	if (c2.compare("*") == 0) {
+		if (c1.compare("+") == 0) {
+			return false;
+		}
+		else if (c1.compare("-") == 0) {
+			return false;
+		}
+		else if (c1.compare("*") == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
-	else if (c.compare("+")) {
-		return true;
+	else if (c2.compare("+") == 0) {
+		if (c1.compare("+") == 0) {
+			return false;
+		}
+		else if (c1.compare("-") == 0) {
+			return false;
+		}
+		else if (c1.compare("*") == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
-	else if (c.compare("-")) {
-		return true;
+	else if (c2.compare("-") == 0) {
+		if (c1.compare("+") == 0) {
+			return false;
+		}
+		else if (c1.compare("-") == 0) {
+			return false;
+		}
+		else if (c1.compare("*") == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	else {
 		return false;
@@ -114,23 +151,49 @@ bool Patterns::multiplicationDetermine(string statement, int marker) {
 
 bool Patterns::plusDetermine(string statement, int marker) {
 
-	string c;
+	string c1, c2;
 
 	if (marker == 1) {
-		return true;
+		c2 = statement.substr(marker + 2, 1);
+	}
+	else if (marker == 2) {
+		return false;
 	}
 	else if (marker == statement.size() - 1) {
 		return false;
 	}
 	else {
-		c = statement.substr(marker + 2, marker + 3);
+		c1 = statement.substr(marker - 3, 1);
+		c2 = statement.substr(marker + 2, 1);
 	}
 
-	if (c.compare("+")) {
-		return true;
+	if (c2.compare("+") == 0) {
+		if (c1.compare("+") == 0) {
+			return false;
+		}
+		else if (c1.compare("-") == 0) {
+			return false;
+		}
+		else if (c1.compare("*") == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
-	else if (c.compare("-")) {
-		return true;
+	else if (c2.compare("-") == 0) {
+		if (c1.compare("+") == 0) {
+			return false;
+		}
+		else if (c1.compare("-") == 0) {
+			return false;
+		}
+		else if (c1.compare("*") == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	else {
 		return false;
@@ -139,23 +202,49 @@ bool Patterns::plusDetermine(string statement, int marker) {
 
 bool Patterns::minusDetermine(string statement, int marker) {
 
-	string c;
+	string c1, c2;
 
 	if (marker == 1) {
-		return true;
-	} 
+		c2 = statement.substr(marker + 2, 1);
+	}
+	else if (marker == 2) {
+		return false;
+	}
 	else if (marker == statement.size() - 1) {
 		return false;
 	}
 	else {
-		c = statement.substr(marker + 2, marker + 3);
+		c1 = statement.substr(marker - 3, 1);
+		c2 = statement.substr(marker + 2, 1);
 	}
 
-	if (c.compare("+")) {
-		return true;
+	if (c2.compare("+") == 0) {
+		if (c1.compare("+") == 0) {
+			return false;
+		}
+		else if (c1.compare("-") == 0) {
+			return false;
+		}
+		else if (c1.compare("*") == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
-	else if (c.compare("-")) {
-		return true;
+	else if (c2.compare("-") == 0) {
+		if (c1.compare("+") == 0) {
+			return false;
+		}
+		else if (c1.compare("-") == 0) {
+			return false;
+		}
+		else if (c1.compare("*") == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 	else {
 		return false;

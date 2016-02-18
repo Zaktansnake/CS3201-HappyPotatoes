@@ -1,12 +1,12 @@
 #include <string>
 #include <vector>
-
+#include "../Header/ParseResult.h"
 
 class QueryEvaluator
 {
 public:
 
-	static std::vector<std::string> startEvaluator();
+    static std::vector<string> startEvaluator(ParseResult);
 	QueryEvaluator();
 	~QueryEvaluator();
 };
