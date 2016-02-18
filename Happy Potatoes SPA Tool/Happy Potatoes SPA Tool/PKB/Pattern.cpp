@@ -29,39 +29,36 @@ string patternAssignment(string assignment) {
 	}
 
 	for (int i = 0; i < statement.size(); ++i) {
-		cout << statement.size();
+		//cout << statement.size();
 
-		char arr[statement.size];
-		strcpy_s(arr, 1000, statement.c_str());
+		string temp = statement;
+		string c = statement.substr(i);
 
-		char c = arr[i];
-
-		if (c == '*') {
+		if (c.compare("*")) {
 			if (multiplicationDetermine(statement, i)) {
 				if (i == 1) {
-					arr.insert(arr.begin(), '(');
-					arr.insert(arr.begin() + (i + 2), ')');
+					temp.insert(0, "(");
+					temp.insert(i + 2, ")");
 				}
 				else {
-					arr.insert(arr.begin() + (i - 2), '(');
-					arr.insert(arr.begin() + (i + 2), ')');
+					temp.insert(i - 2, "(");
+					temp.insert(i + 2, ")");
 				}
 			}
 		}
-		else if (c == '+') {
+		else if (c.compare("+")) {
 			if (plusDetermine(statement, i)) {
 				if (i == 1) {
-					arr.insert(arr.begin(), '(');
-					arr.insert(arr.begin() + (i + 2), ')');
+					temp.insert(0, "(");
+					temp.insert(i + 2, ")");
 				}
 				else {
-					arr.insert(arr.begin() + (i - 2), '(');
-					arr.insert(arr.begin() + (i + 2), ')');
+					temp.insert(i - 2, "(");
+					temp.insert(i + 2, ")");
 				}
 			}
 		}
 
-		string temp(arr);
 		statement = temp;
 	}
 
@@ -69,19 +66,17 @@ string patternAssignment(string assignment) {
 }
 
 bool multiplicationDetermine(string statement, int marker) {
-	
-	char c1;
-	char arr[statement.size];
-	strcpy_s(arr, 1000, statement.c_str());
+
+	string c1, c2;
 
 	if (marker == 1) {
 		return true;
 	}
 	else {
-		c1 = arr[marker - 2];
+		c1 = statement.substr(marker - 2);
 	}
 
-	if (c1 == '+') {
+	if (c1.compare("+")) {
 		return true;
 	}
 	else {
@@ -91,26 +86,24 @@ bool multiplicationDetermine(string statement, int marker) {
 
 bool plusDetermine(string statement, int marker) {
 
-	char c1, c2;
-	char arr[statement.size];
-	strcpy_s(arr, 1000, statement.c_str());
+	string c1, c2;
 
 	if (marker == 1) {
-		c1 = arr[marker - 1];
+		c1 = statement.substr(marker - 1);
 	}
 	else {
-		c1 = arr[marker - 2];
+		c1 = statement.substr(marker - 2);
 	}
 
-	if (marker == arr.size() - 1) {
-		c2 = arr[marker + 1];
+	if (marker == statement.size() - 1) {
+		c2 = statement.substr(marker + 1);
 	}
 	else {
-		c2 = arr[marker + 2];
+		c2 = statement.substr(marker + 2);
 	}
 
-	if (c2 == '+') {
-		if (c1 == ')') {
+	if (c2.compare("+")) {
+		if (c1.compare(")")) {
 			return false;
 		}
 		else {
