@@ -64,6 +64,10 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 void FollowStarResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeter);
 void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector);
+void setResultsPattern(PatternSet PatternQueryVector, std::vector<std::string> SelectParameterVector);
+void stmtFinalString();
+void ProcedureFinalString();
+void variableFinalString();
 //assess parseResultVector
 
 
@@ -75,13 +79,13 @@ void assessParseResult(ParseResult pr) {
 	//get vector of clauses object from parseResult object
 	std::vector<Clause> ClausesVector = pr.getClauses();
 	//get the vector of pattern queries
-	std::vector<Pattern> PatternQueryVector = pr.getPatterns();
+	PatternSet PatternQueryVector = pr.getPatterns();
 	assessClauses(ClausesVector, SelectParameterVector);
-	Pattern(PatternQueryVector, SelectParameterVector);
+	setResultsPattern(PatternQueryVector, SelectParameterVector);
 	MakeFinalString(SelectParameterVector);
 }
 
-void Pattern(std::vector<Pattern> PatternQueryVector, std::vector<std::string> SelectParameterVector)
+void setResultsPattern(PatternSet PatternQueryVector, std::vector<std::string> SelectParameterVector)
 {
 	std::string firstPatternParameter = PatternQueryVector.at(0).getFirstParameter();
 	std::string secondPatternParameter = PatternQueryVector.at(0).getSecondParameter();
@@ -296,10 +300,10 @@ void PatternResults(std::vector<std::string> SelectParameterVector, std::string 
 	std::string SelectParameter = SelectParameterVector.at(noTuple);
 	//if the selectparameter is a boolean
 	if (SelectParameter == "assign") {
-		StmtLineClausesQueryResults.push_back(Pattern::getPattern(firstPerimeter, secondPerimeter));
+		//StmtLineClausesQueryResults.push_back(Pattern::getPattern(firstPerimeter, secondPerimeter));
 	}
 	if (SelectParameter == "Boolean") {
-		BooleanClausesQueryResults.push_back(Pattern::isttern(firstPerimeter, secondPerimeter));
+		//BooleanClausesQueryResults.push_back(Pattern::isttern(firstPerimeter, secondPerimeter));
 	}
 }
 
@@ -701,7 +705,7 @@ void ProcedureFinalString() {
 	}
 
 }
-std::vector<std::string> QueryEvaluator::startEvaluator(ParseResult mustPr)
+std::vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
 
 	assessParseResult(mustPr);

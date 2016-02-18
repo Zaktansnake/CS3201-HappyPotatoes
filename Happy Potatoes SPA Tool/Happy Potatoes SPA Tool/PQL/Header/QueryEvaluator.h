@@ -6,7 +6,7 @@ class QueryEvaluator
 {
 public:
 
-    std::vector<std::string> startEvaluator(ParseResult);
+    static std::vector<string> startEvaluator(ParseResult);
 	QueryEvaluator();
 	~QueryEvaluator();
 };

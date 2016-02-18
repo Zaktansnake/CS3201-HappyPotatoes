@@ -37,7 +37,8 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 	ParseResult pr = ParseResult();
 	ParseResult mustpr =  pr.generateParseResult(declarationSenctence,QuerySentence);
 	QueryEvaluator Qe;
-	Qe.startEvaluator(mustpr);
+	std::vector<std::string> resultsString = Qe.startEvaluator(mustpr);
+	results = std::list<std::string>(resultsString.begin(), resultsString.end());
   // store the answers to the query in the results list (it is initially empty)
   // each result must be a string.
 }

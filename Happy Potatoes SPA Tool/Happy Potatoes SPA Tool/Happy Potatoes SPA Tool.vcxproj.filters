@@ -61,9 +61,6 @@
     <ClCompile Include="PKB\Parent.cpp">
       <Filter>PKB</Filter>
     </ClCompile>
-    <ClCompile Include="PKB\Patterns.cpp">
-      <Filter>PKB</Filter>
-    </ClCompile>
     <ClCompile Include="PQL\Clause.cpp">
       <Filter>PQL</Filter>
     </ClCompile>
@@ -75,6 +72,9 @@
     </ClCompile>
     <ClCompile Include="PQL\QueryEvaluator.cpp">
       <Filter>PQL</Filter>
+    </ClCompile>
+    <ClCompile Include="PKB\Patterns.cpp">
+      <Filter>PKB</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -120,9 +120,6 @@
     <ClInclude Include="PKB\Header\Parent.h">
       <Filter>PKB\Header</Filter>
     </ClInclude>
-    <ClInclude Include="PKB\Header\Patterns.h">
-      <Filter>PKB\Header</Filter>
-    </ClInclude>
     <ClInclude Include="PQL\Header\Clause.h">
       <Filter>PQL\Header</Filter>
     </ClInclude>
@@ -134,6 +131,9 @@
     </ClInclude>
     <ClInclude Include="PQL\Header\QueryEvaluator.h">
       <Filter>PQL\Header</Filter>
+    </ClInclude>
+    <ClInclude Include="PKB\Header\Patterns.h">
+      <Filter>PKB\Header</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
