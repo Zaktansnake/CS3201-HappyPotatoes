@@ -4,7 +4,7 @@
 #include <string>
 #include <vector>
 
-#include "./Header/Pattern.h"
+#include "Header/Pattern.h"
 
 using namespace std;
 
@@ -29,12 +29,12 @@ string patternAssignment(string assignment) {
 	}
 
 	for (int i = 0; i < statement.size(); ++i) {
-		//cout << statement.size();
+		cout << statement.size();
 
 		char arr[statement.size];
-		strcpy(arr, statement.c_str());
+		strcpy_s(arr, 1000, statement.c_str());
 
-		char &c = arr[i];
+		char c = arr[i];
 
 		if (c == '*') {
 			if (multiplicationDetermine(statement, i)) {
@@ -72,7 +72,7 @@ bool multiplicationDetermine(string statement, int marker) {
 	
 	char c1;
 	char arr[statement.size];
-	strcpy(arr, statement.c_str());
+	strcpy_s(arr, 1000, statement.c_str());
 
 	if (marker == 1) {
 		return true;
@@ -93,7 +93,7 @@ bool plusDetermine(string statement, int marker) {
 
 	char c1, c2;
 	char arr[statement.size];
-	strcpy(arr, statement.c_str());
+	strcpy_s(arr, 1000, statement.c_str());
 
 	if (marker == 1) {
 		c1 = arr[marker - 1];
