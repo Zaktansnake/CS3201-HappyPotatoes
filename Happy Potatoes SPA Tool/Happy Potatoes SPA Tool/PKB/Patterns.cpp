@@ -86,19 +86,25 @@ string Patterns::patternAssignment(string assignment) {
 
 bool Patterns::multiplicationDetermine(string statement, int marker) {
 
-	string c1, c2;
+	string c;
 
 	if (marker == 1) {
 		return true;
 	}
-	else {
-		c1 = statement.substr(marker - 2, marker - 1);
-	}
-
-	if (c1.compare("+")) {
+	else if (marker == statement.size() - 1) {
 		return true;
 	}
-	else if (c1.compare("-")) {
+	else {
+		c = statement.substr(marker + 2, marker + 3);
+	}
+
+	if (c.compare("*")) {
+		return true;
+	}
+	else if (c.compare("+")) {
+		return true;
+	}
+	else if (c.compare("-")) {
 		return true;
 	}
 	else {
@@ -108,37 +114,23 @@ bool Patterns::multiplicationDetermine(string statement, int marker) {
 
 bool Patterns::plusDetermine(string statement, int marker) {
 
-	string c1, c2;
+	string c;
 
 	if (marker == 1) {
-		c1 = statement.substr(marker - 1, marker);
+		return true;
+	}
+	else if (marker == statement.size() - 1) {
+		return false;
 	}
 	else {
-		c1 = statement.substr(marker - 2, marker - 1);
+		c = statement.substr(marker + 2, marker + 3);
 	}
 
-	if (marker == statement.size() - 1) {
-		c2 = statement.substr(marker, marker + 1);
+	if (c.compare("+")) {
+		return true;
 	}
-	else {
-		c2 = statement.substr(marker + 2, marker + 3);
-	}
-
-	if (c2.compare("+")) {
-		if (c1.compare(")")) {
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
-	else if (c2.compare("-")) {
-		if (c1.compare(")")) {
-			return false;
-		}
-		else {
-			return true;
-		}
+	else if (c.compare("-")) {
+		return true;
 	}
 	else {
 		return false;
@@ -147,37 +139,23 @@ bool Patterns::plusDetermine(string statement, int marker) {
 
 bool Patterns::minusDetermine(string statement, int marker) {
 
-	string c1, c2;
+	string c;
 
 	if (marker == 1) {
-		c1 = statement.substr(marker - 1, marker);
+		return true;
+	} 
+	else if (marker == statement.size() - 1) {
+		return false;
 	}
 	else {
-		c1 = statement.substr(marker - 2, marker - 1);
+		c = statement.substr(marker + 2, marker + 3);
 	}
 
-	if (marker == statement.size() - 1) {
-		c2 = statement.substr(marker, marker + 1);
+	if (c.compare("+")) {
+		return true;
 	}
-	else {
-		c2 = statement.substr(marker + 2, marker + 3);
-	}
-
-	if (c2.compare("+")) {
-		if (c1.compare(")")) {
-			return false;
-		}
-		else {
-			return true;
-		}
-	}
-	else if (c2.compare("-")) {
-		if (c1.compare(")")) {
-			return false;
-		}
-		else {
-			return true;
-		}
+	else if (c.compare("-")) {
+		return true;
 	}
 	else {
 		return false;
