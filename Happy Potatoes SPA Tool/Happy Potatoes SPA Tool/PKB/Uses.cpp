@@ -15,7 +15,7 @@ map<int, vector<int>> UsesTable;
 map<string, vector<string>> UsesProcedureTable;
 
 int insertToUsesMap(string varName);
-vector<string> findPositionProc(string procName);
+vector<string> findPositionProcUses(string procName);
 
 Uses::Uses()
 {
@@ -41,7 +41,7 @@ void Uses::addUsesTable(string varName, int stmtLine) {
 
 void Uses::addUsesProcedureTable(string procedure, string varName) {
 	if (UsesProcedureTable.size() > 0) {
-		vector<string> ans = findPositionProc(procedure);
+		vector<string> ans = findPositionProcUses(procedure);
 		if (ans.size() > 0) {
 			UsesProcedureTable[procedure].push_back(varName);
 		}
@@ -63,7 +63,7 @@ int Uses::findPosition(string varName) {
 }
 
 // return vector<string> of the varName in the map
-vector<string> findPositionProc(string procName) {
+vector<string> findPositionProcUses(string procName) {
 	map<string, vector<string>>::iterator i = UsesProcedureTable.find(procName);
 	if (i == UsesProcedureTable.end()) {
 		vector<string> ans;
@@ -102,7 +102,7 @@ std::vector<int> Uses::getUsesTable(string varName)
 
 std::vector<string> Uses::getUsesProcTable(string procName)
 {
-	return findPositionProc(procName);
+	return findPositionProcUses(procName);
 }
 
 int insertToUsesMap(string varName) {

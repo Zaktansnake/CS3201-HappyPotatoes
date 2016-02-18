@@ -24,29 +24,6 @@ static bool is_file_empty(ifstream file);
 static bool is_file_exist(string file);
 static bool is_number(const std::string& s);
 
-enum tokenType {
-	TPROGRAM = 0, //main program
-	TPROCEDURE, //"procedure"
-	TPNAME, //proc_name
-	TLBRAC, //"{"
-	TRBRAC, //"}"
-	TLRBRAC, //"("
-	TRRBRAC, //")"
-	TSEMICOLON,
-	TEQUAL,
-	TVARNAME,
-	TCONSTANT, //const_value
-	TIF,
-	TELSE,
-	TTHEN,
-	TWHILE,
-	TPLUS,
-	TMINUS,
-	TTIMES,
-	TCALL,
-	TASSIGN
-};
-
 int Parser::parse(string fileName)
 {
 	if (is_file_exist(fileName)) {
