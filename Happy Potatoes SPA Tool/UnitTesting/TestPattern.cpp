@@ -19,15 +19,15 @@ namespace UnitTesting
 			string testPattern, expectedPattern, returnedPattern;
 
 			// test for patternAssignment
-			testPattern = "a+b+c+d";
-			expectedPattern = "(a+b)+c+d";
+			testPattern = "a+(b+c)+d";
+			expectedPattern = "a+(b+c)+d";
 
 			returnedPattern = p.patternAssignment(testPattern);
 
 			Assert::AreEqual(expectedPattern, returnedPattern);
 
-			testPattern = "a+(b+c)+d";
-			expectedPattern = "a+(b+c)+d";
+			testPattern = "a+b+c+d";
+			expectedPattern = "(a+b)+c+d";
 
 			returnedPattern = p.patternAssignment(testPattern);
 
