@@ -32,7 +32,7 @@ std::vector<std::vector<int>> PatternClausesQueryResults;
 std::vector<std::string> finalStringVector;
 
 stmtTable st;
-VarTable vt;
+//VarTable vt;
 PKB pkb;
 void Intersection();
 int noTuple = 1;
@@ -48,6 +48,21 @@ void ProcIntersection();
 void VarIntersection();
 void findBoolean();
 std::string MakeFinalString(std::vector<std::string> SelectParameter);
+std::string removeDoubleQuote(std::string s);
+void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
+	Parameter2 secondPerimeter, std::string firstSecondPerimeterType);
+bool is_number(std::string s);
+int changeStringToInt(std::string s);
+std::vector<int> getAllInFront(std::string firstPerimeter, std::string secondPerimeter);
+bool checkIfFollowStar(std::string first, std::string second);
+std::vector<int> combineList(std::vector<std::vector<int>> toCombine);
+std::vector<std::vector<int>> findAllListOfChild(std::vector<int> v, std::vector<std::vector<int>> combine);
+std::vector<int> getAllFollowers(std::string firstPerimeter, std::string secondPerimeter);
+std::vector<int> getAllParent(std::vector<int> v);
+void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
+	Parameter2 secondPerimeter, std::string firstSecondPerimeterType);
+void FollowStarResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
+	Parameter2 secondPerimeter, std::string firstSecondPerimeter);
 //assess parseResultVector
 void assessParseResult(vector<ParseResult> prv) {
 
@@ -220,7 +235,7 @@ std::vector<std::vector<int>> findAllListOfChild(std::vector<int> v, std::vector
 	else {
 		for (int index = 0; index < v.size(); index++) {
 			std::vector<std::vector<int>> temp = findAllListOfChild(st.getChild(v.at(index)), combine);
-			for (int index2 = 0; index2 < temp.size; index2++) {
+			for (int index2 = 0; index2 < temp.size(); index2++) {
 				combine.push_back(temp.at(index2));
 			}
 			return combine;
@@ -280,10 +295,9 @@ void PatternResults(std::vector<std::string> SelectParameterVector, std::string 
 	std::string SelectParameter = SelectParameterVector.at(noTuple);
 	//if the selectparameter is a boolean
 	if (SelectParameter == "assign"){
-		StmtLineClausesQueryResults.push_back(getPattern(firstPerimeter, secondPerimeter));
+		//StmtLineClausesQueryResults.push_back(Pattern::getPattern(firstPerimeter, secondPerimeter));
 	}
 }
-
 
 
 void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
@@ -291,42 +305,41 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 	
 	if (SelectParameterVector.at(0) == "proc") {
 
-		ProcedureClausesQueryResults.push_back(vt.getUsesProc(removeDoubleQuote(secondPerimeter)));
+		ProcedureClausesQueryResults.push_back(VarTable::getUsesProc(removeDoubleQuote(secondPerimeter)));
 	}
 	if (SelectParameterVector.at(0) == "assign") {
 
-		StmtLineClausesQueryResults.push_back(vt.getUsesAssig(removeDoubleQuote(secondPerimeter)));
+		StmtLineClausesQueryResults.push_back(VarTable::getUsesAssig(removeDoubleQuote(secondPerimeter)));
 	}
 	if (SelectParameterVector.at(0) == "stmt") {
 		
-		StmtLineClausesQueryResults.push_back(vt.getUsesStmt(removeDoubleQuote(secondPerimeter)));
+		StmtLineClausesQueryResults.push_back(VarTable::getUsesStmt(removeDoubleQuote(secondPerimeter)));
 	}
 	if (SelectParameterVector.at(0) == "while") {
 
-		StmtLineClausesQueryResults.push_back(vt.getUsesWhile(removeDoubleQuote(secondPerimeter)));
+		StmtLineClausesQueryResults.push_back(VarTable::getUsesWhile(removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "pv")) {
 		
-		BooleanClausesQueryResults.push_back(vt.isUsesProc(removeDoubleQuote(firstPerimeter),
+		BooleanClausesQueryResults.push_back(VarTable::isUsesProc(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "av")) {
 			
-		BooleanClausesQueryResults.push_back(vt.isUsesAssign(removeDoubleQuote(firstPerimeter),
+		BooleanClausesQueryResults.push_back(VarTable::isUsesAssign(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "sv")) {
 
-		BooleanClausesQueryResults.push_back(vt.isUsesStmt(removeDoubleQuote(firstPerimeter),
+		BooleanClausesQueryResults.push_back(VarTable::isUsesStmt(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "wv")) {
 
-		BooleanClausesQueryResults.push_back(vt.isUsesWhile(removeDoubleQuote(firstPerimeter),
+		BooleanClausesQueryResults.push_back(VarTable::isUsesWhile(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
 }
-
 
 
 void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
@@ -370,8 +383,8 @@ std::vector<int> getAllInFront(std::string firstPerimeter, std::string secondPer
 
 	while (getFollowFan.size() != 0){
 
-		temp.push_back(getFollowFan.at(0);
-		getFollowFan = st.getFollowFan(getFollowFan.at(0)));
+		temp.push_back(getFollowFan.at(0));
+		getFollowFan = st.getFollowFan(getFollowFan.at(0));
 	}
 
 	return temp;
@@ -415,43 +428,44 @@ bool checkIfFollowStar(std::string first,std::string second){
 	}
 	return false;
 }
+
 void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 
 	if (SelectParameterVector.at(0) == "proc") {
 
-		ProcedureClausesQueryResults.push_back(vt.getModifiesProc(removeDoubleQuote(secondPerimeter)));
+		ProcedureClausesQueryResults.push_back(VarTable::getModifiesProc(removeDoubleQuote(secondPerimeter)));
 	}
 	if (SelectParameterVector.at(0) == "assign") {
 
-		StmtLineClausesQueryResults.push_back(vt.getModifiesAssign(removeDoubleQuote(secondPerimeter)));
+		StmtLineClausesQueryResults.push_back(VarTable::getModifiesAssign(removeDoubleQuote(secondPerimeter)));
 	}
 	if (SelectParameterVector.at(0) == "stmt") {
 
-		StmtLineClausesQueryResults.push_back(vt.getModifiesStmt(removeDoubleQuote(secondPerimeter)));
+		StmtLineClausesQueryResults.push_back(VarTable::getModifiesStmt(removeDoubleQuote(secondPerimeter)));
 	}
 	if (SelectParameterVector.at(0) == "while") {
 
-		StmtLineClausesQueryResults.push_back(vt.getModifiesWhile(removeDoubleQuote(secondPerimeter)));
+		StmtLineClausesQueryResults.push_back(VarTable::getModifiesWhile(removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "pv")) {
 
-		BooleanClausesQueryResults.push_back(vt.isModifiesProc(removeDoubleQuote(firstPerimeter),
+		BooleanClausesQueryResults.push_back(VarTable::isModifiesProc(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "av")) {
 
-		BooleanClausesQueryResults.push_back(vt.isModifiesAssign(removeDoubleQuote(firstPerimeter),
+		BooleanClausesQueryResults.push_back(VarTable::isModifiesAssign(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "sv")) {
 
-		BooleanClausesQueryResults.push_back(vt.isModifiesStmt(removeDoubleQuote(firstPerimeter),
+		BooleanClausesQueryResults.push_back(VarTable::isModifiesStmt(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
 	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "wv")) {
 
-		BooleanClausesQueryResults.push_back(vt.isModifiesWhile(removeDoubleQuote(firstPerimeter),
+		BooleanClausesQueryResults.push_back(VarTable::isModifiesWhile(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
 }
@@ -476,6 +490,7 @@ bool is_number(std::string s)
 int changeStringToInt(std::string s) {
 
 	int value = atoi(s.c_str());
+	return value;
 }
 
 void Intersection() {

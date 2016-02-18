@@ -18,6 +18,16 @@ public:
 
 	static vector<string> findVariableRight(int stmtLine1, int stmtLine2);
 
+	//----------------------- While Table -------------------------
+	static std::vector<int> getWhileTable(int stmtNum);
+	static void addDataToWhileTable(string variable, int stmtNum);
+
+	//----------------------- Assign Table ------------------------
+
+
+
+	//----------------------- Modifies -------------------------------
+
 	// get ModifiesTable
 	static std::vector<int> getModifiesTable(string varName);
 
@@ -27,27 +37,25 @@ public:
 	// add ModifiesProcTable
 	static void addModifiesProcTable(string varName, string procedure);
 
-	static bool isModifiesBoolean(string firstPerimeter, string secondPerimeter);
-	static vector<string> getModifiesPV(string firstPerimeter);
-	static vector<string> getModifiesVariable(string firstPerimeter);
-	static vector<string> getModifiesProc(string firstPerimeter);
+	static vector<string> getModifiesProc(string secondPerimeter);
+	static vector<int>  getModifiesAssign(string secondPerimeter);
+	static vector<int>	getModifiesWhile(string secondPerimeter);
 	static vector<int> getModifiesStmt(string firstPerimeter);
-	static vector<int> getModifiesAssg(string firstPerimeter);
+	static bool isModifiesProc(string firstPerimeter, string secondPerimeter);
+	static bool isModifiesAssign(string firstPerimeter, string secondPerimeter);
+	static bool isModifiesStmt(string firstPerimeter, string secondPerimeter);
+	static bool isModifiesWhile(string firstPerimeter, string secondPerimeter);
 
 	//---------------------------- Uses -------------------------
 
-	// is Uses -> return Boolean
-	static bool isUsesBoolean(string stmt1, string stmt2);
-
-	// is Uses -> return vector, stmt1 -> number, return variable
-	static vector<string> isUsesVariable(string stmt1);
-
-	// is Uses -> return vector, stmt1 -> procName, return variable
-	static vector<string> isUsesProcTable(string stmt1);
-
-	static vector<int> getUsesStmt(string stmt1);
-	static vector<int> getUsesAssg(string stmt1);
-	static vector<string> getUsesProc(string stmt1);
+	static vector<string> getUsesProc(string secondPerimeter);
+	static vector<int> getUsesAssig(string secondPerimeter);
+	static vector<int> getUsesStmt(string secondPerimeter);
+	static vector<int> getUsesWhile(string secondPerimeter);
+	static bool isUsesProc(string stmt1, string stmt2);
+	static bool isUsesAssign(string stmt1, string stmt2);
+	static bool isUsesStmt(string stmt1, string stmt2);
+	static bool isUsesWhile(string stmt1, string stmt2);
 
 	// get UsesTable
 	static std::vector<int> getUsesTable(string varName);
