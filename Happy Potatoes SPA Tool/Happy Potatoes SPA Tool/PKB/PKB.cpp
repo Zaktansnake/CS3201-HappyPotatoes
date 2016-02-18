@@ -25,7 +25,7 @@ static string str, word;
 static ostringstream oss;
 stack<pair<string, int>> bracstack;
 bool firstTime;
-static int stmtLine;
+static int stmtLine = 0;
 
 static void program();
 static void procedure();
@@ -56,6 +56,11 @@ void PKB::create(string fileName) {
 	myFile.close();
 
 	// update uses table one more time
+}
+
+int PKB::getStmtNum() {
+    return stmtLine-1;
+
 }
 
 void findMethod(string file_contents) {

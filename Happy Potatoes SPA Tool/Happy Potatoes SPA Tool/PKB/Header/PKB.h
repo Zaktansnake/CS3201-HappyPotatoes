@@ -138,5 +138,6 @@ public:
 //	static int setProcToCFG (PROC p, GNode* g);
 
 	static void create(string fileName);
+	static int getStmtNum ();
 
 };
