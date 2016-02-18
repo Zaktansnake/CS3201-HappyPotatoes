@@ -32,8 +32,8 @@ string patternAssignment(string assignment) {
 		//cout << statement.size();
 
 		string temp = statement;
-		string c = statement.substr(i);
-
+		string c = statement.substr(i, i);
+		
 		if (c.compare("*")) {
 			if (multiplicationDetermine(statement, i)) {
 				if (i == 1) {
@@ -73,7 +73,7 @@ bool multiplicationDetermine(string statement, int marker) {
 		return true;
 	}
 	else {
-		c1 = statement.substr(marker - 2);
+		c1 = statement.substr(marker - 2, marker - 2);
 	}
 
 	if (c1.compare("+")) {
@@ -89,17 +89,17 @@ bool plusDetermine(string statement, int marker) {
 	string c1, c2;
 
 	if (marker == 1) {
-		c1 = statement.substr(marker - 1);
+		c1 = statement.substr(marker - 1, marker - 1);
 	}
 	else {
-		c1 = statement.substr(marker - 2);
+		c1 = statement.substr(marker - 2, marker - 2);
 	}
 
 	if (marker == statement.size() - 1) {
-		c2 = statement.substr(marker + 1);
+		c2 = statement.substr(marker + 1, marker + 1);
 	}
 	else {
-		c2 = statement.substr(marker + 2);
+		c2 = statement.substr(marker + 2, marker + 2);
 	}
 
 	if (c2.compare("+")) {
