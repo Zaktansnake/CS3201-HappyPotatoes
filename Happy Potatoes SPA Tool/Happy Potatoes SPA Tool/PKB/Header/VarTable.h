@@ -19,12 +19,10 @@ public:
 	static vector<string> findVariableRight(int stmtLine1, int stmtLine2);
 
 	//----------------------- While Table -------------------------
-	static std::vector<int> getWhileTable(int stmtNum);
 	static void addDataToWhileTable(string variable, int stmtNum);
 
 	//----------------------- Assign Table ------------------------
-
-
+	static void addDataToAssignTable(string variable, int stmtNum);
 
 	//----------------------- Modifies -------------------------------
 

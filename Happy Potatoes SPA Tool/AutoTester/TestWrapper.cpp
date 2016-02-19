@@ -1,8 +1,8 @@
-#include "TestWrapper.h"
-#include "../Happy Potatoes SPA Tool/PKB/Header/Parser.h"
-#include "../Happy Potatoes SPA Tool/PQL/Header/ParseResult.h";
 #include <string>
-#include "../Happy Potatoes SPA Tool/PQL/Header/QueryEvaluator.h"
+#include <vector>
+
+#include "TestWrapper.h"
+
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;
 AbstractWrapper* WrapperFactory::createWrapper() {
@@ -18,27 +18,30 @@ TestWrapper::TestWrapper() {
   // as well as any initialization required for your spa program
 }
 
+TestWrapper::~TestWrapper()
+{
+}
+
 // method for parsing the SIMPLE source
 void TestWrapper::parse(std::string filename) {
 	// call your parser to do the parsing
 	// ...rest of your code...
 	Parser::parse(filename);
+
 }
 
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 // call your evaluator to evaluate the query here
   // ...code to evaluate query...
-	size_t pos;
-	query.find_last_of(";");
-	string declarationSenctence, QuerySentence;
-	declarationSenctence = query.substr(0, pos + 1);
-	QuerySentence = query.substr(pos, query.size() - pos);
-	ParseResult pr = ParseResult();
-	ParseResult mustpr =  pr.generateParseResult(declarationSenctence,QuerySentence);
-	QueryEvaluator Qe;
-	std::vector<std::string> resultsString = Qe.startEvaluator(mustpr);
-	results = std::list<std::string>(resultsString.begin(), resultsString.end());
+	
+	try {
+	}
+	catch (exception &e) {
+		cout << e.what() << endl;
+	}
+	vector<std::string> resultVec;
+	results = std::list<std::string>(resultVec.begin(), resultVec.end());
   // store the answers to the query in the results list (it is initially empty)
   // each result must be a string.
 }

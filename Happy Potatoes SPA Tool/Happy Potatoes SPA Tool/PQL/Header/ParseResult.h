@@ -1,3 +1,6 @@
+#ifndef ParseResult_h
+#define ParseResult_h
+
 #pragma once
 #include <string>
 #include <vector>
@@ -37,3 +40,5 @@ private:
 	ClauseSet condClauses_;
 	PatternSet patterns_;
 };
+
+#endif
