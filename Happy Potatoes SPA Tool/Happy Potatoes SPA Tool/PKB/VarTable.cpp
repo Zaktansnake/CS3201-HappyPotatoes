@@ -57,7 +57,7 @@ void VarTable::addDataToAssignTable(string variable, int stmtNum) {
 	assignTable.insert(pair<int, string>(stmtNum, variable));
 }
 
-string getAssignTable(int stmtNum) {
+string VarTable::getAssignTable(int stmtNum) {
 	string temp = "";
 
 	std::map<int, string>::iterator it = assignTable.find(stmtNum);

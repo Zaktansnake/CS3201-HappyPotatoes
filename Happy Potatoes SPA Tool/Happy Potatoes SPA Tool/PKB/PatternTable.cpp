@@ -49,7 +49,7 @@ std::vector<int> PatternTable::getAssignWithVar(string variable, string testkey)
 //----------------------getAssign---------------------------------
 std::vector<int> PatternTable::getAssign(string testkey) {
     std::vector<int> ans;
-    lineThatModifiedV = VarTable::getAllAsign();
+    lineThatModifiedV = VarTable::getAllAssign();
 	for (int i = 0; i < lineThatModifiedV.size(); i++) {
 		stmtLine = getStatementLine(lineThatModifiedV.at(i));
 		std::size_t found  = stmtLine.find(Patterns::patternAssignment(testkey));
