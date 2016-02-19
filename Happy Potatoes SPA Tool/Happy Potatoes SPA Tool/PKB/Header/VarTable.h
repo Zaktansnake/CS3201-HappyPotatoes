@@ -20,6 +20,8 @@ public:
 	static int whileTableSize();
 	static int assignTableSize();
 
+	static vector<int> getAllAssign();
+
 
 	static vector<string> findVariableLeft(int stmtLine1, int stmtLine2);
 

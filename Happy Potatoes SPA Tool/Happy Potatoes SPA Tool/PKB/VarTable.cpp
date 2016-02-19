@@ -71,6 +71,15 @@ string getAssignTable(int stmtNum) {
 	return temp;
 }
 
+vector<int> VarTable::getAllAssign() {
+	vector<int> ans;
+
+	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
+		ans.push_back(it->first);
+	}
+	return ans;
+}
+
 // ------------------------ Modifies ----------------------------------
 
 // stmtLine1 = parent; stmtLine2 = the position of bracket end
