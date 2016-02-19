@@ -16,7 +16,7 @@
 #include "./Header/PKB.h"
 #include "./Header/ProcTable.h"
 #include "./Header/VarTable.h"
-#include "Header\stmtTable.h"
+#include "./Header/stmtTable.h"
 
 using namespace std;
 
@@ -24,7 +24,7 @@ static ifstream myFile;
 static string str, word, procname;
 static ostringstream oss;
 stack<pair<string, int>> bracstack;
-bool firstTime;
+bool firstTime, firstLine;
 static int stmtLine = 0;
 
 static void program();
@@ -42,6 +42,7 @@ static void calls(string procedurName, int stmtLine);
 
 void PKB::create(string fileName) {
 	firstTime = true;
+	firstLine = true;
 	program();
 	myFile.open(fileName);
 	stmtLine = 0;
@@ -54,6 +55,8 @@ void PKB::create(string fileName) {
 		stmtLine++;
 	}
 	myFile.close();
+
+	// parse the assign table to Patterns
 
 	// update uses table one more time
 }
@@ -68,6 +71,13 @@ void findMethod(string file_contents) {
 	istringstream iss(file_contents);
 	iss >> word; // get the first word
 	oss << iss.rdbuf(); // get the remain words
+
+	if (firstLine) {
+		if (word.compare("procedure") != 0) {
+			throw std::runtime_error("Error: Structure");
+		}
+		firstLine = false;
+	}
 
 	if (word.compare("procedure") == 0) {
 		if (!firstTime) {
@@ -146,8 +156,15 @@ void stmtLst() {
 }
 
 void assign() {
+	//vector<string> tempVector;
 	string lineWithVar = str;
 	vector<string> v;
+	/*vector<string> v = splitTheString(str);
+	for (int i = 0; i < v.size(); i++) {
+		
+	}*/
+
+
 	int ln = str.length() - 1;
 	for (int n = 0; n <= ln; n++) {
 		string letter(1, lineWithVar[n]);
@@ -155,6 +172,10 @@ void assign() {
 			v.push_back(letter);
 		}
 	}
+
+	std::string result;
+	for (auto const& s : v) { result += s; }
+	VarTable::addDataToAssignTable(result, stmtLine);
 
 	for (int i = 0; i < v.size(); i++) {
 		std::string var = v.at(i);
@@ -218,6 +239,7 @@ static void stmt(int num) {
 		if (v[2].compare("{") == 0) {
 			VarTable::addDataToModifies(v[1], stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
+			VarTable::addDataToWhileTable(v[2],stmtLine);
 		}
 		else {
 			throw std::runtime_error("Error: Structure");
@@ -254,16 +276,6 @@ bool is_number(const std::string& s)
 {
 	return !s.empty() && std::find_if(s.begin(),
 		s.end(), [](char c) { return !::isdigit(c); }) == s.end();
-}
-
-bool lettersOnly(std::string text)
-{
-	for (int i = 0; i < text.length(); i++)
-	{
-		if (!isalpha(text.at(i)))
-			return false;
-	}
-	return true;
 }
 
 vector<string> splitTheString(string line) {
