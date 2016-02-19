@@ -18,7 +18,9 @@ public:
 
 	//----------------getAssign------------------------------------
 
+	static std::vector<int> PatternTable::getAssignWithVar(string variable,string testkey);
 	static std::vector<int> PatternTable::getAssign(string testkey);
+	
 	
 
 

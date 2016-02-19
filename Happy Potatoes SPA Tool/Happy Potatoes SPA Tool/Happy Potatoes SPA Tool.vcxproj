@@ -31,6 +31,7 @@
     <ClCompile Include="PKB\Parent.cpp" />
     <ClCompile Include="PKB\Parser.cpp" />
     <ClCompile Include="PKB\Patterns.cpp" />
+    <ClCompile Include="PKB\PatternTable.cpp" />
     <ClCompile Include="PKB\PKB.cpp" />
     <ClCompile Include="PKB\ProcTable.cpp" />
     <ClCompile Include="PKB\stmtTable.cpp" />
@@ -52,6 +53,7 @@
     <ClInclude Include="PKB\Header\Parent.h" />
     <ClInclude Include="PKB\Header\Parser.h" />
     <ClInclude Include="PKB\Header\Patterns.h" />
+    <ClInclude Include="PKB\Header\PatternTable.h" />
     <ClInclude Include="PKB\Header\PKB.h" />
     <ClInclude Include="PKB\Header\ProcTable.h" />
     <ClInclude Include="PKB\Header\stmtTable.h" />

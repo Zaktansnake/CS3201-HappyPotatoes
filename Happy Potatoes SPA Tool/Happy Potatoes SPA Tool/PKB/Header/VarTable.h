@@ -23,7 +23,7 @@ public:
 
 	//----------------------- Assign Table ------------------------
 	static void addDataToAssignTable(string variable, int stmtNum);
-	static string getAssignTable(int stmtNum);
+	static string VarTable::getAssignTable(int stmtNum);
 
 	//----------------------- Modifies -------------------------------
 
