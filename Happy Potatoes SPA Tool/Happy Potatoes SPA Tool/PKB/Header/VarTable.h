@@ -23,6 +23,7 @@ public:
 
 	//----------------------- Assign Table ------------------------
 	static void addDataToAssignTable(string variable, int stmtNum);
+	static string getAssignTable(int stmtNum);
 
 	//----------------------- Modifies -------------------------------
 

@@ -40,6 +40,20 @@ void VarTable::addDataToAssignTable(string variable, int stmtNum) {
 	assignTable.insert(pair<int, string>(stmtNum, variable));
 }
 
+string getAssignTable(int stmtNum) {
+	string temp = "";
+
+	std::map<int, string>::iterator it = assignTable.find(stmtNum);
+	if (it == assignTable.end()) {
+		// not found
+	} else {
+		// found
+		temp = it->second;
+	}
+	
+	return temp;
+}
+
 // ------------------------ Modifies ----------------------------------
 
 // stmtLine1 = parent; stmtLine2 = the position of bracket end
