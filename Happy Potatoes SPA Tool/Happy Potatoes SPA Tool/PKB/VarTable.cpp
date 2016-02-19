@@ -29,6 +29,23 @@ VarTable::~VarTable()
 {
 }
 
+int VarTable::varTableLeftSize() {
+	return varTableLeft.size();
+}
+
+int VarTable::varTableRightSize() {
+	return varTableRight.size();
+}
+
+int VarTable::whileTableSize() {
+	return whileTable.size();
+}
+
+int VarTable::assignTableSize() {
+	return assignTable.size();
+}
+
+
 // ---------------------- while table ---------------------------------
 void VarTable::addDataToWhileTable(string variable, int stmtNum) {
 	whileTable[variable].push_back(stmtNum);
@@ -52,6 +69,15 @@ string getAssignTable(int stmtNum) {
 	}
 	
 	return temp;
+}
+
+vector<int> VarTable::getAllAssign() {
+	vector<int> ans;
+
+	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
+		ans.push_back(it->first);
+	}
+	return ans;
 }
 
 // ------------------------ Modifies ----------------------------------
@@ -394,7 +420,6 @@ bool VarTable::isUsesWhile(string firstPerimeter, string secondPerimeter) {
 		return false;
 	}
 }
-
 
 vector<int> VarTable::getUsesTable(string varName) {
 	return Uses::getUsesTable(varName);
