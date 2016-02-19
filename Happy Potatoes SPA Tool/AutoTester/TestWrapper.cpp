@@ -34,14 +34,16 @@ void TestWrapper::parse(std::string filename) {
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
 // call your evaluator to evaluate the query here
   // ...code to evaluate query...
-	
-	try {
-	}
-	catch (exception &e) {
-		cout << e.what() << endl;
-	}
-	vector<std::string> resultVec;
-	results = std::list<std::string>(resultVec.begin(), resultVec.end());
+	size_t pos;
+	query.find_last_of(";");
+	string declarationSenctence, QuerySentence;
+	declarationSenctence = query.substr(0, pos + 1);
+	QuerySentence = query.substr(pos + 1, query.size() - pos);
+	ParseResult pr = ParseResult();
+	ParseResult mustpr = pr.generateParseResult(declarationSenctence, QuerySentence);
+	QueryEvaluator Qe;
+	std::vector<std::string> resultsString = Qe.startEvaluator(mustpr);
+	results = std::list<std::string>(resultsString.begin(), resultsString.end());
   // store the answers to the query in the results list (it is initially empty)
   // each result must be a string.
 }
