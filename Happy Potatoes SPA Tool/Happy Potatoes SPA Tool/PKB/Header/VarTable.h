@@ -14,6 +14,13 @@ class VarTable
 public:
 	~VarTable();
 
+	// getSize
+	static int  varTableLeftSize();
+	static int  varTableRightSize();
+	static int whileTableSize();
+	static int assignTableSize();
+
+
 	static vector<string> findVariableLeft(int stmtLine1, int stmtLine2);
 
 	static vector<string> findVariableRight(int stmtLine1, int stmtLine2);
