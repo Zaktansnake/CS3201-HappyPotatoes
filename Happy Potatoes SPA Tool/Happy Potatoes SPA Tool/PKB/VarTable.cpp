@@ -9,15 +9,18 @@
 #include <map>
 #include <string>
 #include <vector>
+#include <iterator>
 
 using namespace std;
 
 vector<pair<int, string>> varTableLeft;  // (Modifies) int -> stmtLine, string -> variable
 vector<pair<int, string>> varTableRight; // ()
 map<string, vector<int>> whileTable;
-map<string, vector<int>> assignTable;
+map<int, string> assignTable;
 
 void addToVarTable(int position, string varName, int stmtLine);
+bool isContainsAssign(int stmtLine);
+bool isContainsWhile(string stmtLine);
 
 VarTable::VarTable(){
 }
@@ -27,9 +30,15 @@ VarTable::~VarTable()
 }
 
 // ---------------------- while table ---------------------------------
+void VarTable::addDataToWhileTable(string variable, int stmtNum) {
+	whileTable[variable].push_back(stmtNum);
+}
 
+//----------------------- Assign Table ------------------------
 
-
+void VarTable::addDataToAssignTable(string variable, int stmtNum) {
+	assignTable.insert(pair<int, string>(stmtNum, variable));
+}
 
 // ------------------------ Modifies ----------------------------------
 
@@ -69,16 +78,29 @@ void VarTable::addModifiesProcTable(string varName, string procedure) {
 	return Modifies::addModifiesProcedureTable(varName, procedure);
 }
 
-//--------------------------- PQL -------------------------------------
-
 vector<string> VarTable::getModifiesProc(string secondPerimeter) {
 	vector<string> ans = Modifies::getModifiesProcTable(secondPerimeter);
 	return ans;
 }
 
-vector<int>  VarTable::getModifiesAssign(string secondPerimeter) {
-	vector<int> ans = Modifies::getModifiesTable(secondPerimeter);
-	return ans;
+vector<int> VarTable::getModifiesAssign(string secondPerimeter) {
+	std::vector<int> ans = Modifies::getModifiesTable(secondPerimeter);
+	vector<int> finalResult;
+
+	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
+		finalResult.push_back(it->first);
+	}
+
+	std::sort(ans.begin(), ans.end());
+	std::sort(finalResult.begin(), finalResult.end());
+
+	std::vector<int> v_intersection;
+
+	std::set_intersection(ans.begin(), ans.end(),
+		finalResult.begin(), finalResult.end(),
+		std::back_inserter(v_intersection));
+
+	return v_intersection;
 }
 
 vector<int> VarTable::getModifiesStmt(string firstPerimeter) {
@@ -86,20 +108,25 @@ vector<int> VarTable::getModifiesStmt(string firstPerimeter) {
 }
 
 vector<int> VarTable::getModifiesWhile(string secondPerimeter) {
-	return Modifies::getModifiesTable(secondPerimeter);
+	vector<int> ans;
+	if (!isContainsWhile(secondPerimeter)) {
+		ans;
+	}
+	else {
+		ans = whileTable.at(secondPerimeter);
+	}
+	return ans;
 }
 
 bool VarTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
 	bool result;
-	vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
+	vector<string> tempVector = Modifies::getModifiesProcTable(firstPerimeter);
 	if (tempVector.size() == 0) {
 		result = false;
 	}
 	else {
-		int numbValue;
-		istringstream(firstPerimeter) >> numbValue;
 		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i] == numbValue) {
+			if (tempVector[i].compare(secondPerimeter) == 0) {
 				result = true;
 			}
 			else {
@@ -112,23 +139,28 @@ bool VarTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
 
 bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
 	bool result;
-	vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
-	if (tempVector.size() == 0) {
-		result = false;
-	}
-	else {
-		int numbValue;
-		istringstream(firstPerimeter) >> numbValue;
-		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i] == numbValue) {
-				result = true;
-			}
-			else {
-				result = false;
+	int numbValue;
+	istringstream(firstPerimeter) >> numbValue;
+
+	if (isContainsAssign(numbValue)) {
+		vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
+		if (tempVector.size() == 0) {
+			result = false;
+		} else {
+			for (int i = 0; i < tempVector.size(); i++) {
+				if (tempVector[i] == numbValue) {
+					result = true;
+					break;
+				}
+				else {
+					result = false;
+				}
 			}
 		}
+		return result;
+	} else {
+		return false;
 	}
-	return result;
 }
 
 bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
@@ -153,26 +185,41 @@ bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
 }
 
 bool VarTable::isModifiesWhile(string firstPerimeter, string secondPerimeter) {
-	bool result;
-	vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
-	if (tempVector.size() == 0) {
-		result = false;
-	}
-	else {
-		int numbValue;
-		istringstream(firstPerimeter) >> numbValue;
-		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i] == numbValue) {
-				result = true;
-			}
-			else {
-				result = false;
+
+	int numbValue;
+	istringstream(firstPerimeter) >> numbValue;
+
+	if (!isContainsWhile(secondPerimeter)) {
+		return false;
+	} else {
+		vector<int> ans = whileTable.at(secondPerimeter);
+		for (int i = 0; i < ans.size(); i++) {
+			if (ans.at(i) == numbValue) {
+				return true;
 			}
 		}
+		return false;
 	}
-	return result;
 }
 
+bool isContainsAssign(int stmtLine) {
+	auto search =  assignTable.find(stmtLine);
+	if (search != assignTable.end()) {
+		return true;
+	} else {
+		return false;
+	}
+}
+
+bool isContainsWhile(string variable) {
+	auto search = whileTable.find(variable);
+	if (search != whileTable.end()) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
 
 //-------------------------------Uses---------------------------
 
@@ -209,9 +256,25 @@ vector<string> VarTable::getUsesProc(string stmt1) {
 	return Uses::getUsesProcTable(stmt1);
 }
 
-vector<int> VarTable::getUsesAssig(string stmt1) {
-	// stmt1 -> stmtLine
-	return Uses::getUsesTable(stmt1);
+vector<int> VarTable::getUsesAssig(string secondPerimeter) {
+
+	std::vector<int> ans = Uses::getUsesTable(secondPerimeter);
+	vector<int> finalResult;
+
+	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
+		finalResult.push_back(it->first);
+	}
+
+	std::sort(ans.begin(), ans.end());
+	std::sort(finalResult.begin(), finalResult.end());
+
+	std::vector<int> v_intersection;
+
+	std::set_intersection(ans.begin(), ans.end(),
+		finalResult.begin(), finalResult.end(),
+		std::back_inserter(v_intersection));
+
+	return v_intersection;
 }
 
 vector<int> VarTable::getUsesStmt(string stmt1) {
@@ -221,20 +284,25 @@ vector<int> VarTable::getUsesStmt(string stmt1) {
 
 vector<int> VarTable::getUsesWhile(string stmt1) {
 	// stmt1 -> stmtLine
-	return Uses::getUsesTable(stmt1);
+	vector<int> ans;
+	if (!isContainsWhile(stmt1)) {
+		ans;
+	}
+	else {
+		ans = whileTable.at(stmt1);
+	}
+	return ans;
 }
 
-bool VarTable::isUsesProc(string stmtLine, string variable) {
+bool VarTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
 	bool result;
-	vector<int> tempVector = Uses::getUsesTable(variable);
+	vector<string> tempVector = Uses::getUsesProcTable(secondPerimeter);
 	if (tempVector.size() == 0) {
 		result = false;
 	}
 	else {
-		int numbValue;
-		istringstream(stmtLine) >> numbValue;
 		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i] == numbValue) {
+			if (tempVector[i].compare(firstPerimeter) == 0) {
 				result = true;
 			}
 			else {
@@ -245,25 +313,32 @@ bool VarTable::isUsesProc(string stmtLine, string variable) {
 	return result;
 }
 
-bool VarTable::isUsesAssign(string stmtLine, string variable) {
+bool VarTable::isUsesAssign(string firstPerimeter, string secondPerimeter) {
 	bool result;
-	vector<int> tempVector = Uses::getUsesTable(variable);
-	if (tempVector.size() == 0) {
-		result = false;
-	}
-	else {
-		int numbValue;
-		istringstream(stmtLine) >> numbValue;
-		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i] == numbValue) {
-				result = true;
-			}
-			else {
-				result = false;
+	int numbValue;
+	istringstream(firstPerimeter) >> numbValue;
+
+	if (isContainsAssign(numbValue)) {
+		vector<int> tempVector = Uses::getUsesTable(secondPerimeter);
+		if (tempVector.size() == 0) {
+			result = false;
+		}
+		else {
+			for (int i = 0; i < tempVector.size(); i++) {
+				if (tempVector[i] == numbValue) {
+					result = true;
+					break;
+				}
+				else {
+					result = false;
+				}
 			}
 		}
+		return result;
 	}
-	return result;
+	else {
+		return false;
+	}
 }
 
 bool VarTable::isUsesStmt(string stmtLine, string variable) {
@@ -287,25 +362,23 @@ bool VarTable::isUsesStmt(string stmtLine, string variable) {
 	return result;
 }
 
-bool VarTable::isUsesWhile(string stmtLine, string variable) {
+bool VarTable::isUsesWhile(string firstPerimeter, string secondPerimeter) {
 	bool result;
-	vector<int> tempVector = Uses::getUsesTable(variable);
-	if (tempVector.size() == 0) {
-		result = false;
+	int numbValue;
+	istringstream(firstPerimeter) >> numbValue;
+
+	if (!isContainsWhile(secondPerimeter)) {
+		return false;
 	}
 	else {
-		int numbValue;
-		istringstream(stmtLine) >> numbValue;
-		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i] == numbValue) {
-				result = true;
-			}
-			else {
-				result = false;
+		vector<int> ans = whileTable.at(secondPerimeter);
+		for (int i = 0; i < ans.size(); i++) {
+			if (ans.at(i) == numbValue) {
+				return true;
 			}
 		}
+		return false;
 	}
-	return result;
 }
 
 

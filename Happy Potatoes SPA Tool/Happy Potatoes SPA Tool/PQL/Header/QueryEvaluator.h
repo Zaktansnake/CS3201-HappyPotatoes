@@ -9,9 +9,8 @@ class QueryEvaluator
 {
 public:
 
-    static std::vector<string> startEvaluator(ParseResult);
+    static vector<string> startEvaluator(ParseResult);
 	QueryEvaluator();
 	~QueryEvaluator();
 };
-
 #endif
