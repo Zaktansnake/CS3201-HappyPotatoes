@@ -31,7 +31,7 @@ std::vector<std::vector<int>> PatternClausesQueryResults;
 //the final string that is suppose to be printed
 std::vector<std::string> finalStringVector;
 
-stmtTable st;
+//stmtTable st;
 //VarTable vt;
 PKB pkb;
 void Intersection();
@@ -141,7 +141,7 @@ void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter
 
 		if ((!is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
 			for (int index = 1; index < pkb.getStmtNum(); index++) {
-				if (st.getParent(index).size() != 0) {
+				if (stmtTable::getParent(index).size() != 0) {
 					BooleanClausesQueryResults.push_back(true);
 					break;
 				}
@@ -149,7 +149,7 @@ void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter
 			BooleanClausesQueryResults.push_back(false);
 		}
 		if ((!is_number(firstPerimeter)) && (is_number(secondPerimeter))) {
-			if (st.getParent(changeStringToInt(secondPerimeter)).size() != 0) {
+			if (stmtTable::getParent(changeStringToInt(secondPerimeter)).size() != 0) {
 				BooleanClausesQueryResults.push_back(true);
 			}
 			else {
@@ -157,7 +157,7 @@ void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter
 			}
 		}
 		if ((is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
-			if (st.getChild(changeStringToInt(firstPerimeter)).size() != 0) {
+			if (stmtTable::getChild(changeStringToInt(firstPerimeter)).size() != 0) {
 				BooleanClausesQueryResults.push_back(true);
 			}
 			else {
@@ -171,8 +171,8 @@ void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter
 	else {
 
 		if ((is_number(firstPerimeter))) {
-			std::vector<int> child = st.getChild(changeStringToInt(firstPerimeter));
-			if (st.getChild(changeStringToInt(firstPerimeter)).size() == 0) {
+			std::vector<int> child = stmtTable::getChild(changeStringToInt(firstPerimeter));
+			if (stmtTable::getChild(changeStringToInt(firstPerimeter)).size() == 0) {
 				StmtLineClausesQueryResults.push_back(child);
 			}
 			else {
@@ -183,7 +183,7 @@ void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter
 		}
 		else {
 
-			StmtLineClausesQueryResults.push_back(getAllParent(st.getParent(
+			StmtLineClausesQueryResults.push_back(getAllParent(stmtTable::getParent(
 				changeStringToInt(secondPerimeter))));
 		}
 	}
@@ -193,7 +193,7 @@ bool checkIfParentStar(std::string first, std::string second) {
 
 	int firstInt = changeStringToInt(first);
 	int secondInt = changeStringToInt(second);
-	std::vector<int> temp = st.getParent(secondInt);
+	std::vector<int> temp = stmtTable::getParent(secondInt);
 	if (temp.size() != 0) {
 		if (temp.at(0) == firstInt) {
 			return true;
@@ -201,7 +201,7 @@ bool checkIfParentStar(std::string first, std::string second) {
 		else {
 			while (temp.size() != 0) {
 				if (temp.at(0) != firstInt) {
-					temp = st.getParent(temp.at(0));
+					temp = stmtTable::getParent(temp.at(0));
 				}
 				else {
 					return true;
@@ -217,7 +217,7 @@ std::vector<int> getAllParent(std::vector<int> v) {
 	vector<int> toReturn;
 	while (v.size() != 0) {
 		toReturn.push_back(v.at(0));
-		v = st.getParent(v.at(0));
+		v = stmtTable::getParent(v.at(0));
 	}
 	return toReturn;
 }
@@ -239,7 +239,7 @@ std::vector<std::vector<int>> findAllListOfChild(std::vector<int> v, std::vector
 	}
 	else {
 		for (int index = 0; index < v.size(); index++) {
-			std::vector<std::vector<int>> temp = findAllListOfChild(st.getChild(v.at(index)), combine);
+			std::vector<std::vector<int>> temp = findAllListOfChild(stmtTable::getChild(v.at(index)), combine);
 			for (int index2 = 0; index2 < temp.size(); index2++) {
 				combine.push_back(temp.at(index2));
 			}
@@ -258,7 +258,7 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 
 		if ((!is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
 			for (int index = 1; index < pkb.getStmtNum(); index++) {
-				if (st.getParent(index).size() != 0) {
+				if (stmtTable::getParent(index).size() != 0) {
 					BooleanClausesQueryResults.push_back(true);
 					break;
 				}
@@ -266,7 +266,7 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 			BooleanClausesQueryResults.push_back(false);
 		}
 		if ((!is_number(firstPerimeter)) && (is_number(secondPerimeter))) {
-			if (st.getParent(changeStringToInt(secondPerimeter)).size() != 0) {
+			if (stmtTable::getParent(changeStringToInt(secondPerimeter)).size() != 0) {
 				BooleanClausesQueryResults.push_back(true);
 			}
 			else {
@@ -274,7 +274,7 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 			}
 		}
 		if ((is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
-			if (st.getChild(changeStringToInt(firstPerimeter)).size() != 0) {
+			if (stmtTable::getChild(changeStringToInt(firstPerimeter)).size() != 0) {
 				BooleanClausesQueryResults.push_back(true);
 			}
 			else {
@@ -284,11 +284,11 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 	}
 	else {
 		if ((is_number(firstPerimeter))) {
-			StmtLineClausesQueryResults.push_back(st.getChild(changeStringToInt(firstPerimeter)));
+			StmtLineClausesQueryResults.push_back(stmtTable::getChild(changeStringToInt(firstPerimeter)));
 		}
 
 		if ((is_number(secondPerimeter))) {
-			StmtLineClausesQueryResults.push_back(st.getParent(changeStringToInt(secondPerimeter)));
+			StmtLineClausesQueryResults.push_back(stmtTable::getParent(changeStringToInt(secondPerimeter)));
 		}
 	}
 }
@@ -355,17 +355,17 @@ void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 f
 
 	//if asking a stmt is following another stmt
 	if (SelectParameterVector.at(0) == "Boolean") {
-		BooleanClausesQueryResults.push_back(st.isFollow(changeStringToInt(firstPerimeter),
+		BooleanClausesQueryResults.push_back(stmtTable::isFollow(changeStringToInt(firstPerimeter),
 			changeStringToInt(secondPerimeter)));
 
 	}
 	//if querying for a stmt s such as for example follows(s,1),need to change
 	if ((SelectParameterVector.at(0) == "Stmt") && (is_number(secondPerimeter))) {
-		StmtLineClausesQueryResults.push_back(st.getFollow(changeStringToInt(secondPerimeter)));
+		StmtLineClausesQueryResults.push_back(stmtTable::getFollow(changeStringToInt(secondPerimeter)));
 	}
 	//if querying for a stmt s such as for example follows(1,s),need to change
 	if ((SelectParameterVector.at(0) == "Stmt") && (is_number(firstPerimeter))) {
-		StmtLineClausesQueryResults.push_back(st.getFollowFan(changeStringToInt(firstPerimeter)));
+		StmtLineClausesQueryResults.push_back(stmtTable::getFollowFan(changeStringToInt(firstPerimeter)));
 	}
 }
 
@@ -387,12 +387,12 @@ std::vector<int> getAllInFront(std::string firstPerimeter, std::string secondPer
 	int firstInt = changeStringToInt(firstPerimeter);
 	int secondInt = changeStringToInt(secondPerimeter);
 	vector<int> temp;
-	vector<int> getFollowFan = st.getFollowFan(secondInt);
+	vector<int> getFollowFan = stmtTable::getFollowFan(secondInt);
 
 	while (getFollowFan.size() != 0) {
 
 		temp.push_back(getFollowFan.at(0));
-		getFollowFan = st.getFollowFan(getFollowFan.at(0));
+		getFollowFan = stmtTable::getFollowFan(getFollowFan.at(0));
 	}
 
 	return temp;
@@ -402,12 +402,12 @@ std::vector<int> getAllFollowers(std::string firstPerimeter, std::string secondP
 	int firstInt = changeStringToInt(firstPerimeter);
 	int secondInt = changeStringToInt(secondPerimeter);
 	vector<int> temp;
-	vector<int> getFollow = st.getFollow(firstInt);
+	vector<int> getFollow = stmtTable::getFollow(firstInt);
 
 	while (getFollow.size() != 0) {
 
 		temp.push_back(getFollow.at(0));
-		getFollow = st.getFollow(getFollow.at(0));
+		getFollow = stmtTable::getFollow(getFollow.at(0));
 	}
 
 	return temp;
@@ -417,7 +417,7 @@ bool checkIfFollowStar(std::string first, std::string second) {
 
 	int firstInt = changeStringToInt(first);
 	int secondInt = changeStringToInt(second);
-	std::vector<int> temp = st.getFollow(firstInt);
+	std::vector<int> temp = stmtTable::getFollow(firstInt);
 
 	if (temp.size() != 0) {
 		if (temp.at(0) == secondInt) {
@@ -426,7 +426,7 @@ bool checkIfFollowStar(std::string first, std::string second) {
 		else {
 			while (temp.size() != 0) {
 				if (temp.at(0) != secondInt) {
-					temp = st.getFollow(temp.at(0));
+					temp = stmtTable::getFollow(temp.at(0));
 				}
 				else {
 					return true;
@@ -705,7 +705,7 @@ void ProcedureFinalString() {
 	}
 
 }
-std::vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
+vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
 
 	assessParseResult(mustPr);
