@@ -1,3 +1,6 @@
+#ifndef QueryEvaluator_h
+#define QueryEvaluator_h
+
 #include <string>
 #include <vector>
 #include "../Header/ParseResult.h"
@@ -11,3 +14,4 @@ public:
 	~QueryEvaluator();
 };
 
+#endif

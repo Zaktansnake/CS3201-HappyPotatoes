@@ -8,6 +8,8 @@
 // include your other headers here
 #include "AbstractWrapper.h"
 #include "../Happy Potatoes SPA Tool/PKB/Header/Parser.h"
+#include "../Happy Potatoes SPA Tool/PQL/Header/ParseResult.h"
+#include "../Happy Potatoes SPA Tool/PQL/Header/QueryEvaluator.h"
 
 class TestWrapper : public AbstractWrapper {
  public:

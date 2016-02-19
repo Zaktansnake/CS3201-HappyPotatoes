@@ -152,6 +152,11 @@
   <ItemGroup>
     <ClCompile Include="TestWrapper.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Happy Potatoes SPA Tool\Happy Potatoes SPA Tool.vcxproj">
+      <Project>{0491bafa-89e9-469e-9be1-d7ea8e21533c}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
