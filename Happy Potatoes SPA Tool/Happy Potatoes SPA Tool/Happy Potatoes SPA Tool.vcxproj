@@ -36,6 +36,10 @@
     <ClCompile Include="PKB\stmtTable.cpp" />
     <ClCompile Include="PKB\Uses.cpp" />
     <ClCompile Include="PKB\VarTable.cpp" />
+    <ClCompile Include="PQL\Clause.cpp" />
+    <ClCompile Include="PQL\ParseResult.cpp" />
+    <ClCompile Include="PQL\Pattern.cpp" />
+    <ClCompile Include="PQL\QueryEvaluator.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="PKB\Header\Affects.h" />
@@ -53,6 +57,10 @@
     <ClInclude Include="PKB\Header\stmtTable.h" />
     <ClInclude Include="PKB\Header\Uses.h" />
     <ClInclude Include="PKB\Header\VarTable.h" />
+    <ClInclude Include="PQL\Header\Clause.h" />
+    <ClInclude Include="PQL\Header\ParseResult.h" />
+    <ClInclude Include="PQL\Header\Pattern.h" />
+    <ClInclude Include="PQL\Header\QueryEvaluator.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{0491BAFA-89E9-469E-9BE1-D7EA8E21533C}</ProjectGuid>
