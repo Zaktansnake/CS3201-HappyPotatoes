@@ -1,6 +1,6 @@
-#include "VarTable.h"
-#include "Modifies.h"
-#include "Uses.h"
+#include "./Header/VarTable.h"
+#include "./Header/Modifies.h"
+#include "./Header/Uses.h"
 
 #include <iostream>
 #include <string>

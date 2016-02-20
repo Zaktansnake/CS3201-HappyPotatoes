@@ -13,10 +13,10 @@
 #include <stack>
 #include <utility>
 
-#include "PKB.h"
-#include "ProcTable.h"
-#include "VarTable.h"
-#include "stmtTable.h"
+#include "./Header/PKB.h"
+#include "./Header/ProcTable.h"
+#include "./Header/VarTable.h"
+#include "./Header/stmtTable.h"
 
 using namespace std;
 

@@ -4,9 +4,9 @@
 #include <algorithm>
 #include <string>
 #include <vector>
-#include "PatternTable.h"
-#include "VarTable.h"
-#include "Patterns.h"
+#include "./Header/PatternTable.h"
+#include "./Header/VarTable.h"
+#include "./Header/Patterns.h"
 
 
 using namespace std;

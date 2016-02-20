@@ -1,6 +1,6 @@
 #include "TestWrapper.h"
-#include "Parser.h"
-#include "QueryEvaluator.h"
+#include "./PKB/Header/Parser.h"
+#include "./PQL/Header/QueryEvaluator.h"
 
 // implementation code of WrapperFactory - do NOT modify the next 5 lines
 AbstractWrapper* WrapperFactory::wrapper = 0;

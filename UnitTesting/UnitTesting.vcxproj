@@ -169,6 +169,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="TestAST.cpp" />
+    <ClCompile Include="TestGetPattern.cpp" />
+    <ClCompile Include="TestModifies.cpp" />
+    <ClCompile Include="TestParser.cpp" />
+    <ClCompile Include="TestPattern.cpp" />
+    <ClCompile Include="TestPQLParser.cpp" />
+    <ClCompile Include="TestStmtTable.cpp" />
+    <ClCompile Include="TestUses.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

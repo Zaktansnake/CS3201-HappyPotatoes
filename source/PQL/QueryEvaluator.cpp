@@ -1,16 +1,16 @@
 
-#include "Pattern.h"
-#include "QueryEvaluator.h"
+#include "./Header/Pattern.h"
+#include "./Header/QueryEvaluator.h"
 #include <vector>
-#include "Clause.h"
+#include "./Header/Clause.h"
 #include <algorithm>
 #include <iterator>
-#include "PKB.h"
-#include "ParseResult.h"
+#include "../PKB/Header/PKB.h"
+#include "./Header/ParseResult.h"
 #include <string>
 #include <sstream>
-#include "VarTable.h"
-#include "StmtTable.h"
+#include "../PKB/Header/VarTable.h"
+#include "../PKB/Header/StmtTable.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>

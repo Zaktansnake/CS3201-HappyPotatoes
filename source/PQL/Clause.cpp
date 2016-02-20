@@ -1,4 +1,4 @@
-#include "Clause.h"
+#include "./Header/Clause.h"
 
 ClauseType Clause::getClauseOperation() { return clauseType_; }
 Parameter1 Clause::getFirstParameter() { return parameter1_; }

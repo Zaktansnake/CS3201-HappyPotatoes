@@ -1,5 +1,5 @@
-#include "Follows.h"
-#include "stmtTable.h"
+#include "./Header/Follows.h"
+#include "./Header/stmtTable.h"
 #include <string>
 #include <vector>
 #include <stack>

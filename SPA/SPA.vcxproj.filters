@@ -13,129 +13,147 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="Header Files\PKB">
+      <UniqueIdentifier>{8b8ba9be-35d8-4c48-98b6-c991fe07673d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\PQL">
+      <UniqueIdentifier>{85ee9eec-5a30-472a-83e9-aaef95e784e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PKB">
+      <UniqueIdentifier>{65fc430b-cb60-4658-a6f4-d04ebf9125db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\PQL">
+      <UniqueIdentifier>{9bbb386c-db7c-4a55-b024-1532179932e6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\source\DesignExtractor.cpp">
-      <Filter>Source Files</Filter>
+    <ClInclude Include="..\source\PQL\Header\Clause.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\Header\ParseResult.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\Header\Pattern.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PQL\Header\QueryEvaluator.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\Affects.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\AST.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\Call.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\CFG.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\Follows.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\GNode.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\Modifies.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\Parent.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\Parser.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\Patterns.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\PatternTable.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\PKB.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\ProcTable.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\stmtTable.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\Uses.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\VarTable.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\source\PQL\Clause.cpp">
+      <Filter>Source Files\PQL</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Parser.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PQL\ParseResult.cpp">
+      <Filter>Source Files\PQL</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\PKB.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PQL\Pattern.cpp">
+      <Filter>Source Files\PQL</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Affects.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PQL\QueryEvaluator.cpp">
+      <Filter>Source Files\PQL</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\AST.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\Affects.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Call.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\AST.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Clause.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\Call.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Follows.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\CFG.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Modifies.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\DesignExtractor.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Parent.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\Follows.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\ParseResult.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\GNode.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Pattern.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\Modifies.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Patterns.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\Parent.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\PatternTable.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\Parser.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\ProcTable.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\Patterns.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\QueryEvaluator.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\PatternTable.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\stmtTable.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\PKB.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\Uses.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\ProcTable.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\VarTable.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="..\source\PKB\stmtTable.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\Uses.cpp">
+      <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\VarTable.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="..\source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="..\source\PKB.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Affects.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\AST.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Call.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\CFG.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Clause.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Follows.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\GNode.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Modifies.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Parent.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Parser.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\ParseResult.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Pattern.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Patterns.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\PatternTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\ProcTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\QueryEvaluator.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\stmtTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\Uses.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\VarTable.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>
