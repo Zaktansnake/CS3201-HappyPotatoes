@@ -67,7 +67,7 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 	ans.clear();
 	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
 	if (level > levelList.size()) {
-		throw exception("Error, stmtRecord wrong");
+		cout << "Error. Wrong stmtRecord." << endl;
 		abort();
 	}
 	std::vector<int> temp = levelList.at(level);
@@ -96,7 +96,7 @@ std::vector<int> Follows::getFollowFan(int stmtNo) {
 	ans.clear();
 	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
 	if (level > levelList.size()) {
-		throw exception("Error, stmtRecord wrong");
+		cout << "Error. Wrong stmtRecord." << endl;
 		abort();
 	}
 	std::vector<int> temp = levelList.at(level);

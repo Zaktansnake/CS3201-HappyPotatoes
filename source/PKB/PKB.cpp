@@ -39,6 +39,8 @@ vector<string> split(string str, char delimiter);
 vector<string> splitTheString(string line);
 bool is_number(const std::string& s);
 static void calls(string procedurName, int stmtLine);
+void stmtLineForPattern(vector<string> line);
+void detectRightBracket(int options, vector<string> v);
 
 void PKB::create(string fileName) {
 	firstTime = true;
@@ -50,7 +52,7 @@ void PKB::create(string fileName) {
 		getline(myFile, str);
 		findMethod(str);
 		if (stmtLine > 0) {
-			stmtTable::addStmtTable(str, stmtLine);
+			//stmtTable::addStmtTable(str, stmtLine);
 		}
 		stmtLine++;
 	}
@@ -62,44 +64,51 @@ void PKB::create(string fileName) {
 }
 
 int PKB::getStmtNum() {
-    return stmtLine-1;
+    return stmtLine;
 }
 
 void findMethod(string file_contents) {
 
 	istringstream iss(file_contents);
-	iss >> word; // get the first word
-	oss << iss.rdbuf(); // get the remain words
+	if (file_contents.compare("") != 0) {
+		iss >> word; // get the first word
+		oss << iss.rdbuf(); // get the remain words
+	} else {
+		word = "";
+	}
 
 	if (firstLine) {
 		if (word.compare("procedure") != 0) {
-			throw std::runtime_error("Error: Structure");
+			cout << "Error: Structure. (procedure)" << endl;
 		}
 		firstLine = false;
 	}
 
 	if (word.compare("procedure") == 0) {
-		if (!firstTime) {
-			if (!bracstack.empty()) {
-				throw std::runtime_error("Error: Structure");
-			}
-			if (stmtLine > 0) {
-				stmtLine--;
-			}
+		if (!firstTime && stmtLine > 0) {
+			stmtLine--;
 		}
 		procedure();
-		firstTime = false;
 	}
 	else if (word.compare("if") == 0 || word.compare("else") == 0
 		|| (word.compare("calls") == 0) || (word.compare("while") == 0)) {
 		stmtLst();
 	}
 	else if (word.compare("") == 0) {
-		stmtLine--;
-		return;
+		if (!bracstack.empty()) {
+			cout << "Error: Structure." << endl;
+		}
+
+		if (stmtLine > 0) {
+			stmtLine--;
+		}
+
+		firstTime = false;
 	}
 	else if (word.compare("}") == 0) {
-		
+		stmtLine--;
+		vector<string> ans;
+		detectRightBracket(0, ans);
 	} else {
 		// save them into 2d array, pass to pql, to build tree
 		assign();
@@ -114,17 +123,17 @@ void procedure() {
 	vector<string> v = splitTheString(str);
 
 	if (v.size() > 3) {
-		throw std::runtime_error("Error: Structure");
+		cout << "Error: Structure." << endl;
 	}
 
 	if (ProcTable::isContains(v[1])) {
-		throw std::runtime_error("Error: Duplication of Procedure Name");
+		cout << "Error: Duplication of Procedure Name." << endl;
 	}
 	else {
 		ProcTable::addTableData(v[1], stmtLine);
 		procname = v[1];
 		if (v[2].compare("{") != 0) {
-			throw std::runtime_error("Error: Structure");
+			cout << "Error: Structure." << endl;
 		}
 		else {
 			bracstack.push(make_pair("{", 0));
@@ -155,14 +164,8 @@ void stmtLst() {
 }
 
 void assign() {
-	//vector<string> tempVector;
 	string lineWithVar = str;
 	vector<string> v;
-	/*vector<string> v = splitTheString(str);
-	for (int i = 0; i < v.size(); i++) {
-		
-	}*/
-
 	int ln = str.length() - 1;
 	for (int n = 0; n <= ln; n++) {
 		string letter(1, lineWithVar[n]);
@@ -171,31 +174,13 @@ void assign() {
 		}
 	}
 
-	std::string result;
-	for (auto const& s : v) { result += s; }
-	VarTable::addDataToAssignTable(result, stmtLine);
+	stmtLineForPattern(v);
 
 	for (int i = 0; i < v.size(); i++) {
 		std::string var = v.at(i);
 
 		if (var.compare("}") == 0) {
-			pair<string, int> temp = bracstack.top();
-
-			if (temp.second != 0) {
-				vector<string> tempArrayListLeft = VarTable::findVariableLeft(temp.second, stmtLine);
-
-				for (int i = 0; i < tempArrayListLeft.size(); i++) {
-					VarTable::addDataToModifies(tempArrayListLeft[i], temp.second);
-				}
-
-				VarTable::addDataToModifies(v[0], temp.second);
-
-				vector<string> tempArrayListRight = VarTable::findVariableRight(temp.second, stmtLine);
-
-				for (int i = 0; i < tempArrayListRight.size(); i++) {
-					VarTable::addDataToUses(tempArrayListRight[i], temp.second);
-				}
-			}
+			//detectRightBracket(1, v);
 			bracstack.pop();
 		} else if (!is_number(var)) {
 			if (i == 0) {
@@ -221,13 +206,13 @@ static void stmt(int num) {
 			bracstack.push(make_pair("{", stmtLine));
 		}
 		else {
-			throw std::runtime_error("Error: then");
+			cout << "Error: Structure. (then)" << endl;
 		}
 		break;
 	case 1: // else
 		stmtLine--;
 		if (v[1].compare("{") != 0) {
-			throw std::runtime_error("Error: Structure");
+			cout << "Error: Structure. ({)" << endl;
 		}
 		else {
 			bracstack.push(make_pair("{", stmtLine));
@@ -240,7 +225,7 @@ static void stmt(int num) {
 			VarTable::addDataToWhileTable(v[2],stmtLine);
 		}
 		else {
-			throw std::runtime_error("Error: Structure");
+			cout << "Error: Structure. ({)" << endl;
 		}
 		break;
 	case 3: // call
@@ -282,4 +267,49 @@ vector<string> splitTheString(string line) {
 		v.push_back(word);
 
 	return v;
+}
+
+void stmtLineForPattern(vector<string> line) {
+	std::string result;
+	for (auto const& s : line) {
+		if (s.compare(";") || s.compare("}")) {
+			break;
+		} else {
+			result += s;
+		}
+	}
+
+	VarTable::addDataToAssignTable(result, stmtLine);
+}
+
+// option: 0 -> only bracket
+//			1 -> with variable
+void detectRightBracket(int option,  vector<string> v) {
+	pair<string, int> temp = bracstack.top();
+	int tempStmtNum = stmtLine;
+
+	if (option == 0) {
+		tempStmtNum = tempStmtNum - 1;
+	}
+
+	if (temp.second != 0) {
+		vector<string> tempArrayListLeft = VarTable::findVariableLeft(temp.second, tempStmtNum);
+
+		for (int i = 0; i < tempArrayListLeft.size(); i++) {
+			VarTable::addDataToModifies(tempArrayListLeft[i], temp.second);
+		}
+
+		if (option == 1) {
+			// if "{" is same line with assign line
+			VarTable::addDataToModifies(v[0], temp.second);
+		}
+
+		vector<string> tempArrayListRight = VarTable::findVariableRight(temp.second, tempStmtNum);
+
+		for (int i = 0; i < tempArrayListRight.size(); i++) {
+			VarTable::addDataToUses(tempArrayListRight[i], temp.second);
+		}
+
+		bracstack.pop();
+	}
 }

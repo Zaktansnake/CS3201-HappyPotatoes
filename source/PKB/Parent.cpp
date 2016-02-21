@@ -109,7 +109,7 @@ std::vector<int> Parent::getParent(int stmtNo) {
 		index = iter->second;
 	}
 	else {
-		throw exception("Error: parent not found");
+		cout << "Error. Parent not found." << endl;
 		abort();
 	}
     std::vector<int> result;

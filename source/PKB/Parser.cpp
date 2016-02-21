@@ -30,6 +30,7 @@ int Parser::parse(string fileName)
 		myFile.open(fileName);
 		if (!myFile.fail()) {
 			PKB::create(fileName);
+			cout << "Success." << endl;
 			statusFile = 1;
 		}
 	}
@@ -37,6 +38,7 @@ int Parser::parse(string fileName)
 		if (myFile.is_open()) {
 			myFile.close();
 		}
+		cout << "Error." << endl;
 		statusFile = -1;
 	}
 	

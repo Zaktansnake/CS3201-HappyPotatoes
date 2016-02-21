@@ -13,9 +13,13 @@
 
 using namespace std;
 
-vector<pair<int, string>> varTableLeft;  // (Modifies) int -> stmtLine, string -> variable
-vector<pair<int, string>> varTableRight; // ()
+// (Modifies) int -> stmtLine, string -> variable
+vector<pair<int, string>> varTableLeft; 
+// (Uses) int -> stmtLine, string -> variable
+vector<pair<int, string>> varTableRight;
+// Contains while loop
 map<string, vector<int>> whileTable;
+// Contains assign ine number
 map<int, string> assignTable;
 
 void addToVarTable(int position, string varName, int stmtLine);

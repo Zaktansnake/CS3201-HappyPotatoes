@@ -9,7 +9,7 @@ namespace IntegrationTesting
 	{
 	public:
 		
-		TEST_METHOD(TestMethod1)
+		TEST_METHOD(TestIntegration)
 		{
 			// TODO: Your test code here
 		}
