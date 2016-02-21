@@ -1,3 +1,4 @@
+#include "./Header/PKB.h"
 #include "./Header/Follows.h"
 #include "./Header/stmtTable.h"
 #include <string>
@@ -68,7 +69,7 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
 	if (level > levelList.size()) {
 		cout << "Error. Wrong stmtRecord." << endl;
-		abort();
+		PKB::abort();
 	}
 	std::vector<int> temp = levelList.at(level);
 	for (int i = 0; i < temp.size(); i++) {
@@ -97,7 +98,7 @@ std::vector<int> Follows::getFollowFan(int stmtNo) {
 	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
 	if (level > levelList.size()) {
 		cout << "Error. Wrong stmtRecord." << endl;
-		abort();
+		PKB::abort();
 	}
 	std::vector<int> temp = levelList.at(level);
 	for (int i = 0; i < temp.size(); i++) {

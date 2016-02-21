@@ -80,6 +80,7 @@ void findMethod(string file_contents) {
 	if (firstLine) {
 		if (word.compare("procedure") != 0) {
 			cout << "Error: Structure. (procedure)" << endl;
+			PKB::abort();
 		}
 		firstLine = false;
 	}
@@ -97,6 +98,7 @@ void findMethod(string file_contents) {
 	else if (word.compare("") == 0) {
 		if (!bracstack.empty()) {
 			cout << "Error: Structure." << endl;
+			PKB::abort();
 		}
 
 		if (stmtLine > 0) {
@@ -124,16 +126,19 @@ void procedure() {
 
 	if (v.size() > 3) {
 		cout << "Error: Structure." << endl;
+		PKB::abort();
 	}
 
 	if (ProcTable::isContains(v[1])) {
 		cout << "Error: Duplication of Procedure Name." << endl;
+		PKB::abort();
 	}
 	else {
 		ProcTable::addTableData(v[1], stmtLine);
 		procname = v[1];
 		if (v[2].compare("{") != 0) {
 			cout << "Error: Structure." << endl;
+			PKB::abort();
 		}
 		else {
 			bracstack.push(make_pair("{", 0));
@@ -207,12 +212,14 @@ static void stmt(int num) {
 		}
 		else {
 			cout << "Error: Structure. (then)" << endl;
+			PKB::abort();
 		}
 		break;
 	case 1: // else
 		stmtLine--;
 		if (v[1].compare("{") != 0) {
 			cout << "Error: Structure. ({)" << endl;
+			PKB::abort();
 		}
 		else {
 			bracstack.push(make_pair("{", stmtLine));
@@ -226,6 +233,7 @@ static void stmt(int num) {
 		}
 		else {
 			cout << "Error: Structure. ({)" << endl;
+			PKB::abort();
 		}
 		break;
 	case 3: // call
@@ -312,4 +320,8 @@ void detectRightBracket(int option,  vector<string> v) {
 
 		bracstack.pop();
 	}
+}
+
+void PKB::abort() {
+	exit(-1);
 }

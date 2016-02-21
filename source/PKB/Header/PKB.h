@@ -140,4 +140,6 @@ public:
 	static void create(string fileName);
 	static int getStmtNum ();
 
+	static void abort();
+
 };

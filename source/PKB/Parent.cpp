@@ -110,7 +110,7 @@ std::vector<int> Parent::getParent(int stmtNo) {
 	}
 	else {
 		cout << "Error. Parent not found." << endl;
-		abort();
+		PKB::abort();
 	}
     std::vector<int> result;
 	if (index != 0) {
