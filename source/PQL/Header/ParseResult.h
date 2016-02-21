@@ -1,7 +1,5 @@
-#ifndef ParseResult_h
-#define ParseResult_h
-
 #pragma once
+#include "stdafx.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -26,13 +24,13 @@ public:
 	ParseResult(ParameterSet, PatternSet);
 	ParseResult(ParameterSet, ClauseSet, PatternSet);
 	// for query evaluator to call
-	// vector<ParseResult> startQueryParsing();
+	vector<ParseResult> startQueryParsing();
 	// originally private but made public for unit test
-	bool checkAndParseDeclaration(string);
-	ParseResult checkAndParseQuery(string);
-	ParseResult generateParseResult(string, string);
+	bool checkAndParseDeclaration(string, unordered_map<string, string>&);
+	ParseResult checkAndParseQuery(string, unordered_map<string, string>&);
 private:
 	// helper functions
+	ParseResult generateParseResult(string, string);
 	void signalErrorAndStop();
 	
 	// attributes
@@ -40,5 +38,3 @@ private:
 	ClauseSet condClauses_;
 	PatternSet patterns_;
 };
-
-#endif
