@@ -32,13 +32,13 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results){
   // store the answers to the query in the results list (it is initially empty)
   // each result must be a string.
 
-	size_t pos;
-	query.find_last_of(";");
-	string declarationSenctence, QuerySentence;
-	declarationSenctence = query.substr(0, pos + 1);
-	QuerySentence = query.substr(pos + 1, query.size() - pos);
+	int pos = query.find_last_of(";", query.size());
+	string declarationSentence, querySentence;
+	declarationSentence = query.substr(0, pos + 1);
+	pos += 2;
+	querySentence = query.substr(pos, query.size() - pos);
 	ParseResult pr = ParseResult();
-	ParseResult mustpr = pr.generateParseResult(declarationSenctence, QuerySentence);
+	ParseResult mustpr = pr.generateParseResult(declarationSentence, querySentence);
 	QueryEvaluator Qe;
 	std::vector<std::string> resultsString = Qe.startEvaluator(mustpr);
 	results = std::list<std::string>(resultsString.begin(), resultsString.end());
