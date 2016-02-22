@@ -24,7 +24,7 @@ namespace UnitTesting
 			string resultChildren;
 			std::vector<int> resultChild;
 			int expected_result01 = 4;
-			Parser::parse("C:\\Users\\feifei\\Downloads\\TestFollow.txt");
+			Parser::parse("..\\Release\Sample-Source.txt");
 
 			vector<int> getParent = stmtTable::getParent(5);
 			result = getParent.front();

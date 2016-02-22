@@ -19,31 +19,30 @@ Parent::Parent()
 {
 }
 
-
 Parent::~Parent()
 {
 }
 
 void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop) {
-  // check whether is is a loop parent "while""if""else"
-    int index = 0;
+	// check whether is a loop parent "while""if""else"
+	int index = 0;
 	int parent;
 	std::vector<int> temp;
 	if (loopFlag && endLoop == 0) {   // when there is a condition stmt and it is not end stmt for loop
-		
+
 		// check whether ths stmt is a child of other stmt
 		if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
-		   parent = 0;
-		//   index = arrAns.size();
+			parent = 0;
+			//   index = arrAns.size();
 		}
 		else {
 			parent = loopStmtNo.top();
 		}
 		setToParent(stmtLine, stmtNo);  //set it become a parent
-		AnsMap.insert(pair<int, int>(stmtNo, parent));   
+		AnsMap.insert(pair<int, int>(stmtNo, parent));
 	}
 	else {
-	    // if there is not a loop condition 
+		// if there is not a loop condition 
 		//check whether this stmt is a child of other stmt
 		//if yes, add parent to the child 
 		// else, let parent be none
@@ -55,7 +54,7 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			parent = loopStmtNo.top();
 		}
 		AnsMap.insert(pair<int, int>(stmtNo, parent));
-		
+
 
 		if (endLoop > 0) {
 			deleteParent(endLoop);
@@ -65,10 +64,11 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 }
 
 
-
 void deleteParent(int endloop) {
 	for (int i = 0; i < endloop; i++) {
-		loopParent.pop();
+		if (!loopParent.empty()) {
+			loopParent.pop();
+		}
 		if (loopParent.empty()) {
 			break;
 		}
@@ -77,7 +77,9 @@ void deleteParent(int endloop) {
 
 void deleteStmtNo(int endloop) {
 	while (endloop > 0) {
-		loopStmtNo.pop();
+		if (!loopParent.empty()) {
+			loopParent.pop();
+		}
 		endloop--;
 		if (loopParent.empty()) {
 			break;
