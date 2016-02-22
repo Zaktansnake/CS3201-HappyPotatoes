@@ -1,5 +1,4 @@
-#include "stdafx.h"
-#include "Pattern.h"
+#include "./Header/Pattern.h"
 
 PatternType Pattern::getPatternOperation() { return patternType_; }
 Parameter1 Pattern::getFirstParameter() { return parameter1_; }

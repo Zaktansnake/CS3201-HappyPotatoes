@@ -1,5 +1,4 @@
 #pragma once
-#include "stdafx.h"
 #include <string>
 #include <vector>
 #include <unordered_map>
@@ -28,9 +27,10 @@ public:
 	// originally private but made public for unit test
 	bool checkAndParseDeclaration(string, unordered_map<string, string>&);
 	ParseResult checkAndParseQuery(string, unordered_map<string, string>&);
+
+	ParseResult generateParseResult(string, string);
 private:
 	// helper functions
-	ParseResult generateParseResult(string, string);
 	void signalErrorAndStop();
 	
 	// attributes

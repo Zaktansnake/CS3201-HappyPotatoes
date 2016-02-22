@@ -1,5 +1,4 @@
-#include "stdafx.h"
-#include "ParseResult.h"
+#include "./Header/ParseResult.h"
 #include <iostream>
 #include <fstream>
 #include <regex>

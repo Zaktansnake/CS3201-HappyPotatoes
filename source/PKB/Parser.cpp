@@ -39,8 +39,8 @@ int Parser::parse(string fileName)
 			myFile.close();
 		}
 		cout << "Error." << endl;
-		PKB::abort();
 		statusFile = -1;
+		PKB::abort();
 	}
 	
 	return statusFile;
