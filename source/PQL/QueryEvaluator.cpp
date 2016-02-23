@@ -666,20 +666,21 @@ std::string changeIntToString(int StmtList) {
 }
 
 void  MakeFinalString(std::vector<std::string> SelectParameter) {
+	vector<string> parameter = splitComma(SelectParameter.at(0));
 
-	if (SelectParameter.at(0) == "stmt") {
+	if (parameter.at(1) == "stmt") {
 		stmtFinalString();
 	}
-	if (SelectParameter.at(0) == "proc") {
+	if (parameter.at(1) == "proc") {
 		ProcedureFinalString();
 	}
-	if (SelectParameter.at(0) == "while") {
+	if (parameter.at(1) == "while") {
 		stmtFinalString();
 	}
-	if (SelectParameter.at(0) == "assign") {
+	if (parameter.at(1) == "assign") {
 		stmtFinalString();
 	}
-	if (SelectParameter.at(0) == "variable") {
+	if (parameter.at(1) == "variable") {
 		variableFinalString();
 	}
 
