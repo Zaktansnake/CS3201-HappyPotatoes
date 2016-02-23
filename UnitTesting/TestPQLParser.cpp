@@ -3,7 +3,7 @@
 #include "./PQL/Header/ParseResult.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
-
+/*
 namespace TestPQLParser_VS2015 {
 	TEST_CLASS(TestParseResult) {
 	public:
@@ -49,3 +49,4 @@ namespace TestPQLParser_VS2015 {
 	};
 }
 
+*/

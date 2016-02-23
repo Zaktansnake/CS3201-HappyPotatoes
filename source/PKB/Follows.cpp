@@ -51,6 +51,9 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 		stmtListNo++;
 	}
 	else if (!loopFlag && endLoopNo > 0) {
+		if (stmtLine.size() == 1 && stmtLine.compare("}") == 0) {
+
+		}
 		for (int i = 0; i < endLoopNo; i++) {
 			stmtListNo--;
 			if (stmtListNo < 0) {
@@ -59,8 +62,6 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 			}
 		}
 	}
-
-
 }
 
 std::vector<int> Follows::getFollow(int stmtNo) {

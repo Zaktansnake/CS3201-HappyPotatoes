@@ -38,8 +38,11 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 		else {
 			parent = loopStmtNo.top();
 		}
-		setToParent(stmtLine, stmtNo);  //set it become a parent
-		AnsMap.insert(pair<int, int>(stmtNo, parent));
+		if (endLoop == 0 || stmtLine.size() != 1) {
+            setToParent(stmtLine, stmtNo);  //set it become a parent
+	     	AnsMap.insert(pair<int, int>(stmtNo, parent));
+		}
+		
 	}
 	else {
 		// if there is not a loop condition 
@@ -53,7 +56,10 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 		else {
 			parent = loopStmtNo.top();
 		}
-		AnsMap.insert(pair<int, int>(stmtNo, parent));
+		if (endLoop == 0 || stmtLine.size() != 1) {
+           AnsMap.insert(pair<int, int>(stmtNo, parent));
+		}
+		
 
 
 		if (endLoop > 0) {

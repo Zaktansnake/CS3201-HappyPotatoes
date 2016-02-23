@@ -41,9 +41,6 @@
     <ClCompile Include="TestPattern.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestPQLParser.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestStmtTable.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
