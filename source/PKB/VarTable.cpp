@@ -147,8 +147,8 @@ vector<int> VarTable::getModifiesAssign(string secondPerimeter) {
 	return v_intersection;
 }
 
-vector<int> VarTable::getModifiesStmt(string firstPerimeter) {
-	return Modifies::getModifiesTable(firstPerimeter);
+vector<int> VarTable::getModifiesStmt(string secondPerimeter) {
+	return Modifies::getModifiesTable(secondPerimeter);
 }
 
 vector<int> VarTable::getModifiesWhile(string secondPerimeter) {
@@ -446,3 +446,5 @@ void addToVarTable(int position, string varName, int stmtLine) {
 		varTableRight.push_back(make_pair(stmtLine, varName));
 	}
 }
+
+

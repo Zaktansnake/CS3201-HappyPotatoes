@@ -70,6 +70,8 @@ void ProcedureFinalString();
 void variableFinalString();
 //assess parseResultVector
 
+vector<string> splitComma(string line);
+
 
 
 void assessParseResult(ParseResult pr) {
@@ -87,9 +89,18 @@ void assessParseResult(ParseResult pr) {
 
 void setResultsPattern(PatternSet PatternQueryVector, std::vector<std::string> SelectParameterVector)
 {
-	std::string firstPatternParameter = PatternQueryVector.at(0).getFirstParameter();
-	std::string secondPatternParameter = PatternQueryVector.at(0).getSecondParameter();
-	std::string thridPatternParameter = PatternQueryVector.at(0).getThirdParameter();
+	std::string firstPatternParameter;
+	std::string secondPatternParameter;
+	std::string thridPatternParameter;
+	if (PatternQueryVector.size() > 0) {
+		firstPatternParameter = PatternQueryVector.at(0).getFirstParameter();
+		secondPatternParameter = PatternQueryVector.at(0).getSecondParameter();
+		thridPatternParameter = PatternQueryVector.at(0).getThirdParameter();
+	} else {
+		firstPatternParameter = "";
+		secondPatternParameter = "";
+		thridPatternParameter = "";
+	}
 	PatternResults(SelectParameterVector, firstPatternParameter, secondPatternParameter);
 }
 
@@ -105,8 +116,8 @@ void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> S
 	Parameter1 firstParameter = clauses.getFirstParameter();
 	Parameter2 secondParameter = clauses.getSecondParameter();
 	char firstLetter = clausesOperation.at(0);
-	if (clausesOperation.find('*')) {
-
+	std::size_t found = clausesOperation.find("*");
+	if (found != std::string::npos) {
 		if (firstLetter == 'P') {
 			ParentStarResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
 		}
@@ -115,7 +126,6 @@ void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> S
 		}
 	}
 	else {
-
 		if (firstLetter == 'M') {
 			ModifiesResults(SelectParameterVector, firstParameter, secondParameter, firstSecondParameterType);
 		}
@@ -137,7 +147,7 @@ void ParentStarResults(std::vector<std::string> SelectParameterVector, Parameter
 	int firstPerimeterInt;
 	int secondPerimeterInt;
 	vector<int> temp;
-	if (SelectParameterVector.at(0) == "boolean") {
+	if (SelectParameterVector.at(0) == "BOOLEAN") {
 
 		if ((!is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
 			for (int index = 1; index < pkb.getStmtNum(); index++) {
@@ -254,7 +264,7 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 	int firstPerimeterInt;
 	int secondPerimeterInt;
 	vector<int> temp;
-	if (SelectParameterVector.at(0) == "boolean") {
+	if (SelectParameterVector.at(0) == "BOOLEAN") {
 
 		if ((!is_number(firstPerimeter)) && (!is_number(secondPerimeter))) {
 			for (int index = 1; index < pkb.getStmtNum(); index++) {
@@ -296,13 +306,13 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 void PatternResults(std::vector<std::string> SelectParameterVector, std::string firstPerimeter,
 	std::string secondPerimeter) {
 
-
-	std::string SelectParameter = SelectParameterVector.at(noTuple);
+	vector<string> parameter = splitComma(SelectParameterVector.at(0));
+	std::string SelectParameter = parameter.at(noTuple);
 	//if the selectparameter is a boolean
 	if (SelectParameter == "assign") {
 		//StmtLineClausesQueryResults.push_back(Pattern::getPattern(firstPerimeter, secondPerimeter));
 	}
-	if (SelectParameter == "Boolean") {
+	if (SelectParameter == "BOOLEAN") {
 		//BooleanClausesQueryResults.push_back(Pattern::isttern(firstPerimeter, secondPerimeter));
 	}
 }
@@ -310,39 +320,39 @@ void PatternResults(std::vector<std::string> SelectParameterVector, std::string 
 
 void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
-
-	if (SelectParameterVector.at(0) == "proc") {
+	vector<string> parameter = splitComma(SelectParameterVector.at(0));
+	if (parameter.at(1) == "proc") {
 
 		ProcedureClausesQueryResults.push_back(VarTable::getUsesProc(removeDoubleQuote(secondPerimeter)));
 	}
-	if (SelectParameterVector.at(0) == "assign") {
+	if (parameter.at(1) == "assign") {
 
 		StmtLineClausesQueryResults.push_back(VarTable::getUsesAssig(removeDoubleQuote(secondPerimeter)));
 	}
-	if (SelectParameterVector.at(0) == "stmt") {
+	if (parameter.at(1) == "stmt") {
 
 		StmtLineClausesQueryResults.push_back(VarTable::getUsesStmt(removeDoubleQuote(secondPerimeter)));
 	}
-	if (SelectParameterVector.at(0) == "while") {
+	if (parameter.at(1) == "while") {
 
 		StmtLineClausesQueryResults.push_back(VarTable::getUsesWhile(removeDoubleQuote(secondPerimeter)));
 	}
-	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "pv")) {
+	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "pv")) {
 
 		BooleanClausesQueryResults.push_back(VarTable::isUsesProc(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
-	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "av")) {
+	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "av")) {
 
 		BooleanClausesQueryResults.push_back(VarTable::isUsesAssign(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
-	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "sv")) {
+	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "sv")) {
 
 		BooleanClausesQueryResults.push_back(VarTable::isUsesStmt(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
-	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "wv")) {
+	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "wv")) {
 
 		BooleanClausesQueryResults.push_back(VarTable::isUsesWhile(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
@@ -352,19 +362,19 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 
 void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
-
+	vector<string> parameter = splitComma(SelectParameterVector.at(0));
 	//if asking a stmt is following another stmt
-	if (SelectParameterVector.at(0) == "Boolean") {
+	if (parameter.at(1) == "BOOLEAN") {
 		BooleanClausesQueryResults.push_back(stmtTable::isFollow(changeStringToInt(firstPerimeter),
 			changeStringToInt(secondPerimeter)));
 
 	}
 	//if querying for a stmt s such as for example follows(s,1),need to change
-	if ((SelectParameterVector.at(0) == "Stmt") && (is_number(secondPerimeter))) {
+	if ((parameter.at(1) == "stmt") && (is_number(secondPerimeter))) {
 		StmtLineClausesQueryResults.push_back(stmtTable::getFollow(changeStringToInt(secondPerimeter)));
 	}
 	//if querying for a stmt s such as for example follows(1,s),need to change
-	if ((SelectParameterVector.at(0) == "Stmt") && (is_number(firstPerimeter))) {
+	if ((parameter.at(1) == "stmt") && (is_number(firstPerimeter))) {
 		StmtLineClausesQueryResults.push_back(stmtTable::getFollowFan(changeStringToInt(firstPerimeter)));
 	}
 }
@@ -372,7 +382,7 @@ void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 f
 void FollowStarResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeter) {
 
-	if (SelectParameterVector.at(0) == "Boolean") {
+	if (SelectParameterVector.at(0) == "BOOLEAN") {
 		checkIfFollowStar(firstPerimeter, secondPerimeter);
 	}
 	if ((SelectParameterVector.at(0) == "stmt") && (is_number(firstPerimeter))) {
@@ -439,39 +449,39 @@ bool checkIfFollowStar(std::string first, std::string second) {
 
 void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
-
-	if (SelectParameterVector.at(0) == "proc") {
+	vector<string> parameter = splitComma(SelectParameterVector.at(0));
+	if (parameter.at(1) == "proc") {
 
 		ProcedureClausesQueryResults.push_back(VarTable::getModifiesProc(removeDoubleQuote(secondPerimeter)));
 	}
-	if (SelectParameterVector.at(0) == "assign") {
+	if (parameter.at(1) == "assign") {
 
 		StmtLineClausesQueryResults.push_back(VarTable::getModifiesAssign(removeDoubleQuote(secondPerimeter)));
 	}
-	if (SelectParameterVector.at(0) == "stmt") {
-
+	if (parameter.at(1) == "stmt") {
+		
 		StmtLineClausesQueryResults.push_back(VarTable::getModifiesStmt(removeDoubleQuote(secondPerimeter)));
 	}
-	if (SelectParameterVector.at(0) == "while") {
+	if (parameter.at(1) == "while") {
 
 		StmtLineClausesQueryResults.push_back(VarTable::getModifiesWhile(removeDoubleQuote(secondPerimeter)));
 	}
-	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "pv")) {
+	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "pv")) {
 
 		BooleanClausesQueryResults.push_back(VarTable::isModifiesProc(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
-	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "av")) {
+	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "av")) {
 
 		BooleanClausesQueryResults.push_back(VarTable::isModifiesAssign(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
-	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "sv")) {
+	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "sv")) {
 
 		BooleanClausesQueryResults.push_back(VarTable::isModifiesStmt(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
 	}
-	if ((SelectParameterVector.at(0) == "Boolean") && (firstSecondPerimeterType == "wv")) {
+	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "wv")) {
 
 		BooleanClausesQueryResults.push_back(VarTable::isModifiesWhile(removeDoubleQuote(firstPerimeter),
 			removeDoubleQuote(secondPerimeter)));
@@ -480,12 +490,21 @@ void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 
 
 std::string removeDoubleQuote(std::string s) {
 
-	if (!s.find("\"")) {
+	/*if (!s.find("\"")) {
 		return s;
 	}
 	else {
 		return s.substr(1, s.size() - 2);
+	}*/
+
+	if (s.front() == '"') {
+		s.erase(0, 1); // erase the first character
+		s.erase(s.size() - 1); // erase the last character
+		return s;
+	} else {
+		return s;
 	}
+
 }
 
 bool is_number(std::string s)
@@ -725,6 +744,16 @@ QueryEvaluator::~QueryEvaluator()
 }
 
 
+vector<string> splitComma(string line) {
+	std::istringstream ss(line);
+	std::string token;
+	vector<string> result;
+
+	while (std::getline(ss, token, ',')) {
+		result.push_back(token);
+	}
+	return result;
+}
 
 
 
