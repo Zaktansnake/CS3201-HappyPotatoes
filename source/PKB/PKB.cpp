@@ -12,6 +12,9 @@
 #include <sstream>
 #include <stack>
 #include <utility>
+#include <functional> 
+#include <cctype>
+#include <locale>
 
 #include "./Header/PKB.h"
 #include "./Header/ProcTable.h"
@@ -44,6 +47,9 @@ bool is_number(const std::string& s);
 static void calls(string procedurName, int stmtLine);
 void stmtLineForPattern(vector<string> line);
 void detectRightBracket(int options, vector<string> v);
+static inline std::string &ltrim(std::string &s);
+static inline std::string &rtrim(std::string &s);
+static inline std::string &trim(std::string &s);
 
 void PKB::create(string fileName) {
 	firstTime = true;
@@ -68,7 +74,7 @@ void PKB::create(string fileName) {
 }
 
 int PKB::getStmtNum() {
-    return stmtLine-1;
+	return stmtLine - 1;
 }
 
 void findMethod(string file_contents) {
@@ -77,7 +83,8 @@ void findMethod(string file_contents) {
 	if (file_contents.compare("") != 0) {
 		iss >> word; // get the first word
 		oss << iss.rdbuf(); // get the remain words
-	} else {
+	}
+	else {
 		word = "";
 	}
 
@@ -112,12 +119,12 @@ void findMethod(string file_contents) {
 		firstTime = false;
 	}
 	else if (word.compare("}") == 0) {
-		cout << "close." << endl;
 		stmtLine--;
 		vector<string> ans;
 		detectRightBracket(0, ans);
 		bracstack.pop();
-	} else {
+	}
+	else {
 		// save them into 2d array, pass to pql, to build tree
 		assign();
 	}
@@ -142,12 +149,14 @@ void procedure() {
 	else {
 		ProcTable::addTableData(v[1], stmtLine);
 		procname = v[1];
-		if (v[2].compare("{") != 0) {
-			cout << "Error: Structure. (procTable)" << endl;
-			PKB::abort();
-		}
-		else {
-			bracstack.push(make_pair("{", 0));
+		if (v.size() <= 3) {
+			if (v[2].compare("{") != 0) {
+				cout << "Error: Structure. (procTable)" << endl;
+				PKB::abort();
+			}
+			else {
+				bracstack.push(make_pair("{", 0));
+			}
 		}
 	}
 }
@@ -171,33 +180,45 @@ void stmtLst() {
 }
 
 void assign() {
+	vector<string> v;
 	string lineWithVar = str;
-	vector<string> v = splitTheString(str);
-	/*int ln = str.length() - 1;
+	string tempLine;
+
+	int ln = str.length() - 1;
 	for (int n = 0; n <= ln; n++) {
 		string letter(1, lineWithVar[n]);
-		if (letter.compare(" ") != 0) {
-			v.push_back(letter);
-		}
-	}*/
 
-	//stmtLineForPattern(v);
+		if (letter.compare(" ") != 0) {
+			if (letter.compare("+") == 0 || letter.compare("-") == 0 || letter.compare("*") == 0 || letter.compare("(") == 0 || letter.compare(")") == 0 || letter.compare(";") == 0 || letter.compare("}") == 0 || letter.compare("=") == 0) {
+				tempLine = trim(tempLine);
+				v.push_back(tempLine);
+				v.push_back(letter);
+				tempLine = "";
+			}
+			else {
+				tempLine += letter;
+			}
+		}
+	}
+
+	stmtLineForPattern(v);
 
 	for (int i = 0; i < v.size(); i++) {
 		std::string var = v.at(i);
-
 		if (var.compare("}") == 0) {
 			detectRightBracket(1, v);
 			bracstack.pop();
-		} else if (!is_number(var)) {
+		}
+		else if (!is_number(var)) {
 			if (i == 0) {
 				VarTable::addDataToModifies(var, stmtLine);
 				VarTable::addModifiesProcTable(procname, v[i]);
-			} else if (var.compare("=") == 0 || var.compare("+") == 0 || var.compare("-") == 0 || var.compare(";") == 0 || var.compare("*") == 0){
-				
-			} else {
-				VarTable::addDataToUses(var, stmtLine);
-				VarTable::addUsesProcTable(procname, v[i]);
+			}
+			else {
+				if (var.compare("=") != 0 && var.compare("+") != 0 && var.compare("-") != 0 && var.compare(";") != 0 && var.compare("*") != 0 && var.compare("(") != 0 && var.compare(")") != 0 && var.compare("}") != 0 && var.compare(" ") != 0 && var.compare("' '") != 0) {
+					VarTable::addDataToUses(var, stmtLine);
+					VarTable::addUsesProcTable(procname, v[i]);
+				}
 			}
 		}
 	}
@@ -231,7 +252,7 @@ static void stmt(int num) {
 		if (v[2].compare("{") == 0) {
 			VarTable::addDataToModifies(v[1], stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
-			VarTable::addDataToWhileTable(v[2],stmtLine);
+			VarTable::addDataToWhileTable(v[2], stmtLine);
 		}
 		else {
 			cout << "Error: Structure. ({)" << endl;
@@ -258,7 +279,8 @@ static void calls(string str, int stmtLine) {
 				}
 			}
 		}
-	} else {
+	}
+	else {
 		//throw std::runtime_error("Error: Structure");
 	}
 }
@@ -282,9 +304,7 @@ vector<string> splitTheString(string line) {
 void stmtLineForPattern(vector<string> line) {
 	std::string result;
 	for (auto const& s : line) {
-		if (s.compare(";") || s.compare("}")) {
-			break;
-		} else {
+		if (s.compare(";") != 0 || s.compare("}") != 0) {
 			result += s;
 		}
 	}
@@ -294,7 +314,7 @@ void stmtLineForPattern(vector<string> line) {
 
 // option: 0 -> only bracket
 //			1 -> with variable
-void detectRightBracket(int option,  vector<string> v) {
+void detectRightBracket(int option, vector<string> v) {
 	pair<string, int> temp = bracstack.top();
 	int tempStmtNum = stmtLine;
 
@@ -324,4 +344,21 @@ void detectRightBracket(int option,  vector<string> v) {
 
 void PKB::abort() {
 	exit(-1);
+}
+
+// trim from start
+static inline std::string &ltrim(std::string &s) {
+	s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+	return s;
+}
+
+// trim from end
+static inline std::string &rtrim(std::string &s) {
+	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+	return s;
+}
+
+// trim from both ends
+static inline std::string &trim(std::string &s) {
+	return ltrim(rtrim(s));
 }
