@@ -60,10 +60,16 @@ void PKB::create(string fileName) {
 	while (!myFile.eof()) {
 		getline(myFile, str);
 		findMethod(str);
-		if (stmtLine > 0) {
+		if (stmtLine > 0 && str.size()!=0 && str.compare("{") != 0) {
 			stmtTable::addStmtTable(str, stmtLine);
 		}
-		stmtLine++;
+		if (str.compare("}") != 0) {
+			if (str.compare("{") != 0) {
+              stmtLine++;
+			}
+            
+		}
+		
 	}
 	myFile.close();
 	//Modifies::printMap01();

@@ -29,24 +29,26 @@ Follows::~Follows()
 void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo) {
 	stmtRecord.push_back(nestLvl);
 	std::vector<int> temp;
-	if (levelList.empty()) {
-		temp.push_back(stmtNo);
-		levelList.push_back(temp);
-		temp.clear();
-	}
-	else {
-		if (levelList.size() <= nestLvl) {
+	if (stmtLine.compare("}") != 0) {
+		if (levelList.empty()) {
 			temp.push_back(stmtNo);
 			levelList.push_back(temp);
-
+			temp.clear();
 		}
 		else {
-			temp = levelList.at(nestLvl);
-			temp.push_back(stmtNo);
-			levelList.at(nestLvl) = temp;
+			if (levelList.size() <= nestLvl) {
+				temp.push_back(stmtNo);
+				levelList.push_back(temp);
+
+			}
+			else {
+				temp = levelList.at(nestLvl);
+				temp.push_back(stmtNo);
+				levelList.at(nestLvl) = temp;
+			}
 		}
+		stmtListTable.push_back(stmtListNo);
 	}
-	stmtListTable.push_back(stmtListNo);
 	if (loopFlag && endLoopNo == 0) {  // this is a loop node
 		stmtListNo++;
 	}
@@ -62,6 +64,7 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 			}
 		}
 	}
+	
 }
 
 std::vector<int> Follows::getFollow(int stmtNo) {

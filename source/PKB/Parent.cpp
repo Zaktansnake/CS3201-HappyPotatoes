@@ -28,44 +28,39 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 	int index = 0;
 	int parent;
 	std::vector<int> temp;
-	if (loopFlag && endLoop == 0) {   // when there is a condition stmt and it is not end stmt for loop
+	if (stmtLine.compare("}") != 0 ) {
+		if (loopFlag && endLoop == 0) {   // when there is a condition stmt and it is not end stmt for loop
 
-		// check whether ths stmt is a child of other stmt
-		if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
-			parent = 0;
-			//   index = arrAns.size();
+										  // check whether ths stmt is a child of other stmt
+			if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
+				parent = 0;
+				//   index = arrAns.size();
+			}
+			else {
+				parent = loopStmtNo.top();
+			}
+				setToParent(stmtLine, stmtNo);  //set it become a parent
+				AnsMap.insert(pair<int, int>(stmtNo, parent));
 		}
 		else {
-			parent = loopStmtNo.top();
+			// if there is not a loop condition 
+			//check whether this stmt is a child of other stmt
+			//if yes, add parent to the child 
+			// else, let parent be none
+			if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
+				parent = 0;
+				//   index = arrAns.size();
+			}
+			else {
+				parent = loopStmtNo.top();
+			}
+			AnsMap.insert(pair<int, int>(stmtNo, parent));
+
 		}
-		if (endLoop == 0 || stmtLine.size() != 1) {
-            setToParent(stmtLine, stmtNo);  //set it become a parent
-	     	AnsMap.insert(pair<int, int>(stmtNo, parent));
-		}
-		
 	}
-	else {
-		// if there is not a loop condition 
-		//check whether this stmt is a child of other stmt
-		//if yes, add parent to the child 
-		// else, let parent be none
-		if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
-			parent = 0;
-			//   index = arrAns.size();
-		}
-		else {
-			parent = loopStmtNo.top();
-		}
-		if (endLoop == 0 || stmtLine.size() != 1) {
-           AnsMap.insert(pair<int, int>(stmtNo, parent));
-		}
-		
-
-
-		if (endLoop > 0) {
-			deleteParent(endLoop);
-			deleteStmtNo(endLoop);
-		}
+	if (endLoop > 0) {
+		deleteParent(endLoop);
+		deleteStmtNo(endLoop);
 	}
 }
 
@@ -83,11 +78,11 @@ void deleteParent(int endloop) {
 
 void deleteStmtNo(int endloop) {
 	while (endloop > 0) {
-		if (!loopParent.empty()) {
-			loopParent.pop();
+		if (!loopStmtNo.empty()) {
+			loopStmtNo.pop();
 		}
 		endloop--;
-		if (loopParent.empty()) {
+		if (loopStmtNo.empty()) {
 			break;
 		}
 	}

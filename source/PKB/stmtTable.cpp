@@ -30,34 +30,37 @@ enum stmtType {
 //add data
 void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
     // check if it is a condition stmt
-	bool isCon = isCondition(stmtLine);
-	loopFlag = false;
-	if (isCon) {
-		switch (condition) {
-			case IF: 
+	if (stmtLine.compare("{") != 0) {
+		bool isCon = isCondition(stmtLine);
+		loopFlag = false;
+		if (isCon) {
+			switch (condition) {
+			case IF:
 				flagForNextLevel = true;
-			    break;
+				break;
 			case ELSE:
 				flagForNextLevel = true;
-			    break;
-			case WHILE:
-			    flagForNextLevel = true;
 				break;
+			case WHILE:
+				flagForNextLevel = true;
+				break;
+			}
+			loopFlag = true;
 		}
-		loopFlag = true;
-	}
-	endLoopNo = std::count(stmtLine.begin(), stmtLine.end(), '}');
-	addFollowTable(stmtLine, stmtNo, nestLevel);
-	addParentTable(stmtLine,stmtNo, nestLevel);
-	if (flagForNextLevel == true) {
-		nestLevel ++ ;
-		flagForNextLevel = false;
-	} 
-	// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
-	if (endLoopNo > 0) {
-		nestLevel = nestLevel - endLoopNo;
-	}
+		endLoopNo = std::count(stmtLine.begin(), stmtLine.end(), '}');
+		addFollowTable(stmtLine, stmtNo, nestLevel);
+		addParentTable(stmtLine, stmtNo, nestLevel);
+		if (flagForNextLevel == true) {
+			nestLevel++;
+			flagForNextLevel = false;
+		}
+		// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
+		if (endLoopNo > 0) {
+			nestLevel = nestLevel - endLoopNo;
+		}
 
+	}
+	
 }
 
 void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
