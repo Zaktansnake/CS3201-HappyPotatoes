@@ -93,7 +93,7 @@ vector<string> VarTable::findVariableLeft(int stmtLine1, int stmtLine2) {
 	for (int i = 0; i < varTableLeft.size(); i++) {
 		pair<int, string> tempVector =  varTableLeft.at(i);
 
-		if (tempVector.first > stmtLine1 && tempVector.first < stmtLine2) {
+		if (tempVector.first > stmtLine1 && tempVector.first <= stmtLine2) {
 			if (!ans.empty()) {
 				if (std::find(ans.begin(), ans.end(), tempVector.second) != ans.end()) {
 					
@@ -280,7 +280,7 @@ vector<string> VarTable::findVariableRight(int stmtLine1, int stmtLine2) {
 				ans.push_back(tempVector.second);
 			}
 		}
-		else if (tempVector.first > stmtLine1 && tempVector.first < stmtLine2) {
+		else if (tempVector.first > stmtLine1 && tempVector.first <= stmtLine2) {
 			if (std::find(ans.begin(), ans.end(), tempVector.second) != ans.end()) {
 
 			}
@@ -446,5 +446,4 @@ void addToVarTable(int position, string varName, int stmtLine) {
 		varTableRight.push_back(make_pair(stmtLine, varName));
 	}
 }
-
 
