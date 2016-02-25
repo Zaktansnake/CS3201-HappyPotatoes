@@ -1,7 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "./PKB/Header/Parser.h"
-#include "./PKB/Header/PKB.h"
+#include "../source/PKB/Header/Parser.h"
+#include "../source/PKB/Header/PKB.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

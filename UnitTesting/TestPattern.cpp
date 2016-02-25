@@ -3,9 +3,9 @@
 #include <iostream>
 #include <string>
 
-#include "./PKB/Header/Parser.h"
-#include "./PKB/Header/PKB.h"
-#include "./PKB/Header/Patterns.h"
+#include "../source/PKB/Header/Parser.h"
+#include "../source/PKB/Header/PKB.h"
+#include "../source/PKB/Header/Patterns.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

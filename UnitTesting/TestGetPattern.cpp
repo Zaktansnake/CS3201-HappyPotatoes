@@ -3,10 +3,10 @@
 #include <iostream>
 #include <string>
 
-#include "./PKB/Header/Parser.h"
-#include "./PKB/Header/PKB.h"
-#include "./PKB/Header/VarTable.h"
-#include "./PKB/Header/PatternTable.h"
+#include "../source/PKB/Header/Parser.h"
+#include "../source/PKB/Header/PKB.h"
+#include "../source/PKB/Header/VarTable.h"
+#include "../source/PKB/Header/PatternTable.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 

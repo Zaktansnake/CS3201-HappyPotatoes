@@ -5,9 +5,9 @@
 #include <vector> 
 #include <string>
 
-#include "./PKB/Header/Parser.h"
-#include "./PKB/Header/PKB.h"
-#include "./PKB/Header/Modifies.h"
+#include "../source/PKB/Header/Parser.h"
+#include "../source/PKB/Header/PKB.h"
+#include "../source/PKB/Header/Modifies.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
