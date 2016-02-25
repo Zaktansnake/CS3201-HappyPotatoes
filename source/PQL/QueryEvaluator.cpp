@@ -88,9 +88,9 @@ void assessParseResult(ParseResult pr) {
 	assessClauses(ClausesVector, SelectParameterVector);
 	setResultsPattern(PatternQueryVector, SelectParameterVector);
 	MakeFinalString(SelectParameterVector);
-	
 
-	
+
+
 }
 
 void setResultsPattern(PatternSet PatternQueryVector, std::vector<std::string> SelectParameterVector)
@@ -102,7 +102,8 @@ void setResultsPattern(PatternSet PatternQueryVector, std::vector<std::string> S
 		firstPatternParameter = PatternQueryVector.at(0).getFirstParameter();
 		secondPatternParameter = PatternQueryVector.at(0).getSecondParameter();
 		thridPatternParameter = PatternQueryVector.at(0).getThirdParameter();
-	} else {
+	}
+	else {
 		firstPatternParameter = "";
 		secondPatternParameter = "";
 		thridPatternParameter = "";
@@ -328,7 +329,8 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
 	if (parameter.at(1) == "variable") {
-		//
+
+		VariableClausesQueryResults.push_back(VarTable::getUsesVariable(removeDoubleQuote(firstPerimeter)));
 	}
 	if (parameter.at(1) == "proc") {
 
@@ -384,14 +386,14 @@ void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 f
 		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
 		temp.push_back(100);
 		StmtLineClausesQueryResults.push_back(temp);
-		
+
 	}
 	//if querying for a stmt s such as for example follows(1,s),need to change
 	if ((parameter.at(1) == "stmt") && (is_number(firstPerimeter))) {
 		temp = stmtTable::getFollowFan(changeStringToInt(firstPerimeter));
 		temp.push_back(101);
 		StmtLineClausesQueryResults.push_back(temp);
-		
+
 	}
 	if ((parameter.at(1) == "while") && (is_number(secondPerimeter))) {
 		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
@@ -495,7 +497,7 @@ void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
 	if (parameter.at(1) == "variable") {
 
-		//
+		VariableClausesQueryResults.push_back(VarTable::getModifiesVariable(removeDoubleQuote(firstPerimeter)));
 	}
 	if (parameter.at(1) == "proc") {
 
@@ -506,7 +508,7 @@ void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 
 		StmtLineClausesQueryResults.push_back(VarTable::getModifiesAssign(removeDoubleQuote(secondPerimeter)));
 	}
 	if (parameter.at(1) == "stmt") {
-		
+
 		StmtLineClausesQueryResults.push_back(VarTable::getModifiesStmt(removeDoubleQuote(secondPerimeter)));
 	}
 	if (parameter.at(1) == "while") {
@@ -538,17 +540,18 @@ void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 
 std::string removeDoubleQuote(std::string s) {
 
 	/*if (!s.find("\"")) {
-		return s;
+	return s;
 	}
 	else {
-		return s.substr(1, s.size() - 2);
+	return s.substr(1, s.size() - 2);
 	}*/
 
 	if (s.front() == '"') {
 		s.erase(0, 1); // erase the first character
 		s.erase(s.size() - 1); // erase the last character
 		return s;
-	} else {
+	}
+	else {
 		return s;
 	}
 
@@ -803,7 +806,6 @@ vector<string> splitComma(string line) {
 	}
 	return result;
 }
-
 
 
 
