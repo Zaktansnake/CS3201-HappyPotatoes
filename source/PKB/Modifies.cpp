@@ -1,5 +1,3 @@
-#include "./Header/Modifies.h"
-
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -7,6 +5,8 @@
 #include <map>
 #include <string>
 #include <vector>
+
+#include "./Header/Modifies.h"
 
 using namespace std;
 
@@ -17,19 +17,19 @@ map<string, vector<string>> ModifiesProcedureTable;
 int insertToMap(string varName);
 vector<string> findPositionProc(string varName);
 
-Modifies::Modifies()
-{
+Modifies::Modifies() {
 }
 
-Modifies::~Modifies()
-{
+Modifies::~Modifies() {
 }
 
 // refStmtLine -> when update Modifies Table
 void Modifies::addModifiesTable(string varName, int stmtLine) {
 	int index;
+
 	if (ModifiesMap.size() > 0) {
 		index = findPosition(varName);
+
 		if (index == -1) {
 			index = insertToMap(varName);
 		}
@@ -38,7 +38,6 @@ void Modifies::addModifiesTable(string varName, int stmtLine) {
 	}
 
 	ModifiesTable[index].push_back(stmtLine);
-
 	sort(ModifiesTable[index].begin(), ModifiesTable[index].end());
 	ModifiesTable[index].erase(unique(ModifiesTable[index].begin(), ModifiesTable[index].end()), ModifiesTable[index].end());
 }
@@ -47,6 +46,7 @@ void Modifies::addModifiesTable(string varName, int stmtLine) {
 int Modifies::findPosition(string varName) {
 	map<string, int>::iterator iter;
 	iter = ModifiesMap.find(varName);
+
 	if (iter != ModifiesMap.end()) {
 		return  iter->second;
 	}
@@ -57,7 +57,6 @@ int Modifies::findPosition(string varName) {
 
 // return vector<string> of the varName in the map
 vector<string> findPositionProc(string procName) {
-
 	map<string, vector<string>>::iterator i = ModifiesProcedureTable.find(procName);
 
 	if (i == ModifiesProcedureTable.end()) { 
@@ -83,9 +82,9 @@ bool Modifies::isContains(string varName) {
 	}
 }
 
-std::vector<int> Modifies::getModifiesTable(string varName)
-{
+std::vector<int> Modifies::getModifiesTable(string varName) {
 	int index = findPosition(varName);
+
 	if (index == -1) {
 		vector<int> ans;
 		return ans;
@@ -97,6 +96,7 @@ std::vector<int> Modifies::getModifiesTable(string varName)
 void Modifies::addModifiesProcedureTable(string procedure, string varName ) {
 	if (ModifiesProcedureTable.size() > 0) {
 		vector<string> ans = findPositionProc(procedure);
+
 		if (ans.size() > 0) {
 			ModifiesProcedureTable[procedure].push_back(varName);
 		}
@@ -105,8 +105,7 @@ void Modifies::addModifiesProcedureTable(string procedure, string varName ) {
 	}
 }
 
-std::vector<string> Modifies::getModifiesProcTable(string procName)
-{
+std::vector<string> Modifies::getModifiesProcTable(string procName) {
 	return findPositionProc(procName);
 }
 
@@ -115,4 +114,3 @@ int insertToMap(string varName) {
 	ModifiesMap.insert(pair<string, int>(varName, index));
 	return index;
 }
-

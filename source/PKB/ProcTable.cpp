@@ -8,13 +8,11 @@ vector<string> ProcTable::ProcIndex;
 std::vector<int> stmtPosition;
 Call call;
 
-ProcTable::ProcTable()
-{
+ProcTable::ProcTable() {
   
 }
 
-ProcTable::~ProcTable()
-{
+ProcTable::~ProcTable() {
 /*	if (!ProcString.empty()) {
 		for (map<string, int>::iterator iter = ProcString.begin(); iter != ProcString.end(); iter++) {
 			ProcString.erase(iter);
@@ -29,6 +27,7 @@ ProcTable::~ProcTable()
 void ProcTable::addTableData(string procName, int stmtLine) {
    ProcTable pt;
    int index = pt.findPosition(procName);
+
    // index = -1 means there is no same proc name in the table
    if (index == -1) {
 	   index = ProcIndex.size();   // set the index be the size of vertor
@@ -38,7 +37,6 @@ void ProcTable::addTableData(string procName, int stmtLine) {
 	   stmtPosition.push_back(stmtLine);
 	   call.setCall(procName, index);
    } else {
-
    }
 }
 
@@ -46,11 +44,12 @@ void ProcTable::addTableData(string procName, int stmtLine) {
 int ProcTable::findPosition(string procName) {
 	map<string, int>::iterator iter;
 	iter = ProcMap.find(procName);
+
 	if (iter != ProcMap.end()) {
 		return  iter->second;
 	}
 	else {
-	return -1;
+		return -1;
 	}
 }
 
@@ -61,7 +60,6 @@ int ProcTable::getSize(){
 
 // return call answer
 std::vector<string> ProcTable::getCallAns(string procName) {
-   
    return call.getCall(findPosition(procName));
 }
 
@@ -84,6 +82,7 @@ bool ProcTable::isContains(string name) {
 	map<string, int>::iterator iter;
 	int index;
 	iter = ProcMap.find(name);
+
 	if (ProcMap.size() > 0) {
 		if (iter != ProcMap.end()) {
 			return true;
@@ -94,7 +93,3 @@ bool ProcTable::isContains(string name) {
 		return false;
 	}
 }
-
-
-
-

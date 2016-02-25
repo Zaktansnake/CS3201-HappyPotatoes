@@ -1,8 +1,9 @@
-#include "./Header/Parent.h"
-#include "./Header/PKB.h"
 #include <string>
 #include <stack>
 #include <map>
+
+#include "./Header/Parent.h"
+#include "./Header/PKB.h"
 
 using namespace std;
 
@@ -15,12 +16,10 @@ void setToParent(string stmtLine, int stmtNo);
 void deleteParent(int endloop);
 void deleteStmtNo(int endloop);
 
-Parent::Parent()
-{
+Parent::Parent() {
 }
 
-Parent::~Parent()
-{
+Parent::~Parent() {
 }
 
 void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop) {
@@ -28,10 +27,10 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 	int index = 0;
 	int parent;
 	std::vector<int> temp;
+
 	if (stmtLine.compare("}") != 0 ) {
 		if (loopFlag && endLoop == 0) {   // when there is a condition stmt and it is not end stmt for loop
-
-										  // check whether ths stmt is a child of other stmt
+			// check whether ths stmt is a child of other stmt
 			if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
 				parent = 0;
 				//   index = arrAns.size();
@@ -54,16 +53,16 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			else {
 				parent = loopStmtNo.top();
 			}
-			AnsMap.insert(pair<int, int>(stmtNo, parent));
 
+			AnsMap.insert(pair<int, int>(stmtNo, parent));
 		}
 	}
+
 	if (endLoop > 0) {
 		deleteParent(endLoop);
 		deleteStmtNo(endLoop);
 	}
 }
-
 
 void deleteParent(int endloop) {
 	for (int i = 0; i < endloop; i++) {
@@ -96,6 +95,7 @@ void setToParent(string stmtLine, int stmtNo) {
 bool Parent::isParent(int stmt1, int stmt2) {
 	std::vector<int> temp;
 	temp = getParent(stmt2);
+
 	if (std::find(temp.begin(), temp.end(), stmt1) != temp.end()) {
 		return true;
 	}
@@ -108,6 +108,7 @@ std::vector<int> Parent::getParent(int stmtNo) {
     int index = 0;
 	map<int, int>::iterator iter;
 	iter = AnsMap.find(stmtNo);
+
 	if (iter != AnsMap.end()) {
 		index = iter->second;
 	}
@@ -115,7 +116,9 @@ std::vector<int> Parent::getParent(int stmtNo) {
 		cout << "Error. Parent not found." << endl;
 		PKB::abort();
 	}
+
     std::vector<int> result;
+
 	if (index != 0) {
         result.push_back(index);
 	}
@@ -123,20 +126,20 @@ std::vector<int> Parent::getParent(int stmtNo) {
 }
 
 std::vector<int> Parent::getChild(int stmtNo) {
-     
     std::vector<int> result;
 	int index;
+
 	for (int i = 1; i <= AnsMap.size(); i++) {
 		map<int, int>::iterator iter;
 		iter = AnsMap.find(i);
+
 		if (iter != AnsMap.end()) {
 			index = iter ->second;
+
 			if (index == stmtNo) {
 			   result.push_back(iter->first);
-			
 			}
 		}
-
 	}
 	return result;
 }

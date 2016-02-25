@@ -1,11 +1,13 @@
 #pragma once
-#include<string>
-#include<vector>
+
+#include <string>
+#include <vector>
 #include <algorithm>
+
 #include "./Header/stmtTable.h";
 
-
 using namespace std;
+
 static int nestLevel = 0;
 bool flagForNextLevel = false;
 bool loopFlag;
@@ -25,7 +27,7 @@ enum stmtType {
 };
 
 // get reference to procedure table
-	static stmtTable* getFollowTable();
+static stmtTable* getFollowTable();
 
 //add data
 void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
@@ -33,6 +35,7 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 	if (stmtLine.compare("{") != 0) {
 		bool isCon = isCondition(stmtLine);
 		loopFlag = false;
+
 		if (isCon) {
 			switch (condition) {
 			case IF:
@@ -45,22 +48,24 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 				flagForNextLevel = true;
 				break;
 			}
+
 			loopFlag = true;
 		}
+
 		endLoopNo = std::count(stmtLine.begin(), stmtLine.end(), '}');
 		addFollowTable(stmtLine, stmtNo, nestLevel);
 		addParentTable(stmtLine, stmtNo, nestLevel);
+
 		if (flagForNextLevel == true) {
 			nestLevel++;
 			flagForNextLevel = false;
 		}
+
 		// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
 		if (endLoopNo > 0) {
 			nestLevel = nestLevel - endLoopNo;
 		}
-
 	}
-	
 }
 
 void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
@@ -101,19 +106,14 @@ bool isCondition(string stmtLine) {
 	if (stmtLine.find("if") != std::string::npos) {
 	    condition = 1;
 		return true;
-
 	}
 	else if (stmtLine.find("else") != std::string::npos) {
 	    condition = 2;
 		return true;
-
 	}
 	else if (stmtLine.find("while") != std::string::npos) {
 	    condition = 3;
 		return true;
-
 	}
 	return false;
 }
-
-

@@ -24,10 +24,10 @@ static bool is_file_empty(ifstream file);
 static bool is_file_exist(string file);
 static bool is_number(const std::string& s);
 
-int Parser::parse(string fileName)
-{
+int Parser::parse(string fileName) {
 	if (is_file_exist(fileName)) {
 		myFile.open(fileName);
+
 		if (!myFile.fail()) {
 			PKB::create(fileName);
 			cout << "Success." << endl;
@@ -38,6 +38,7 @@ int Parser::parse(string fileName)
 		if (myFile.is_open()) {
 			myFile.close();
 		}
+
 		cout << "Error." << endl;
 		statusFile = -1;
 		PKB::abort();
@@ -53,7 +54,6 @@ bool is_file_exist(string file) {
 }
 
 // detect file is empty
-bool is_file_empty(ifstream file)
-{
+bool is_file_empty(ifstream file) {
 	return file.peek() == std::ifstream::traits_type::eof();
 }
