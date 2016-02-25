@@ -70,7 +70,11 @@ void PKB::create(string fileName) {
 		}
 	}
 	myFile.close();
-
+	Modifies::printMap01();
+	//Uses::printMap02();
+	VarTable::printVarLeft();
+	//VarTable::printVarRight();
+	//VarTable::printWhileLoop();
 
 	// parse the assign table to Patterns
 	// update uses table one more time
@@ -210,7 +214,7 @@ static void stmt(int num) {
 		if (v[2].compare("{") == 0) {
 			VarTable::addDataToModifies(v[1], stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
-			VarTable::addDataToWhileTable(v[2], stmtLine);
+			VarTable::addDataToWhileTable(v[1], stmtLine);
 		}
 		else {
 			cout << "Error: Structure. ({)" << endl;
@@ -268,7 +272,6 @@ void assign() {
 	}
 }
 
-
 static void calls(string str, int stmtLine) {
 	vector<string> v = splitTheString(str);
 	string procName = v[1].substr(0, v[1].size() - 1);
@@ -325,7 +328,7 @@ void detectRightBracket(int option, vector<string> v) {
 	if (temp.second != 0) {
 		vector<string> tempArrayListLeft = VarTable::findVariableLeft(temp.second, tempStmtNum);
 
-		for (int i = 1; i < tempArrayListLeft.size(); i++) {
+		for (int i = 0; i < tempArrayListLeft.size(); i++) {
 			VarTable::addDataToModifies(tempArrayListLeft[i], temp.second);
 		}
 

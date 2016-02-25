@@ -36,7 +36,10 @@ void Uses::addUsesTable(string varName, int stmtLine) {
 	else {
 		index = insertToUsesMap(varName);
 	}
+
 	UsesTable[index].push_back(stmtLine);
+	sort(UsesTable[index].begin(), UsesTable[index].end());
+	UsesTable[index].erase(unique(UsesTable[index].begin(), UsesTable[index].end()), UsesTable[index].end());
 }
 
 void Uses::addUsesProcedureTable(string procedure, string varName) {
@@ -109,3 +112,5 @@ int insertToUsesMap(string varName) {
 	UsesMap.insert(pair<string, int>(varName, index));
 	return index;
 }
+
+
