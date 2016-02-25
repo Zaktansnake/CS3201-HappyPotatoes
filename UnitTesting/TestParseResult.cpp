@@ -19,7 +19,6 @@ namespace UnitTesting
 			testDeclaration = "";
 			testQuery = "";
 			ParseResult expectedResult = ParseResult(); // should construct a object with the expected query tested, need to insert in correct formatted query
-
 			ParseResult p = ParseResult();
 			ParseResult result = p.generateParseResult(testDeclaration, testQuery);
 
