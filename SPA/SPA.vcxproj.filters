@@ -87,6 +87,9 @@
     <ClInclude Include="..\source\PKB\Header\VarTable.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
+    <ClInclude Include="QueriesAnswerStorage.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\PQL\Clause.cpp">
@@ -154,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="..\source\Main.cpp">
       <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="QueriesAnswerStorage.cpp">
+      <Filter>Source Files\PQL</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+
 using namespace std;
 ParseResult pr;
 
@@ -76,6 +77,8 @@ vector<string> splitComma(string line);
 
 void assessParseResult(ParseResult pr) {
 
+	StmtLineClausesQueryResults.clear();
+	finalStringVector.clear();
 	//get vector of select parameter from parseResult object
 	std::vector<std::string> SelectParameterVector = pr.getSelectParameter();
 	//get vector of clauses object from parseResult object
@@ -85,6 +88,9 @@ void assessParseResult(ParseResult pr) {
 	assessClauses(ClausesVector, SelectParameterVector);
 	setResultsPattern(PatternQueryVector, SelectParameterVector);
 	MakeFinalString(SelectParameterVector);
+	
+
+	
 }
 
 void setResultsPattern(PatternSet PatternQueryVector, std::vector<std::string> SelectParameterVector)
@@ -321,6 +327,9 @@ void PatternResults(std::vector<std::string> SelectParameterVector, std::string 
 void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
+	if (parameter.at(1) == "variable") {
+		//
+	}
 	if (parameter.at(1) == "proc") {
 
 		ProcedureClausesQueryResults.push_back(VarTable::getUsesProc(removeDoubleQuote(secondPerimeter)));
@@ -363,6 +372,7 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
+	std::vector<int> temp;
 	//if asking a stmt is following another stmt
 	if (parameter.at(1) == "BOOLEAN") {
 		BooleanClausesQueryResults.push_back(stmtTable::isFollow(changeStringToInt(firstPerimeter),
@@ -371,12 +381,45 @@ void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 f
 	}
 	//if querying for a stmt s such as for example follows(s,1),need to change
 	if ((parameter.at(1) == "stmt") && (is_number(secondPerimeter))) {
-		StmtLineClausesQueryResults.push_back(stmtTable::getFollow(changeStringToInt(secondPerimeter)));
+		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
+		temp.push_back(100);
+		StmtLineClausesQueryResults.push_back(temp);
+		
 	}
 	//if querying for a stmt s such as for example follows(1,s),need to change
 	if ((parameter.at(1) == "stmt") && (is_number(firstPerimeter))) {
-		StmtLineClausesQueryResults.push_back(stmtTable::getFollowFan(changeStringToInt(firstPerimeter)));
+		temp = stmtTable::getFollowFan(changeStringToInt(firstPerimeter));
+		temp.push_back(101);
+		StmtLineClausesQueryResults.push_back(temp);
+		
 	}
+	if ((parameter.at(1) == "while") && (is_number(secondPerimeter))) {
+		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
+		temp.push_back(100);
+		StmtLineClausesQueryResults.push_back(temp);
+
+	}
+	//if querying for a stmt s such as for example follows(1,s),need to change
+	if ((parameter.at(1) == "while") && (is_number(firstPerimeter))) {
+		temp = stmtTable::getFollowFan(changeStringToInt(firstPerimeter));
+		temp.push_back(101);
+		StmtLineClausesQueryResults.push_back(temp);
+
+	}
+	if ((parameter.at(1) == "assign") && (is_number(secondPerimeter))) {
+		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
+		temp.push_back(100);
+		StmtLineClausesQueryResults.push_back(temp);
+
+	}
+	//if querying for a stmt s such as for example follows(1,s),need to change
+	if ((parameter.at(1) == "assign") && (is_number(firstPerimeter))) {
+		temp = stmtTable::getFollowFan(changeStringToInt(firstPerimeter));
+		temp.push_back(101);
+		StmtLineClausesQueryResults.push_back(temp);
+
+	}
+
 }
 
 void FollowStarResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
@@ -450,6 +493,10 @@ bool checkIfFollowStar(std::string first, std::string second) {
 void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
+	if (parameter.at(1) == "variable") {
+
+		//
+	}
 	if (parameter.at(1) == "proc") {
 
 		ProcedureClausesQueryResults.push_back(VarTable::getModifiesProc(removeDoubleQuote(secondPerimeter)));
@@ -730,6 +777,7 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 
 	assessParseResult(mustPr);
 	return finalStringVector;
+
 }
 
 QueryEvaluator::QueryEvaluator()
