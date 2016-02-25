@@ -5,8 +5,10 @@ class TNode;
 class AST
 {
 public:
+	// constructors
 	AST();
 	~AST();
+
 /*	static TNode* getParent();
 	static void setParent();
 	static TNode* getFirstChild();
@@ -16,7 +18,5 @@ public:
 	static void setAsRoot(TNode);
 	static TNode* getRoot();
 	static TNode* createTNodeStmtLst();
-	static TNode* getTNodeStmtLst();
-*/
+	static TNode* getTNodeStmtLst();*/
 };
-

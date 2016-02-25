@@ -17,6 +17,16 @@ class ProcTable;
 class stmtTable;
 
 class PKB {
+public:
+//	static int setProcToAST(PROC p, TNode* r);
+//	static TNode* getRootAST (PROC p);
+//	static int setProcToCFG (PROC p, GNode* g);
+
+	static void create(string fileName);
+	static int getStmtNum ();
+
+	static void abort();
+
 private:
 	/*
 	// AST
@@ -72,7 +82,7 @@ private:
 	// return a statmentlist that followed by stmt
 	std::vector<int> getFollower(STMT stmt);
 
-	// return a statmentlist that stmt followed 
+	// return a statmentlist that stmt followed
 	std::vector<int> getFollow(STMT stmt);
 
 	//CALLS
@@ -131,15 +141,4 @@ private:
 	// PATTERNS
 
 	*/
-
-public:
-//	static int setProcToAST(PROC p, TNode* r);
-//	static TNode* getRootAST (PROC p);
-//	static int setProcToCFG (PROC p, GNode* g);
-
-	static void create(string fileName);
-	static int getStmtNum ();
-
-	static void abort();
-
 };

@@ -11,6 +11,7 @@ using namespace std;
 class Patterns
 {
 public:
+	// constructors
 	Patterns();
 	~Patterns();
 
