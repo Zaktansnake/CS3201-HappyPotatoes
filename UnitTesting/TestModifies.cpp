@@ -22,7 +22,7 @@ namespace UnitTesting
 			string result;
 			Parser::parse("..\\Release\\Sample-Source02.txt");
 			vector<int> modifiesTable = Modifies::getModifiesTable("x");
-			std::sort(modifiesTable.begin(), modifiesTable.end());
+			//std::sort(modifiesTable.begin(), modifiesTable.end());
 
 			for (std::vector<int>::iterator it = modifiesTable.begin(); it != modifiesTable.end(); ++it) {
 				result.append(std::to_string(*it));
