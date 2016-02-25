@@ -25,6 +25,7 @@ Modifies::~Modifies()
 {
 }
 
+// refStmtLine -> when update Modifies Table
 void Modifies::addModifiesTable(string varName, int stmtLine) {
 	int index;
 	if (ModifiesMap.size() > 0) {
@@ -35,7 +36,11 @@ void Modifies::addModifiesTable(string varName, int stmtLine) {
 	} else {
 		index = insertToMap(varName);
 	}
+
 	ModifiesTable[index].push_back(stmtLine);
+
+	sort(ModifiesTable[index].begin(), ModifiesTable[index].end());
+	ModifiesTable[index].erase(unique(ModifiesTable[index].begin(), ModifiesTable[index].end()), ModifiesTable[index].end());
 }
 
 // return the index of the varName in the map
@@ -110,5 +115,4 @@ int insertToMap(string varName) {
 	ModifiesMap.insert(pair<string, int>(varName, index));
 	return index;
 }
-
 

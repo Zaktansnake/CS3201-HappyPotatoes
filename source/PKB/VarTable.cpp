@@ -478,33 +478,3 @@ void addToVarTable(int position, string varName, int stmtLine) {
 		varTableRight.push_back(make_pair(stmtLine, varName));
 	}
 }
-
-void VarTable::printVarLeft() {
-	cout << "VarLeft" << endl;
-	for (int i = 0; i < varTableLeft.size(); i++)
-	{
-		cout << varTableLeft[i].first << ", " << varTableLeft[i].second << endl;
-	}
-	cout << endl;
-	cout << endl;
-}
-
-void VarTable::printVarRight() {
-	cout << "VarRight" << endl;
-	for (int i = 0; i < varTableRight.size(); i++)
-	{
-		cout << varTableRight[i].first << ", " << varTableRight[i].second << endl;
-	}
-}
-
-void VarTable::printWhileLoop() {
-	cout << "Table for while loop" << endl;
-	for (map<string, vector<int>>::iterator ii = whileTable.begin(); ii != whileTable.end(); ++ii) {
-		cout << (*ii).first << ": ";
-		vector <int> inVect = (*ii).second;
-		for (unsigned j = 0; j<inVect.size(); j++) {
-			cout << inVect[j] << " ";
-		}
-		cout << endl;
-	}
-}

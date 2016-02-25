@@ -46,6 +46,7 @@ public:
 	static void addModifiesProcTable(string varName, string procedure);
 
 	static vector<string> getModifiesProc(string secondPerimeter);
+	static vector<string> getModifiesVariable(string firstPerimeter);
 	static vector<int>  getModifiesAssign(string secondPerimeter);
 	static vector<int>	getModifiesWhile(string secondPerimeter);
 	static vector<int> getModifiesStmt(string firstPerimeter);
@@ -57,6 +58,7 @@ public:
 	//---------------------------- Uses -------------------------
 
 	static vector<string> getUsesProc(string secondPerimeter);
+	static vector<string> getUsesVariable(string firstPerimeter);
 	static vector<int> getUsesAssig(string secondPerimeter);
 	static vector<int> getUsesStmt(string secondPerimeter);
 	static vector<int> getUsesWhile(string secondPerimeter);
