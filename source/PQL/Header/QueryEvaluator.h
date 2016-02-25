@@ -8,9 +8,11 @@
 class QueryEvaluator
 {
 public:
-
     static vector<string> startEvaluator(ParseResult);
+
+	// constructors
 	QueryEvaluator();
 	~QueryEvaluator();
 };
+
 #endif
