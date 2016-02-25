@@ -316,6 +316,22 @@ vector<string> VarTable::getUsesProc(string stmt1) {
 	return Uses::getUsesProcTable(stmt1);
 }
 
+vector<string> VarTable::getUsesVariable(string firstPerimeter) {
+	int temp = atoi(firstPerimeter.c_str());
+	vector<string> ans;
+
+	for (int i = 0; i < varTableRight.size(); i++)
+	{
+		if (varTableRight[i].first == temp)
+			ans.push_back(varTableRight[i].second);
+	}
+
+	sort(ans.begin(), ans.end());
+	ans.erase(unique(ans.begin(), ans.end()), ans.end());
+
+	return ans;
+}
+
 vector<int> VarTable::getUsesAssig(string secondPerimeter) {
 
 	std::vector<int> ans = Uses::getUsesTable(secondPerimeter);
