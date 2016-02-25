@@ -46,17 +46,22 @@ std::vector<int> PatternTable::getAssignWithVar(string variable, string testkey)
 	for (int i = 0; i < lineThatModifiedV.size(); i++) {
 		stmtLine = getStatementLine(lineThatModifiedV.at(i));
 		if (stmtLine.find("=") != std::string::npos) {
+		    int in = static_cast<int>(stmtLine.find("="));
 			int length = stmtLine.size();
-			length = length - 2;
-			stmtLine.substr(2, length);
-			while (stmtLine.back() == ';' || stmtLine.back() == '}') {
-				stmtLine.pop_back();
+			string op = stmtLine.substr(0,in);
+			if (op.compare(variable) == 0) {
+				length = length - 2;
+				stmtLine.substr(2, length);
+				while (stmtLine.back() == ';' || stmtLine.back() == '}') {
+					stmtLine.pop_back();
+				}
+				stmtLine = Patterns::patternAssignment(stmtLine);
+				std::size_t found = stmtLine.find(Patterns::patternAssignment(testkey));
+				if (found != std::string::npos) {
+					ans.push_back(lineThatModifiedV.at(i));
+				}
 			}
-			stmtLine = Patterns::patternAssignment(stmtLine);
-			std::size_t found = stmtLine.find(Patterns::patternAssignment(testkey));
-			if (found != std::string::npos) {
-				ans.push_back(lineThatModifiedV.at(i));
-			}
+			
 		}
 	}
 	return ans;

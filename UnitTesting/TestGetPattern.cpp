@@ -20,7 +20,7 @@ namespace UnitTesting
 			// test for isPattern
 			
 			bool expected_result01 = true;
-			Parser::parse("C:\\Users\\feifei\\Downloads\\TestFollow.txt");
+			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\Sample-Source 01.txt");
 
 			bool ispattern = PatternTable::isPattern("z","z+x+i");
 			
