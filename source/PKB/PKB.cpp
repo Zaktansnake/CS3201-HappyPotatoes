@@ -69,10 +69,10 @@ void PKB::create(string fileName) {
 			}
 		}
 	}
-	myFile.close();
-	Modifies::printMap01();
+	//myFile.close();
+	//Modifies::printMap01();
 	//Uses::printMap02();
-	VarTable::printVarLeft();
+	//VarTable::printVarLeft();
 	//VarTable::printVarRight();
 	//VarTable::printWhileLoop();
 

@@ -92,7 +92,6 @@ vector<int> VarTable::getAllAssign() {
 // stmtLine1 = parent; stmtLine2 = the position of bracket end
 vector<string> VarTable::findVariableLeft(int stmtLine1, int stmtLine2) {
 	vector<string> ans;
-	cout << stmtLine1 << ", " << stmtLine2 << endl;
 	for (int i = 0; i < varTableLeft.size(); i++) {
 		pair<int, string> tempVector =  varTableLeft.at(i);
 		if (tempVector.first > stmtLine1 && tempVector.first <= stmtLine2) {
