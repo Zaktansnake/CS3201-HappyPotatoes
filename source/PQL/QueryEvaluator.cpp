@@ -74,8 +74,13 @@ void variableFinalString();
 vector<string> splitComma(string line);
 
 void assessParseResult(ParseResult pr) {
+	ProcedureClausesQueryResults.clear();
+	BooleanClausesQueryResults.clear();
+	VariableClausesQueryResults.clear();
+	PatternClausesQueryResults.clear();
 	StmtLineClausesQueryResults.clear();
 	finalStringVector.clear();
+
 	//get vector of select parameter from parseResult object
 	std::vector<std::string> SelectParameterVector = pr.getSelectParameter();
 	//get vector of clauses object from parseResult object
@@ -375,41 +380,35 @@ void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 f
 
 	//if querying for a stmt s such as for example follows(s,1),need to change
 	if ((parameter.at(1) == "stmt") && (is_number(secondPerimeter))) {
-		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
-		temp.push_back(100);
+		temp = stmtTable::getFollowFan(changeStringToInt(secondPerimeter));
 		StmtLineClausesQueryResults.push_back(temp);
 	}
 
 	//if querying for a stmt s such as for example follows(1,s),need to change
 	if ((parameter.at(1) == "stmt") && (is_number(firstPerimeter))) {
-		temp = stmtTable::getFollowFan(changeStringToInt(firstPerimeter));
-		temp.push_back(101);
+		temp = stmtTable::getFollow(changeStringToInt(firstPerimeter));
 		StmtLineClausesQueryResults.push_back(temp);
 	}
 
 	if ((parameter.at(1) == "while") && (is_number(secondPerimeter))) {
 		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
-		temp.push_back(100);
 		StmtLineClausesQueryResults.push_back(temp);
 	}
 
 	//if querying for a stmt s such as for example follows(1,s),need to change
 	if ((parameter.at(1) == "while") && (is_number(firstPerimeter))) {
 		temp = stmtTable::getFollowFan(changeStringToInt(firstPerimeter));
-		temp.push_back(101);
 		StmtLineClausesQueryResults.push_back(temp);
 	}
 
 	if ((parameter.at(1) == "assign") && (is_number(secondPerimeter))) {
 		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
-		temp.push_back(100);
 		StmtLineClausesQueryResults.push_back(temp);
 	}
 
 	//if querying for a stmt s such as for example follows(1,s),need to change
 	if ((parameter.at(1) == "assign") && (is_number(firstPerimeter))) {
 		temp = stmtTable::getFollowFan(changeStringToInt(firstPerimeter));
-		temp.push_back(101);
 		StmtLineClausesQueryResults.push_back(temp);
 	}
 }
@@ -748,7 +747,8 @@ void MakeFinalString(std::vector<std::string> SelectParameter) {
 
 void stmtFinalString() {
 	if (StmtLineClausesQueryResults.size() == 0) {
-		finalStringVector.push_back("none");
+		finalStringVector.clear();
+		return;
 	}
 	else {
 		vector<int> v = StmtLineClausesQueryResults.at(0);
@@ -761,7 +761,8 @@ void stmtFinalString() {
 
 void variableFinalString() {
 	if (VariableClausesQueryResults.size() == 0) {
-		finalStringVector.push_back("none");
+		finalStringVector.clear();
+		return;
 	}
 	else {
 		vector<std::string> v = VariableClausesQueryResults.at(0);
@@ -774,7 +775,8 @@ void variableFinalString() {
 
 void ProcedureFinalString() {
 	if (ProcedureClausesQueryResults.size() == 0) {
-		finalStringVector.push_back("none");
+		finalStringVector.clear();
+		return;
 	}
 	else {
 		vector<std::string> v = ProcedureClausesQueryResults.at(0);
