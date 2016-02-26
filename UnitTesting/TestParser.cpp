@@ -12,10 +12,12 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(TestParse)
 		{
+			/*
 			// normal
 			int successCode = Parser::parse("..\\Release\\Sample-Source02.txt");
 
 			Assert::AreEqual(1, successCode);
+			*/
 
 			//// normal - with special structure
 			//successCode = Parser::parse("..\\Release\\sample-source02.txt");

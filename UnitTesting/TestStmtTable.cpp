@@ -16,6 +16,7 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(TestParent) {
 		    
+			/*
 			// test for getParent
 			int result;
 			bool isparent;
@@ -68,10 +69,12 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expectedChildren, resultChildren);
+			*/
 		}
 
 		TEST_METHOD(TestFollow)
 		{
+			/*
 			int result;
 			bool expectedIsFollow;
 			bool resultIsFollow;
@@ -99,7 +102,8 @@ namespace UnitTesting
 				result = getFollow.front();
 			}
 
-			Assert::AreEqual(expected_result01, result); 
+			Assert::AreEqual(expected_result01, result);
+			*/
 /*		
 			//test for isFollow
 			expectedIsFollow = false;
