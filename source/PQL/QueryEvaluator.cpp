@@ -79,7 +79,7 @@ void assessParseResult(ParseResult pr) {
 	
 	//----------------------------changes
 	ProcedureClausesQueryResults.clear();
-	BooleanClausesQueryResults.clear()
+	BooleanClausesQueryResults.clear();
 	VariableClausesQueryResults.clear();
 	PatternClausesQueryResults.clear();
 	StmtLineClausesQueryResults.clear();
