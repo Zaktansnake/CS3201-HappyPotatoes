@@ -1,6 +1,6 @@
 #include <vector>
 
-#include ".\QueriesAnswerStorage.h"
+#include ".\Header\QueriesAnswerStorage.h"
 
 void QueriesAnswerStorage::BooleanClausesQueryResultsPush(bool Bool) {
 	BooleanClausesQueryResults.push_back(Bool);
