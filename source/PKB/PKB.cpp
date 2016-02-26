@@ -72,7 +72,7 @@ void PKB::create(string fileName) {
 		}
 	}
 
-	//myFile.close();
+	myFile.close();
 	//Modifies::printMap01();
 	//Uses::printMap02();
 	//VarTable::printVarLeft();
@@ -220,6 +220,7 @@ static void stmt(int num) {
 	case 2: // while
 		if (v[2].compare("{") == 0) {
 			VarTable::addDataToModifies(v[1], stmtLine);
+			VarTable::addDataToUses(v[1], stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
 			VarTable::addDataToWhileTable(v[1], stmtLine);
 		}
