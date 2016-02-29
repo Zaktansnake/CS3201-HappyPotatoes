@@ -36,7 +36,7 @@ ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, Pa
 }
 
 // constants for project iteration 1
-const string selectClause = "Select\\s+(\\w+\\d*#*)\\s+";
+const string selectClause = "\\s*Select\\s+(\\w+\\d*#*)\\s+";
 const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
 const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
 
