@@ -56,6 +56,10 @@ void VarTable::addDataToWhileTable(string variable, int stmtNum) {
 	whileStmtNum.push_back(stmtNum);
 }
 
+vector<int> getAllWhile() {
+	return whileStmtNum;
+}
+
 //----------------------- Assign Table ------------------------
 void VarTable::addDataToAssignTable(string variable, int stmtNum) {
 	assignTable.insert(pair<int, string>(stmtNum, variable));
@@ -128,6 +132,7 @@ vector<string> VarTable::getModifiesProc(string secondPerimeter) {
 
 vector<string> VarTable::getModifiesVariable(string firstPerimeter) {
 	int temp = atoi(firstPerimeter.c_str());
+	
 	vector<string> ans;
 
 	for (int i = 0; i < varTableLeft.size(); i++)
@@ -477,7 +482,8 @@ void VarTable::addUsesProcTable(string varName, string procedure) {
 void addToVarTable(int position, string varName, int stmtLine) {
 	if (position == 1) {
 		varTableLeft.push_back(make_pair(stmtLine, varName));
-	} else if (position == 2) {
+	}
+	else if (position == 2) {
 		varTableRight.push_back(make_pair(stmtLine, varName));
 	}
 }
