@@ -105,7 +105,7 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expected_result01, result); 
-/*		
+		
 			//test for isFollow
 
 			expectedIsFollow = false;
@@ -116,8 +116,8 @@ namespace UnitTesting
 	
 			
 			//test for follow start
-			expectFollowFan = 0;
-			followFan = stmtTable::getFollowFan(3);
+			expectFollowFan = 4;
+			followFan = stmtTable::getFollowFan(8);
 			if (followFan.size() == 0) {
 				resultFollowFan = 0;
 			}
@@ -125,7 +125,7 @@ namespace UnitTesting
 				resultFollowFan = followFan.front();
 			}
 			Assert::AreEqual(expectFollowFan, resultFollowFan);
-*/
+
 		}  
 	}; 
 }
