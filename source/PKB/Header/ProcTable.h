@@ -1,7 +1,8 @@
 #pragma once
-#include<map>
-#include<string>
-#include<vector>
+
+#include <map>
+#include <string>
+#include <vector>
 #include "AST.h"
 #include "Call.h"
 
@@ -12,6 +13,7 @@ class Call;
 class ProcTable
 {
 public:
+	// constructors
 //	ProcTable();
 	~ProcTable();
 
@@ -29,19 +31,19 @@ public:
 	string getProcName (int index);
 	//TNode* getProcNode (int index);
 
-	//get the size of proctable
+	// get the size of proctable
 	int getSize();
 
-	//delete data
+	// delete data
 	void RemoveProcData();
 
-	//check if the table contains procedure
+	// check if the table contains procedure
 	static bool isContains (string procName);
 
-	
 private: 
     static std::map<string, int> ProcMap;   //procName, index of the procName in the map
 	static std::vector<string> ProcIndex;   // store the index of map
+	
+	// constructor
 	ProcTable();
 };
-

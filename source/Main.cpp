@@ -2,6 +2,7 @@
 #include <fstream>
 #include <vector>
 #include <string>
+
 #include "../AutoTester/source/TestWrapper.h"
 
 using namespace std;
@@ -22,14 +23,18 @@ int main() {
 		cout << ">> Please input the full filepath to the SIMPLE source code:" << endl;
 		cout << ">> If you do not wish to input a filepath, simply press 0 to exit." << endl;
 		getline(cin, fileName);
-		if (fileName == "0") { printExit(); return 0; }
+
+		if (fileName == "0") { 
+			printExit(); 
+			return 0; 
+		}
+
 		try {
 			w.parse(fileName);
 			cout << "Parse OK." << endl << endl;
 			break;
 		}
-		catch (exception& e)
-		{
+		catch (exception& e) {
 			cout << e.what() << endl << endl;
 		}
 	}
@@ -37,10 +42,16 @@ int main() {
 	string q; list<string> result;
 	cout << ">> Please enter your PQL queries here:" << endl;
 	cout << ">> If you do not wish to enter any queries, simple press 0 to exit." << endl;
+
 	while (true) {
 		cout << ">> ";
 		getline(cin, q);
-		if (q == "0") { printExit(); return 0; }
+
+		if (q == "0") { 
+			printExit(); 
+			return 0; 
+		}
+
 		try {
 			w.evaluate(q, result);
 		}
@@ -49,15 +60,21 @@ int main() {
 		}
 		cout << endl;
 	}
+
 	printExit();
 	return 0;
 }
 
 void printResult(vector<string> result) {
-	if (result.size() == 0) cout << "none" << endl;
+	if (result.size() == 0) {
+		cout << "none" << endl;
+	}
 	else {
 		for (unsigned i = 0; i < result.size(); i++) {
-			if (i) cout << ", ";
+			if (i) {
+				cout << ", ";
+			}
+
 			cout << result[i];
 		}
 		cout << endl;

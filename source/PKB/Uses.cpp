@@ -1,5 +1,3 @@
-#include "./Header/Uses.h"
-
 #include <iostream>
 #include <string>
 #include <sstream>
@@ -7,6 +5,8 @@
 #include <map>
 #include <string>
 #include <vector>
+
+#include "./Header/Uses.h"
 
 using namespace std;
 
@@ -17,18 +17,18 @@ map<string, vector<string>> UsesProcedureTable;
 int insertToUsesMap(string varName);
 vector<string> findPositionProcUses(string procName);
 
-Uses::Uses()
-{
+Uses::Uses() {
 }
 
-Uses::~Uses()
-{
+Uses::~Uses() {
 }
 
 void Uses::addUsesTable(string varName, int stmtLine) {
 	int index;
+
 	if (UsesMap.size() > 0) {
 		index = findPosition(varName);
+
 		if (index == -1) {
 			index = insertToUsesMap(varName);
 		}
@@ -36,12 +36,16 @@ void Uses::addUsesTable(string varName, int stmtLine) {
 	else {
 		index = insertToUsesMap(varName);
 	}
+
 	UsesTable[index].push_back(stmtLine);
+	sort(UsesTable[index].begin(), UsesTable[index].end());
+	UsesTable[index].erase(unique(UsesTable[index].begin(), UsesTable[index].end()), UsesTable[index].end());
 }
 
 void Uses::addUsesProcedureTable(string procedure, string varName) {
 	if (UsesProcedureTable.size() > 0) {
 		vector<string> ans = findPositionProcUses(procedure);
+
 		if (ans.size() > 0) {
 			UsesProcedureTable[procedure].push_back(varName);
 		}
@@ -54,6 +58,7 @@ void Uses::addUsesProcedureTable(string procedure, string varName) {
 int Uses::findPosition(string varName) {
 	map<string, int>::iterator iter;
 	iter = UsesMap.find(varName);
+
 	if (iter != UsesMap.end()) {
 		return  iter->second;
 	}
@@ -65,6 +70,7 @@ int Uses::findPosition(string varName) {
 // return vector<string> of the varName in the map
 vector<string> findPositionProcUses(string procName) {
 	map<string, vector<string>>::iterator i = UsesProcedureTable.find(procName);
+
 	if (i == UsesProcedureTable.end()) {
 		vector<string> ans;
 		return ans;
@@ -88,9 +94,9 @@ bool Uses::isContains(string varName) {
 	}
 }
 
-std::vector<int> Uses::getUsesTable(string varName)
-{
+std::vector<int> Uses::getUsesTable(string varName) {
 	int index = findPosition(varName);
+
 	if (index == -1) {
 		vector<int> ans;
 		return ans;
@@ -99,8 +105,7 @@ std::vector<int> Uses::getUsesTable(string varName)
 	}
 }
 
-std::vector<string> Uses::getUsesProcTable(string procName)
-{
+std::vector<string> Uses::getUsesProcTable(string procName) {
 	return findPositionProcUses(procName);
 }
 

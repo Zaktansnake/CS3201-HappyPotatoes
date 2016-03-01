@@ -16,19 +16,24 @@ public:
 	ParameterSet getSelectParameter(); 
 	ClauseSet getClauses();
 	PatternSet getPatterns();
+
 	// constructors
 	ParseResult();
 	ParseResult(ParameterSet);
 	ParseResult(ParameterSet, ClauseSet);
 	ParseResult(ParameterSet, PatternSet);
 	ParseResult(ParameterSet, ClauseSet, PatternSet);
+
 	// for query evaluator to call
 	vector<ParseResult> startQueryParsing();
+
 	// originally private but made public for unit test
 	bool checkAndParseDeclaration(string, unordered_map<string, string>&);
 	ParseResult checkAndParseQuery(string, unordered_map<string, string>&);
 
+	// constructs the parsing format for query evaluator
 	ParseResult generateParseResult(string, string);
+
 private:
 	// helper functions
 	void signalErrorAndStop();

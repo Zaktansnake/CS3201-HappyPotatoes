@@ -1,17 +1,11 @@
-#include "./Header/AST.h"
 #include <cstdio>
 #include <iostream>
 #include <queue>
 
+#include "./Header/AST.h"
+
 using namespace std;
 
-AST::AST()
-{
-}
-
-AST::~AST()
-{
-}
 /*
 void getFirstChild();
 void setFirstChild(TNode P, TNode C);
@@ -21,3 +15,9 @@ void setAsRoot(TNode);
 TNode createTNodeStmtLst();
 TNode getTNodeStmtLst();
 */
+
+AST::AST() {
+}
+
+AST::~AST() {
+}

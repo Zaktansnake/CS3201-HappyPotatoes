@@ -5,11 +5,19 @@
 #include <sstream>
 
 // class implementations
-ParameterSet ParseResult::getSelectParameter() { return selectParameter_; }
-ClauseSet ParseResult::getClauses() { return condClauses_; };
-PatternSet ParseResult::getPatterns() { return patterns_; }
-	
-ParseResult::ParseResult() {}
+ParameterSet ParseResult::getSelectParameter() {
+	return selectParameter_;
+}
+ClauseSet ParseResult::getClauses() {
+	return condClauses_;
+};
+PatternSet ParseResult::getPatterns() {
+	return patterns_;
+}
+
+ParseResult::ParseResult() {
+}
+
 ParseResult::ParseResult(ParameterSet selectParameter) {
 	selectParameter_ = selectParameter;
 }
@@ -28,7 +36,7 @@ ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, Pa
 }
 
 // constants for project iteration 1
-const string selectClause = "Select\\s+(\\w+\\d*#*)\\s+";
+const string selectClause = "\\s*Select\\s+(\\w+\\d*#*)\\s+";
 const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
 const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
 
@@ -36,13 +44,13 @@ const regex declarationRegex("(\\s*(stmt|assign|while|variable|constant|prog_lin
 const regex queryRegex1(selectClause + conditionClause + patternClause);
 const regex queryRegex2(selectClause + patternClause + conditionClause);
 
-
 // read file according to the standard required
 vector<ParseResult> ParseResult::startQueryParsing() {
 	ifstream infile;
 	string filename = "test_PQL_parser.txt";
 	infile.open(filename);
 	vector<ParseResult> resultSet;
+
 	while (!infile.eof()) {
 		string dummy, synonym, query;
 		getline(infile, dummy); // skip the comment line
@@ -52,81 +60,98 @@ vector<ParseResult> ParseResult::startQueryParsing() {
 		getline(infile, dummy); // skip the expected results line
 		getline(infile, dummy); // skip the time limit line
 	}
+
 	return resultSet;
 }
 
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
 	unordered_map<string, string> declarationTable;
 	bool correct = checkAndParseDeclaration(declarationSentence, declarationTable);
-	if (!correct) return ParseResult();
+
+	if (!correct) {
+		return ParseResult();
+	}
+
 	return checkAndParseQuery(querySentence, declarationTable);
 }
 
 bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<string, string>& declarationTable) {
 	declarationTable.clear();
+
 	if (!regex_match(declaration, declarationRegex)) {
 		signalErrorAndStop();
 		return false;	// declaration with syntax error
 	}
+
 	// store the correct declaration in a vector
 	istringstream iss(declaration);
 	vector<string> decWord;
+
 	while (iss) {
 		string word;
 		iss >> word;
 		decWord.push_back(word);
 	}
+
 	// populate the hashmap
 	string synType;
+
 	for (unsigned int i = 0; i < decWord.size() - 1; i++) {
 		string current = decWord.at(i);
 		char lastChar = current.back();
 		if (lastChar != ',' && lastChar != ';') {
-			if (current=="stmt" || current=="assign" || current=="while" ||
-				current=="variable" || current=="constant" || current=="prog_line") {
+			if (current == "stmt" || current == "assign" || current == "while" ||
+				current == "variable" || current == "constant" || current == "prog_line") {
 				synType = current;
 			}
 			else declarationTable[current] = synType;
 		}
-		else{
+		else {
 			if (current.size() == 1) continue;
-			else{
+			else {
 				current = current.substr(0, current.size() - 1);
 				declarationTable[current] = synType;
 			}
 		}
 	}
+
 	return true;
 }
 
 ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, string>& declarationTable) {
 	smatch sm;
+
 	if (!regex_match(query, sm, queryRegex1) && !regex_match(query, sm, queryRegex2)) {
 		signalErrorAndStop();
 		return ParseResult();
-	} 
+	}
+
 	// param required for a complete ParseResult object
 	ParameterSet selectPSet;
 	ClauseSet clauseSet;
 	PatternSet patternSet;
-	
+
 	string checker;
 	checker = sm[1];	// parameter of "Select"
+
 	if (declarationTable[checker] == "") {
 		signalErrorAndStop();
 		return ParseResult();
 	}
+
 	string selectT = declarationTable[sm[1]];
 	string selectP = sm[1];
-	selectPSet.push_back(selectP+","+selectT);
-	
+	selectPSet.push_back(selectP + "," + selectT);
+
 	string conditionT, conditionP1, conditionP2, appendP1, appendP2;
 	string patternT, patternP1, patternP2, patternP3;
 	checker = sm[3];
+
 	// "such that" comes first
 	if (regex_match(query, sm, queryRegex1)) {
 		conditionT = checker;
 		checker = sm[4];
+
 		if ((declarationTable[checker] == "" && !regex_match(checker, regex("\\d+"))) ||
 			declarationTable[checker] == "variable") {
 			signalErrorAndStop();	// the 1st param of a condition clause cannot be a variable
@@ -137,7 +162,9 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 			if (regex_match(conditionP1, regex("\\d+"))) appendP1 = "s";
 			else appendP1 = declarationTable[checker];
 		}
+
 		checker = sm[5];
+
 		if (conditionT == "Uses" || conditionT == "Modifies") {
 			if (declarationTable[checker] != "variable" && checker.front() != '"') {
 				signalErrorAndStop();	// the 2nd param of a Uses/Modifies clause must be a variable
@@ -157,20 +184,24 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 				conditionP2 = checker;
 				if (regex_match(conditionP2, regex("\\d+"))) appendP2 = "s";
 				else appendP2 = declarationTable[checker];
-				}
+			}
 		}
+
 		// change the string according to agreed format
 		conditionT += appendP1.substr(0, 1) + appendP2.substr(0, 1);
 		clauseSet.push_back(Clause(conditionT, conditionP1, conditionP2));
 		checker = sm[7];
-		if (checker.empty()) return ParseResult(selectPSet, clauseSet);
+
+		if (checker.empty()) {
+			return ParseResult(selectPSet, clauseSet);
+		}
 		else {	// there is pattern clause following
 			checker = sm[8];
 			PatternType patternT = checker;
 			if (declarationTable[patternT] == "") return ParseResult();
 			Parameter1 patternP1 = sm[9];
 			Parameter2 patternP2 = sm[10];
-			patternSet.push_back(Pattern(patternT,patternP1,patternP2));
+			patternSet.push_back(Pattern(patternT, patternP1, patternP2));
 			return ParseResult(selectPSet, clauseSet, patternSet);
 		}
 	}
@@ -178,18 +209,24 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 	else if (regex_match(query, sm, queryRegex2)) {
 		checker = sm[4];
 		PatternType patternT = checker;
-		if (declarationTable[patternT] == "") return ParseResult();
+
+		if (declarationTable[patternT] == "") {
+			return ParseResult();
+		}
+
 		Parameter1 patternP1 = sm[5];
 		Parameter2 patternP2 = sm[6];
 		patternSet.push_back(Pattern(patternT, patternP1, patternP2));
 		checker = sm[8];
+
 		// only pattern clause is present
-		if (checker.empty()) return ParseResult(selectPSet, patternSet);
-		
+		if (checker.empty()) {
+			return ParseResult(selectPSet, patternSet);
+		}
 		else {
 			conditionT = checker;
 			checker = sm[9];
-			if ((declarationTable[checker] == "" && !regex_match(checker, regex("\\d+"))) 
+			if ((declarationTable[checker] == "" && !regex_match(checker, regex("\\d+")))
 				|| declarationTable[checker] == "variable") {
 				signalErrorAndStop();
 				return ParseResult();
@@ -199,7 +236,9 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 				if (regex_match(conditionP1, regex("\\d+"))) appendP1 = "s";
 				else appendP1 = declarationTable[checker];
 			}
+
 			checker = sm[10];
+
 			if (conditionT == "Uses" || conditionT == "Modifies") {
 				if (declarationTable[checker] != "variable" && checker.front() != '"') {
 					signalErrorAndStop();
@@ -221,13 +260,16 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 					else appendP2 = declarationTable[checker];
 				}
 			}
+
 			conditionT += appendP1.substr(0, 1) + appendP2.substr(0, 1);
 			clauseSet.push_back(Clause(conditionT, conditionP1, conditionP2));
 			return ParseResult(selectPSet, clauseSet, patternSet);
 		}
 	}
 	// has only select clause
-	else return ParseResult(selectPSet);
+	else {
+		return ParseResult(selectPSet);
+	}
 }
 
 void ParseResult::signalErrorAndStop() {

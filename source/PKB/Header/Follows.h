@@ -10,6 +10,7 @@ using namespace std;
 class Follows
 {
 public:
+	// constructors
 	Follows();
 	~Follows();
 	
@@ -18,4 +19,3 @@ public:
 	std::vector<int> Follows::getFollowFan(int stmtNo);
 	bool isFollows(int s1, int s2);
 };
-

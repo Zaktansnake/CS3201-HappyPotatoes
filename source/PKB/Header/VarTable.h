@@ -2,7 +2,7 @@
 
 #include <map>
 #include <iostream>
-#include<vector>
+#include <vector>
 
 using namespace std;
 
@@ -12,6 +12,7 @@ class Uses;
 class VarTable
 {
 public:
+	// constructor
 	~VarTable();
 
 	// getSize
@@ -21,10 +22,7 @@ public:
 	static int assignTableSize();
 
 	static vector<int> getAllAssign();
-
-
 	static vector<string> findVariableLeft(int stmtLine1, int stmtLine2);
-
 	static vector<string> findVariableRight(int stmtLine1, int stmtLine2);
 
 	//----------------------- While Table -------------------------
@@ -35,7 +33,6 @@ public:
 	static string VarTable::getAssignTable(int stmtNum);
 
 	//----------------------- Modifies -------------------------------
-
 	// get ModifiesTable
 	static std::vector<int> getModifiesTable(string varName);
 
@@ -46,6 +43,7 @@ public:
 	static void addModifiesProcTable(string varName, string procedure);
 
 	static vector<string> getModifiesProc(string secondPerimeter);
+	static vector<string> getModifiesVariable(string firstPerimeter);
 	static vector<int>  getModifiesAssign(string secondPerimeter);
 	static vector<int>	getModifiesWhile(string secondPerimeter);
 	static vector<int> getModifiesStmt(string firstPerimeter);
@@ -55,8 +53,8 @@ public:
 	static bool isModifiesWhile(string firstPerimeter, string secondPerimeter);
 
 	//---------------------------- Uses -------------------------
-
 	static vector<string> getUsesProc(string secondPerimeter);
+	static vector<string> getUsesVariable(string firstPerimeter);
 	static vector<int> getUsesAssig(string secondPerimeter);
 	static vector<int> getUsesStmt(string secondPerimeter);
 	static vector<int> getUsesWhile(string secondPerimeter);
@@ -75,7 +73,6 @@ public:
 	static void addUsesProcTable(string procedure, string varName);
 
 private:
-	
+	// constructor
 	VarTable();
 };
-

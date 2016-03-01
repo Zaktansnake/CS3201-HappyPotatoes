@@ -10,6 +10,7 @@ using namespace std;
 class Affects
 {
 public:
+	// constructors
 	Affects();
 	~Affects();
 };

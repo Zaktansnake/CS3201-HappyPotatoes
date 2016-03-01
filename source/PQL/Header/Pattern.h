@@ -19,6 +19,7 @@ public:
 	Pattern();
 	Pattern(PatternType, Parameter1, Parameter2);
 	Pattern(PatternType, Parameter1, Parameter2, Parameter3);
+
 private:
 	PatternType patternType_;
 	Parameter1 parameter1_;

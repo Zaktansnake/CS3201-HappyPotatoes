@@ -10,6 +10,7 @@ using namespace std;
 class Uses
 {
 public:
+	// constructors
 	Uses();
 	~Uses();
 
@@ -19,14 +20,10 @@ public:
 
 	// add item to UsesTable
 	static void addUsesTable(string varName, int stmtLine);
-
 	static void addUsesProcedureTable(string procedure, string varName);
 
 	static bool isContains(string varName);
-
 	static int findPosition(string varName);
 
 private:
-
 };
-

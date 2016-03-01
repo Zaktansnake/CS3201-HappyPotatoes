@@ -15,11 +15,10 @@ class PKB;
 
 class Parser {
 
-private:
-
 public:
 	static int parse(string filename);
-};
 
+private:
+};
 
 #endif

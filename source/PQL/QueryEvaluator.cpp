@@ -15,6 +15,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 
+
 using namespace std;
 ParseResult pr;
 
@@ -75,6 +76,15 @@ vector<string> splitComma(string line);
 
 
 void assessParseResult(ParseResult pr) {
+	
+	//----------------------------changes
+	ProcedureClausesQueryResults.clear();
+	BooleanClausesQueryResults.clear();
+	VariableClausesQueryResults.clear();
+	PatternClausesQueryResults.clear();
+	StmtLineClausesQueryResults.clear();
+	finalStringVector.clear();
+	//----------------------------changes
 
 	//get vector of select parameter from parseResult object
 	std::vector<std::string> SelectParameterVector = pr.getSelectParameter();
@@ -85,6 +95,9 @@ void assessParseResult(ParseResult pr) {
 	assessClauses(ClausesVector, SelectParameterVector);
 	setResultsPattern(PatternQueryVector, SelectParameterVector);
 	MakeFinalString(SelectParameterVector);
+	
+
+	
 }
 
 void setResultsPattern(PatternSet PatternQueryVector, std::vector<std::string> SelectParameterVector)
@@ -294,11 +307,15 @@ void ParentResults(std::vector<std::string> SelectParameterVector, Parameter1 fi
 	}
 	else {
 		if ((is_number(firstPerimeter))) {
-			StmtLineClausesQueryResults.push_back(stmtTable::getChild(changeStringToInt(firstPerimeter)));
+			temp = stmtTable::getChild(changeStringToInt(firstPerimeter));
+			temp.push_back(102);
+			StmtLineClausesQueryResults.push_back(temp);
 		}
 
 		if ((is_number(secondPerimeter))) {
-			StmtLineClausesQueryResults.push_back(stmtTable::getParent(changeStringToInt(secondPerimeter)));
+			temp = stmtTable::getParent(changeStringToInt(secondPerimeter));
+			temp.push_back(103);
+			StmtLineClausesQueryResults.push_back(temp);
 		}
 	}
 }
@@ -321,6 +338,9 @@ void PatternResults(std::vector<std::string> SelectParameterVector, std::string 
 void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
+	if (parameter.at(1) == "variable") {
+		//
+	}
 	if (parameter.at(1) == "proc") {
 
 		ProcedureClausesQueryResults.push_back(VarTable::getUsesProc(removeDoubleQuote(secondPerimeter)));
@@ -363,6 +383,7 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
+	std::vector<int> temp;
 	//if asking a stmt is following another stmt
 	if (parameter.at(1) == "BOOLEAN") {
 		BooleanClausesQueryResults.push_back(stmtTable::isFollow(changeStringToInt(firstPerimeter),
@@ -371,12 +392,42 @@ void FollowsResults(std::vector<std::string> SelectParameterVector, Parameter1 f
 	}
 	//if querying for a stmt s such as for example follows(s,1),need to change
 	if ((parameter.at(1) == "stmt") && (is_number(secondPerimeter))) {
-		StmtLineClausesQueryResults.push_back(stmtTable::getFollow(changeStringToInt(secondPerimeter)));
+		//---------changes
+		temp = stmtTable::getFollowFan(changeStringToInt(secondPerimeter));
+		StmtLineClausesQueryResults.push_back(temp);
+		//----------changes
 	}
 	//if querying for a stmt s such as for example follows(1,s),need to change
 	if ((parameter.at(1) == "stmt") && (is_number(firstPerimeter))) {
-		StmtLineClausesQueryResults.push_back(stmtTable::getFollowFan(changeStringToInt(firstPerimeter)));
+		//--------------------changes
+		temp = stmtTable::getFollow(changeStringToInt(firstPerimeter));
+		StmtLineClausesQueryResults.push_back(temp);
+		//-----------changes
 	}
+	//--------------------changes
+	if ((parameter.at(1) == "while") && (is_number(secondPerimeter))) {
+		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
+		StmtLineClausesQueryResults.push_back(temp);
+
+	}
+	//if querying for a stmt s such as for example follows(1,s),need to change
+	if ((parameter.at(1) == "while") && (is_number(firstPerimeter))) {
+		temp = stmtTable::getFollowFan(changeStringToInt(firstPerimeter));
+		StmtLineClausesQueryResults.push_back(temp);
+
+	}
+	if ((parameter.at(1) == "assign") && (is_number(secondPerimeter))) {
+		temp = stmtTable::getFollow(changeStringToInt(secondPerimeter));
+		StmtLineClausesQueryResults.push_back(temp);
+
+	}
+	//if querying for a stmt s such as for example follows(1,s),need to change
+	if ((parameter.at(1) == "assign") && (is_number(firstPerimeter))) {
+		temp = stmtTable::getFollowFan(changeStringToInt(firstPerimeter));
+		StmtLineClausesQueryResults.push_back(temp);
+
+	}
+	//-----------------------changes
 }
 
 void FollowStarResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
@@ -450,6 +501,10 @@ bool checkIfFollowStar(std::string first, std::string second) {
 void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 firstPerimeter,
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
+	if (parameter.at(1) == "variable") {
+
+		//
+	}
 	if (parameter.at(1) == "proc") {
 
 		ProcedureClausesQueryResults.push_back(VarTable::getModifiesProc(removeDoubleQuote(secondPerimeter)));
@@ -689,7 +744,10 @@ void  MakeFinalString(std::vector<std::string> SelectParameter) {
 void stmtFinalString() {
 
 	if (StmtLineClausesQueryResults.size() == 0) {
-		finalStringVector.push_back("none");
+		//--------------changes
+		finalStringVector.clear();
+		//---------------changes
+		return;
 	}
 	else {
 		vector<int> v = StmtLineClausesQueryResults.at(0);
@@ -702,7 +760,10 @@ void stmtFinalString() {
 void variableFinalString() {
 
 	if (VariableClausesQueryResults.size() == 0) {
-		finalStringVector.push_back("none");
+		//-----------------changes
+		finalStringVector.clear();
+		//-----------------changes
+		return;
 	}
 	else {
 		vector<std::string> v = VariableClausesQueryResults.at(0);
@@ -715,7 +776,10 @@ void variableFinalString() {
 void ProcedureFinalString() {
 
 	if (ProcedureClausesQueryResults.size() == 0) {
-		finalStringVector.push_back("none");
+		//---------------changes
+		finalStringVector.clear();
+		//---------------changes
+		return;
 	}
 	else {
 		vector<std::string> v = ProcedureClausesQueryResults.at(0);
@@ -730,6 +794,7 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 
 	assessParseResult(mustPr);
 	return finalStringVector;
+
 }
 
 QueryEvaluator::QueryEvaluator()

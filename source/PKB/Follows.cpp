@@ -19,11 +19,9 @@ static int stmtListNo = 1;  // same level same stmtList, change with loop
 
 bool isSameStmtList(int s1, int s2);
 
-Follows::Follows()
-{
+Follows::Follows() {
 }
-Follows::~Follows()
-{
+Follows::~Follows() {
 }
 
 void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo) {
