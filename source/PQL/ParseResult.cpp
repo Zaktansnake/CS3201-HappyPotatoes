@@ -44,26 +44,6 @@ const regex declarationRegex("(\\s*(stmt|assign|while|variable|constant|prog_lin
 const regex queryRegex1(selectClause + conditionClause + patternClause);
 const regex queryRegex2(selectClause + patternClause + conditionClause);
 
-// read file according to the standard required
-vector<ParseResult> ParseResult::startQueryParsing() {
-	ifstream infile;
-	string filename = "test_PQL_parser.txt";
-	infile.open(filename);
-	vector<ParseResult> resultSet;
-
-	while (!infile.eof()) {
-		string dummy, synonym, query;
-		getline(infile, dummy); // skip the comment line
-		getline(infile, synonym);
-		getline(infile, query);
-		resultSet.push_back(generateParseResult(synonym, query));
-		getline(infile, dummy); // skip the expected results line
-		getline(infile, dummy); // skip the time limit line
-	}
-
-	return resultSet;
-}
-
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
 	unordered_map<string, string> declarationTable;
 	bool correct = checkAndParseDeclaration(declarationSentence, declarationTable);
