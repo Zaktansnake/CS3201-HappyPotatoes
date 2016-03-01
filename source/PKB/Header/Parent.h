@@ -17,9 +17,17 @@ public:
 	std::vector<int> getParent(int stmtNo);
 	std::vector<int> getChild(int stmtNo);
 
+	std::vector<int> Parent::getParentForWhile(int stmtNo);
+	std::vector<int> Parent::getChildForWhile(int stmtNo);
+	std::vector<int> Parent::getParentForAssign(int stmtNo);
+	std::vector<int> Parent::getChildForAssign(int stmtNo);
+
 	bool isParent(int stmt1, int stmt2);
 
 	static std::map<int, int> AnsMap;
+
+
+
 
 	// print out the call answer table
 	void PrintProcTable();

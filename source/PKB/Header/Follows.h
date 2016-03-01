@@ -18,4 +18,10 @@ public:
 	std::vector<int> Follows::getFollow(int stmtNo);
 	std::vector<int> Follows::getFollowFan(int stmtNo);
 	bool isFollows(int s1, int s2);
+
+
+	std::vector<int> Follows::getFollowForWhile(int stmtNo);
+	std::vector<int> Follows::getFollowFanForWhile(int stmtNo);
+	std::vector<int> Follows::getFollowForAssign(int stmtNo);
+	std::vector<int> Follows::getFollowFanForAssign(int stmtNo);
 };

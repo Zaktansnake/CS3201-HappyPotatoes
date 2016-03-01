@@ -11,6 +11,7 @@ map<int, int> Parent::AnsMap;  //map<stmt#, index>
 std::vector<std::vector<int> > arrAns;
 std::stack<string> loopParent;
 std::stack<int> loopStmtNo;
+map<int, string> stmtstring;
 
 void setToParent(string stmtLine, int stmtNo);
 void deleteParent(int endloop);
@@ -29,6 +30,7 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 	std::vector<int> temp;
 
 	if (stmtLine.compare("}") != 0 ) {
+	    stmtstring.insert(pair<int,string>(stmtNo,stmtLine));
 		if (loopFlag && endLoop == 0) {   // when there is a condition stmt and it is not end stmt for loop
 			// check whether ths stmt is a child of other stmt
 			if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
@@ -142,4 +144,92 @@ std::vector<int> Parent::getChild(int stmtNo) {
 		}
 	}
 	return result;
+}
+
+
+std::vector<int> Parent::getParentForWhile(int stmtNo) {
+	std::vector<int> temp = getParent(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("while") != std::string::npos || line.find("While") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+
+}
+std::vector<int> Parent::getChildForWhile(int stmtNo) {
+	std::vector<int> temp = getChild(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("while") != std::string::npos || line.find("While") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+
+}
+std::vector<int> Parent::getParentForAssign(int stmtNo) {
+
+	std::vector<int> temp = getParent(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("=") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+
+
+}
+std::vector<int> Parent::getChildForAssign(int stmtNo) {
+	std::vector<int> temp = getChild(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("=") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+
 }

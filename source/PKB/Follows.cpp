@@ -13,6 +13,7 @@ std::vector<std::vector<int> > ansList; //store ans for stmtNo 1 to end
 std::vector<int> stmtRecord; // record all the nesting level in order
 std::vector<int> stmtListTable;
 std::stack<int> loopStack;
+std::map<int,string> stmtString;
 Parent pa;
 
 static int stmtListNo = 1;  // same level same stmtList, change with loop
@@ -28,6 +29,7 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 	stmtRecord.push_back(nestLvl);
 	std::vector<int> temp;
 	if (stmtLine.compare("}") != 0) {
+		stmtString.insert(std::pair<int,string>(stmtNo,stmtLine));
 		if (levelList.empty()) {
 			temp.push_back(stmtNo);
 			levelList.push_back(temp);
@@ -51,9 +53,7 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 		stmtListNo++;
 	}
 	else if (!loopFlag && endLoopNo > 0) {
-		if (stmtLine.size() == 1 && stmtLine.compare("}") == 0) {
-
-		}
+		
 		for (int i = 0; i < endLoopNo; i++) {
 			stmtListNo--;
 			if (stmtListNo < 0) {
@@ -131,6 +131,91 @@ bool Follows::isFollows(int s1, int s2) {
 		return false;
 	}
 }
+
+
+std::vector<int> Follows::getFollowForWhile(int stmtNo){
+     std::vector<int> temp = getFollow(stmtNo);
+	 std::vector<int> ans;
+	 for (int i = 0; i< temp.size(); i++){
+	     int index = temp.at(i);
+		 map<int, string>::iterator iter;
+		 iter = stmtString.find(index);
+		 string line;
+		 if (iter != stmtString.end()) {
+			 line = iter->second;
+			 if (line.find("while") != std::string::npos||line.find("While") != std::string::npos){
+			    ans.push_back(temp.at(i));
+				}
+		 }
+		 else {
+		 }
+
+	 }
+	 return ans;
+}
+std::vector<int> Follows::getFollowFanForWhile(int stmtNo){
+	std::vector<int> temp = getFollowFan(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("while") != std::string::npos || line.find("While") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+std::vector<int> Follows::getFollowForAssign(int stmtNo){
+	std::vector<int> temp = getFollow(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("=") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+std::vector<int> Follows::getFollowFanForAssign(int stmtNo){
+	std::vector<int> temp = getFollowFan(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("=") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+
+
+
 
 bool isSameStmtList(int s1, int s2) {
     std::vector<int> parentS1;

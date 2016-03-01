@@ -74,7 +74,7 @@ void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
 void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
 	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo);
 }
-
+//-------------------------------------get answer of follow
 std::vector<int> stmtTable::getFollow(int stmtNo) {
     std::vector<int> ans = follow.getFollow(stmtNo);
     return ans;
@@ -88,6 +88,26 @@ std::vector<int> stmtTable::getFollowFan(int stmtNo) {
 bool stmtTable::isFollow(int s1, int s2) {
 	return follow.isFollows(s1,s2);
 }
+std::vector<int> stmtTable::getFollowForWhile(int stmtNo) {
+	std::vector<int> ans = follow.getFollowForWhile(stmtNo);
+	return ans;
+}
+std::vector<int> stmtTable::getFollowFanForWhile(int stmtNo) {
+	std::vector<int> ans = follow.getFollowFanForWhile(stmtNo);
+	return ans;
+}
+std::vector<int> stmtTable::getFollowForAssign(int stmtNo) {
+	std::vector<int> ans = follow.getFollowForAssign(stmtNo);
+	return ans;
+}
+std::vector<int> stmtTable::getFollowFanForAssign(int stmtNo) {
+	std::vector<int> ans = follow.getFollowFanForAssign(stmtNo);
+	return ans;
+}
+
+
+
+// get data from parent
 std::vector<int> stmtTable::getParent(int stmtNo) {
 	std::vector<int> ans = parent.getParent(stmtNo);
     return ans;
@@ -101,6 +121,29 @@ std::vector<int> stmtTable::getChild(int stmtNo) {
 bool stmtTable::isParent(int s1, int s2) {
 	return parent.isParent(s1,s2);
 }
+
+std::vector<int> stmtTable::getParentForWhile(int stmtNo) {
+	std::vector<int> ans = parent.getParentForWhile(stmtNo);
+	return ans;
+}
+std::vector<int> stmtTable::getChildForWhile(int stmtNo) {
+	std::vector<int> ans = parent.getChildForWhile(stmtNo);
+	return ans;
+}
+std::vector<int> stmtTable::getParentForAssign(int stmtNo) {
+	std::vector<int> ans = parent.getParentForAssign(stmtNo);
+	return ans;
+}
+
+std::vector<int> stmtTable::getChildForAssign(int stmtNo) {
+	std::vector<int> ans = parent.getChildForAssign(stmtNo);
+	return ans;
+}
+
+
+
+
+// check condition
 
 bool isCondition(string stmtLine) {
 	if (stmtLine.find("if") != std::string::npos) {
