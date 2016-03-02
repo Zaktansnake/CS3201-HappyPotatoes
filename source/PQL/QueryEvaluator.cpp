@@ -339,7 +339,7 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
 	if (parameter.at(1) == "variable") {
-		//
+		VariableClausesQueryResults.push_back(VarTable::getUsesVariable(removeDoubleQuote(firstPerimeter)));
 	}
 	if (parameter.at(1) == "proc") {
 
@@ -502,8 +502,7 @@ void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 
 	Parameter2 secondPerimeter, std::string firstSecondPerimeterType) {
 	vector<string> parameter = splitComma(SelectParameterVector.at(0));
 	if (parameter.at(1) == "variable") {
-
-		//
+		VariableClausesQueryResults.push_back(VarTable::getModifiesVariable(removeDoubleQuote(firstPerimeter)));
 	}
 	if (parameter.at(1) == "proc") {
 

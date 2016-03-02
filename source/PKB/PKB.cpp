@@ -219,7 +219,6 @@ static void stmt(int num) {
 		break;
 	case 2: // while
 		if (v[2].compare("{") == 0) {
-			VarTable::addDataToModifies(v[1], stmtLine);
 			VarTable::addDataToUses(v[1], stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
 			VarTable::addDataToWhileTable(v[1], stmtLine);
