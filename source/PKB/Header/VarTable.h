@@ -15,6 +15,9 @@ public:
 	// constructor
 	~VarTable();
 
+	// Update the Table after the parser is done
+	static void updateTable();
+
 	// getSize
 	static int  varTableLeftSize();
 	static int  varTableRightSize();

@@ -81,6 +81,7 @@ void PKB::create(string fileName) {
 
 	// parse the assign table to Patterns
 	// update uses table one more time
+	VarTable::updateTable();
 }
 
 int PKB::getStmtNum() {
@@ -266,7 +267,7 @@ void assign() {
 			detectRightBracket(1, v);
 			bracstack.pop();
 		}
-		else if (!is_number(var)) {
+		else {
 			if (i == 0) {
 				VarTable::addDataToModifies(var, stmtLine);
 				VarTable::addModifiesProcTable(procname, v[i]);

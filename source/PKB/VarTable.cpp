@@ -50,17 +50,22 @@ int VarTable::assignTableSize() {
 	return assignTable.size();
 }
 
+// --------------------------------------------------------------------
+void VarTable::updateTable() {
+
+}
+
 // ---------------------- while table ---------------------------------
 void VarTable::addDataToWhileTable(string variable, int stmtNum) {
 	whileTable[variable].push_back(stmtNum);
 	whileStmtNum.push_back(stmtNum);
 }
 
-vector<int> getAllWhile() {
+vector<int> VarTable::getAllWhile() {
 	return whileStmtNum;
 }
 
-//----------------------- Assign Table ------------------------
+//----------------------- Assign Table ---------------------------------
 void VarTable::addDataToAssignTable(string variable, int stmtNum) {
 	assignTable.insert(pair<int, string>(stmtNum, variable));
 }
@@ -322,13 +327,15 @@ vector<string> VarTable::getUsesProc(string stmt1) {
 }
 
 vector<string> VarTable::getUsesVariable(string firstPerimeter) {
+	
 	int temp = atoi(firstPerimeter.c_str());
 	vector<string> ans;
 
 	for (int i = 0; i < varTableRight.size(); i++)
 	{
-		if (varTableRight[i].first == temp)
+		if (varTableRight[i].first == temp) {
 			ans.push_back(varTableRight[i].second);
+		}
 	}
 
 	sort(ans.begin(), ans.end());
