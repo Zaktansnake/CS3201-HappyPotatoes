@@ -42,7 +42,6 @@ static void stmt(int num);
 static void findMethod(string file_contents);
 vector<string> split(string str, char delimiter);
 vector<string> splitTheString(string line);
-bool is_number(const std::string& s);
 static void calls(string procedurName, int stmtLine);
 void stmtLineForPattern(vector<string> line);
 void detectRightBracket(int options, vector<string> v);
@@ -303,12 +302,6 @@ static void calls(string str, int stmtLine) {
 	}
 }
 
-// check string is a number
-bool is_number(const std::string& s)
-{
-	return !s.empty() && std::find_if(s.begin(),
-		s.end(), [](char c) { return !::isdigit(c); }) == s.end();
-}
 
 vector<string> splitTheString(string line) {
 	vector<string> v;

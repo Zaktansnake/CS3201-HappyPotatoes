@@ -15,7 +15,7 @@
 using namespace std;
 
 // (Modifies) int -> stmtLine, string -> variable
-vector<pair<int, string>> varTableLeft; 
+vector<pair<int, string>> varTableLeft;
 // (Uses) int -> stmtLine, string -> variable
 vector<pair<int, string>> varTableRight;
 // Contains while loop; string -> variable name, int -> stmtLine
@@ -27,6 +27,7 @@ map<int, string> assignTable;
 void addToVarTable(int position, string varName, int stmtLine);
 bool isContainsAssign(int stmtLine);
 bool isContainsWhile(string stmtLine);
+bool is_number(const std::string& s);
 
 VarTable::VarTable() {
 }
@@ -52,7 +53,8 @@ int VarTable::assignTableSize() {
 
 // --------------------------------------------------------------------
 void VarTable::updateTable() {
-
+	std::sort(varTableLeft.begin(), varTableLeft.end());
+	std::sort(varTableRight.begin(), varTableRight.end());
 }
 
 // ---------------------- while table ---------------------------------
@@ -76,11 +78,12 @@ string VarTable::getAssignTable(int stmtNum) {
 
 	if (it == assignTable.end()) {
 		// not found
-	} else {
+	}
+	else {
 		// found
 		temp = it->second;
 	}
-	
+
 	return temp;
 }
 
@@ -100,15 +103,17 @@ vector<string> VarTable::findVariableLeft(int stmtLine1, int stmtLine2) {
 	vector<string> ans;
 
 	for (int i = 0; i < varTableLeft.size(); i++) {
-		pair<int, string> tempVector =  varTableLeft.at(i);
+		pair<int, string> tempVector = varTableLeft.at(i);
 
 		if (tempVector.first > stmtLine1 && tempVector.first <= stmtLine2) {
 			if (!ans.empty()) {
 				if (std::find(ans.begin(), ans.end(), tempVector.second) != ans.end()) {
-				} else {
+				}
+				else {
 					ans.push_back(tempVector.second);
 				}
-			} else {
+			}
+			else {
 				ans.push_back(tempVector.second);
 			}
 		}
@@ -137,7 +142,7 @@ vector<string> VarTable::getModifiesProc(string secondPerimeter) {
 
 vector<string> VarTable::getModifiesVariable(string firstPerimeter) {
 	int temp = atoi(firstPerimeter.c_str());
-	
+
 	vector<string> ans;
 
 	for (int i = 0; i < varTableLeft.size(); i++)
@@ -179,7 +184,7 @@ vector<int> VarTable::getModifiesWhile(string secondPerimeter) {
 	sort(whileStmtNum.begin(), whileStmtNum.end());
 
 	set<int> intersect;
-	set_intersection(tempAns.begin(), tempAns.end(), whileStmtNum.begin(), whileStmtNum.end(),back_inserter(ans));
+	set_intersection(tempAns.begin(), tempAns.end(), whileStmtNum.begin(), whileStmtNum.end(), back_inserter(ans));
 
 	return ans;
 }
@@ -214,7 +219,8 @@ bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
 
 		if (tempVector.size() == 0) {
 			result = false;
-		} else {
+		}
+		else {
 			for (int i = 0; i < tempVector.size(); i++) {
 				if (tempVector[i] == numbValue) {
 					result = true;
@@ -226,7 +232,8 @@ bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
 			}
 		}
 		return result;
-	} else {
+	}
+	else {
 		return false;
 	}
 }
@@ -261,7 +268,8 @@ bool VarTable::isModifiesWhile(string firstPerimeter, string secondPerimeter) {
 
 	if (!isContainsWhile(secondPerimeter)) {
 		return false;
-	} else {
+	}
+	else {
 		vector<int> ans = whileTable.at(secondPerimeter);
 		for (int i = 0; i < ans.size(); i++) {
 			if (ans.at(i) == numbValue) {
@@ -273,11 +281,12 @@ bool VarTable::isModifiesWhile(string firstPerimeter, string secondPerimeter) {
 }
 
 bool isContainsAssign(int stmtLine) {
-	auto search =  assignTable.find(stmtLine);
+	auto search = assignTable.find(stmtLine);
 
 	if (search != assignTable.end()) {
 		return true;
-	} else {
+	}
+	else {
 		return false;
 	}
 }
@@ -328,13 +337,18 @@ vector<string> VarTable::getUsesProc(string stmt1) {
 
 vector<string> VarTable::getUsesVariable(string firstPerimeter) {
 	
-	int temp = atoi(firstPerimeter.c_str());
+	int stmtNum = atoi(firstPerimeter.c_str());
 	vector<string> ans;
+	int previous = 0;
 
 	for (int i = 0; i < varTableRight.size(); i++)
 	{
-		if (varTableRight[i].first == temp) {
-			ans.push_back(varTableRight[i].second);
+		int tempStmtLine = varTableRight[i].first;
+		if (tempStmtLine == stmtNum) {
+			string tempValue = varTableRight[i].second;
+			if (!is_number(tempValue)) {
+				ans.push_back(tempValue);
+			}
 		}
 	}
 
@@ -482,7 +496,7 @@ void VarTable::addDataToUses(string varName, int stmtLine) {
 }
 
 void VarTable::addUsesProcTable(string varName, string procedure) {
-	return Uses::addUsesProcedureTable(varName,procedure);
+	return Uses::addUsesProcedureTable(varName, procedure);
 }
 
 // add the var to varTableLeft or varTableRight
@@ -493,4 +507,13 @@ void addToVarTable(int position, string varName, int stmtLine) {
 	else if (position == 2) {
 		varTableRight.push_back(make_pair(stmtLine, varName));
 	}
+}
+
+
+
+// check string is a number
+bool is_number(const std::string& s)
+{
+	return !s.empty() && std::find_if(s.begin(),
+		s.end(), [](char c) { return !::isdigit(c); }) == s.end();
 }
