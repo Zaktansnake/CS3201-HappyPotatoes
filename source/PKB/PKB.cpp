@@ -72,12 +72,8 @@ void PKB::create(string fileName) {
 	}
 
 	myFile.close();
-	//Modifies::printMap01();
-	//Uses::printMap02();
-	//VarTable::printVarLeft();
-	//VarTable::printVarRight();
-	//VarTable::printWhileLoop();
-
+	//VarTable::printTables();
+	
 	// parse the assign table to Patterns
 	// update uses table one more time
 	VarTable::updateTable();
@@ -213,7 +209,7 @@ static void stmt(int num) {
 			PKB::abort();
 		}
 		else {
-			bracstack.push(make_pair("{", stmtLine));
+			bracstack.push(make_pair("{", 0));
 		}
 
 		break;
