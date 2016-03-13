@@ -124,9 +124,15 @@ namespace UnitTesting
 			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\Sample-Source 01.txt");
 
 			// test for getFollow
-			int expected_result01 = 2;
-			vector<int> getFollow = stmtTable::getFollow(1);
-			result = getFollow.front();
+			int expected_result01 = 0;
+			vector<int> getFollow = stmtTable::getFollow(10);
+			if (getFollow.size() == 0) {
+				result = 0;
+			}
+			else {
+                result = getFollow.front();
+			}
+			
 
 			Assert::AreEqual(expected_result01, result);
 

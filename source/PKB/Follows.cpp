@@ -68,6 +68,9 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 std::vector<int> Follows::getFollow(int stmtNo) {
 	std::vector<int> ans;
 	ans.clear();
+	if (stmtNo >= stmtRecord.size()) {
+		return ans;
+	}
 	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
 	if (level > levelList.size()) {
 		cout << "Error. Wrong stmtRecord." << endl;
@@ -81,7 +84,10 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 			}
 			else {
 				if (isSameStmtList(stmtNo, temp.at(i + 1))) {
-                    ans.push_back(temp.at(i+1));
+					if (stmtNo != temp.at(i + 1)) {
+                        ans.push_back(temp.at(i+1));
+					}
+                    
 				}
 				else {
 					return ans;
@@ -97,6 +103,9 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 std::vector<int> Follows::getFollowFan(int stmtNo) {
 	std::vector<int> ans;
 	ans.clear();
+	if (stmtNo >= stmtRecord.size()) {
+		return ans;
+	}
 	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
 	if (level > levelList.size()) {
 		cout << "Error. Wrong stmtRecord." << endl;
@@ -110,7 +119,10 @@ std::vector<int> Follows::getFollowFan(int stmtNo) {
 			}
 			else {
 				if (isSameStmtList(stmtNo, temp.at(i - 1))) {
-					ans.push_back(temp.at(i - 1));
+					if (stmtNo != temp.at(i - 1)) {
+                       ans.push_back(temp.at(i - 1));
+					}
+					
 				}
 				else {
 					return ans;
