@@ -20,7 +20,7 @@ public:
 	static void addModifiesProcedureTable(string procedure, string varName);
 
 	//NEED TO DELETE AFTER TESTING
-	//static void printMap01();
+	static void printMap01();
 
 private:
 	int index;

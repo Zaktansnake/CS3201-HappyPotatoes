@@ -8,6 +8,7 @@
 #include <iterator>
 #include <set>
 
+#include "./Header/PKB.h"
 #include "./Header/VarTable.h"
 #include "./Header/Modifies.h"
 #include "./Header/Uses.h"
@@ -18,9 +19,12 @@ using namespace std;
 vector<pair<int, string>> varTableLeft;
 // (Uses) int -> stmtLine, string -> variable
 vector<pair<int, string>> varTableRight;
-// Contains while loop; string -> variable name, int -> stmtLine
+// (While) string -> variable name, vector<int> -> stmtLine
 map<string, vector<int>> whileTable;
+vector<int> stmtNum;
+vector<int> assignNum;
 vector<int> whileStmtNum;
+vector<int> ifStmtNum;
 // Contains assign line number
 map<int, string> assignTable;
 
@@ -28,6 +32,10 @@ void addToVarTable(int position, string varName, int stmtLine);
 bool isContainsAssign(int stmtLine);
 bool isContainsWhile(string stmtLine);
 bool is_number(const std::string& s);
+
+void printVarLeft();
+void printVarRight();
+void printWhileLoop();
 
 VarTable::VarTable() {
 }
@@ -51,21 +59,38 @@ int VarTable::assignTableSize() {
 	return assignTable.size();
 }
 
-// --------------------------------------------------------------------
 void VarTable::updateTable() {
+
 	std::sort(varTableLeft.begin(), varTableLeft.end());
 	std::sort(varTableRight.begin(), varTableRight.end());
+
+	VarTable::setAssign();
+	VarTable::setStmt();
+
+	std::sort(assignNum.begin(), assignNum.end());
+	std::sort(whileStmtNum.begin(), whileStmtNum.end());
+
 }
 
-// ---------------------- while table ---------------------------------
-void VarTable::addDataToWhileTable(string variable, int stmtNum) {
-	whileTable[variable].push_back(stmtNum);
-	whileStmtNum.push_back(stmtNum);
+vector<int> VarTable::getAllStmt() {
+	return stmtNum;
 }
 
 vector<int> VarTable::getAllWhile() {
 	return whileStmtNum;
 }
+
+vector<int> VarTable::getAllIfs() {
+	return ifStmtNum;
+}
+
+
+// ---------------------- While table ---------------------------------
+void VarTable::addDataToWhileTable(string variable, int stmtNum) {
+	whileTable[variable].push_back(stmtNum);
+	whileStmtNum.push_back(stmtNum);
+}
+
 
 //----------------------- Assign Table ---------------------------------
 void VarTable::addDataToAssignTable(string variable, int stmtNum) {
@@ -88,18 +113,13 @@ string VarTable::getAssignTable(int stmtNum) {
 }
 
 vector<int> VarTable::getAllAssign() {
-	vector<int> ans;
-
-	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
-		ans.push_back(it->first);
-	}
-
-	return ans;
+	return assignNum;
 }
 
-// ------------------------ Modifies ----------------------------------
-// stmtLine1 = parent; stmtLine2 = the position of bracket end
+// ------------------------ Modifies -----------------------------------
+
 vector<string> VarTable::findVariableLeft(int stmtLine1, int stmtLine2) {
+	// stmtLine1 = parent; stmtLine2 = the position of bracket end
 	vector<string> ans;
 
 	for (int i = 0; i < varTableLeft.size(); i++) {
@@ -136,11 +156,13 @@ void VarTable::addModifiesProcTable(string varName, string procedure) {
 }
 
 vector<string> VarTable::getModifiesProc(string secondPerimeter) {
+	// secondPerimeter = variable
 	vector<string> ans = Modifies::getModifiesProcTable(secondPerimeter);
 	return ans;
 }
 
 vector<string> VarTable::getModifiesVariable(string firstPerimeter) {
+	// firstPerimeter = stmtNum
 	int temp = atoi(firstPerimeter.c_str());
 
 	vector<string> ans;
@@ -156,15 +178,11 @@ vector<string> VarTable::getModifiesVariable(string firstPerimeter) {
 }
 
 vector<int> VarTable::getModifiesAssign(string secondPerimeter) {
+	// secondPerimeter = variable
 	std::vector<int> ans = Modifies::getModifiesTable(secondPerimeter);
-	vector<int> finalResult;
-
-	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
-		finalResult.push_back(it->first);
-	}
+	vector<int> finalResult = assignNum;
 
 	std::sort(ans.begin(), ans.end());
-	std::sort(finalResult.begin(), finalResult.end());
 	std::vector<int> v_intersection;
 	std::set_intersection(ans.begin(), ans.end(),
 		finalResult.begin(), finalResult.end(),
@@ -174,14 +192,15 @@ vector<int> VarTable::getModifiesAssign(string secondPerimeter) {
 }
 
 vector<int> VarTable::getModifiesStmt(string secondPerimeter) {
+	// secondPerimeter = variable
 	return Modifies::getModifiesTable(secondPerimeter);
 }
 
 vector<int> VarTable::getModifiesWhile(string secondPerimeter) {
+	// secondPerimeter = variable
 	vector<int> ans;
 	vector<int> tempAns = Modifies::getModifiesTable(secondPerimeter);
 	sort(tempAns.begin(), tempAns.end());
-	sort(whileStmtNum.begin(), whileStmtNum.end());
 
 	set<int> intersect;
 	set_intersection(tempAns.begin(), tempAns.end(), whileStmtNum.begin(), whileStmtNum.end(), back_inserter(ans));
@@ -190,6 +209,7 @@ vector<int> VarTable::getModifiesWhile(string secondPerimeter) {
 }
 
 bool VarTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = procedure; secondPerimeter = variable
 	bool result;
 	vector<string> tempVector = Modifies::getModifiesProcTable(firstPerimeter);
 
@@ -210,6 +230,7 @@ bool VarTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
 }
 
 bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = statementNumber; secondPerimeter = variable
 	bool result;
 	int numbValue;
 	istringstream(firstPerimeter) >> numbValue;
@@ -239,6 +260,7 @@ bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
 }
 
 bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = statementNumber; secondPerimeter = variable
 	bool result;
 	vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
 
@@ -263,6 +285,7 @@ bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
 }
 
 bool VarTable::isModifiesWhile(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = statementNumber; secondPerimeter = variable
 	int numbValue;
 	istringstream(firstPerimeter) >> numbValue;
 
@@ -304,6 +327,7 @@ bool isContainsWhile(string variable) {
 
 //-------------------------------Uses---------------------------
 vector<string> VarTable::findVariableRight(int stmtLine1, int stmtLine2) {
+	// stmtLine1 = parent; stmtLine2 = the position of bracket end
 	vector<string> ans;
 
 	for (int i = 0; i < varTableRight.size(); i++) {
@@ -328,15 +352,12 @@ vector<string> VarTable::findVariableRight(int stmtLine1, int stmtLine2) {
 	return ans;
 }
 
-//--------------------------- PQL SIDE ----------------------------------
-
-vector<string> VarTable::getUsesProc(string stmt1) {
-	// stmt1 -> variable
-	return Uses::getUsesProcTable(stmt1);
+vector<string> VarTable::getUsesProc(string varName) {
+	return Uses::getUsesProcTable(varName);
 }
 
 vector<string> VarTable::getUsesVariable(string firstPerimeter) {
-	
+	// firstPerimeter = stmtNum
 	int stmtNum = atoi(firstPerimeter.c_str());
 	vector<string> ans;
 	int previous = 0;
@@ -358,15 +379,10 @@ vector<string> VarTable::getUsesVariable(string firstPerimeter) {
 }
 
 vector<int> VarTable::getUsesAssig(string secondPerimeter) {
+	// secondPerimeter = variable
 	std::vector<int> ans = Uses::getUsesTable(secondPerimeter);
-	vector<int> finalResult;
-
-	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
-		finalResult.push_back(it->first);
-	}
-
+	vector<int> finalResult = assignNum;
 	std::sort(ans.begin(), ans.end());
-	std::sort(finalResult.begin(), finalResult.end());
 	std::vector<int> v_intersection;
 	std::set_intersection(ans.begin(), ans.end(),
 		finalResult.begin(), finalResult.end(),
@@ -394,6 +410,7 @@ vector<int> VarTable::getUsesWhile(string stmt1) {
 }
 
 bool VarTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = procedure; secondPerimeter = variable
 	bool result;
 	vector<string> tempVector = Uses::getUsesProcTable(secondPerimeter);
 
@@ -415,6 +432,7 @@ bool VarTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
 }
 
 bool VarTable::isUsesAssign(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = statementNumber; secondPerimeter = variable
 	bool result;
 	int numbValue;
 	istringstream(firstPerimeter) >> numbValue;
@@ -443,16 +461,17 @@ bool VarTable::isUsesAssign(string firstPerimeter, string secondPerimeter) {
 	}
 }
 
-bool VarTable::isUsesStmt(string stmtLine, string variable) {
+bool VarTable::isUsesStmt(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = statementNumber; secondPerimeter = variable
 	bool result;
-	vector<int> tempVector = Uses::getUsesTable(variable);
+	vector<int> tempVector = Uses::getUsesTable(secondPerimeter);
 
 	if (tempVector.size() == 0) {
 		result = false;
 	}
 	else {
 		int numbValue;
-		istringstream(stmtLine) >> numbValue;
+		istringstream(firstPerimeter) >> numbValue;
 
 		for (int i = 0; i < tempVector.size(); i++) {
 			if (tempVector[i] == numbValue) {
@@ -467,6 +486,7 @@ bool VarTable::isUsesStmt(string stmtLine, string variable) {
 }
 
 bool VarTable::isUsesWhile(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = statementNumber; secondPerimeter = variable
 	bool result;
 	int numbValue;
 	istringstream(firstPerimeter) >> numbValue;
@@ -499,6 +519,24 @@ void VarTable::addUsesProcTable(string varName, string procedure) {
 	return Uses::addUsesProcedureTable(varName, procedure);
 }
 
+
+vector<int> VarTable::setStmt() {
+	int totalStmtNum = PKB::getStmtNum();
+
+	for (int i = 1; i <= totalStmtNum; i++) {
+		stmtNum.push_back(i);
+	}
+
+	return stmtNum;
+}
+
+vector<int> VarTable::setAssign() {
+	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
+		assignNum.push_back(it->first);
+	}
+	return assignNum;
+}
+
 // add the var to varTableLeft or varTableRight
 void addToVarTable(int position, string varName, int stmtLine) {
 	if (position == 1) {
@@ -509,11 +547,47 @@ void addToVarTable(int position, string varName, int stmtLine) {
 	}
 }
 
-
-
 // check string is a number
 bool is_number(const std::string& s)
 {
 	return !s.empty() && std::find_if(s.begin(),
 		s.end(), [](char c) { return !::isdigit(c); }) == s.end();
+}
+
+void VarTable::printTables() {
+	Modifies::printMap01();
+	Uses::printMap02();
+	printVarLeft();
+	printVarRight();
+	printWhileLoop();
+}
+
+void printVarLeft() {
+	cout << "VarLeft" << endl;
+	for (int i = 0; i < varTableLeft.size(); i++)
+	{
+		cout << varTableLeft[i].first << ", " << varTableLeft[i].second << endl;
+	}
+	cout << endl;
+	cout << endl;
+}
+
+void printVarRight() {
+	cout << "VarRight" << endl;
+	for (int i = 0; i < varTableRight.size(); i++)
+	{
+		cout << varTableRight[i].first << ", " << varTableRight[i].second << endl;
+	}
+}
+
+void printWhileLoop() {
+	cout << "Table for while loop" << endl;
+	for (map<string, vector<int>>::iterator ii = whileTable.begin(); ii != whileTable.end(); ++ii) {
+		cout << (*ii).first << ": ";
+		vector <int> inVect = (*ii).second;
+		for (unsigned j = 0; j < inVect.size(); j++) {
+			cout << inVect[j] << " ";
+		}
+		cout << endl;
+	}
 }

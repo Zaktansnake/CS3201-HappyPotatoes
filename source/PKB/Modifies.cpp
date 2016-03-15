@@ -114,3 +114,25 @@ int insertToMap(string varName) {
 	ModifiesMap.insert(pair<string, int>(varName, index));
 	return index;
 }
+
+
+
+
+void Modifies::printMap01() {
+	cout << "Table for ModifiesMap" << endl;
+	for (std::map<string, int>::iterator i = ModifiesMap.begin(); i != ModifiesMap.end(); i++)
+	{
+		cout << i->first << ", " << i->second << "\n";
+	}
+
+	cout << "Table for ModifiesTable" << endl;
+	for (map<int, vector<int>>::iterator ii = ModifiesTable.begin(); ii != ModifiesTable.end(); ++ii) {
+		cout << (*ii).first << ": ";
+		vector <int> inVect = (*ii).second;
+		for (unsigned j = 0; j<inVect.size(); j++) {
+			cout << inVect[j] << " ";
+		}
+		cout << endl;
+	}
+	cout << endl;
+}

@@ -114,3 +114,24 @@ int insertToUsesMap(string varName) {
 	UsesMap.insert(pair<string, int>(varName, index));
 	return index;
 }
+
+
+
+void Uses::printMap02() {
+	cout << "Table for UsesMap" << endl;
+	for (std::map<string, int>::iterator i = UsesMap.begin(); i != UsesMap.end(); i++)
+	{
+		cout << i->first << ", " << i->second << "\n";
+	}
+
+	cout << "Table for UsesTable" << endl;
+	for (map<int, vector<int>>::iterator ii = UsesTable.begin(); ii != UsesTable.end(); ++ii) {
+		cout << (*ii).first << ": ";
+		vector <int> inVect = (*ii).second;
+		for (unsigned j = 0; j<inVect.size(); j++) {
+			cout << inVect[j] << " ";
+		}
+		cout << endl;
+	}
+
+}

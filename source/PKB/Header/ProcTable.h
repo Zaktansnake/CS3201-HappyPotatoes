@@ -4,11 +4,11 @@
 #include <string>
 #include <vector>
 #include "AST.h"
-#include "Call.h"
+#include "Calls.h"
 
 using namespace std;
 
-class Call;
+class Calls;
 
 class ProcTable
 {

@@ -15,7 +15,10 @@ public:
 	// constructor
 	~VarTable();
 
-	// Update the Table after the parser is done
+	// printTable
+	static void printTables();
+
+	// Update the Tables after parser is done
 	static void updateTable();
 
 	// getSize
@@ -24,8 +27,11 @@ public:
 	static int whileTableSize();
 	static int assignTableSize();
 
+	static vector<int> getAllStmt();
 	static vector<int> getAllAssign();
 	static vector<int> getAllWhile();
+	static vector<int> getAllIfs();
+
 	static vector<string> findVariableLeft(int stmtLine1, int stmtLine2);
 	static vector<string> findVariableRight(int stmtLine1, int stmtLine2);
 
@@ -57,16 +63,6 @@ public:
 	static bool isModifiesWhile(string firstPerimeter, string secondPerimeter);
 
 	//---------------------------- Uses -------------------------
-	static vector<string> getUsesProc(string secondPerimeter);
-	static vector<string> getUsesVariable(string firstPerimeter);
-	static vector<int> getUsesAssig(string secondPerimeter);
-	static vector<int> getUsesStmt(string secondPerimeter);
-	static vector<int> getUsesWhile(string secondPerimeter);
-	static bool isUsesProc(string stmt1, string stmt2);
-	static bool isUsesAssign(string stmt1, string stmt2);
-	static bool isUsesStmt(string stmt1, string stmt2);
-	static bool isUsesWhile(string stmt1, string stmt2);
-
 	// get UsesTable
 	static std::vector<int> getUsesTable(string varName);
 
@@ -76,7 +72,21 @@ public:
 	// add UsesProcedureTable
 	static void addUsesProcTable(string procedure, string varName);
 
+	static vector<string> getUsesProc(string secondPerimeter);
+	static vector<string> getUsesVariable(string firstPerimeter);
+	static vector<int> getUsesAssig(string secondPerimeter);
+	static vector<int> getUsesStmt(string secondPerimeter);
+	static vector<int> getUsesWhile(string secondPerimeter);
+	static bool isUsesProc(string firstPerimeter, string secondPerimeter);
+	static bool isUsesAssign(string firstPerimeter, string secondPerimeter);
+	static bool isUsesStmt(string firstPerimeter, string secondPerimeter);
+	static bool isUsesWhile(string firstPerimeter, string secondPerimeter);
+
+
 private:
 	// constructor
 	VarTable();
+
+	static vector<int> setStmt();
+	static vector<int> setAssign();
 };

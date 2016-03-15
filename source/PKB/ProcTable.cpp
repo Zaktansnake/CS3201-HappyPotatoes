@@ -1,12 +1,12 @@
 #include "./Header/ProcTable.h"
-#include "./Header/Call.h"
+#include "./Header/Calls.h"
 
 using namespace std;
 
 map<string, int> ProcTable::ProcMap;
 vector<string> ProcTable::ProcIndex;
 std::vector<int> stmtPosition;
-Call call;
+Calls call;
 
 ProcTable::ProcTable() {
   
