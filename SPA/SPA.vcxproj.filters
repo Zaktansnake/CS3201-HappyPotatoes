@@ -45,9 +45,6 @@
     <ClInclude Include="..\source\PKB\Header\AST.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\PKB\Header\Call.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\PKB\Header\CFG.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
@@ -90,6 +87,9 @@
     <ClInclude Include="..\source\PQL\Header\QueriesAnswerStorage.h">
       <Filter>Header Files\PQL</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\PKB\Header\Calls.h">
+      <Filter>Header Files\PKB</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\PQL\Clause.cpp">
@@ -108,9 +108,6 @@
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PKB\AST.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\PKB\Call.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PKB\CFG.cpp">
@@ -160,6 +157,9 @@
     </ClCompile>
     <ClCompile Include="..\source\PQL\QueriesAnswerStorage.cpp">
       <Filter>Source Files\PQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PKB\Calls.cpp">
+      <Filter>Source Files\PKB</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

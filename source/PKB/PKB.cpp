@@ -304,7 +304,6 @@ static void calls(string str, int stmtLine) {
 	}
 }
 
-
 vector<string> splitTheString(string line) {
 	vector<string> v;
 	istringstream buf(str);

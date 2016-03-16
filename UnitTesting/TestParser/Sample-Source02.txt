@@ -1,0 +1,10 @@
+procedure ABC {
+	i=1;
+	b=200;
+	c= a;
+	if a then {
+		oSCar  = 1 * beta + tmp;
+	} else {
+		oSCar  = 1 * beta + tmp; 
+	}
+}

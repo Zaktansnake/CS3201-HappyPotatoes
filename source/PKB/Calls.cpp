@@ -1,6 +1,6 @@
 #include <string>
 
-#include "./Header/Call.h"
+#include "./Header/Calls.h"
 #include "./Header/PKB.h"
 
 using namespace std;
@@ -9,20 +9,14 @@ std::vector<std::vector<string> > arrAnsForCall;
 
 bool isContains(string procName, int index);
 
-Call::Call() {
-}
-
-Call::~Call() {
-}
-
-std::vector<string> Call::getCall(int index) {
+std::vector<string> Calls::getCall(int index) {
 	if (index > arrAnsForCall.size()) {
 		throw exception ();
 	}
 	return arrAnsForCall.at(index);
 }
 
-void Call::setCall(string procName, int index) {
+void Calls::setCall(string procName, int index) {
      // check the size of vector and compare with index
 	 // if index > size, create a new vector otherwise, add the procName at the back of the ans
 	 // check whter the proc name already in the vector of call ans
