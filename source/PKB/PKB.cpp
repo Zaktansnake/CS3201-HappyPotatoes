@@ -60,11 +60,11 @@ void PKB::create(string fileName) {
 		getline(myFile, str);
 		findMethod(str);
 
-		if (stmtLine > 0 && str.size()!=0 && str.compare("{") != 0) {
-			stmtTable::addStmtTable(str, stmtLine);
-		}
+//		if (stmtLine > 0 && str.size()!=0 && str.compare("{") != 0) {
+//			stmtTable::addStmtTable(str, stmtLine);
+//		}
 
-		if (str.compare("}") != 0) {
+		if (str.compare("}") != 0 || str.find("else ") != string::npos) {
 			if (str.compare("{") != 0) {
               stmtLine++;
 			}
@@ -193,6 +193,7 @@ static void stmt(int num) {
 	case 0: // if
 		if (v[2].compare("then") == 0 && (v[3].compare("{")) == 0) {
 			VarTable::addDataToUses(v[1], stmtLine);
+			stmtTable::addStmtTable(str, stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
 		}
 		else {
@@ -206,6 +207,7 @@ static void stmt(int num) {
 
 		if (v[1].compare("{") != 0) {
 			cout << "Error: Structure. ({)" << endl;
+			stmtTable::addStmtTable(str, stmtLine);
 			PKB::abort();
 		}
 		else {
@@ -217,6 +219,7 @@ static void stmt(int num) {
 		if (v[2].compare("{") == 0) {
 			VarTable::addDataToUses(v[1], stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
+			stmtTable::addStmtTable(str, stmtLine);
 			VarTable::addDataToWhileTable(v[1], stmtLine);
 		}
 		else {
@@ -227,6 +230,7 @@ static void stmt(int num) {
 		break;
 	case 3: // call
 		calls(str, stmtLine);
+		stmtTable::addStmtTable(str, stmtLine);
 		break;
 	}
 }
@@ -236,6 +240,8 @@ void assign() {
 	string lineWithVar = str;
 	string tempLine;
 	int ln = str.length() - 1;
+
+	stmtTable::addStmtTable(str, stmtLine);
 
 	for (int n = 0; n <= ln; n++) {
 		string letter(1, lineWithVar[n]);

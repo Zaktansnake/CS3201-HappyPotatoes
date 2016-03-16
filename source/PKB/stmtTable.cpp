@@ -11,6 +11,7 @@ using namespace std;
 static int nestLevel = 0;
 bool flagForNextLevel = false;
 bool loopFlag;
+bool elseFlag;
 int endLoopNo = 0;
 bool isFirstElse = false;  // the first stmtNo after else do not have follow
 std::vector<int> stmtLst;
@@ -35,6 +36,7 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 	if (stmtLine.compare("{") != 0) {
 		bool isCon = isCondition(stmtLine);
 		loopFlag = false;
+		elseFlag = false;
 
 		if (isCon) {
 			switch (condition) {
@@ -42,7 +44,8 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 				flagForNextLevel = true;
 				break;
 			case ELSE:
-				flagForNextLevel = true;
+				flagForNextLevel = false;
+				elseFlag = true;
 				break;
 			case WHILE:
 				flagForNextLevel = true;
