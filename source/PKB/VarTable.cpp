@@ -59,7 +59,7 @@ int VarTable::assignTableSize() {
 	return assignTable.size();
 }
 
-void VarTable::updateTable() {
+void VarTable::updateModifiesUsesTables() {
 
 	std::sort(varTableLeft.begin(), varTableLeft.end());
 	std::sort(varTableRight.begin(), varTableRight.end());

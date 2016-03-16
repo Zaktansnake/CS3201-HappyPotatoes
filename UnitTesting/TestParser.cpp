@@ -14,11 +14,11 @@ namespace UnitTesting
 		{
 			
 			//normal
-			int successCode = Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source02.txt");
+			int successCode = Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source01.txt");
 
 			Assert::AreEqual(1, successCode);
 
-			successCode = Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source02.txt");
+			successCode = Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source04.txt");
 
 			Assert::AreEqual(1, successCode);
 		}

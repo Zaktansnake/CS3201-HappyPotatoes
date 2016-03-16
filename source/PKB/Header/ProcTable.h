@@ -3,8 +3,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "AST.h"
-#include "Calls.h"
 
 using namespace std;
 
@@ -14,36 +12,29 @@ class ProcTable
 {
 public:
 	// constructors
-//	ProcTable();
 	~ProcTable();
 
-    // get reference to procedure table
-	static ProcTable* getProcTable();
+	static void updateProcCallsTables();
 
 	//add data
-	static void addTableData(string procName, int stmtLine);
+	static void addTableData(string procName);
+	static void setCallsTable(string proc1, string proc2, int stmtLine);
 
-	// get data
-	int getProcIndex (string key);
-	std::vector<string> getCallAns(string procName);
-	int getProgLine (string procName);
+	static void addProcModifiesVar(string procName, string variable);
+	static vector<string> getProcModifiesVar(string procName);
+
+	static void addProcUsesVar(string procName, string variable);
+	static vector<string> getProcUsesVar(string procName);
+
 	int findPosition (string ProcName);
-	string getProcName (int index);
-	//TNode* getProcNode (int index);
 
 	// get the size of proctable
 	int getSize();
 
-	// delete data
-	void RemoveProcData();
-
 	// check if the table contains procedure
 	static bool isContains (string procName);
 
-private: 
-    static std::map<string, int> ProcMap;   //procName, index of the procName in the map
-	static std::vector<string> ProcIndex;   // store the index of map
-	
+private:   
 	// constructor
 	ProcTable();
 };

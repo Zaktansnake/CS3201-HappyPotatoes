@@ -9,18 +9,17 @@ class Calls
 {
 public:
 
-	void setCall(string procName, int index);
-	std::vector<string> getCall(int index);
+	static void setCallProcedure(string mainProcedure, string procedure, int stmtLine);
+	static std::vector<std::tuple<string, string, int>> getCallsTable();
+	static std::unordered_set< std::pair<string, string>> getCallsSet();
+	static void printCallsTable();
 
 	////CALLS
 	//// return the procedure set that called by proc
 	//std::vector<string> getCalls(PROC proc);
 
-	//// set the call relationship between proc1 and proc2
-	//void setCalls(PROC proc1, PROC proc2);
-
-	//// return true proc1 calls proc2 otherwise, false
-	//bool isCalls(PROC proc1, PROC proc2);
+	// return true proc1 calls proc2 otherwise, false
+	bool isCalls(string proc1, string proc2);
 
 private:
 };

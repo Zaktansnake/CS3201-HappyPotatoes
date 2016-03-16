@@ -20,8 +20,6 @@
 #include "./Header/ProcTable.h"
 #include "./Header/VarTable.h"
 #include "./Header/stmtTable.h"
-#include "./Header/Modifies.h"
-#include "./Header/Uses.h"
 
 using namespace std;
 
@@ -32,7 +30,6 @@ stack<pair<string, int>> bracstack;
 bool firstTime, firstLine;
 static int stmtLine = 0;
 
-static void program();
 static void procedure();
 static void stmtLst();
 static void assign();
@@ -52,14 +49,12 @@ static inline std::string &trim(std::string &s);
 void PKB::create(string fileName) {
 	firstTime = true;
 	firstLine = true;
-	program();
 	myFile.open(fileName);
 	stmtLine = 0;
 
 	while (!myFile.eof()) {
 		getline(myFile, str);
 		findMethod(str);
-
 		if (stmtLine > 0 && str.size()!=0 && str.compare("{") != 0) {
 			stmtTable::addStmtTable(str, stmtLine);
 		}
@@ -72,11 +67,8 @@ void PKB::create(string fileName) {
 	}
 
 	myFile.close();
-	//VarTable::printTables();
+	PKB::updateTables();
 	
-	// parse the assign table to Patterns
-	// update uses table one more time
-	VarTable::updateTable();
 }
 
 int PKB::getStmtNum() {
@@ -109,17 +101,13 @@ void findMethod(string file_contents) {
 		procedure();
 	}
 	else if (word.compare("if") == 0 || word.compare("else") == 0
-		|| (word.compare("calls") == 0) || (word.compare("while") == 0)) {
+		|| (word.compare("call") == 0) || (word.compare("while") == 0)) {
 		stmtLst();
 	}
 	else if (word.compare("") == 0) {
 		if (!bracstack.empty()) {
 			cout << "Error: Structure. (backStack problem)" << endl;
 			PKB::abort();
-		}
-
-		if (stmtLine > 0) {
-			stmtLine--;
 		}
 
 		firstTime = false;
@@ -131,17 +119,12 @@ void findMethod(string file_contents) {
 		bracstack.pop();
 	}
 	else {
-		// save them into 2d array, pass to pql, to build tree
 		assign();
 	}
 }
 
-void program() {
-}
-
 void procedure() {
 	vector<string> v = splitTheString(str);
-
 	if (v.size() > 3) {
 		cout << "Error: Structure. (procedure size)" << endl;
 		PKB::abort();
@@ -152,9 +135,6 @@ void procedure() {
 		PKB::abort();
 	}
 	else {
-		ProcTable::addTableData(v[1], stmtLine);
-		procname = v[1];
-
 		if (v.size() <= 3) {
 			if (v[2].compare("{") != 0) {
 				cout << "Error: Structure. (procTable)" << endl;
@@ -164,6 +144,8 @@ void procedure() {
 				bracstack.push(make_pair("{", 0));
 			}
 		}
+		procname = v[1];
+		ProcTable::addTableData(v[1]);
 	}
 }
 
@@ -266,11 +248,13 @@ void assign() {
 			if (i == 0) {
 				VarTable::addDataToModifies(var, stmtLine);
 				VarTable::addModifiesProcTable(procname, v[i]);
+				ProcTable::addProcModifiesVar(procname, v[i]);
 			}
 			else {
 				if (var.compare("=") != 0 && var.compare("+") != 0 && var.compare("-") != 0 && var.compare(";") != 0 && var.compare("*") != 0 && var.compare("(") != 0 && var.compare(")") != 0 && var.compare("}") != 0 && var.compare(" ") != 0 && var.compare("' '") != 0) {
 					VarTable::addDataToUses(var, stmtLine);
 					VarTable::addUsesProcTable(procname, v[i]);
+					ProcTable::addProcUsesVar(procname, v[i]);
 				}
 			}
 		}
@@ -280,22 +264,15 @@ void assign() {
 static void calls(string str, int stmtLine) {
 	vector<string> v = splitTheString(str);
 	string procName = v[1].substr(0, v[1].size() - 1);
-	ProcTable::addTableData(procName, stmtLine);
+	ProcTable::setCallsTable(procname, procName, stmtLine);
+}
 
-	// save procedure name, stmt #
-	if (v.size() > 3) {
-		//create a loop iterate all the [i]
-		for (int i = 2; i < v.size(); i++) {
-			if (i == 2) {
-				if (v[2].compare("}") == 0) {
-					bracstack.pop();
-				}
-			}
-		}
-	}
-	else {
-		//throw std::runtime_error("Error: Structure");
-	}
+void PKB::updateTables() {
+	// parse the assign table to Patterns
+	// update uses table one more time
+	VarTable::updateModifiesUsesTables();
+	ProcTable::updateProcCallsTables();
+	//VarTable::printTables();
 }
 
 vector<string> splitTheString(string line) {
@@ -321,8 +298,7 @@ void stmtLineForPattern(vector<string> line) {
 	VarTable::addDataToAssignTable(result, stmtLine);
 }
 
-// option: 0 -> only bracket
-// 1 -> with variable
+// option: 0 -> only bracket, 1 -> with variable
 void detectRightBracket(int option, vector<string> v) {
 	pair<string, int> temp = bracstack.top();
 	int tempStmtNum = stmtLine;

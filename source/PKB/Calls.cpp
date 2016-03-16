@@ -1,56 +1,62 @@
 #include <string>
+#include <tuple>
+#include <unordered_set>
 
 #include "./Header/Calls.h"
 #include "./Header/PKB.h"
 
 using namespace std;
 
-std::vector<std::vector<string> > arrAnsForCall;
-
-bool isContains(string procName, int index);
-
-std::vector<string> Calls::getCall(int index) {
-	if (index > arrAnsForCall.size()) {
-		throw exception ();
+template <> struct hash<std::pair<string, string>> {
+	inline size_t operator()(const std::pair<string, string> &v) const {
+		std::hash<string> string_hasher;
+		return string_hasher(v.first) ^ string_hasher(v.second);
 	}
-	return arrAnsForCall.at(index);
-}
+};
 
-void Calls::setCall(string procName, int index) {
-     // check the size of vector and compare with index
-	 // if index > size, create a new vector otherwise, add the procName at the back of the ans
-	 // check whter the proc name already in the vector of call ans
-	 // if yes, do nothing
-	 // if no, push_back
-	if (arrAnsForCall.size() < index) {
-		if (!isContains(procName, index)) {
-		   arrAnsForCall.at(index).push_back(procName);
+std::vector<std::tuple<string, string, int>> CallsTable;
+std::unordered_set< std::pair<string, string>> CallsSet;
+
+void Calls::setCallProcedure(string mainProcedure, string procedure, int stmtLine) {
+	if (CallsTable.size() > 0) {
+		// check whether there is a recrusive call
+		for (int i = 0; i < CallsTable.size(); i++) {
+			string procA = get<0>(CallsTable[i]);
+			string procB = get<1>(CallsTable[i]);
+			
+			if (procA.compare(procedure) == 0 && procB.compare(mainProcedure) == 0) {
+				PKB::abort();
+			}
 		}
+		CallsTable.push_back(make_tuple(mainProcedure, procedure,stmtLine));
+		CallsSet.insert(make_pair(mainProcedure, procedure));
 	}
 	else {
-		std::vector<string> temp;
-		temp.push_back(procName);
-		arrAnsForCall.push_back(temp);
+		CallsTable.push_back(make_tuple(mainProcedure, procedure, stmtLine));
+		CallsSet.insert(make_pair(mainProcedure, procedure));
 	}
+
 }
 
-bool isContains(string procName, int index) {
-	std::vector<string>temp = arrAnsForCall.at(index);
-
-	if (std::find(temp.begin(), temp.end(), procName) != temp.end()) {
-		return false;
-	}
-	else {
-		return true;
-	}
+std::vector<std::tuple<string, string, int>> Calls::getCallsTable() {
+	return CallsTable;
 }
 
-// print out the proceTable
-void PrintProcTable() {
-	for (int i = 0; i < arrAnsForCall.size(); i++) {
-		for (int j = 0; j < arrAnsForCall[i].size(); j++) {
-			std::cout << arrAnsForCall[i].at(j) << " ";
-		}
-		cout << endl;
+std::unordered_set< std::pair<string, string>> Calls::getCallsSet() {
+	return CallsSet;
+}
+
+bool Calls::isCalls(string proc1, string proc2) {}
+
+
+void Calls::printCallsTable() {
+	/*for (int i = 0; i < CallsTable.size(); i++) {
+		cout << "procA :: " << get<0>(CallsTable[i]) << "  procB :: " << get<1>(CallsTable[i]) << "  stmtLine :: " << get<2>(CallsTable[i]) << endl;
 	}
+
+	for (auto itr = CallsSet.begin(); itr != CallsSet.end(); ++itr) {
+		pair<string, string> tempVector = *itr;
+		cout << tempVector.first << "  , " << tempVector.second << endl;
+	}*/
+
 }

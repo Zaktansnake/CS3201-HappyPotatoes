@@ -19,7 +19,7 @@ public:
 	static void printTables();
 
 	// Update the Tables after parser is done
-	static void updateTable();
+	static void updateModifiesUsesTables();
 
 	// getSize
 	static int  varTableLeftSize();
