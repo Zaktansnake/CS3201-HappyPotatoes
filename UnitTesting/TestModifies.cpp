@@ -24,6 +24,7 @@ namespace UnitTesting
 			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source04.txt");
 
 			string result, expectedResult = "";
+			bool resultBoolean;
 			vector<string> modifiesString;
 			vector<int> modifiesInt;
 
@@ -82,6 +83,14 @@ namespace UnitTesting
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);
+
+			// Select BOOLEAN such that Modifies(23,"x") => true
+			resultBoolean = VarTable::isModifiesStmt("23", "x");
+			Assert::IsTrue(resultBoolean);
+
+			// Select BOOLEAN such that Modifies(23,"x") => false
+			resultBoolean = VarTable::isModifiesWhile("23", "x");
+			Assert::IsFalse(resultBoolean);
 
 			result = "";
 			// Select s such that Modifies(s, "Romeo") => 12,14,15,16,17,26,28,30,31,4

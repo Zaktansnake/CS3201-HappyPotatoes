@@ -250,7 +250,7 @@ void assign() {
 				ProcTable::setProcModifiesVar(procname, v[i]);
 			}
 			else {
-				if (var.compare("=") != 0 && var.compare("+") != 0 && var.compare("-") != 0 && var.compare(";") != 0 && var.compare("*") != 0 && var.compare("(") != 0 && var.compare(")") != 0 && var.compare("}") != 0 && var.compare(" ") != 0 && var.compare("' '") != 0) {
+				if (var.compare("=") != 0 && var.compare("+") != 0 && var.compare("-") != 0 && var.compare(";") != 0 && var.compare("*") != 0 && var.compare("(") != 0 && var.compare(")") != 0 && var.compare("}") != 0 && var.compare(" ") != 0 && var.compare("' '") != 0 && var.compare("") != 0) {
 					VarTable::addDataToUses(var, stmtLine);
 					ProcTable::setProcUsesVar(procname, v[i]);
 				}

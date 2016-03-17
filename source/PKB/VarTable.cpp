@@ -257,6 +257,7 @@ bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
 		for (int i = 0; i < tempVector.size(); i++) {
 			if (tempVector[i] == numbValue) {
 				result = true;
+				break;
 			}
 			else {
 				result = false;
@@ -269,21 +270,24 @@ bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
 
 bool VarTable::isModifiesWhile(string firstPerimeter, string secondPerimeter) {
 	// firstPerimeter = statementNumber; secondPerimeter = variable
+	bool result;
 	int numbValue;
 	istringstream(firstPerimeter) >> numbValue;
 
 	if (!isContainsWhile(secondPerimeter)) {
-		return false;
+		result = false;
 	}
 	else {
 		vector<int> ans = whileTable.at(secondPerimeter);
 		for (int i = 0; i < ans.size(); i++) {
 			if (ans.at(i) == numbValue) {
-				return true;
+				result = true;
+				break;
 			}
 		}
-		return false;
+		result = false;
 	}
+	return result;
 }
 
 bool isContainsAssign(int stmtLine) {
@@ -498,11 +502,11 @@ bool is_number(const std::string& s)
 }
 
 void VarTable::printTables() {
-	Modifies::printMap01();
-	Uses::printMap02();
-	printVarLeft();
+	//Modifies::printMap01();
+	//Uses::printMap02();
+	//printVarLeft();
 	printVarRight();
-	printWhileLoop();
+	//printWhileLoop();
 }
 
 void printVarLeft() {
