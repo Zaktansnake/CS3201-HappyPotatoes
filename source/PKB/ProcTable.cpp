@@ -123,6 +123,10 @@ vector<string> ProcTable::getProcModifiesVar(string procName) {
 vector<string> ProcTable::getModifiesProc(string secondPerimeter) {
 	// secondPerimeter = variable
 	vector<string> ans = findPositionProcModifies(secondPerimeter);
+	if (!ans.empty()) {
+		sort(ans.begin(), ans.end());
+		ans.erase(unique(ans.begin(), ans.end()), ans.end());
+	}
 	return ans;
 }
 

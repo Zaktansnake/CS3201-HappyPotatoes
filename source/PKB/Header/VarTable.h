@@ -71,6 +71,9 @@ private:
 	// constructor
 	VarTable();
 
-	static vector<int> setStmt();
 	static vector<int> setAssign();
+
+	//----------------------- IFS Table -------------------------
+	static void addDataToIfsTable(string variable, int stmtNum);
+
 };

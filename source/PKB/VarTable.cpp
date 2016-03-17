@@ -21,13 +21,17 @@ vector<pair<int, string>> varTableLeft;
 vector<pair<int, string>> varTableRight;
 // (While) string -> variable name, vector<int> -> stmtLine
 map<string, vector<int>> whileTable;
-vector<int> stmtNum;
+// (Assign) int -> stmtLine, string -> line
+map<int, string> assignTable;
+// (Ifs) int -> stmtLine, string -> variable
+map<int, string> ifsTable;
+
+vector<int> allStmtNum;
 vector<int> assignNum;
 vector<int> whileStmtNum;
 vector<int> ifStmtNum;
-// Contains assign line number
-map<int, string> assignTable;
 
+void addDataToStmt();
 void addToVarTable(int position, string varName, int stmtLine);
 bool isContainsAssign(int stmtLine);
 bool isContainsWhile(string stmtLine);
@@ -61,11 +65,12 @@ int VarTable::assignTableSize() {
 
 void VarTable::updateModifiesUsesTables() {
 
+	addDataToStmt();
+
 	std::sort(varTableLeft.begin(), varTableLeft.end());
 	std::sort(varTableRight.begin(), varTableRight.end());
 
 	VarTable::setAssign();
-	VarTable::setStmt();
 
 	std::sort(assignNum.begin(), assignNum.end());
 	std::sort(whileStmtNum.begin(), whileStmtNum.end());
@@ -73,7 +78,7 @@ void VarTable::updateModifiesUsesTables() {
 }
 
 vector<int> VarTable::getAllStmt() {
-	return stmtNum;
+	return allStmtNum;
 }
 
 vector<int> VarTable::getAllWhile() {
@@ -84,6 +89,13 @@ vector<int> VarTable::getAllIfs() {
 	return ifStmtNum;
 }
 
+// add stmtLine into stmtNum
+void addDataToStmt() {
+	int tempNum = PKB::getStmtNum();
+	for (int i = 1; i <= tempNum; i++) {
+		allStmtNum.push_back(i);
+	}
+}
 
 // ---------------------- While table ---------------------------------
 void VarTable::addDataToWhileTable(string variable, int stmtNum) {
@@ -91,6 +103,11 @@ void VarTable::addDataToWhileTable(string variable, int stmtNum) {
 	whileStmtNum.push_back(stmtNum);
 }
 
+// ---------------------- IFS table ---------------------------------
+void VarTable::addDataToIfsTable(string variable, int stmtNum) {
+	ifsTable.insert(pair<int, string>(stmtNum, variable));
+	ifStmtNum.push_back(stmtNum);
+}
 
 //----------------------- Assign Table ---------------------------------
 void VarTable::addDataToAssignTable(string variable, int stmtNum) {
@@ -101,10 +118,7 @@ string VarTable::getAssignTable(int stmtNum) {
 	string temp = "";
 	std::map<int, string>::iterator it = assignTable.find(stmtNum);
 
-	if (it == assignTable.end()) {
-		// not found
-	}
-	else {
+	if (it != assignTable.end()) {
 		// found
 		temp = it->second;
 	}
@@ -455,17 +469,8 @@ vector<int> VarTable::getUsesTable(string varName) {
 
 void VarTable::addDataToUses(string varName, int stmtLine) {
 	addToVarTable(2, varName, stmtLine);
+	VarTable::addDataToIfsTable(varName, stmtLine);
 	Uses::addUsesTable(varName, stmtLine);
-}
-
-vector<int> VarTable::setStmt() {
-	int totalStmtNum = PKB::getStmtNum();
-
-	for (int i = 1; i <= totalStmtNum; i++) {
-		stmtNum.push_back(i);
-	}
-
-	return stmtNum;
 }
 
 vector<int> VarTable::setAssign() {
