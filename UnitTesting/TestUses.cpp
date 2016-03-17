@@ -6,7 +6,6 @@
 #include <string>
 
 #include "../source/PKB/Header/Parser.h"
-#include "../source/PKB/Header/PKB.h"
 #include "../source/PKB/Header/Uses.h"
 #include "../source/PKB/Header/VarTable.h"
 #include "../source/PKB/Header/ProcTable.h"

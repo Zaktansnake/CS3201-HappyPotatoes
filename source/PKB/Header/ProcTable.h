@@ -24,8 +24,8 @@ public:
 	static vector<string> getNextProcedureTransitive(string proc1);
 	static vector<string> getParentProcedure(string proc2);
 	static vector<string> getParentProcedureTransitive(string proc2);
-	bool isProcToProc(string proc1, string proc2);
-	bool isProcToProcTransitive(string proc1, string proc2);
+	static bool isProcToProc(string proc1, string proc2);
+	static bool isProcToProcTransitive(string proc1, string proc2);
 
 	// Modifies
 	static void setProcModifiesVar(string procName, string variable);

@@ -55,6 +55,7 @@ void ProcTable::updateProcCallsTables() {
 }
 
 static void updateProcWithModAndUses() {
+	//Calls::printCallsTable();
 	tempCallsSet = Calls::getCallsSet();
 
 	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
@@ -89,6 +90,7 @@ void ProcTable::addTableData(string procName) {
 void ProcTable::setCallsTable(string proc1, string proc2, int stmtLine) {
 	Calls::setCallProcedure(proc1, proc2, stmtLine);
 }
+
 
 
 // add Modifies variables based on procName
@@ -243,6 +245,113 @@ vector<string> findPositionProcUses(string procName) {
 	}
 }
 
+
+
+vector<string> ProcTable::getNextProcedure(string proc1) {
+	// (proc1, _)
+	vector<string> ans;
+	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
+		pair<string, string> tempSet = *itr;
+		string procA = tempSet.first; // parent
+		string procB = tempSet.second; // child
+		
+		if (procA.compare(proc1) == 0) {
+			ans.push_back(procB);
+		}
+	}
+
+	if (!ans.empty()) {
+		sort(ans.begin(), ans.end());
+	}
+
+	return ans;
+}
+
+vector<string> ProcTable::getNextProcedureTransitive(string proc1) {
+	vector<string> ans, temp;
+	vector<string> caller = getNextProcedure(proc1);
+	vector<string>::iterator itr, itrTemp;
+	for (itr = caller.begin(); itr != caller.end(); itr++) {
+		ans.push_back(*itr);
+		temp = getNextProcedureTransitive(*itr);
+		for (itrTemp = temp.begin(); itrTemp != temp.end(); itrTemp++) {
+			ans.push_back(*itrTemp);
+		}
+	}
+
+	if (!ans.empty()) {
+		sort(ans.begin(), ans.end());
+		ans.erase(unique(ans.begin(), ans.end()), ans.end());
+	}
+
+	return ans;
+}
+
+vector<string> ProcTable::getParentProcedure(string proc2) {
+	// (_, proc2)
+	vector<string> ans;
+	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
+		pair<string, string> tempSet = *itr;
+		string procA = tempSet.first; // parent
+		string procB = tempSet.second; // child
+
+		if (procB.compare(proc2) == 0) {
+			ans.push_back(procA);
+		}
+	}
+
+	if (!ans.empty()) {
+		sort(ans.begin(), ans.end());
+	}
+
+	return ans;
+}
+
+vector<string> ProcTable::getParentProcedureTransitive(string proc2) {
+	vector<string> ans, temp;
+	vector<string> caller = getParentProcedure(proc2);
+	vector<string>::iterator itr, itrTemp;
+	for (itr = caller.begin(); itr != caller.end(); itr++) {
+		ans.push_back(*itr);
+		temp = getParentProcedureTransitive(*itr);
+		for (itrTemp = temp.begin(); itrTemp != temp.end(); itrTemp++) {
+			ans.push_back(*itrTemp);
+		}
+	}
+
+	if (!ans.empty()) {
+		sort(ans.begin(), ans.end());
+		ans.erase(unique(ans.begin(), ans.end()), ans.end());
+	}
+
+	return ans;
+}
+
+bool ProcTable::isProcToProc(string proc1, string proc2) {
+	bool result = false;
+	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
+		pair<string, string> tempSet = *itr;
+		string procA = tempSet.first; // parent
+		string procB = tempSet.second; // child
+
+		if (procA.compare(proc1) == 0 && procB.compare(proc2) == 0) {
+			result = true;
+			break;
+		}
+	}
+	return result;
+}
+
+bool ProcTable::isProcToProcTransitive(string proc1, string proc2) {
+	vector<string> callee = getNextProcedureTransitive(proc1);
+	vector<string>::iterator it;
+	for (it = callee.begin(); it != callee.end(); it++) {
+		if (proc2.compare(*it) == 0) { 
+			return true; 
+		}
+	}
+	return false;
+}
 
 
 
