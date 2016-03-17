@@ -46,8 +46,22 @@ namespace UnitTesting
 
 			Assert::AreEqual(expectedResult, result);
 
+			result = "";
+			// Select v such that Modifies("X1x1", v) => none
+			modifiesString = ProcTable::getProcModifiesVar("X1x1");
+			expectedResult = "";
+			Assert::AreEqual(expectedResult, result);
 
+			result = "";
+			// Select p such that Modifies(p,"x") => ABC,Second
+			modifiesString = ProcTable::getProcModifiesVar("ABC");
+			expectedResult = "ABC,Second,";
+			for (std::vector<string>::iterator it = modifiesString.begin(); it != modifiesString.end(); ++it) {
+				result.append(*it);
+				result.append(",");
+			}
 
+			Assert::AreEqual(expectedResult, result);
 		}
 	};
 }

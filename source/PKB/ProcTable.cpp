@@ -22,16 +22,21 @@ template <> struct hash<std::pair<string, string>> {
 	}
 };
 
-map<string, int> ProcMap;  //procName, index of the procName in the map
-vector<string> ProcIndex;  // store the index of map
-map<string, vector<string>> ProcWithModifies;
-map<string, vector<string>> ProcWithUses;
-std::vector<std::tuple<string, string, int>> tempCallsTable;
-std::unordered_set< std::pair<string, string>> tempCallsSet;
+map<string, int> ProcMap;  // procName, index of the procName in the map
+vector<string> ProcIndex;  // store the procedures
+map<string, vector<string>> ProcWithModifies; // string -> procedure, vector<string> -> list of variables
+map<string, vector<string>> ProcWithUses; // string -> procedure, vector<string> -> list of variables
+map<string, vector<string>> ModifiesWithProc; // string -> variable, vector<string> -> procedure
+map<string, vector<string>> UsesWithProc; // string -> variable, vector<string> -> procedure
+std::vector<std::tuple<string, string, int>> tempCallsTable;  // string -> mainProcedure, string -> procedure, int -> stmtLine
+std::unordered_set< std::pair<string, string>> tempCallsSet; // string -> mainProcedure, string -> procedure
+
+static void updateProcWithModAndUses();
+vector<string> findPositionProcModifies(string variable); // return a list of procedures based on variable
+vector<string> findPositionProcUses(string procName);
 
 Calls call;
 
-static void updateProcWithModAndUses();
 
 ProcTable::ProcTable() {
   
@@ -39,6 +44,10 @@ ProcTable::ProcTable() {
 
 ProcTable::~ProcTable() {
 
+}
+
+vector<string> ProcTable::getAllProcedures() {
+	return ProcIndex;
 }
 
 void ProcTable::updateProcCallsTables() {
@@ -81,9 +90,11 @@ void ProcTable::setCallsTable(string proc1, string proc2, int stmtLine) {
 	Calls::setCallProcedure(proc1, proc2, stmtLine);
 }
 
+
 // add Modifies variables based on procName
-void ProcTable::addProcModifiesVar(string procName, string variable) {
-	ProcWithModifies[procName].push_back(variable);
+void ProcTable::setProcModifiesVar(string procedure, string variable) {
+	ProcWithModifies[procedure].push_back(variable);
+	ModifiesWithProc[variable].push_back(procedure);
 }
 
 vector<string> ProcTable::getProcModifiesVar(string procName) {
@@ -109,11 +120,52 @@ vector<string> ProcTable::getProcModifiesVar(string procName) {
 	return ans;
 }
 
+vector<string> ProcTable::getModifiesProc(string secondPerimeter) {
+	// secondPerimeter = variable
+	vector<string> ans = findPositionProcModifies(secondPerimeter);
+	return ans;
+}
+
+bool ProcTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = procedure; secondPerimeter = variable
+	bool result;
+	vector<string> tempVector = ProcTable::getProcModifiesVar(firstPerimeter);
+
+	if (tempVector.size() == 0) {
+		result = false;
+	}
+	else {
+		for (int i = 0; i < tempVector.size(); i++) {
+			if (tempVector[i].compare(secondPerimeter) == 0) {
+				result = true;
+			}
+			else {
+				result = false;
+			}
+		}
+	}
+	return result;
+}
+
+// private method : return a list of procedures
+vector<string> findPositionProcModifies(string variable) {
+	map<string, vector<string>>::iterator i = ModifiesWithProc.find(variable);
+
+	if (i == ModifiesWithProc.end()) {
+		vector<string> ans;
+		return ans;
+	}
+	else {
+		return i->second;
+	}
+}
+
 
 
 // add Uses variables based on procName
-void ProcTable::addProcUsesVar(string procName, string variable) {
-	ProcWithUses[procName].push_back(variable);
+void ProcTable::setProcUsesVar(string procedure, string variable) {
+	ProcWithUses[procedure].push_back(variable);
+	UsesWithProc[variable].push_back(procedure);
 }
 
 vector<string> ProcTable::getProcUsesVar(string procName) {
@@ -139,6 +191,47 @@ vector<string> ProcTable::getProcUsesVar(string procName) {
 	return ans;
 
 
+}
+
+vector<string> ProcTable::getUsesProc(string secondPerimeter) {
+	// secondPerimeter = variable
+	vector<string> ans = findPositionProcUses(secondPerimeter);
+	return ans;
+}
+
+bool ProcTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
+	// firstPerimeter = procedure; secondPerimeter = variable
+	bool result;
+	vector<string> tempVector = ProcTable::getProcUsesVar(secondPerimeter);
+
+	if (tempVector.size() == 0) {
+		result = false;
+	}
+	else {
+		for (int i = 0; i < tempVector.size(); i++) {
+			if (tempVector[i].compare(firstPerimeter) == 0) {
+				result = true;
+			}
+			else {
+				result = false;
+			}
+		}
+	}
+
+	return result;
+}
+
+// private method : return a list of procedures
+vector<string> findPositionProcUses(string procName) {
+	map<string, vector<string>>::iterator i = UsesWithProc.find(procName);
+
+	if (i == UsesWithProc.end()) {
+		vector<string> ans;
+		return ans;
+	}
+	else {
+		return i->second;
+	}
 }
 
 

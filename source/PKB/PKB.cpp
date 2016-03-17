@@ -247,14 +247,12 @@ void assign() {
 		else {
 			if (i == 0) {
 				VarTable::addDataToModifies(var, stmtLine);
-				VarTable::addModifiesProcTable(procname, v[i]);
-				ProcTable::addProcModifiesVar(procname, v[i]);
+				ProcTable::setProcModifiesVar(procname, v[i]);
 			}
 			else {
 				if (var.compare("=") != 0 && var.compare("+") != 0 && var.compare("-") != 0 && var.compare(";") != 0 && var.compare("*") != 0 && var.compare("(") != 0 && var.compare(")") != 0 && var.compare("}") != 0 && var.compare(" ") != 0 && var.compare("' '") != 0) {
 					VarTable::addDataToUses(var, stmtLine);
-					VarTable::addUsesProcTable(procname, v[i]);
-					ProcTable::addProcUsesVar(procname, v[i]);
+					ProcTable::setProcUsesVar(procname, v[i]);
 				}
 			}
 		}

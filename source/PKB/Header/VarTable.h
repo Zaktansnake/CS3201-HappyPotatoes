@@ -43,41 +43,25 @@ public:
 	static string VarTable::getAssignTable(int stmtNum);
 
 	//----------------------- Modifies -------------------------------
-	// get ModifiesTable
-	static std::vector<int> getModifiesTable(string varName);
+	static std::vector<int> getModifiesTable(string varName); // get ModifiesTable
+	static void addDataToModifies(string varName, int stmtLine); // add ModifiesTable
 
-	// add ModifiesTable
-	static void addDataToModifies(string varName, int stmtLine);
-
-	// add ModifiesProcTable
-	static void addModifiesProcTable(string varName, string procedure);
-
-	static vector<string> getModifiesProc(string secondPerimeter);
 	static vector<string> getModifiesVariable(string firstPerimeter);
 	static vector<int>  getModifiesAssign(string secondPerimeter);
 	static vector<int>	getModifiesWhile(string secondPerimeter);
 	static vector<int> getModifiesStmt(string firstPerimeter);
-	static bool isModifiesProc(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesAssign(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesWhile(string firstPerimeter, string secondPerimeter);
 
-	//---------------------------- Uses -------------------------
-	// get UsesTable
-	static std::vector<int> getUsesTable(string varName);
+	// Uses
+	static std::vector<int> getUsesTable(string varName);  // get UsesTable
+	static void addDataToUses(string varName, int stmtLine);  // add UsesTable
 
-	// add UsesTable
-	static void addDataToUses(string varName, int stmtLine);
-
-	// add UsesProcedureTable
-	static void addUsesProcTable(string procedure, string varName);
-
-	static vector<string> getUsesProc(string secondPerimeter);
 	static vector<string> getUsesVariable(string firstPerimeter);
 	static vector<int> getUsesAssig(string secondPerimeter);
 	static vector<int> getUsesStmt(string secondPerimeter);
 	static vector<int> getUsesWhile(string secondPerimeter);
-	static bool isUsesProc(string firstPerimeter, string secondPerimeter);
 	static bool isUsesAssign(string firstPerimeter, string secondPerimeter);
 	static bool isUsesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isUsesWhile(string firstPerimeter, string secondPerimeter);

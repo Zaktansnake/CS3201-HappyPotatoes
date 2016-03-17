@@ -151,16 +151,6 @@ void VarTable::addDataToModifies(string varName, int stmtLine) {
 	Modifies::addModifiesTable(varName, stmtLine);
 }
 
-void VarTable::addModifiesProcTable(string varName, string procedure) {
-	return Modifies::addModifiesProcedureTable(varName, procedure);
-}
-
-vector<string> VarTable::getModifiesProc(string secondPerimeter) {
-	// secondPerimeter = variable
-	vector<string> ans = Modifies::getModifiesProcTable(secondPerimeter);
-	return ans;
-}
-
 vector<string> VarTable::getModifiesVariable(string firstPerimeter) {
 	// firstPerimeter = stmtNum
 	int temp = atoi(firstPerimeter.c_str());
@@ -206,27 +196,6 @@ vector<int> VarTable::getModifiesWhile(string secondPerimeter) {
 	set_intersection(tempAns.begin(), tempAns.end(), whileStmtNum.begin(), whileStmtNum.end(), back_inserter(ans));
 
 	return ans;
-}
-
-bool VarTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
-	// firstPerimeter = procedure; secondPerimeter = variable
-	bool result;
-	vector<string> tempVector = Modifies::getModifiesProcTable(firstPerimeter);
-
-	if (tempVector.size() == 0) {
-		result = false;
-	}
-	else {
-		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i].compare(secondPerimeter) == 0) {
-				result = true;
-			}
-			else {
-				result = false;
-			}
-		}
-	}
-	return result;
 }
 
 bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
@@ -352,10 +321,6 @@ vector<string> VarTable::findVariableRight(int stmtLine1, int stmtLine2) {
 	return ans;
 }
 
-vector<string> VarTable::getUsesProc(string varName) {
-	return Uses::getUsesProcTable(varName);
-}
-
 vector<string> VarTable::getUsesVariable(string firstPerimeter) {
 	// firstPerimeter = stmtNum
 	int stmtNum = atoi(firstPerimeter.c_str());
@@ -407,28 +372,6 @@ vector<int> VarTable::getUsesWhile(string stmt1) {
 		ans = whileTable.at(stmt1);
 	}
 	return ans;
-}
-
-bool VarTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
-	// firstPerimeter = procedure; secondPerimeter = variable
-	bool result;
-	vector<string> tempVector = Uses::getUsesProcTable(secondPerimeter);
-
-	if (tempVector.size() == 0) {
-		result = false;
-	}
-	else {
-		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i].compare(firstPerimeter) == 0) {
-				result = true;
-			}
-			else {
-				result = false;
-			}
-		}
-	}
-
-	return result;
 }
 
 bool VarTable::isUsesAssign(string firstPerimeter, string secondPerimeter) {
@@ -514,11 +457,6 @@ void VarTable::addDataToUses(string varName, int stmtLine) {
 	addToVarTable(2, varName, stmtLine);
 	Uses::addUsesTable(varName, stmtLine);
 }
-
-void VarTable::addUsesProcTable(string varName, string procedure) {
-	return Uses::addUsesProcedureTable(varName, procedure);
-}
-
 
 vector<int> VarTable::setStmt() {
 	int totalStmtNum = PKB::getStmtNum();
