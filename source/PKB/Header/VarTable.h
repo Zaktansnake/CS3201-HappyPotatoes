@@ -66,6 +66,7 @@ public:
 	static bool isUsesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isUsesWhile(string firstPerimeter, string secondPerimeter);
 
+	static bool is_number(const std::string& s);
 
 private:
 	// constructor

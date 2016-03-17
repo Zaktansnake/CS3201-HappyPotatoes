@@ -175,6 +175,7 @@ static void stmt(int num) {
 	case 0: // if
 		if (v[2].compare("then") == 0 && (v[3].compare("{")) == 0) {
 			VarTable::addDataToUses(v[1], stmtLine);
+			ProcTable::setProcUsesVar(procname, v[1]);
 			bracstack.push(make_pair("{", stmtLine));
 		}
 		else {
@@ -198,6 +199,7 @@ static void stmt(int num) {
 	case 2: // while
 		if (v[2].compare("{") == 0) {
 			VarTable::addDataToUses(v[1], stmtLine);
+			ProcTable::setProcUsesVar(procname, v[1]);
 			bracstack.push(make_pair("{", stmtLine));
 			VarTable::addDataToWhileTable(v[1], stmtLine);
 		}
@@ -270,6 +272,7 @@ void PKB::updateTables() {
 	// update uses table one more time
 	VarTable::updateModifiesUsesTables();
 	ProcTable::updateProcCallsTables();
+
 	//VarTable::printTables();
 }
 

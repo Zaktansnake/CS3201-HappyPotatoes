@@ -20,7 +20,6 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(TestModifies)
 		{
-
 			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source04.txt");
 
 			string result, expectedResult = "";
@@ -44,12 +43,14 @@ namespace UnitTesting
 				result.append(*it);
 				result.append(",");
 			}
-
 			Assert::AreEqual(expectedResult, result);
 
 			result = "";
 			// Select v such that Modifies("X1x1", v) => none
 			modifiesString = ProcTable::getProcModifiesVar("X1x1");
+			if (modifiesString.empty()) {
+				result = "";
+			}
 			expectedResult = "";
 			Assert::AreEqual(expectedResult, result);
 
@@ -61,7 +62,6 @@ namespace UnitTesting
 				result.append(*it);
 				result.append(",");
 			}
-
 			Assert::AreEqual(expectedResult, result);
 
 			result = "";
@@ -90,6 +90,14 @@ namespace UnitTesting
 
 			// Select BOOLEAN such that Modifies(23,"x") => false
 			resultBoolean = VarTable::isModifiesWhile("23", "x");
+			Assert::IsFalse(resultBoolean);
+
+			// Select BOOLEAN such that Modifies("Init","x1") => true
+			resultBoolean =	ProcTable::isModifiesProc("Init", "x1");
+			Assert::IsTrue(resultBoolean);
+
+			// Select BOOLEAN such that Modifies("Init","x1") => false
+			resultBoolean = ProcTable::isModifiesProc("Init", "a");
 			Assert::IsFalse(resultBoolean);
 
 			result = "";

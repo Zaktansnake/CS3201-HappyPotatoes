@@ -35,7 +35,6 @@ void addDataToStmt();
 void addToVarTable(int position, string varName, int stmtLine);
 bool isContainsAssign(int stmtLine);
 bool isContainsWhile(string stmtLine);
-bool is_number(const std::string& s);
 
 void printVarLeft();
 void printVarRight();
@@ -496,7 +495,7 @@ void addToVarTable(int position, string varName, int stmtLine) {
 }
 
 // check string is a number
-bool is_number(const std::string& s)
+bool VarTable::is_number(const std::string& s)
 {
 	return !s.empty() && std::find_if(s.begin(),
 		s.end(), [](char c) { return !::isdigit(c); }) == s.end();
@@ -506,7 +505,7 @@ void VarTable::printTables() {
 	//Modifies::printMap01();
 	//Uses::printMap02();
 	//printVarLeft();
-	printVarRight();
+	//printVarRight();
 	//printWhileLoop();
 }
 

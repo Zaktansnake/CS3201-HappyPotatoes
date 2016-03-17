@@ -98,7 +98,6 @@ void ProcTable::setProcModifiesVar(string procedure, string variable) {
 }
 
 vector<string> ProcTable::getProcModifiesVar(string procName) {
-	//Calls::printCallsTable();
 	vector<string> ans;
 	auto it = ProcWithModifies.find(procName);
 
@@ -142,6 +141,7 @@ bool ProcTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
 		for (int i = 0; i < tempVector.size(); i++) {
 			if (tempVector[i].compare(secondPerimeter) == 0) {
 				result = true;
+				break;
 			}
 			else {
 				result = false;
@@ -168,8 +168,10 @@ vector<string> findPositionProcModifies(string variable) {
 
 // add Uses variables based on procName
 void ProcTable::setProcUsesVar(string procedure, string variable) {
-	ProcWithUses[procedure].push_back(variable);
-	UsesWithProc[variable].push_back(procedure);
+	if (!VarTable::is_number(variable)) {
+		ProcWithUses[procedure].push_back(variable);
+		UsesWithProc[variable].push_back(procedure);
+	}
 }
 
 vector<string> ProcTable::getProcUsesVar(string procName) {
@@ -193,28 +195,31 @@ vector<string> ProcTable::getProcUsesVar(string procName) {
 	}
 
 	return ans;
-
-
 }
 
 vector<string> ProcTable::getUsesProc(string secondPerimeter) {
 	// secondPerimeter = variable
 	vector<string> ans = findPositionProcUses(secondPerimeter);
+	if (!ans.empty()) {
+		sort(ans.begin(), ans.end());
+		ans.erase(unique(ans.begin(), ans.end()), ans.end());
+	}
 	return ans;
 }
 
 bool ProcTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
 	// firstPerimeter = procedure; secondPerimeter = variable
 	bool result;
-	vector<string> tempVector = ProcTable::getProcUsesVar(secondPerimeter);
+	vector<string> tempVector = ProcTable::getProcUsesVar(firstPerimeter);
 
 	if (tempVector.size() == 0) {
 		result = false;
 	}
 	else {
 		for (int i = 0; i < tempVector.size(); i++) {
-			if (tempVector[i].compare(firstPerimeter) == 0) {
+			if (tempVector[i].compare(secondPerimeter) == 0) {
 				result = true;
+				break;
 			}
 			else {
 				result = false;
