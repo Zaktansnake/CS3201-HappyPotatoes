@@ -437,6 +437,7 @@ bool VarTable::isUsesStmt(string firstPerimeter, string secondPerimeter) {
 		for (int i = 0; i < tempVector.size(); i++) {
 			if (tempVector[i] == numbValue) {
 				result = true;
+				break;
 			}
 			else {
 				result = false;
