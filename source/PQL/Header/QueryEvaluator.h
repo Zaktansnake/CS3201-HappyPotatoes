@@ -1,11 +1,12 @@
-#ifndef QueryEvaluator_h
-#define QueryEvaluator_h
+
 #include <string>
 #include <vector>
-
+#include "ParseResult.h"
 class QueryEvaluator
 {
 public:
+
+	vector<string> startEvaluator(ParseResult mustPr);
 
 	// constructors
 	QueryEvaluator();
@@ -26,4 +27,3 @@ protected:
 	std::vector<std::string> finalStringVector;
 };
 
-#endif

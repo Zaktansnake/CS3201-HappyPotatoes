@@ -120,6 +120,9 @@
     <ClInclude Include="ReturnResults.h">
       <Filter>Header Files\PQL</Filter>
     </ClInclude>
+    <ClInclude Include="ConditionResults.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\PQL\Clause.cpp">
@@ -190,6 +193,9 @@
     </ClCompile>
     <ClCompile Include="..\source\PKB\Calls.cpp">
       <Filter>Source Files\PKB</Filter>
+    </ClCompile>
+    <ClCompile Include="ConditionResults.cpp">
+      <Filter>Source Files\PQL</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

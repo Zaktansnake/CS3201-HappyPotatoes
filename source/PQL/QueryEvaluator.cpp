@@ -9,9 +9,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <ctype.h>
+#include "Header\Clause.h"
+#include "C:\Users\Jayden Shen\Documents\Visual Studio 2015\Projects\CS3201-HappyPotatoes\SPA\ConditionResults.h"
+
 
 using namespace std;
-ParseResult pr;
+
 
 void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector) {
 
@@ -82,8 +85,6 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
 
 	assessParseResult(mustPr);
-
-
 }
 
 QueryEvaluator::QueryEvaluator()
