@@ -343,7 +343,7 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 	}
 	if (parameter.at(1) == "proc") {
 
-		ProcedureClausesQueryResults.push_back(VarTable::getUsesProc(removeDoubleQuote(secondPerimeter)));
+		//ProcedureClausesQueryResults.push_back(VarTable::getUsesProc(removeDoubleQuote(secondPerimeter)));
 	}
 	if (parameter.at(1) == "assign") {
 
@@ -359,8 +359,8 @@ void UsesResults(std::vector<std::string> SelectParameterVector, Parameter1 firs
 	}
 	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "pv")) {
 
-		BooleanClausesQueryResults.push_back(VarTable::isUsesProc(removeDoubleQuote(firstPerimeter),
-			removeDoubleQuote(secondPerimeter)));
+		//BooleanClausesQueryResults.push_back(VarTable::isUsesProc(removeDoubleQuote(firstPerimeter),
+		//	removeDoubleQuote(secondPerimeter)));
 	}
 	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "av")) {
 
@@ -506,7 +506,7 @@ void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 
 	}
 	if (parameter.at(1) == "proc") {
 
-		ProcedureClausesQueryResults.push_back(VarTable::getModifiesProc(removeDoubleQuote(secondPerimeter)));
+		//ProcedureClausesQueryResults.push_back(VarTable::getModifiesProc(removeDoubleQuote(secondPerimeter)));
 	}
 	if (parameter.at(1) == "assign") {
 
@@ -522,8 +522,8 @@ void ModifiesResults(std::vector<std::string> SelectParameterVector, Parameter1 
 	}
 	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "pv")) {
 
-		BooleanClausesQueryResults.push_back(VarTable::isModifiesProc(removeDoubleQuote(firstPerimeter),
-			removeDoubleQuote(secondPerimeter)));
+		//BooleanClausesQueryResults.push_back(VarTable::isModifiesProc(removeDoubleQuote(firstPerimeter),
+		//	removeDoubleQuote(secondPerimeter)));
 	}
 	if ((parameter.at(1) == "BOOLEAN") && (firstSecondPerimeterType == "av")) {
 

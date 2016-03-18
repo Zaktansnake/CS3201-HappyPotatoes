@@ -26,4 +26,6 @@ public:
 
 private:
 
+	static void updateTables();
+
 };

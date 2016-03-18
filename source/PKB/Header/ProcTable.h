@@ -3,8 +3,6 @@
 #include <map>
 #include <string>
 #include <vector>
-#include "AST.h"
-#include "Calls.h"
 
 using namespace std;
 
@@ -14,36 +12,45 @@ class ProcTable
 {
 public:
 	// constructors
-//	ProcTable();
 	~ProcTable();
 
-    // get reference to procedure table
-	static ProcTable* getProcTable();
+	static vector<string> getAllProcedures();
+	static void updateProcCallsTables();
 
-	//add data
-	static void addTableData(string procName, int stmtLine);
+	static void addTableData(string procName);
+	static void setCallsTable(string proc1, string proc2, int stmtLine);
 
-	// get data
-	int getProcIndex (string key);
-	std::vector<string> getCallAns(string procName);
-	int getProgLine (string procName);
-	int findPosition (string ProcName);
-	string getProcName (int index);
-	//TNode* getProcNode (int index);
+	static vector<string> getNextProcedure(string proc1);
+	static vector<string> getNextProcedureTransitive(string proc1);
+	static vector<string> getParentProcedure(string proc2);
+	static vector<string> getParentProcedureTransitive(string proc2);
+	static bool isProcToProc(string proc1, string proc2);
+	static bool isProcToProcTransitive(string proc1, string proc2);
 
-	// get the size of proctable
-	int getSize();
+	// Modifies
+	static void setProcModifiesVar(string procName, string variable);
 
-	// delete data
-	void RemoveProcData();
+	static vector<string> getProcModifiesVar(string procName);
+	static vector<string> getModifiesProc(string secondPerimeter);
 
-	// check if the table contains procedure
-	static bool isContains (string procName);
+	static bool isModifiesProc(string firstPerimeter, string secondPerimeter);
 
-private: 
-    static std::map<string, int> ProcMap;   //procName, index of the procName in the map
-	static std::vector<string> ProcIndex;   // store the index of map
-	
+
+	// Uses
+	static void setProcUsesVar(string procName, string variable);
+
+	static vector<string> getProcUsesVar(string procName);
+	static vector<string> getUsesProc(string secondPerimeter);
+
+	static bool isUsesProc(string firstPerimeter, string secondPerimeter);
+
+
+	int getProcTableSize();	// get the size of proctable
+
+	int findPosition(string ProcName);
+	static bool isContains (string procName);  // check if the table contains proceduce
+
+private:   
 	// constructor
 	ProcTable();
 };

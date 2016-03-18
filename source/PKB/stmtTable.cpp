@@ -37,6 +37,8 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 	if (stmtLine.compare("{") != 0) {
 		bool isCon = isCondition(stmtLine);
 		loopFlag = false;
+		ifFlag = false;
+		elseFlag = false;
 		
 		if (isCon) {
 			switch (condition) {
@@ -49,6 +51,7 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 				flagForNextLevel = false;
 				ifFlag = false;
 				elseFlag = true;
+				stmtNo --;
 				break;
 			case WHILE:
 				flagForNextLevel = true;
@@ -59,10 +62,9 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 		}
 
 		endLoopNo = std::count(stmtLine.begin(), stmtLine.end(), '}');
-		if (stmtLine.find("else ") != string::npos) {
-			addFollowTable(stmtLine, stmtNo, nestLevel);
-			addParentTable(stmtLine, stmtNo, nestLevel);
-		}
+		addFollowTable(stmtLine, stmtNo, nestLevel);
+		addParentTable(stmtLine, stmtNo, nestLevel);
+
 
 		if (flagForNextLevel == true) {
 			nestLevel++;
@@ -70,7 +72,7 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 		}
 
 		// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
-		if (endLoopNo > 0) {
+		if (endLoopNo > 0 && elseFlag != true) {
 			nestLevel = nestLevel - endLoopNo;
 		}
 	}
