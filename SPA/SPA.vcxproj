@@ -32,6 +32,17 @@
     <ClInclude Include="..\source\PQL\Header\Pattern.h" />
     <ClInclude Include="..\source\PQL\Header\QueriesAnswerStorage.h" />
     <ClInclude Include="..\source\PQL\Header\QueryEvaluator.h" />
+    <ClInclude Include="FollowsResult.h" />
+    <ClInclude Include="CallsResults.h" />
+    <ClInclude Include="FollowsStarResult.h" />
+    <ClInclude Include="ConditionResults.h" />
+    <ClInclude Include="ReturnResults.h" />
+    <ClInclude Include="UsesResults.h" />
+    <ClInclude Include="ParentsStarResults.h" />
+    <ClInclude Include="NextResults.h" />
+    <ClInclude Include="ModifiesResults.h" />
+    <ClInclude Include="PatternResults.h" />
+    <ClInclude Include="ParentsResult.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\Main.cpp" />
@@ -57,6 +68,7 @@
     <ClCompile Include="..\source\PQL\Pattern.cpp" />
     <ClCompile Include="..\source\PQL\QueriesAnswerStorage.cpp" />
     <ClCompile Include="..\source\PQL\QueryEvaluator.cpp" />
+    <ClCompile Include="ConditionResults.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>
