@@ -35,6 +35,7 @@
     <ClInclude Include="FollowsResult.h" />
     <ClInclude Include="CallsResults.h" />
     <ClInclude Include="FollowsStarResult.h" />
+    <ClInclude Include="ReturnResults.h" />
     <ClInclude Include="UsesResults.h" />
     <ClInclude Include="ParentsStarResults.h" />
     <ClInclude Include="NextResults.h" />
