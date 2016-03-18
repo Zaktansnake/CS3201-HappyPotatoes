@@ -33,6 +33,14 @@
     <ClInclude Include="..\source\PQL\Header\QueriesAnswerStorage.h" />
     <ClInclude Include="..\source\PQL\Header\QueryEvaluator.h" />
     <ClInclude Include="FollowsResult.h" />
+    <ClInclude Include="CallsResults.h" />
+    <ClInclude Include="FollowsStarResult.h" />
+    <ClInclude Include="UsesResults.h" />
+    <ClInclude Include="ParentsStarResults.h" />
+    <ClInclude Include="NextResults.h" />
+    <ClInclude Include="ModifiesResults.h" />
+    <ClInclude Include="PatternResults.h" />
+    <ClInclude Include="ParentsResult.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\Main.cpp" />
