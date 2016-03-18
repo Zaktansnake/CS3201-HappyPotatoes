@@ -13,7 +13,7 @@ public:
 	Parent();
 	~Parent();
 
-	void setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLopp);
+	void setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLopp, bool ifFlag, bool elseFlag);
 	std::vector<int> getParent(int stmtNo);
 	std::vector<int> getChild(int stmtNo);
 

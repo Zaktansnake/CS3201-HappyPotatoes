@@ -126,6 +126,7 @@ void findMethod(string file_contents) {
 	}
 	else if (word.compare("}") == 0) {
 		stmtLine--;
+		stmtTable::addStmtTable(str, stmtLine);
 		vector<string> ans;
 		detectRightBracket(0, ans);
 		bracstack.pop();
@@ -203,11 +204,11 @@ static void stmt(int num) {
 
 		break;
 	case 1: // else
+		stmtTable::addStmtTable(str, stmtLine);
 		stmtLine--;
 
 		if (v[1].compare("{") != 0) {
 			cout << "Error: Structure. ({)" << endl;
-			stmtTable::addStmtTable(str, stmtLine);
 			PKB::abort();
 		}
 		else {

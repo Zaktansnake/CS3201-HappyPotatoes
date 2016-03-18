@@ -12,7 +12,6 @@ std::vector<std::vector<int> > levelList; //store stmtNo based on nesting level 
 std::vector<std::vector<int> > ansList; //store ans for stmtNo 1 to end
 std::vector<int> stmtRecord; // record all the nesting level in order
 std::vector<int> stmtListTable;
-std::stack<int> loopStack;
 std::map<int,string> stmtString;
 Parent pa;
 
@@ -25,18 +24,23 @@ Follows::Follows() {
 Follows::~Follows() {
 }
 
-void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo) {
+// if ifFlag = true and elseFlag = true --> in else statement
+// if ifFlag = true and elseFlag = flase --> in if then statement
+void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo, bool ifFlag, bool elseFlag) {
 	stmtRecord.push_back(nestLvl);
 	std::vector<int> temp;
-	if (stmtLine.compare("}") != 0) {
-		stmtString.insert(std::pair<int,string>(stmtNo,stmtLine));
+	if (stmtLine.compare("}") != 0 && stmtLine.size() != endLoopNo) {
+		if (elseFlag == false) {    // else { is not count as one stmt line
+          stmtString.insert(std::pair<int,string>(stmtNo,stmtLine));
+		}
+        // begin of table, levelList is empty
 		if (levelList.empty()) {
 			temp.push_back(stmtNo);
 			levelList.push_back(temp);
 			temp.clear();
 		}
-		else {
-			if (levelList.size() <= nestLvl) {
+		else {  // if the level list is not empty
+			if (levelList.size() <= nestLvl) {    // if levellist size is smaller than nestlevel, means, this is new level
 				temp.push_back(stmtNo);
 				levelList.push_back(temp);
 
@@ -234,16 +238,24 @@ bool isSameStmtList(int s1, int s2) {
 	std::vector<int> parentS2;
 	parentS1 = pa.getParent(s1);
 	parentS2 = pa.getParent(s2);
-	if (parentS1.size() == 0 && parentS2.size() == 0) {
-		return true;
-	}
-	else if (parentS1.size() != parentS2.size()) {
+	bool result = false;
+	if (s1 == s2) {
 		return false;
 	}
-	else if (parentS1.at(0) == parentS2.at(0)) {
+	if (parentS1.at(0) == parentS2.at(0)) {
 		return true;
 	}
-	else {
-		return false;
-	}
+
+//	if (parentS1.size() == 0 && parentS2.size() == 0) {
+//	    return true;
+//	}
+//	else if (parentS1.size() != parentS2.size()) {
+//		return false;
+//	}
+//	else if (parentS1.at(0) == parentS2.at(0)) {
+//		return true;
+//	}
+//	else {
+//		return false;
+//	}
 }

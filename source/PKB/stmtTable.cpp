@@ -11,7 +11,8 @@ using namespace std;
 static int nestLevel = 0;
 bool flagForNextLevel = false;
 bool loopFlag;
-bool elseFlag;
+bool elseFlag = false;
+bool ifFlag = false;
 int endLoopNo = 0;
 bool isFirstElse = false;  // the first stmtNo after else do not have follow
 std::vector<int> stmtLst;
@@ -36,15 +37,17 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 	if (stmtLine.compare("{") != 0) {
 		bool isCon = isCondition(stmtLine);
 		loopFlag = false;
-		elseFlag = false;
-
+		
 		if (isCon) {
 			switch (condition) {
 			case IF:
 				flagForNextLevel = true;
+				ifFlag = true;
+				elseFlag = false;
 				break;
 			case ELSE:
 				flagForNextLevel = false;
+				ifFlag = false;
 				elseFlag = true;
 				break;
 			case WHILE:
@@ -56,8 +59,10 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 		}
 
 		endLoopNo = std::count(stmtLine.begin(), stmtLine.end(), '}');
-		addFollowTable(stmtLine, stmtNo, nestLevel);
-		addParentTable(stmtLine, stmtNo, nestLevel);
+		if (stmtLine.find("else ") != string::npos) {
+			addFollowTable(stmtLine, stmtNo, nestLevel);
+			addParentTable(stmtLine, stmtNo, nestLevel);
+		}
 
 		if (flagForNextLevel == true) {
 			nestLevel++;
@@ -72,10 +77,10 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 }
 
 void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
-     follow.setFollow(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo);
+     follow.setFollow(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, ifFlag, elseFlag);
 }
 void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
-	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo);
+	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, ifFlag, elseFlag);
 }
 //-------------------------------------get answer of follow
 std::vector<int> stmtTable::getFollow(int stmtNo) {

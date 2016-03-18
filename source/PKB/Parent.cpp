@@ -23,16 +23,15 @@ Parent::Parent() {
 Parent::~Parent() {
 }
 
-void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop) {
+void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop, bool ifFlag, bool elseFlag) {
 	// check whether is a loop parent "while""if""else"
 	int index = 0;
 	int parent;
 	std::vector<int> temp;
-
-	if (stmtLine.compare("}") != 0 ) {
-	    stmtstring.insert(pair<int,string>(stmtNo,stmtLine));
+	if (stmtLine.compare("}") != 0) {
+		stmtstring.insert(pair<int, string>(stmtNo, stmtLine));
 		if (loopFlag && endLoop == 0) {   // when there is a condition stmt and it is not end stmt for loop
-			// check whether ths stmt is a child of other stmt
+										  // check whether ths stmt is a child of other stmt
 			if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
 				parent = 0;
 				//   index = arrAns.size();
@@ -40,8 +39,8 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			else {
 				parent = loopStmtNo.top();
 			}
-				setToParent(stmtLine, stmtNo);  //set it become a parent
-				AnsMap.insert(pair<int, int>(stmtNo, parent));
+			setToParent(stmtLine, stmtNo);  //set it become a parent
+			AnsMap.insert(pair<int, int>(stmtNo, parent));
 		}
 		else {
 			// if there is not a loop condition 
@@ -60,13 +59,14 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 		}
 	}
 
-	if (endLoop > 0) {
+	if (endLoop > 0 && ifFlag == false) {
 		deleteParent(endLoop);
 		deleteStmtNo(endLoop);
 	}
 }
 
 void deleteParent(int endloop) {
+    
 	for (int i = 0; i < endloop; i++) {
 		if (!loopParent.empty()) {
 			loopParent.pop();
@@ -110,17 +110,14 @@ std::vector<int> Parent::getParent(int stmtNo) {
     int index = 0;
 	map<int, int>::iterator iter;
 	iter = AnsMap.find(stmtNo);
-
+    std::vector<int> result;
+	
 	if (iter != AnsMap.end()) {
 		index = iter->second;
 	}
 	else {
-		cout << "Error. Parent not found." << endl;
-		PKB::abort();
+		return result;
 	}
-
-    std::vector<int> result;
-
 	if (index != 0) {
         result.push_back(index);
 	}
@@ -161,9 +158,6 @@ std::vector<int> Parent::getParentForWhile(int stmtNo) {
 				ans.push_back(temp.at(i));
 			}
 		}
-		else {
-		}
-
 	}
 	return ans;
 
@@ -182,9 +176,6 @@ std::vector<int> Parent::getChildForWhile(int stmtNo) {
 				ans.push_back(temp.at(i));
 			}
 		}
-		else {
-		}
-
 	}
 	return ans;
 
@@ -204,13 +195,8 @@ std::vector<int> Parent::getParentForAssign(int stmtNo) {
 				ans.push_back(temp.at(i));
 			}
 		}
-		else {
-		}
-
 	}
 	return ans;
-
-
 }
 std::vector<int> Parent::getChildForAssign(int stmtNo) {
 	std::vector<int> temp = getChild(stmtNo);
@@ -226,10 +212,6 @@ std::vector<int> Parent::getChildForAssign(int stmtNo) {
 				ans.push_back(temp.at(i));
 			}
 		}
-		else {
-		}
-
 	}
 	return ans;
-
 }
