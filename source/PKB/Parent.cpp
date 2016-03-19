@@ -115,10 +115,14 @@ bool Parent::isParent(int stmt1, int stmt2) {
 
 std::vector<int> Parent::getParent(int stmtNo) {
     int index = 0;
+
 	map<int, int>::iterator iter;
-	iter = AnsMap.find(stmtNo);
     std::vector<int> result;
 	
+	if (stmtNo > AnsMap.size()) {
+		return result;
+	}
+    iter = AnsMap.find(stmtNo);
 	if (iter != AnsMap.end()) {
 		index = iter->second;
 	}
@@ -134,7 +138,9 @@ std::vector<int> Parent::getParent(int stmtNo) {
 std::vector<int> Parent::getChild(int stmtNo) {
     std::vector<int> result;
 	int index;
-
+	if (stmtNo > AnsMap.size()) {
+		return result;
+	}
 	for (int i = 1; i <= AnsMap.size(); i++) {
 		map<int, int>::iterator iter;
 		iter = AnsMap.find(i);
@@ -154,6 +160,9 @@ std::vector<int> Parent::getChild(int stmtNo) {
 std::vector<int> Parent::getParentForWhile(int stmtNo) {
 	std::vector<int> temp = getParent(stmtNo);
 	std::vector<int> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
 	for (int i = 0; i< temp.size(); i++) {
 		int index = temp.at(i);
 		map<int, string>::iterator iter;
@@ -172,6 +181,9 @@ std::vector<int> Parent::getParentForWhile(int stmtNo) {
 std::vector<int> Parent::getChildForWhile(int stmtNo) {
 	std::vector<int> temp = getChild(stmtNo);
 	std::vector<int> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
 	for (int i = 0; i< temp.size(); i++) {
 		int index = temp.at(i);
 		map<int, string>::iterator iter;
@@ -191,6 +203,9 @@ std::vector<int> Parent::getParentForAssign(int stmtNo) {
 
 	std::vector<int> temp = getParent(stmtNo);
 	std::vector<int> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
 	for (int i = 0; i< temp.size(); i++) {
 		int index = temp.at(i);
 		map<int, string>::iterator iter;
@@ -208,6 +223,9 @@ std::vector<int> Parent::getParentForAssign(int stmtNo) {
 std::vector<int> Parent::getChildForAssign(int stmtNo) {
 	std::vector<int> temp = getChild(stmtNo);
 	std::vector<int> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
 	for (int i = 0; i< temp.size(); i++) {
 		int index = temp.at(i);
 		map<int, string>::iterator iter;

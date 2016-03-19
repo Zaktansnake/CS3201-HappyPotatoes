@@ -25,15 +25,21 @@ namespace UnitTesting
 			string resultChildren;
 			std::vector<int> resultChild;
 			int expected_result01 = 4;
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source01");
+			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\sample.txt");
 			vector<int> getParent = stmtTable::getParent(5);
 			result = getParent.front();
 
 			Assert::AreEqual(expected_result01, result);
 
-			expected_result01 = 6;
+			expected_result01 = 0;
 			getParent = stmtTable::getParent(7);
-			result = getParent.front();
+			if (getParent.size() == 0) {
+				result = 0;
+			}
+			else {
+                result = getParent.front();
+			}
+			
 
 			Assert::AreEqual(expected_result01, result);
 
@@ -47,17 +53,26 @@ namespace UnitTesting
 			Assert::AreEqual(expected_result01, result);
 			//test for getParent  for while  and assign
 
-			expected_result01 = 2;
-			getParent = stmtTable::getParentForWhile(8);
-			result = getParent.front();
+			expected_result01 = 0;
+			getParent = stmtTable::getParentForWhile(5);
+			if (getParent.size() == 0) {
+				result = 0;
+			}
+			else {
+                result = getParent.front();
+			}
+			
 
 			Assert::AreEqual(expected_result01, result);
 
 			expected_result01 = 0;
-			getParent = stmtTable::getParentForAssign(4);
+			getParent = stmtTable::getParentForAssign(5);
 
 			if (getParent.size() == 0) {
 				result = 0;
+			}
+			else {
+				result = getParent.front();
 			}
 
 			Assert::AreEqual(expected_result01, result);
@@ -67,18 +82,18 @@ namespace UnitTesting
 			//test for isParent
 
 			expectBool = true;
-			isparent = stmtTable::isParent(2, 9);
+			isparent = stmtTable::isParent(4, 5);
 
 			Assert::AreEqual(expectBool, isparent);
 
 			expectBool = false;
-			isparent = stmtTable::isParent(1, 2);
+			isparent = stmtTable::isParent(3, 4);
 
 			Assert::AreEqual(expectBool, isparent);
-
+			
 			//test for getChild
-			expectedChildren = "3489";
-			resultChild = stmtTable::getChild(2);
+			expectedChildren = "56";
+			resultChild = stmtTable::getChild(4);
 		//	resultChildren = std::to_string(resultChild.size());
 
 			for (std::vector<int>::iterator it = resultChild.begin(); it != resultChild.end(); ++it) {
@@ -87,11 +102,11 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expectedChildren, resultChildren);
-
+			
 	   // test for get child for while and assign
 	       
-			expectedChildren = "389";
-			resultChild = stmtTable::getChildForAssign(2);
+			expectedChildren = "56";
+			resultChild = stmtTable::getChildForAssign(4);
 			resultChildren.clear();
 			for (std::vector<int>::iterator it = resultChild.begin(); it != resultChild.end(); ++it) {
 				resultChildren.append(std::to_string(*it));
@@ -99,13 +114,16 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expectedChildren, resultChildren);
-
-			expectedChildren = "4";
-			resultChild = stmtTable::getChildForWhile(2);
+			
+			expectedChildren = "0";
+			resultChild = stmtTable::getChildForWhile(5);
 			resultChildren.clear();
 			for (std::vector<int>::iterator it = resultChild.begin(); it != resultChild.end(); ++it) {
 				resultChildren.append(std::to_string(*it));
 				//result.append(", ");
+			}
+			if (resultChildren.size() == 0) {
+				resultChildren.append("0");
 			}
 
 			Assert::AreEqual(expectedChildren, resultChildren);

@@ -171,5 +171,6 @@ bool isCondition(string stmtLine) {
 	    condition = 3;
 		return true;
 	}
+	condition = 0;
 	return false;
 }
