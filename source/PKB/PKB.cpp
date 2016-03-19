@@ -296,10 +296,6 @@ void PKB::updateAllTables() {
 
 		vector<int> tempParent = stmtTable::getParent(tempStmtLine);
 
-		for (int z = 0; z < tempParent.size(); z++) {
-			cout << "tempStmtLine :: " << tempStmtLine << "  tempParent :: " << tempParent.size() << endl;
-		}
-
 		for (int j = 0; j < tempParent.size(); j++) {
 
 			vector<string> tempModifies = ProcTable::getProcModifiesVar(procB);
@@ -316,7 +312,7 @@ void PKB::updateAllTables() {
 
 		}
 	}
-	stmtTable::printParent();
+	//stmtTable::printParent();
 	VarTable::sortVarLeftAndRight();
 }
 
