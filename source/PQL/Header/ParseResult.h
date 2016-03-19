@@ -25,15 +25,15 @@ public:
 	ParseResult(ParameterSet, ClauseSet, PatternSet);
 
 	// originally private but made public for unit test
-	bool checkAndParseDeclaration(string, unordered_map<string, string>&);
-	ParseResult checkAndParseQuery(string, unordered_map<string, string>&);
+	static bool checkAndParseDeclaration(string, unordered_map<string, string>&);
+	static ParseResult checkAndParseQuery(string, unordered_map<string, string>&);
 
 	// constructs the parsing result for query evaluator
-	ParseResult generateParseResult(string, string);
+	static ParseResult generateParseResult(string, string);
 
 private:
 	// helper functions
-	void signalErrorAndStop();
+	static void signalErrorAndStop();
 	
 	// attributes
 	ParameterSet selectParameter_;
