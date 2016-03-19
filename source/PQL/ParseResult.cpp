@@ -46,13 +46,13 @@ const regex queryRegex2(selectClause + patternClause + conditionClause);
 
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
 	unordered_map<string, string> declarationTable;
-	bool correct = checkAndParseDeclaration(declarationSentence, declarationTable);
+	bool correct = ParseResult::checkAndParseDeclaration(declarationSentence, declarationTable);
 
 	if (!correct) {
 		return ParseResult();
 	}
 
-	return checkAndParseQuery(querySentence, declarationTable);
+	return ParseResult::checkAndParseQuery(querySentence, declarationTable);
 }
 
 bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<string, string>& declarationTable) {

@@ -294,22 +294,32 @@ void PKB::updateAllTables() {
 	for (int i = allCallsStmtSize; i >= 0 ; i--) {
 		string procB = get<1>(AllCallsStmt[i]);
 		int tempStmtLine = get<2>(AllCallsStmt[i]);
-		vector<int> tempParent = stmtTable::getParent(tempStmtLine);
 
-		for (int j = 0; j < tempParent.size(); j++) {
+		vector<int> tempParent = stmtTable::getParent(tempStmtLine); // error -> should call getParentStar
+		if (tempParent.size() > 0) {
+			for (int j = 0; j < tempParent.size(); j++) {
+				vector<string> tempModifies = ProcTable::getProcModifiesVar(procB);
+				for (int i = 0; i < tempModifies.size(); i++) {
+					VarTable::addDataToModifies(tempModifies[i], tempStmtLine);
+					VarTable::addDataToModifies(tempModifies[i], tempParent[j]);
+				}
 
+				vector<string> tempUses = ProcTable::getProcUsesVar(procB);
+				for (int i = 0; i < tempUses.size(); i++) {
+					VarTable::addDataToUses(tempUses[i], tempStmtLine);
+					VarTable::addDataToUses(tempUses[i], tempParent[j]);
+				}
+			}
+		}
+		else {
 			vector<string> tempModifies = ProcTable::getProcModifiesVar(procB);
 			for (int i = 0; i < tempModifies.size(); i++) {
 				VarTable::addDataToModifies(tempModifies[i], tempStmtLine);
-				VarTable::addDataToModifies(tempModifies[i], tempParent[j]);
 			}
-
 			vector<string> tempUses = ProcTable::getProcUsesVar(procB);
 			for (int i = 0; i < tempUses.size(); i++) {
 				VarTable::addDataToUses(tempUses[i], tempStmtLine);
-				VarTable::addDataToUses(tempUses[i], tempParent[j]);
 			}
-
 		}
 	}
 	//stmtTable::printParent();
@@ -350,13 +360,11 @@ void detectRightBracket() {
 
 	if (temp.second > 0) {
 		vector<string> tempArrayListLeft = VarTable::findVariableLeft(temp.second, tempStmtNum);
-
 		for (int i = 0; i < tempArrayListLeft.size(); i++) {
 			VarTable::addDataToModifies(tempArrayListLeft[i], temp.second);
 		}
 
 		vector<string> tempArrayListRight = VarTable::findVariableRight(temp.second, tempStmtNum);
-
 		for (int i = 0; i < tempArrayListRight.size(); i++) {
 			VarTable::addDataToUses(tempArrayListRight[i], temp.second);
 		}
