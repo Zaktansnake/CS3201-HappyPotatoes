@@ -10,7 +10,7 @@ CFG::CFG() {
 
 CFG::~CFG() {
 }
-/*
+
 static int currentPro = 0;
 std::vector<std::vector<std::vector<int> >> CFGTable;
 std::vector<std::vector<int>> CFG;
@@ -62,9 +62,26 @@ void addNextNode(int stmtNo, string stmt) {
 		CFGTable.at(currentPro) = CFG;
 	}
 
+	// decide on conditions
+	if (stmt.find("if") != std::string::npos) {
+		condition = 1;
+
+	}
+	else if (stmt.find("else") != std::string::npos) {
+		condition = 2;
+
+	}
+	else if (stmt.find("while") != std::string::npos) {
+		condition = 3;
+
+	}
+	else {
+		condition = 0;
+	}
 	// there are four condition, with loop, normal stmt, with } , only }
 	// with loop
-	if (isCondition(stmt) == true) {
+	
+	if (condition != 0) {
 		CFGline.push_back(stmtNo);
 		CFG.push_back(CFGline);
 		if (CFGTable.size() == 0) {      // if the CFGtable is empty just push back the CFG
@@ -80,7 +97,7 @@ void addNextNode(int stmtNo, string stmt) {
 		prevStmtNo = stmtNo;
 	}
 
-	countCloseLopp(stmt);
+	endloop = std::count(stmt.begin(), stmt.end(), '}'); // count if there is } in the string
 	if (endloop > 0 && stmt.size() != endloop) {   // it is stmtment contains }
 		for (int i = 0; i < endloop; i++) {
 			if (conditionStack.size() == 0) {   //if it is empty stack --> no condition stmt, end procedure
@@ -147,37 +164,30 @@ void addNextNode(int stmtNo, string stmt) {
 		}
 	}
 
-	if (isCondition(stmt) == false && endloop == 0) {  // normal stmt
+	if (condition == 0 && endloop == 0) {  // normal stmt
 		CFGline.push_back(stmtNo);
 		CFG.push_back(CFGline);
 		CFGTable.at(currentPro) = CFG;
 		CFGline.clear();
 		prevStmtNo = stmtNo;
 	}
-
-
 }
 
-static void countCloseLopp(string stmt) {
-	endloop = std::count(stmt.begin(), stmt.end(), '}'); // count if there is } in the string
-
-}
-
-
-bool isCondition(string stmtLine) {
+void setConditions(string stmtLine) {
 	if (stmtLine.find("if") != std::string::npos) {
 		condition = 1;
-		return true;
+		
 	}
 	else if (stmtLine.find("else") != std::string::npos) {
 		condition = 2;
-		return true;
+		
 	}
 	else if (stmtLine.find("while") != std::string::npos) {
 		condition = 3;
-		return true;
+	
 	}
-	return false;
+	else {
+		condition = 0;
+	}
 }
 
-*/

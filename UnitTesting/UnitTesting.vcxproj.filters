@@ -47,9 +47,6 @@
     <ClCompile Include="TestUses.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestParseResult.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestCalls.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

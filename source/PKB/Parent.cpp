@@ -31,7 +31,7 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 	int parent;
 	conditions = condition;
 	std::vector<int> temp;
-	if (stmtLine.compare("}") != 0) {
+	if (stmtLine.compare("\t}") != 0 || stmtLine.compare("\t}") != 0) {
 		stmtstring.insert(pair<int, string>(stmtNo, stmtLine));
 		if (loopFlag && endLoop == 0) {   // when there is a condition stmt and it is not end stmt for loop
 										  // check whether ths stmt is a child of other stmt

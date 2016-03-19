@@ -52,7 +52,7 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 				flagForNextLevel = false;
 			//	ifFlag = false;
 			//	elseFlag = true;
-				stmtNo --;
+			//	stmtNo --;
 				break;
 			case WHILE:
 				flagForNextLevel = true;
@@ -67,6 +67,8 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 		endLoopNo = std::count(stmtLine.begin(), stmtLine.end(), '}');
 		addFollowTable(stmtLine, stmtNo, nestLevel);
 		addParentTable(stmtLine, stmtNo, nestLevel);
+		
+		
 
 
 		if (flagForNextLevel == true) {
@@ -157,7 +159,6 @@ std::vector<int> stmtTable::getChildForAssign(int stmtNo) {
 
 
 // check condition
-
 bool isCondition(string stmtLine) {
 	if (stmtLine.find("if") != std::string::npos) {
 	    condition = 1;
