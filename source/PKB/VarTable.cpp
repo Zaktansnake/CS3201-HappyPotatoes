@@ -30,6 +30,7 @@ vector<int> allStmtNum;
 vector<int> assignNum;
 vector<int> whileStmtNum;
 vector<int> ifStmtNum;
+vector<string> assignLines;
 
 void addDataToStmt();
 void addToVarTable(int position, string varName, int stmtLine);
@@ -63,17 +64,19 @@ int VarTable::assignTableSize() {
 }
 
 void VarTable::updateModifiesUsesTables() {
-
 	addDataToStmt();
-
-	std::sort(varTableLeft.begin(), varTableLeft.end());
-	std::sort(varTableRight.begin(), varTableRight.end());
-
+	VarTable::sortVarLeftAndRight();
 	VarTable::setAssign();
 
 	std::sort(assignNum.begin(), assignNum.end());
 	std::sort(whileStmtNum.begin(), whileStmtNum.end());
+}
 
+void VarTable::sortVarLeftAndRight() {
+	std::sort(varTableLeft.begin(), varTableLeft.end());
+	varTableLeft.erase(unique(varTableLeft.begin(), varTableLeft.end()), varTableLeft.end());
+	std::sort(varTableRight.begin(), varTableRight.end());
+	varTableRight.erase(unique(varTableRight.begin(), varTableRight.end()), varTableRight.end());
 }
 
 vector<int> VarTable::getAllStmt() {
@@ -96,6 +99,13 @@ void addDataToStmt() {
 	}
 }
 
+vector<int> VarTable::setAssign() {
+	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
+		assignNum.push_back(it->first);
+	}
+	return assignNum;
+}
+
 // ---------------------- While table ---------------------------------
 void VarTable::addDataToWhileTable(string variable, int stmtNum) {
 	whileTable[variable].push_back(stmtNum);
@@ -113,7 +123,7 @@ void VarTable::addDataToAssignTable(string variable, int stmtNum) {
 	assignTable.insert(pair<int, string>(stmtNum, variable));
 }
 
-string VarTable::getAssignTable(int stmtNum) {
+string VarTable::getAssignLine(int stmtNum) {
 	string temp = "";
 	std::map<int, string>::iterator it = assignTable.find(stmtNum);
 
@@ -123,6 +133,10 @@ string VarTable::getAssignTable(int stmtNum) {
 	}
 
 	return temp;
+}
+
+map<int, string> VarTable::getAssignTable() {
+	return assignTable;
 }
 
 vector<int> VarTable::getAllAssign() {
@@ -349,7 +363,7 @@ vector<string> VarTable::getUsesVariable(string firstPerimeter) {
 		int tempStmtLine = varTableRight[i].first;
 		if (tempStmtLine == stmtNum) {
 			string tempValue = varTableRight[i].second;
-			if (!is_number(tempValue)) {
+			if (!PKB::is_number(tempValue)) {
 				ans.push_back(tempValue);
 			}
 		}
@@ -473,15 +487,7 @@ vector<int> VarTable::getUsesTable(string varName) {
 
 void VarTable::addDataToUses(string varName, int stmtLine) {
 	addToVarTable(2, varName, stmtLine);
-	VarTable::addDataToIfsTable(varName, stmtLine);
 	Uses::addUsesTable(varName, stmtLine);
-}
-
-vector<int> VarTable::setAssign() {
-	for (map<int, string>::iterator it = assignTable.begin(); it != assignTable.end(); ++it) {
-		assignNum.push_back(it->first);
-	}
-	return assignNum;
 }
 
 // add the var to varTableLeft or varTableRight
@@ -494,12 +500,6 @@ void addToVarTable(int position, string varName, int stmtLine) {
 	}
 }
 
-// check string is a number
-bool VarTable::is_number(const std::string& s)
-{
-	return !s.empty() && std::find_if(s.begin(),
-		s.end(), [](char c) { return !::isdigit(c); }) == s.end();
-}
 
 void VarTable::printTables() {
 	//Modifies::printMap01();

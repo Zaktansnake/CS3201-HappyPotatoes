@@ -22,7 +22,7 @@ std::vector<int> PatternTable::getVariable(string variable) {
 }
 
 string PatternTable::getStatementLine(int stmtNo) {
-	return VarTable::getAssignTable(stmtNo);
+	return VarTable::getAssignLine(stmtNo);
 }
 
 bool PatternTable::isPattern(string variable, string key) {

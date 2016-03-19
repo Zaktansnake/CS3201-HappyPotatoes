@@ -27,11 +27,11 @@ using namespace std;
 static ifstream myFile;
 static string str, word, procname;
 static ostringstream oss;
-stack<pair<string, int>> bracstack;
+stack<pair<string, int>> bracstack; // string -> {; int -> currentStmtLine
+stack<int> ifStmtNum, afterElseStmtNum;
 bool firstTime, firstLine;
-static int stmtLine = 0;
+static int stmtLine = 0, afterElseStartNum = 0; // ifParentStmtNum -> very first "if" stmtNum
 	
-
 static void procedure();
 static void stmtLst();
 static void assign();
@@ -43,7 +43,7 @@ vector<string> split(string str, char delimiter);
 vector<string> splitTheString(string line);
 static void calls(string procedurName, int stmtLine);
 void stmtLineForPattern(vector<string> line);
-void detectRightBracket(int options, vector<string> v);
+void detectRightBracket();
 static inline std::string &ltrim(std::string &s);
 static inline std::string &rtrim(std::string &s);
 static inline std::string &trim(std::string &s);
@@ -57,15 +57,7 @@ void PKB::create(string fileName) {
 	while (!myFile.eof()) {
 		getline(myFile, str);
 		findMethod(str);
-//		if (stmtLine > 0 && str.size()!=0 && str.compare("{") != 0) {
-//			stmtTable::addStmtTable(str, stmtLine);
-//		}
-
-//		if (str.compare("}") != 0) {
-//			if (str.compare("{") != 0) {
-              stmtLine++;
-//			}
-//		}
+        stmtLine++;
 	}
 
 	myFile.close();
@@ -114,12 +106,18 @@ void findMethod(string file_contents) {
 		}
 
 		firstTime = false;
+		afterElseStartNum = 0;
+		stmtLine--;
 	}
 	else if (word.compare("}") == 0) {
-		stmtLine--;
 		vector<string> ans;
-		detectRightBracket(0, ans);
-		bracstack.pop();
+		if (file_contents.find("else") != std::string::npos) {
+			stmt(1);
+		} else {
+			stmtLine--;
+			detectRightBracket();
+			bracstack.pop();
+		}
 		stmtTable::addStmtTable(str, stmtLine);
 	}
 	else {
@@ -181,7 +179,9 @@ static void stmt(int num) {
 	case 0: // if
 		if (v[2].compare("then") == 0 && (v[3].compare("{")) == 0) {
 			VarTable::addDataToUses(v[1], stmtLine);
+			VarTable::addDataToIfsTable(v[1], stmtLine);
 			ProcTable::setProcUsesVar(procname, v[1]);
+			ifStmtNum.push(stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
 		}
 		else {
@@ -192,15 +192,20 @@ static void stmt(int num) {
 		break;
 	case 1: // else
 		stmtLine--;
-
-		if (v[1].compare("{") != 0) {
-			cout << "Error: Structure. ({)" << endl;
-			PKB::abort();
+		if (v.size() == 3) {
+			vector<string> ans;
+			detectRightBracket();
+			bracstack.pop();
 		}
-		else {
-			bracstack.push(make_pair("{", 0));
+		else if (v.size() == 2) {
+			if (v[1].compare("{") != 0) {
+				cout << "Error: Structure. ({)" << endl;
+				PKB::abort();
+			}
 		}
-
+		bracstack.push(make_pair("{", -2));
+		afterElseStartNum = stmtLine + 1;
+		afterElseStmtNum.push(afterElseStartNum);
 		break;
 	case 2: // while
 		if (v[2].compare("{") == 0) {
@@ -249,7 +254,7 @@ void assign() {
 		std::string var = v.at(i);
 
 		if (var.compare("}") == 0) {
-			detectRightBracket(1, v);
+			detectRightBracket();
 			bracstack.pop();
 		}
 		else {
@@ -278,8 +283,37 @@ void PKB::updateTables() {
 	// update uses table one more time
 	VarTable::updateModifiesUsesTables();
 	ProcTable::updateProcCallsTables();
+	PKB::updateAllTables();
 
-	//VarTable::printTables();
+	VarTable::printTables();
+}
+
+void PKB::updateAllTables() {
+	std::vector<std::tuple<string, string, int>> AllCallsStmt = ProcTable::getCallsTable();
+	int allCallsStmtSize = AllCallsStmt.size() - 1;
+	for (int i = allCallsStmtSize; i >= 0 ; i--) {
+		string procB = get<1>(AllCallsStmt[i]);
+		int tempStmtLine = get<2>(AllCallsStmt[i]);
+		vector<int> tempParent = stmtTable::getParent(tempStmtLine);
+
+		for (int j = 0; j < tempParent.size(); j++) {
+
+			vector<string> tempModifies = ProcTable::getProcModifiesVar(procB);
+			for (int i = 0; i < tempModifies.size(); i++) {
+				VarTable::addDataToModifies(tempModifies[i], tempStmtLine);
+				VarTable::addDataToModifies(tempModifies[i], tempParent[j]);
+			}
+
+			vector<string> tempUses = ProcTable::getProcUsesVar(procB);
+			for (int i = 0; i < tempUses.size(); i++) {
+				VarTable::addDataToUses(tempUses[i], tempStmtLine);
+				VarTable::addDataToUses(tempUses[i], tempParent[j]);
+			}
+
+		}
+	}
+	//stmtTable::printParent();
+	VarTable::sortVarLeftAndRight();
 }
 
 vector<string> splitTheString(string line) {
@@ -298,19 +332,23 @@ void stmtLineForPattern(vector<string> line) {
 
 	for (auto const& s : line) {
 		if (s.compare(";") != 0 || s.compare("}") != 0) {
-			result += s;
+			result = result + " " + s;
 		}
 	}
 
 	VarTable::addDataToAssignTable(result, stmtLine);
 }
 
-// option: 0 -> only bracket, 1 -> with variable
-void detectRightBracket(int option, vector<string> v) {
+void detectRightBracket() {
+	int currentParentLine;
 	pair<string, int> temp = bracstack.top();
 	int tempStmtNum = stmtLine;
 
-	if (temp.second != 0) {
+	if (temp.second > 0 && temp.second != 0) {
+		currentParentLine = temp.second; // if stmtNum 
+	}
+
+	if (temp.second > 0) {
 		vector<string> tempArrayListLeft = VarTable::findVariableLeft(temp.second, tempStmtNum);
 
 		for (int i = 0; i < tempArrayListLeft.size(); i++) {
@@ -321,6 +359,27 @@ void detectRightBracket(int option, vector<string> v) {
 
 		for (int i = 0; i < tempArrayListRight.size(); i++) {
 			VarTable::addDataToUses(tempArrayListRight[i], temp.second);
+		}
+	} else {
+		if (ifStmtNum.size() > 0 && afterElseStmtNum.size() > 0) {
+			int currentIfStmtNum = ifStmtNum.top(); // current parent of "if" stmtNum
+			int currentElseFirstStartNum = afterElseStmtNum.top(); //current "else" first start num
+			vector<string> tempArrayListLeft = VarTable::findVariableLeft(currentElseFirstStartNum, tempStmtNum);
+			vector<string> tempArrayListRight = VarTable::findVariableRight(currentElseFirstStartNum, tempStmtNum);
+			if (tempArrayListLeft.size() > 0 && tempArrayListRight.size() > 0) {
+				for (int i = 0; i < tempArrayListLeft.size(); i++) {
+					VarTable::addDataToModifies(tempArrayListLeft[i], currentParentLine);
+					VarTable::addDataToModifies(tempArrayListLeft[i], currentIfStmtNum);
+				}
+
+				for (int i = 0; i < tempArrayListRight.size(); i++) {
+					VarTable::addDataToUses(tempArrayListRight[i], currentParentLine);
+					VarTable::addDataToUses(tempArrayListRight[i], currentIfStmtNum);
+				}
+			}
+
+			ifStmtNum.pop();
+			afterElseStmtNum.pop();
 		}
 	}
 }
@@ -344,4 +403,11 @@ static inline std::string &rtrim(std::string &s) {
 // trim from both ends
 static inline std::string &trim(std::string &s) {
 	return ltrim(rtrim(s));
+}
+
+// check string is a number
+bool PKB::is_number(const std::string& s)
+{
+	return !s.empty() && std::find_if(s.begin(),
+		s.end(), [](char c) { return !::isdigit(c); }) == s.end();
 }

@@ -21,11 +21,12 @@ public:
 
 	static void create(string fileName);
 	static int getStmtNum ();
-
+	static bool is_number(const std::string& s);
 	static void abort();
 
 private:
 
 	static void updateTables();
+	static void updateAllTables();
 
 };

@@ -3,7 +3,6 @@
 #include <unordered_set>
 
 #include "./Header/Calls.h"
-#include "./Header/PKB.h"
 
 using namespace std;
 
@@ -23,19 +22,14 @@ void Calls::setCallProcedure(string mainProcedure, string procedure, int stmtLin
 		for (int i = 0; i < CallsTable.size(); i++) {
 			string procA = get<0>(CallsTable[i]);
 			string procB = get<1>(CallsTable[i]);
-			
+
 			if (procA.compare(procedure) == 0 && procB.compare(mainProcedure) == 0) {
 				PKB::abort();
 			}
 		}
-		CallsTable.push_back(make_tuple(mainProcedure, procedure,stmtLine));
-		CallsSet.insert(make_pair(mainProcedure, procedure));
 	}
-	else {
-		CallsTable.push_back(make_tuple(mainProcedure, procedure, stmtLine));
-		CallsSet.insert(make_pair(mainProcedure, procedure));
-	}
-
+	CallsTable.push_back(make_tuple(mainProcedure, procedure, stmtLine));
+	CallsSet.insert(make_pair(mainProcedure, procedure));
 }
 
 std::vector<std::tuple<string, string, int>> Calls::getCallsTable() {
