@@ -28,8 +28,9 @@ static ifstream myFile;
 static string str, word, procname;
 static ostringstream oss;
 stack<pair<string, int>> bracstack; // string -> {; int -> currentStmtLine
+stack<int> ifStmtNum, afterElseStmtNum;
 bool firstTime, firstLine;
-static int stmtLine = 0;
+static int stmtLine = 0, afterElseStartNum = 0; // ifParentStmtNum -> very first "if" stmtNum
 	
 static void procedure();
 static void stmtLst();
@@ -105,6 +106,7 @@ void findMethod(string file_contents) {
 		}
 
 		firstTime = false;
+		afterElseStartNum = 0;
 		stmtLine--;
 	}
 	else if (word.compare("}") == 0) {
@@ -179,6 +181,7 @@ static void stmt(int num) {
 			VarTable::addDataToUses(v[1], stmtLine);
 			VarTable::addDataToIfsTable(v[1], stmtLine);
 			ProcTable::setProcUsesVar(procname, v[1]);
+			ifStmtNum.push(stmtLine);
 			bracstack.push(make_pair("{", stmtLine));
 		}
 		else {
@@ -193,18 +196,16 @@ static void stmt(int num) {
 			vector<string> ans;
 			detectRightBracket();
 			bracstack.pop();
-			bracstack.push(make_pair("{", -2));
 		}
 		else if (v.size() == 2) {
 			if (v[1].compare("{") != 0) {
 				cout << "Error: Structure. ({)" << endl;
 				PKB::abort();
 			}
-			else {
-				bracstack.push(make_pair("{", -2));
-			}
 		}
-
+		bracstack.push(make_pair("{", -2));
+		afterElseStartNum = stmtLine + 1;
+		afterElseStmtNum.push(afterElseStartNum);
 		break;
 	case 2: // while
 		if (v[2].compare("{") == 0) {
@@ -284,7 +285,7 @@ void PKB::updateTables() {
 	ProcTable::updateProcCallsTables();
 	PKB::updateAllTables();
 
-	//VarTable::printTables();
+	VarTable::printTables();
 }
 
 void PKB::updateAllTables() {
@@ -293,7 +294,6 @@ void PKB::updateAllTables() {
 	for (int i = allCallsStmtSize; i >= 0 ; i--) {
 		string procB = get<1>(AllCallsStmt[i]);
 		int tempStmtLine = get<2>(AllCallsStmt[i]);
-
 		vector<int> tempParent = stmtTable::getParent(tempStmtLine);
 
 		for (int j = 0; j < tempParent.size(); j++) {
@@ -339,14 +339,13 @@ void stmtLineForPattern(vector<string> line) {
 	VarTable::addDataToAssignTable(result, stmtLine);
 }
 
-// option: 0 -> only bracket, 1 -> with variable
 void detectRightBracket() {
-	int currentParrentLine;
+	int currentParentLine;
 	pair<string, int> temp = bracstack.top();
 	int tempStmtNum = stmtLine;
 
 	if (temp.second > 0 && temp.second != 0) {
-		currentParrentLine = temp.second;
+		currentParentLine = temp.second; // if stmtNum 
 	}
 
 	if (temp.second > 0) {
@@ -362,16 +361,25 @@ void detectRightBracket() {
 			VarTable::addDataToUses(tempArrayListRight[i], temp.second);
 		}
 	} else {
-		vector<string> tempArrayListLeft = VarTable::findVariableLeft(currentParrentLine, tempStmtNum);
+		if (ifStmtNum.size() > 0 && afterElseStmtNum.size() > 0) {
+			int currentIfStmtNum = ifStmtNum.top(); // current parent of "if" stmtNum
+			int currentElseFirstStartNum = afterElseStmtNum.top(); //current "else" first start num
+			vector<string> tempArrayListLeft = VarTable::findVariableLeft(currentElseFirstStartNum, tempStmtNum);
+			vector<string> tempArrayListRight = VarTable::findVariableRight(currentElseFirstStartNum, tempStmtNum);
+			if (tempArrayListLeft.size() > 0 && tempArrayListRight.size() > 0) {
+				for (int i = 0; i < tempArrayListLeft.size(); i++) {
+					VarTable::addDataToModifies(tempArrayListLeft[i], currentParentLine);
+					VarTable::addDataToModifies(tempArrayListLeft[i], currentIfStmtNum);
+				}
 
-		for (int i = 0; i < tempArrayListLeft.size(); i++) {
-			VarTable::addDataToModifies(tempArrayListLeft[i], currentParrentLine);
-		}
+				for (int i = 0; i < tempArrayListRight.size(); i++) {
+					VarTable::addDataToUses(tempArrayListRight[i], currentParentLine);
+					VarTable::addDataToUses(tempArrayListRight[i], currentIfStmtNum);
+				}
+			}
 
-		vector<string> tempArrayListRight = VarTable::findVariableRight(currentParrentLine, tempStmtNum);
-
-		for (int i = 0; i < tempArrayListRight.size(); i++) {
-			VarTable::addDataToUses(tempArrayListRight[i], currentParrentLine);
+			ifStmtNum.pop();
+			afterElseStmtNum.pop();
 		}
 	}
 }
