@@ -19,6 +19,7 @@ public:
 
 	static void addTableData(string procName);
 	static void setCallsTable(string proc1, string proc2, int stmtLine);
+	static std::vector<std::tuple<string, string, int>> getCallsTable();
 
 	static vector<string> getNextProcedure(string proc1);
 	static vector<string> getNextProcedureTransitive(string proc1);

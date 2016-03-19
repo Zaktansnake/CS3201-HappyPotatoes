@@ -21,6 +21,10 @@ namespace UnitTesting
 			successCode = Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source04.txt");
 
 			Assert::AreEqual(1, successCode);
+
+			successCode = Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
+
+			Assert::AreEqual(1, successCode);
 		}
 	};
 }

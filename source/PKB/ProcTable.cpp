@@ -10,7 +10,6 @@
 #include <unordered_set>
 
 #include "./Header/ProcTable.h"
-#include "./Header/VarTable.h"
 #include "./Header/Calls.h"
 
 using namespace std;
@@ -31,6 +30,7 @@ map<string, vector<string>> UsesWithProc; // string -> variable, vector<string> 
 std::vector<std::tuple<string, string, int>> tempCallsTable;  // string -> mainProcedure, string -> procedure, int -> stmtLine
 std::unordered_set< std::pair<string, string>> tempCallsSet; // string -> mainProcedure, string -> procedure
 
+static void updateModifiesUsesTables();
 static void updateProcWithModAndUses();
 vector<string> findPositionProcModifies(string variable); // return a list of procedures based on variable
 vector<string> findPositionProcUses(string procName);
@@ -52,6 +52,7 @@ vector<string> ProcTable::getAllProcedures() {
 
 void ProcTable::updateProcCallsTables() {
 	updateProcWithModAndUses();
+	tempCallsTable = Calls::getCallsTable();
 }
 
 static void updateProcWithModAndUses() {
@@ -75,6 +76,10 @@ static void updateProcWithModAndUses() {
 	}
 }
 
+std::vector<std::tuple<string, string, int>> ProcTable::getCallsTable() {
+	return tempCallsTable;
+}
+
 void ProcTable::addTableData(string procName) {
    ProcTable pt;
    int index = pt.findPosition(procName);
@@ -91,7 +96,9 @@ void ProcTable::setCallsTable(string proc1, string proc2, int stmtLine) {
 	Calls::setCallProcedure(proc1, proc2, stmtLine);
 }
 
-
+std::vector<std::tuple<string, string, int>> getCallsTable() {
+	return tempCallsTable;
+}
 
 // add Modifies variables based on procName
 void ProcTable::setProcModifiesVar(string procedure, string variable) {
@@ -99,6 +106,7 @@ void ProcTable::setProcModifiesVar(string procedure, string variable) {
 	ModifiesWithProc[variable].push_back(procedure);
 }
 
+// return a list of variable based on procName
 vector<string> ProcTable::getProcModifiesVar(string procName) {
 	vector<string> ans;
 	auto it = ProcWithModifies.find(procName);
@@ -121,6 +129,7 @@ vector<string> ProcTable::getProcModifiesVar(string procName) {
 	return ans;
 }
 
+// return a list of procName based on variable
 vector<string> ProcTable::getModifiesProc(string secondPerimeter) {
 	// secondPerimeter = variable
 	vector<string> ans = findPositionProcModifies(secondPerimeter);
@@ -170,12 +179,13 @@ vector<string> findPositionProcModifies(string variable) {
 
 // add Uses variables based on procName
 void ProcTable::setProcUsesVar(string procedure, string variable) {
-	if (!VarTable::is_number(variable)) {
+	if (!PKB::is_number(variable)) {
 		ProcWithUses[procedure].push_back(variable);
 		UsesWithProc[variable].push_back(procedure);
 	}
 }
 
+// return a list of variable based on procName
 vector<string> ProcTable::getProcUsesVar(string procName) {
 	vector<string> ans;
 	auto it = ProcWithUses.find(procName);
@@ -199,6 +209,7 @@ vector<string> ProcTable::getProcUsesVar(string procName) {
 	return ans;
 }
 
+// return a list of procName based on variable
 vector<string> ProcTable::getUsesProc(string secondPerimeter) {
 	// secondPerimeter = variable
 	vector<string> ans = findPositionProcUses(secondPerimeter);

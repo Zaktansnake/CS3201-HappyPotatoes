@@ -27,6 +27,8 @@ std::vector<string> totalStmtLine;
 bool elseFlag = false;
 int dummyStmtNo = -1;
 
+bool isCondition(string stmtLine);
+
 void setRoot(std::string procedure) {
    map<string, int>::iterator iter;
    iter = procedureMap.find(procedure);

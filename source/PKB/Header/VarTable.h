@@ -18,6 +18,8 @@ public:
 	// printTable
 	static void printTables();
 
+	static void sortVarLeftAndRight();
+
 	// Update the Tables after parser is done
 	static void updateModifiesUsesTables();
 
@@ -35,12 +37,16 @@ public:
 	static vector<string> findVariableLeft(int stmtLine1, int stmtLine2);
 	static vector<string> findVariableRight(int stmtLine1, int stmtLine2);
 
+	//----------------------- IFS Table -------------------------
+	static void addDataToIfsTable(string variable, int stmtNum);
+
 	//----------------------- While Table -------------------------
 	static void addDataToWhileTable(string variable, int stmtNum);
 
 	//----------------------- Assign Table ------------------------
 	static void addDataToAssignTable(string variable, int stmtNum);
-	static string VarTable::getAssignTable(int stmtNum);
+	static string getAssignLine(int stmtNum);
+	static map<int, string> getAssignTable();
 
 	//----------------------- Modifies -------------------------------
 	static std::vector<int> getModifiesTable(string varName); // get ModifiesTable
@@ -66,15 +72,10 @@ public:
 	static bool isUsesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isUsesWhile(string firstPerimeter, string secondPerimeter);
 
-	static bool is_number(const std::string& s);
-
 private:
 	// constructor
 	VarTable();
 
 	static vector<int> setAssign();
-
-	//----------------------- IFS Table -------------------------
-	static void addDataToIfsTable(string variable, int stmtNum);
 
 };

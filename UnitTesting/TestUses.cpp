@@ -19,7 +19,7 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(TestUses)
 		{
-			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source04.txt");
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
 
 			string result, expectedResult = "";
 			bool resultBoolean;
