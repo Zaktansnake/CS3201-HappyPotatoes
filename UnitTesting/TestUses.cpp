@@ -96,7 +96,15 @@ namespace UnitTesting
 			resultBoolean = ProcTable::isUsesProc("Init", "a");
 			Assert::IsTrue(resultBoolean);
 
-
+			result = "";
+			// Select s such that Uses(s, "width") => 4,12,14,15,16,19,26,28,30,33
+			usesInt = VarTable::getUsesStmt("width");
+			expectedResult = "4,12,14,15,16,19,26,28,30,33,";
+			for (std::vector<int>::iterator it = usesInt.begin(); it != usesInt.end(); ++it) {
+				result.append(std::to_string(*it));
+				result.append(",");
+			}
+			Assert::AreEqual(expectedResult, result);
 		}
 	};
 }
