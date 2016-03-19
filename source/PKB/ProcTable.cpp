@@ -35,6 +35,8 @@ static void updateProcWithModAndUses();
 vector<string> findPositionProcModifies(string variable); // return a list of procedures based on variable
 vector<string> findPositionProcUses(string procName);
 
+void printTable();
+
 Calls call;
 
 
@@ -56,7 +58,6 @@ void ProcTable::updateProcCallsTables() {
 }
 
 static void updateProcWithModAndUses() {
-	//Calls::printCallsTable();
 	tempCallsSet = Calls::getCallsSet();
 
 	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
@@ -69,11 +70,20 @@ static void updateProcWithModAndUses() {
 			ProcWithModifies[procA].push_back(tempMod[i]);
 		}
 
+		sort(ProcWithModifies[procA].begin(), ProcWithModifies[procA].end());
+		ProcWithModifies[procA].erase(unique(ProcWithModifies[procA].begin(), ProcWithModifies[procA].end()), ProcWithModifies[procA].end());
+
 		vector<string> tempUses = ProcTable::getProcUsesVar(procB);
 		for (int i = 0; i < tempUses.size(); i++) {
 			ProcWithUses[procA].push_back(tempUses[i]);
 		}
+
+		sort(ProcWithUses[procA].begin(), ProcWithUses[procA].end());
+		ProcWithUses[procA].erase(unique(ProcWithUses[procA].begin(), ProcWithUses[procA].end()), ProcWithUses[procA].end());
 	}
+
+	//Calls::printCallsTable();
+	//printTable();
 }
 
 std::vector<std::tuple<string, string, int>> ProcTable::getCallsTable() {
@@ -365,6 +375,9 @@ bool ProcTable::isProcToProcTransitive(string proc1, string proc2) {
 }
 
 
+int ProcTable::getProcTableSize() {
+	return ProcMap.size();
+}
 
 // return the index of the procName in the map
 int ProcTable::findPosition(string procName) {
@@ -394,4 +407,17 @@ bool ProcTable::isContains(string name) {
 	} else {
 		return false;
 	}
+}
+
+
+void printTable(){
+
+	for (map<string, vector<string> >::const_iterator ptr = ProcWithModifies.begin();
+ptr != ProcWithModifies.end(); ptr++) {
+		cout << ptr->first << ": ";
+		for (vector<string>::const_iterator eptr = ptr->second.begin(); eptr != ptr->second.end(); eptr++)
+			cout << *eptr << " ";
+	cout << endl;
+	}
+
 }

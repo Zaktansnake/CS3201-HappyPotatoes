@@ -46,7 +46,7 @@ public:
 	static bool isUsesProc(string firstPerimeter, string secondPerimeter);
 
 
-	int getProcTableSize();	// get the size of proctable
+	static int getProcTableSize();	// get the size of proctable
 
 	int findPosition(string ProcName);
 	static bool isContains (string procName);  // check if the table contains proceduce

@@ -24,7 +24,6 @@ Modifies::~Modifies() {
 // refStmtLine -> when update Modifies Table
 void Modifies::addModifiesTable(string varName, int stmtLine) {
 	int index;
-
 	if (ModifiesMap.size() > 0) {
 		index = findPosition(varName);
 
