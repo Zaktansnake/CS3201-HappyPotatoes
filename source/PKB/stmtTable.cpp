@@ -11,8 +11,9 @@ using namespace std;
 static int nestLevel = 0;
 bool flagForNextLevel = false;
 bool loopFlag;
-bool elseFlag = false;
-bool ifFlag = false;
+int loopStatus;
+// bool elseFlag = false;
+// bool ifFlag = false;
 int endLoopNo = 0;
 bool isFirstElse = false;  // the first stmtNo after else do not have follow
 std::vector<int> stmtLst;
@@ -37,24 +38,26 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 	if (stmtLine.compare("{") != 0) {
 		bool isCon = isCondition(stmtLine);
 		loopFlag = false;
-		ifFlag = false;
-		elseFlag = false;
+		//ifFlag = false;
+		//elseFlag = false;
 		
 		if (isCon) {
 			switch (condition) {
 			case IF:
 				flagForNextLevel = true;
-				ifFlag = true;
-				elseFlag = false;
+			//	ifFlag = true;
+			//	elseFlag = false;
 				break;
 			case ELSE:
 				flagForNextLevel = false;
-				ifFlag = false;
-				elseFlag = true;
+			//	ifFlag = false;
+			//	elseFlag = true;
 				stmtNo --;
 				break;
 			case WHILE:
 				flagForNextLevel = true;
+			//	ifFlag = false;
+			//	elseFlag = false;
 				break;
 			}
 
@@ -72,17 +75,17 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 		}
 
 		// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
-		if (endLoopNo > 0 && elseFlag != true) {
+		if (endLoopNo > 0 && condition != 2) {
 			nestLevel = nestLevel - endLoopNo;
 		}
 	}
 }
 
 void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
-     follow.setFollow(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, ifFlag, elseFlag);
+     follow.setFollow(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, condition);
 }
 void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
-	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, ifFlag, elseFlag);
+	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, condition);
 }
 //-------------------------------------get answer of follow
 std::vector<int> stmtTable::getFollow(int stmtNo) {

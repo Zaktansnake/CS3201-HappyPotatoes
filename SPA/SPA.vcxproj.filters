@@ -27,18 +27,6 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\source\PQL\Header\Clause.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\PQL\Header\ParseResult.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\PQL\Header\Pattern.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\PQL\Header\QueryEvaluator.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\PKB\Header\Affects.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
@@ -84,59 +72,11 @@
     <ClInclude Include="..\source\PKB\Header\VarTable.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\PQL\Header\QueriesAnswerStorage.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\PKB\Header\Calls.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="FollowsResult.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="ParentsResult.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="CallsResults.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="PatternResults.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="ModifiesResults.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="NextResults.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="ParentsStarResults.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="FollowsStarResult.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="UsesResults.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="ReturnResults.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
-    <ClInclude Include="ConditionResults.h">
-      <Filter>Header Files\PQL</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\source\PQL\Clause.cpp">
-      <Filter>Source Files\PQL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\PQL\ParseResult.cpp">
-      <Filter>Source Files\PQL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\PQL\Pattern.cpp">
-      <Filter>Source Files\PQL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\PQL\QueryEvaluator.cpp">
-      <Filter>Source Files\PQL</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\PKB\Affects.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -188,14 +128,8 @@
     <ClCompile Include="..\source\Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\PQL\QueriesAnswerStorage.cpp">
-      <Filter>Source Files\PQL</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\PKB\Calls.cpp">
       <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="ConditionResults.cpp">
-      <Filter>Source Files\PQL</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>

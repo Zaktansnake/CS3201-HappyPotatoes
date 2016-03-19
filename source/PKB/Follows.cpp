@@ -26,13 +26,13 @@ Follows::~Follows() {
 
 // if ifFlag = true and elseFlag = true --> in else statement
 // if ifFlag = true and elseFlag = flase --> in if then statement
-void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo, bool ifFlag, bool elseFlag) {
+void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo, int conditions) {
 	stmtRecord.push_back(nestLvl);
 	std::vector<int> temp;
 	if (stmtLine.compare("}") != 0 && stmtLine.size() != endLoopNo) {
-		if (elseFlag == false) {    // else { is not count as one stmt line
+	//	if (elseFlag == false) {    // else { is not count as one stmt line
           stmtString.insert(std::pair<int,string>(stmtNo,stmtLine));
-		}
+	//	}
         // begin of table, levelList is empty
 		if (levelList.empty()) {
 			temp.push_back(stmtNo);

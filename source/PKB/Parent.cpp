@@ -11,7 +11,10 @@ map<int, int> Parent::AnsMap;  //map<stmt#, index>
 std::vector<std::vector<int> > arrAns;
 std::stack<string> loopParent;
 std::stack<int> loopStmtNo;
+std::stack<int> loopStatus;
 map<int, string> stmtstring;
+static int conditions;
+bool firstCloseBracketOfIf = false;
 
 void setToParent(string stmtLine, int stmtNo);
 void deleteParent(int endloop);
@@ -23,10 +26,10 @@ Parent::Parent() {
 Parent::~Parent() {
 }
 
-void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop, bool ifFlag, bool elseFlag) {
-	// check whether is a loop parent "while""if""else"
+void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop, int condition) {
 	int index = 0;
 	int parent;
+	conditions = condition;
 	std::vector<int> temp;
 	if (stmtLine.compare("}") != 0) {
 		stmtstring.insert(pair<int, string>(stmtNo, stmtLine));
@@ -59,7 +62,7 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 		}
 	}
 
-	if (endLoop > 0 && ifFlag == false) {
+	if (endLoop > 0) {
 		deleteParent(endLoop);
 		deleteStmtNo(endLoop);
 	}
@@ -92,6 +95,10 @@ void deleteStmtNo(int endloop) {
 void setToParent(string stmtLine, int stmtNo) {
 	loopParent.push(stmtLine);
 	loopStmtNo.push(stmtNo);
+	if (conditions == 1) {  // this is if statement
+	    loopParent.push(stmtLine);
+		loopStmtNo.push(stmtNo);
+	}
 }
 
 bool Parent::isParent(int stmt1, int stmt2) {

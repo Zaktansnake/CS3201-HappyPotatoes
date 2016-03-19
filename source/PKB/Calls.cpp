@@ -46,7 +46,9 @@ std::unordered_set< std::pair<string, string>> Calls::getCallsSet() {
 	return CallsSet;
 }
 
-bool Calls::isCalls(string proc1, string proc2) {}
+bool Calls::isCalls(string proc1, string proc2) {
+    return true;
+}
 
 
 void Calls::printCallsTable() {
