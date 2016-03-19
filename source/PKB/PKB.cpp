@@ -44,6 +44,7 @@ vector<string> splitTheString(string line);
 static void calls(string procedurName, int stmtLine);
 void stmtLineForPattern(vector<string> line);
 void detectRightBracket();
+vector<int> getAllParents(vector<int> v);
 static inline std::string &ltrim(std::string &s);
 static inline std::string &rtrim(std::string &s);
 static inline std::string &trim(std::string &s);
@@ -295,19 +296,19 @@ void PKB::updateAllTables() {
 		string procB = get<1>(AllCallsStmt[i]);
 		int tempStmtLine = get<2>(AllCallsStmt[i]);
 
-		vector<int> tempParent = stmtTable::getParent(tempStmtLine); // error -> should call getParentStar
-		if (tempParent.size() > 0) {
-			for (int j = 0; j < tempParent.size(); j++) {
+		vector<int> getAllParent = getAllParents(stmtTable::getParent(tempStmtLine));
+		if (getAllParent.size() > 0) {
+			for (int j = 0; j < getAllParent.size(); j++) {
 				vector<string> tempModifies = ProcTable::getProcModifiesVar(procB);
 				for (int i = 0; i < tempModifies.size(); i++) {
 					VarTable::addDataToModifies(tempModifies[i], tempStmtLine);
-					VarTable::addDataToModifies(tempModifies[i], tempParent[j]);
+					VarTable::addDataToModifies(tempModifies[i], getAllParent[j]);
 				}
 
 				vector<string> tempUses = ProcTable::getProcUsesVar(procB);
 				for (int i = 0; i < tempUses.size(); i++) {
 					VarTable::addDataToUses(tempUses[i], tempStmtLine);
-					VarTable::addDataToUses(tempUses[i], tempParent[j]);
+					VarTable::addDataToUses(tempUses[i], getAllParent[j]);
 				}
 			}
 		}
@@ -324,6 +325,15 @@ void PKB::updateAllTables() {
 	}
 	//stmtTable::printParent();
 	VarTable::sortVarLeftAndRight();
+}
+
+vector<int> getAllParents(vector<int> v) {
+	vector<int> toReturn;
+	while (v.size() != 0) {
+		toReturn.push_back(v.at(0));
+		v = stmtTable::getParent(v.at(0));
+	}
+	return toReturn;
 }
 
 vector<string> splitTheString(string line) {
