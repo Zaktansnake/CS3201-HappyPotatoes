@@ -18,6 +18,18 @@ Patterns::Patterns() {
 Patterns::~Patterns() {
 }
 
+bool Patterns::compareAssignments(string assignment1, string assignment2) {
+	string augmentAssignment1 = patternAssignment(assignment1);
+	string augmentAssignment2 = patternAssignment(assignment2);
+
+	if (augmentAssignment1 == augmentAssignment2) {
+		return true;
+	}
+	else {
+		return false;
+	}
+}
+
 string Patterns::patternAssignment(string assignment) {
 	//In-order traversal is given by assignment statement
 	//To understand the depth of each node, we can do a left to right reading and put a bracket around trees have a variable and or constant 
@@ -25,9 +37,20 @@ string Patterns::patternAssignment(string assignment) {
 	//For example, we get a string assignment, we need to read it left to right, once we encounter a higher order of operation we bracket the variables aroud it
 	//Once completed, method will return the updated string to PKB for storage
 	string statement = assignment;
+	string underscore = "_";
+	size_t underscoreFound;
+	int underscorePos1, underscorePos2;
 
 	if (statement.size() <= 3) {
 		return statement;
+	}
+
+	if (statement.find(underscore) != std::string::npos) {
+		underscoreFound = statement.find(underscore);
+		underscorePos1 = underscoreFound;
+		underscoreFound = statement.find(underscore, underscoreFound + 1);
+		underscorePos2 = underscoreFound - underscorePos1;
+		statement.substr(underscorePos1, underscorePos2);
 	}
 
 	for (int i = 0; i < statement.size(); ++i) {

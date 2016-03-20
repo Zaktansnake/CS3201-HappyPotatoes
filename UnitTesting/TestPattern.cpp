@@ -15,7 +15,6 @@ namespace UnitTesting
 	{
 	public:
 		TEST_METHOD(TestP) {
-			/*
 			Patterns p;
 			string testPattern, expectedPattern, returnedPattern;
 
@@ -43,7 +42,6 @@ namespace UnitTesting
 			returnedPattern = p.patternAssignment(testPattern);
 
 			Assert::AreEqual(expectedPattern, returnedPattern);
-			*/
 		}
 	};
 }
