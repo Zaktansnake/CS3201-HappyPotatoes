@@ -360,7 +360,7 @@ void stmtLineForPattern(vector<string> line) {
 }
 
 void detectRightBracket() {
-	int currentParentLine;
+	int currentParentLine = 0;
 	pair<string, int> temp = bracstack.top();
 	int tempStmtNum = stmtLine;
 

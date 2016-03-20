@@ -6,6 +6,7 @@
 #include "../source/PKB/Header/Parser.h"
 #include "../source/PKB/Header/PKB.h"
 #include "../source/PKB/Header/stmtTable.h"
+#include "../source/PKB/Header/Parent.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -24,15 +25,17 @@ namespace UnitTesting
 			string expectedChildren;
 			string resultChildren;
 			std::vector<int> resultChild;
-			int expected_result01 = 4;
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source02.txt");
-			vector<int> getParent = stmtTable::getParent(5);
+			int expected_result01 = 14;
+			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+        	vector<int> getParent = stmtTable::getParent(24);
 			result = getParent.front();
+			Parent pa;
+			pa.PrintProcTable();
 
 			Assert::AreEqual(expected_result01, result);
 
-			expected_result01 = 0;
-			getParent = stmtTable::getParent(7);
+			expected_result01 = 4;
+			getParent = stmtTable::getParent(25);
 			if (getParent.size() == 0) {
 				result = 0;
 			}
@@ -43,14 +46,18 @@ namespace UnitTesting
 
 			Assert::AreEqual(expected_result01, result);
 
-			expected_result01 = 0;
-			getParent = stmtTable::getParent(1);
+			expected_result01 = 28;
+			getParent = stmtTable::getParent(30);
 
 			if (getParent.size() == 0) {
 				result = 0;
 			}
+			else {
+				result = getParent.front();
+			}
 
 			Assert::AreEqual(expected_result01, result);
+/*			
 			//test for getParent  for while  and assign
 
 			expected_result01 = 0;
@@ -127,7 +134,7 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expectedChildren, resultChildren);
-			
+		*/	
 		}
 
 		TEST_METHOD(TestFollow)

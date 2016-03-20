@@ -8,6 +8,7 @@
 
 using namespace std;
 
+
 static int nestLevel = 0;
 bool flagForNextLevel = false;
 bool loopFlag;
@@ -34,6 +35,15 @@ static stmtTable* getFollowTable();
 
 //add data
 void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
+    stmtLine.erase(std::remove(stmtLine.begin(), stmtLine.end(), '\t'),stmtLine.end());
+	size_t endpos = stmtLine.find_last_not_of(" ");
+	if (string::npos != endpos) {
+		stmtLine = stmtLine.substr(0, endpos +1);
+	}
+	size_t startpos = stmtLine.find_first_not_of(" ");
+	if (string::npos != endpos) {
+		stmtLine = stmtLine.substr(startpos);
+	}
     // check if it is a condition stmt
 	if (stmtLine.compare("{") != 0) {
 		bool isCon = isCondition(stmtLine);

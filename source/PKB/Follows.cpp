@@ -31,20 +31,22 @@ Follows::~Follows() {
 void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo, int conditions) {
 	stmtRecord.push_back(nestLvl);
 	std::vector<int> temp;
-	if (conditions == 1) { // if stmtment
+	if (conditions != 0) { // if stmtment
 	   int num = stmtNo + 1;
 	   stmtlistMap.insert(pair<int, int> (num, -1));
 	}
-	else if (conditions == 2) {
-		int num = stmtNo + 1;
-		stmtlistMap.insert(pair<int, int>(num, -1));
-	}
+//	else if (conditions == 2) {
+//		int num = stmtNo + 1;
+//		stmtlistMap.insert(pair<int, int>(num, -1));
+//	}
+	
 	if (loopFlag) {
 		
 		    int i = stmtNo + 1;
 			stackforCondition.push(i);
 	}
-	if (stmtLine.compare("\t}") != 0 && stmtLine.size() != endLoopNo && conditions != 2) {
+	int size = stmtLine.size();
+	if (stmtLine.size() != endLoopNo && conditions != 2) {
 	//	if (elseFlag == false) {    // else { is not count as one stmt line
           stmtString.insert(std::pair<int,string>(stmtNo,stmtLine));
 	//	}

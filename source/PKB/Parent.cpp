@@ -27,11 +27,12 @@ Parent::~Parent() {
 }
 
 void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLoop, int condition) {
+	
 	int index = 0;
 	int parent;
 	conditions = condition;
 	std::vector<int> temp;
-	if (stmtLine.compare("\t}") != 0 || stmtLine.compare("\t}") != 0) {
+	if (stmtLine.compare("}") != 0 || stmtLine.compare("\t}") != 0) {
 		stmtstring.insert(pair<int, string>(stmtNo, stmtLine));
 		if (loopFlag && endLoop == 0) {   // when there is a condition stmt and it is not end stmt for loop
 										  // check whether ths stmt is a child of other stmt
@@ -93,8 +94,11 @@ void deleteStmtNo(int endloop) {
 }
 
 void setToParent(string stmtLine, int stmtNo) {
-	loopParent.push(stmtLine);
-	loopStmtNo.push(stmtNo);
+	if (conditions != 2) {
+        loopParent.push(stmtLine);
+	    loopStmtNo.push(stmtNo);
+	}
+	
 	if (conditions == 1) {  // this is if statement
 	    loopParent.push(stmtLine);
 		loopStmtNo.push(stmtNo);
@@ -115,6 +119,7 @@ bool Parent::isParent(int stmt1, int stmt2) {
 
 std::vector<int> Parent::getParent(int stmtNo) {
     int index = 0;
+	PrintProcTable();
 
 	map<int, int>::iterator iter;
     std::vector<int> result;
@@ -239,4 +244,14 @@ std::vector<int> Parent::getChildForAssign(int stmtNo) {
 		}
 	}
 	return ans;
+}
+
+void Parent::PrintProcTable() {
+	for (map<int, int>::iterator it = AnsMap.begin(); it != AnsMap.end(); ++it) {
+		cout << it->first <<" " << it->second << endl ;
+	}
+	for (map<int, string>::iterator it = stmtstring.begin(); it != stmtstring.end(); ++it) {
+		cout << it->first << " " << it->second << endl;
+	}
+
 }
