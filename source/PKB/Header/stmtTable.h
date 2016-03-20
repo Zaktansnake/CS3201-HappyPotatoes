@@ -20,6 +20,7 @@ public:
 
 	// add data
 	static void addStmtTable (string stmtLine, int stmtNo);
+	static void setProcedure(string stmtLine, int stmtNo);
 	
 	// add data to follow table
 	static void addFollowTable(string stmtLine, int stmtNo, int nestLevel);

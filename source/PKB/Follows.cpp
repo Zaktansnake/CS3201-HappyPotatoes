@@ -29,7 +29,10 @@ Follows::~Follows() {
 // if ifFlag = true and elseFlag = true --> in else statement
 // if ifFlag = true and elseFlag = flase --> in if then statement
 void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo, int conditions) {
-	stmtRecord.push_back(nestLvl);
+	if (stmtLine.size() != endLoopNo && conditions != 2) {
+        stmtRecord.push_back(nestLvl);
+	}
+	
 	std::vector<int> temp;
 	if (conditions != 0) { // if stmtment
 	   int num = stmtNo + 1;
@@ -111,7 +114,7 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 	if (stmtNo >= stmtRecord.size()) {
 		return ans;
 	}
-	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
+	int level = stmtRecord.at(stmtNo-1); // get the nesting level of the vector
 	if (level > levelList.size()) {
 		cout << "Error. Wrong stmtRecord." << endl;
 		PKB::abort();
@@ -138,6 +141,7 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 			break;
 		}
 	}
+	return ans;
 }
 
 std::vector<int> Follows::getFollowFan(int stmtNo) {
@@ -173,6 +177,7 @@ std::vector<int> Follows::getFollowFan(int stmtNo) {
 			break;
 		}
 	}
+	return ans;
 }
 
 bool Follows::isFollows(int s1, int s2) {
@@ -284,6 +289,9 @@ bool isSameStmtList(int s1, int s2) {
 	if (parentS1.size() == 0 && parentS2.size() == 0) {
 		return true;
 	}
+	if (parentS1.size() != parentS2.size()) {
+		return false;
+	}
 	if ((parentS1.at(0) == parentS2.at(0))) {
 		for (map<int, int>::iterator it = stmtlistMap.begin(); it != stmtlistMap.end(); ++it) {
 			if (it->first <= s1 && it->second >= s1) {
@@ -307,4 +315,11 @@ bool isSameStmtList(int s1, int s2) {
 //	else {
 //		return false;
 //	}
+}
+
+void Follows::PrintProcTable() {
+	for (map<int, int>::iterator it = stmtlistMap.begin(); it != stmtlistMap.end(); ++it) {
+		cout << it->first << " " << it->second << endl;
+	}
+
 }

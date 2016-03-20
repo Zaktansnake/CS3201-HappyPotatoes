@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 #include <algorithm>
+#include <map>
+#include <stack>
 
 #include "./Header/stmtTable.h";
 
@@ -21,6 +23,8 @@ std::vector<int> stmtLst;
 int condition;
 Follows follow;
 Parent parent;
+map<int,int> startAndEndOfProcedure;
+stack<int> procedureStack;
 
 bool isCondition(string stmtLine);
 
@@ -34,40 +38,57 @@ enum stmtType {
 static stmtTable* getFollowTable();
 
 //add data
+void stmtTable::setProcedure(string stmtLine, int stmtNo) {
+	if (stmtLine.find("procedure ") != string::npos) {
+		if (startAndEndOfProcedure.size() == 0) {
+			startAndEndOfProcedure.insert(pair<int, int>(stmtNo + 1, -1));
+			procedureStack.push(stmtNo+1);
+		}
+		else {
+			startAndEndOfProcedure.insert(pair<int, int>(stmtNo + 1, -1));
+			int index = procedureStack.top();
+			procedureStack.pop();
+			procedureStack.push(stmtNo+1);
+			startAndEndOfProcedure.at(index) = stmtNo - 1;
+		}
+	}
+}
+
+// add data to stmtTable
 void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
-    stmtLine.erase(std::remove(stmtLine.begin(), stmtLine.end(), '\t'),stmtLine.end());
+	stmtLine.erase(std::remove(stmtLine.begin(), stmtLine.end(), '\t'), stmtLine.end());
 	size_t endpos = stmtLine.find_last_not_of(" ");
 	if (string::npos != endpos) {
-		stmtLine = stmtLine.substr(0, endpos +1);
+		stmtLine = stmtLine.substr(0, endpos + 1);
 	}
 	size_t startpos = stmtLine.find_first_not_of(" ");
 	if (string::npos != endpos) {
 		stmtLine = stmtLine.substr(startpos);
 	}
-    // check if it is a condition stmt
+	// check if it is a condition stmt
 	if (stmtLine.compare("{") != 0) {
 		bool isCon = isCondition(stmtLine);
 		loopFlag = false;
 		//ifFlag = false;
 		//elseFlag = false;
-		
+
 		if (isCon) {
 			switch (condition) {
 			case IF:
 				flagForNextLevel = true;
-			//	ifFlag = true;
-			//	elseFlag = false;
+				//	ifFlag = true;
+				//	elseFlag = false;
 				break;
 			case ELSE:
 				flagForNextLevel = false;
-			//	ifFlag = false;
-			//	elseFlag = true;
-			//	stmtNo --;
+				//	ifFlag = false;
+				//	elseFlag = true;
+				//	stmtNo --;
 				break;
 			case WHILE:
 				flagForNextLevel = true;
-			//	ifFlag = false;
-			//	elseFlag = false;
+				//	ifFlag = false;
+				//	elseFlag = false;
 				break;
 			}
 
@@ -75,20 +96,27 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 		}
 
 		endLoopNo = std::count(stmtLine.begin(), stmtLine.end(), '}');
+		if (nestLevel <0) nestLevel = 0;
 		addFollowTable(stmtLine, stmtNo, nestLevel);
 		addParentTable(stmtLine, stmtNo, nestLevel);
-		
-		
+
+
 
 
 		if (flagForNextLevel == true) {
 			nestLevel++;
 			flagForNextLevel = false;
 		}
+		if (condition == 2 && endLoopNo == 0) {
+			nestLevel++;
+		}
 
 		// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
 		if (endLoopNo > 0 && condition != 2) {
 			nestLevel = nestLevel - endLoopNo;
+			if (nestLevel < 0) {
+				nestLevel == 0;
+			}
 		}
 	}
 }
@@ -100,33 +128,72 @@ void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
 	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, condition);
 }
 //-------------------------------------get answer of follow
+std::vector<int> checkWithProcedure(int stmtNo, vector<int> ans) {
+	std::vector<int>result;
+	int start;
+	int end;
+	for (map<int, int>::iterator it = startAndEndOfProcedure.begin(); it != startAndEndOfProcedure.end(); ++it) {
+		if (it->first <= stmtNo && it->second >= stmtNo) {
+		   start = it->first;
+		   end = it->second;
+		   break;
+		}
+	}
+		    
+	for (int i = 0; i < ans.size(); i++) {
+		int num = ans.at(i);
+		if (start <= num && end >= num) {
+			result.push_back(num);
+		}
+	}
+	return result;
+}
+
+
 std::vector<int> stmtTable::getFollow(int stmtNo) {
     std::vector<int> ans = follow.getFollow(stmtNo);
+	ans = checkWithProcedure(stmtNo,ans);
     return ans;
 }
 
 std::vector<int> stmtTable::getFollowFan(int stmtNo) {
 	std::vector<int> ans = follow.getFollowFan(stmtNo);
+	ans = checkWithProcedure(stmtNo, ans);
 	return ans;
 }
 
 bool stmtTable::isFollow(int s1, int s2) {
-	return follow.isFollows(s1,s2);
+	if (follow.isFollows(s1, s2)) {
+		vector<int>temp;
+		temp.push_back(s2);
+		vector<int> ans = checkWithProcedure(s1, temp);
+		if (ans.size() == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	return false;
 }
 std::vector<int> stmtTable::getFollowForWhile(int stmtNo) {
 	std::vector<int> ans = follow.getFollowForWhile(stmtNo);
+	ans = checkWithProcedure(stmtNo, ans);
 	return ans;
 }
 std::vector<int> stmtTable::getFollowFanForWhile(int stmtNo) {
 	std::vector<int> ans = follow.getFollowFanForWhile(stmtNo);
+	ans = checkWithProcedure(stmtNo, ans);
 	return ans;
 }
 std::vector<int> stmtTable::getFollowForAssign(int stmtNo) {
 	std::vector<int> ans = follow.getFollowForAssign(stmtNo);
+	ans = checkWithProcedure(stmtNo, ans);
 	return ans;
 }
 std::vector<int> stmtTable::getFollowFanForAssign(int stmtNo) {
 	std::vector<int> ans = follow.getFollowFanForAssign(stmtNo);
+	ans = checkWithProcedure(stmtNo, ans);
 	return ans;
 }
 

@@ -24,4 +24,6 @@ public:
 	std::vector<int> Follows::getFollowFanForWhile(int stmtNo);
 	std::vector<int> Follows::getFollowForAssign(int stmtNo);
 	std::vector<int> Follows::getFollowFanForAssign(int stmtNo);
+
+	void Follows::PrintProcTable();
 };

@@ -94,6 +94,7 @@ void findMethod(string file_contents) {
 			stmtLine--;
 		}
 		procedure();
+		stmtTable::setProcedure(str, stmtLine);
 	}
 	else if (word.compare("if") == 0 || word.compare("else") == 0
 		|| (word.compare("call") == 0) || (word.compare("while") == 0)) {
@@ -150,6 +151,7 @@ void procedure() {
 		}
 		procname = v[1];
 		ProcTable::addTableData(v[1]);
+		
 		
 	}
 }
