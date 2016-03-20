@@ -20,4 +20,6 @@ public:
 	static vector<string> getPatternWithVar(string left, string right);
 	static bool isPattern(string variable, string key);
 
+	static void updatePatternTable();
+
 };
