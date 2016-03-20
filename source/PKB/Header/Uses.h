@@ -10,9 +10,6 @@ using namespace std;
 class Uses
 {
 public:
-	// constructors
-	Uses();
-	~Uses();
 
 	// get UsesTable
 	static std::vector<int> getUsesTable(string varName);
@@ -20,10 +17,14 @@ public:
 	// add item to UsesTable
 	static void addUsesTable(string varName, int stmtLine);
 
-	static bool isContains(string varName);
-	static int findPosition(string varName);
-
 	static void printMap02();
 
 private:
+
+	// constructors
+	Uses();
+	~Uses();
+
+	static bool isContains(string varName);
+	static int findPosition(string varName);
 };
