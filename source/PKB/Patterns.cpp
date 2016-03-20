@@ -38,6 +38,7 @@ string Patterns::patternAssignment(string assignment) {
 	//Once completed, method will return the updated string to PKB for storage
 	string statement = assignment;
 	string underscore = "_";
+	string underscoreStatement;
 	size_t underscoreFound;
 	int underscorePos1, underscorePos2;
 
@@ -50,7 +51,7 @@ string Patterns::patternAssignment(string assignment) {
 		underscorePos1 = underscoreFound;
 		underscoreFound = statement.find(underscore, underscoreFound + 1);
 		underscorePos2 = underscoreFound - underscorePos1;
-		statement.substr(underscorePos1, underscorePos2);
+		underscoreStatement = statement.substr(underscorePos1, underscorePos2);
 	}
 
 	for (int i = 0; i < statement.size(); ++i) {

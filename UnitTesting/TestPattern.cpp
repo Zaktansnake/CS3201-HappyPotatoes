@@ -42,6 +42,12 @@ namespace UnitTesting
 			returnedPattern = p.patternAssignment(testPattern);
 
 			Assert::AreEqual(expectedPattern, returnedPattern);
+
+			testPattern = "_\"a*b+(c-d)\"_";
+			expectedPattern = "_\"(a*b)+(c-d)\"_";
+			returnedPattern = p.patternAssignment(testPattern);
+
+			Assert::AreEqual(expectedPattern, returnedPattern);
 		}
 	};
 }
