@@ -9,14 +9,15 @@ using namespace std;
 class PatternTable
 {
 public:
-	//------------------isPattern-----------------
-	//get data from var table 
-	static std::vector<int> getVariable (string variable);
+
+	static std::vector<int> getModifiesVariable(string variable);
+	static std::vector<int> getUsesVariable(string variable);
 	static string getStatementLine(int stmtNo);
-    static bool isPattern(string variable, string key);
+	static void setAssignTable();
+	static void setAssignNum();
 
+	static vector<int> getPatternAssignNum(string left, string right);
+	static vector<string> getPatternWithVar(string left, string right);
+	static bool isPattern(string variable, string key);
 
-	//----------------getAssign------------------------------------
-	static std::vector<int> getAssignWithVar(string variable,string testkey);
-	static std::vector<int> getAssign(string testkey);
 };
