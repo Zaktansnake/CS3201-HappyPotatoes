@@ -15,6 +15,7 @@ public:
 
 	void setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLopp, int condition);
 	std::vector<int> getParent(int stmtNo);
+	std::vector<int> getParentStar(int stmtNo);  // to get all its parents
 	std::vector<int> getChild(int stmtNo);
 
 	std::vector<int> Parent::getParentForWhile(int stmtNo);
@@ -25,10 +26,11 @@ public:
 	bool isParent(int stmt1, int stmt2);
 
 	static std::map<int, int> AnsMap;
+	static std::map<int, vector<int>> AnsStarMap;
 
 
 
 
 	// print out the call answer table
-	void PrintProcTable();
+//	void PrintProcTable();
 };

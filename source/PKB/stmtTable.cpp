@@ -210,6 +210,11 @@ std::vector<int> stmtTable::getChild(int stmtNo) {
 	return ans;
 }
 
+std::vector<int> stmtTable::getParentStar(int stmtNo) {
+	std::vector<int> ans = parent.getParentStar(stmtNo);
+	return ans;
+}
+
 bool stmtTable::isParent(int s1, int s2) {
 	return parent.isParent(s1,s2);
 }

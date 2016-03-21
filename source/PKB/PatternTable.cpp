@@ -134,7 +134,7 @@ vector<int> getPatternResult(string line1, string line2, bool left, bool right) 
 	return ans;
 }
 
-vector<string> getPatternResultWithVar(string line1, string line2, bool left, bool right) {}
+// vector<string> getPatternResultWithVar(string line1, string line2, bool left, bool right) {}
 
 int checkLocationUnderscore(string line1, string line2) {
 	int result = 0;

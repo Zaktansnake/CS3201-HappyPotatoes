@@ -16,8 +16,8 @@ namespace UnitTesting
 	{
 	public:
 		TEST_METHOD(TestParent) {
-		    
-			
+
+
 			// test for getParent
 			int result;
 			bool isparent;
@@ -27,10 +27,16 @@ namespace UnitTesting
 			std::vector<int> resultChild;
 			int expected_result01 = 26;
 			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
-        	vector<int> getParent = stmtTable::getParent(28);
-			result = getParent.front();
-			Parent pa;
-			pa.PrintProcTable();
+			vector<int> getParent = stmtTable::getParent(28);
+			if (getParent.size() == 0) {
+				result = 0;
+			}
+			else {
+				result = getParent.front();
+			}
+
+			//			Parent pa;
+			//			pa.PrintProcTable();
 
 			Assert::AreEqual(expected_result01, result);
 
@@ -40,9 +46,9 @@ namespace UnitTesting
 				result = 0;
 			}
 			else {
-                result = getParent.front();
+				result = getParent.front();
 			}
-			
+
 
 			Assert::AreEqual(expected_result01, result);
 
@@ -57,6 +63,18 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expected_result01, result);
+
+
+			string expected_star = "754";
+			getParent = stmtTable::getParentStar(8);
+			string actualResult;
+
+			for (std::vector<int>::iterator it = getParent.begin(); it != getParent.end(); ++it) {
+				actualResult.append(std::to_string(*it));
+			}
+
+			Assert::AreEqual(expected_star, actualResult);
+
 /*			
 			//test for getParent  for while  and assign
 
