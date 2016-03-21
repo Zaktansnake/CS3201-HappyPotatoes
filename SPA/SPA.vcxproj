@@ -32,6 +32,7 @@
     <ClInclude Include="..\source\PQL\Header\Pattern.h" />
     <ClInclude Include="..\source\PQL\Header\QueriesAnswerStorage.h" />
     <ClInclude Include="..\source\PQL\Header\QueryEvaluator.h" />
+    <ClInclude Include="..\source\PQL\Header\With.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\Main.cpp" />
@@ -57,6 +58,7 @@
     <ClCompile Include="..\source\PQL\Pattern.cpp" />
     <ClCompile Include="..\source\PQL\QueriesAnswerStorage.cpp" />
     <ClCompile Include="..\source\PQL\QueryEvaluator.cpp" />
+    <ClCompile Include="..\source\PQL\With.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{DC21A1EA-D2C6-4D14-A2B4-E025B64BDE81}</ProjectGuid>

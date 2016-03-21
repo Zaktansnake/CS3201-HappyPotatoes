@@ -90,6 +90,9 @@
     <ClInclude Include="..\source\PQL\Header\QueryEvaluator.h">
       <Filter>Header Files\PQL</Filter>
     </ClInclude>
+    <ClInclude Include="..\source\PQL\Header\With.h">
+      <Filter>Header Files\PQL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\source\PKB\Affects.cpp">
@@ -159,6 +162,9 @@
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PQL\QueryEvaluator.cpp">
+      <Filter>Source Files\PQL</Filter>
+    </ClCompile>
+    <ClCompile Include="..\source\PQL\With.cpp">
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
   </ItemGroup>

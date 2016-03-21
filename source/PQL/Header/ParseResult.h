@@ -4,11 +4,13 @@
 #include <unordered_map>
 #include "Clause.h"
 #include "Pattern.h"
+#include "With.h"
 
 using namespace std;
 typedef vector<string> ParameterSet;
 typedef vector<Clause> ClauseSet;
 typedef vector<Pattern> PatternSet;
+typedef vector<With> WithSet;
 
 class ParseResult {
 public:
@@ -16,13 +18,16 @@ public:
 	ParameterSet getSelectParameter(); 
 	ClauseSet getClauses();
 	PatternSet getPatterns();
+	WithSet getWithClauses();
 
 	// constructors
 	ParseResult();
 	ParseResult(ParameterSet);
 	ParseResult(ParameterSet, ClauseSet);
+	ParseResult(ParameterSet, ClauseSet, WithSet);
 	ParseResult(ParameterSet, PatternSet);
 	ParseResult(ParameterSet, ClauseSet, PatternSet);
+	ParseResult(ParameterSet, ClauseSet, PatternSet, WithSet);
 
 	// originally private but made public for unit test
 	static bool checkAndParseDeclaration(string, unordered_map<string, string>&);
@@ -39,4 +44,5 @@ private:
 	ParameterSet selectParameter_;
 	ClauseSet condClauses_;
 	PatternSet patterns_;
+	WithSet withClauses_
 };
