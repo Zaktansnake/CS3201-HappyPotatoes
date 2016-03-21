@@ -81,7 +81,7 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 		for (int i = 0; i < endLoopNo; i++) {
 			stmtListNo--;
 			if (stmtListNo < 0) {
-				stmtListNo = 0;
+				stmtListNo = 1;
 				break;
 			}
 			if (stackforCondition.size() != 0) {
@@ -282,6 +282,8 @@ bool isSameStmtList(int s1, int s2) {
 	std::vector<int> parentS2;
 	parentS1 = pa.getParent(s1);
 	parentS2 = pa.getParent(s2);
+	int start = 0;
+	int end = 0 ;
 	bool result = false;
 	if (s1 == s2) {
 		return false;
@@ -295,14 +297,19 @@ bool isSameStmtList(int s1, int s2) {
 	if ((parentS1.at(0) == parentS2.at(0))) {
 		for (map<int, int>::iterator it = stmtlistMap.begin(); it != stmtlistMap.end(); ++it) {
 			if (it->first <= s1 && it->second >= s1) {
-				if (it->first <= s2 && it->second >= s2) {  // it is in the same stmtlist
-				   return true;
+				if (it->first > start) {
+					start = it->first;
+					end = it->second;
+					result = true;
 				}
 			}
 		}
-		return false;
+		if (result && start <= s2 && end >= s2) {  // it is in the same stmtlist
+			return true;
+		}
+		
 	}
-
+	return false;
 //	if (parentS1.size() == 0 && parentS2.size() == 0) {
 //	    return true;
 //	}
