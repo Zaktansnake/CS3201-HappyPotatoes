@@ -17,9 +17,17 @@ public:
 	static void setAssignNum();
 
 	static vector<int> getPatternAssignNum(string left, string right);
-	static vector<string> getPatternWithVar(string left, string right);
+	static vector<int> getPatternIfsNum(string left, string middle, string right);
+	static vector<int> getPatternWhileNum(string left, string right);
 	static bool isPattern(string variable, string key);
 
 	static void updatePatternTable();
+
+private:
+
+	static vector<int> getPatternResult(string line1, string line2, bool leftUnderScore, bool rightUnderScore);
+	static int checkLocationUnderscore(string line1, string line2);
+	static vector<int> setLeftAns(string line1, bool left);
+	static vector<int> setRightAns(string line2, bool right);
 
 };

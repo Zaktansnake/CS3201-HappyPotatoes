@@ -15,6 +15,7 @@
     <ClInclude Include="..\source\PKB\Header\AST.h" />
     <ClInclude Include="..\source\PKB\Header\Calls.h" />
     <ClInclude Include="..\source\PKB\Header\CFG.h" />
+    <ClInclude Include="..\source\PKB\Header\ConstantTable.h" />
     <ClInclude Include="..\source\PKB\Header\Follows.h" />
     <ClInclude Include="..\source\PKB\Header\GNode.h" />
     <ClInclude Include="..\source\PKB\Header\Modifies.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="..\source\PKB\AST.cpp" />
     <ClCompile Include="..\source\PKB\Calls.cpp" />
     <ClCompile Include="..\source\PKB\CFG.cpp" />
+    <ClCompile Include="..\source\PKB\ConstantTable.cpp" />
     <ClCompile Include="..\source\PKB\DesignExtractor.cpp" />
     <ClCompile Include="..\source\PKB\Follows.cpp" />
     <ClCompile Include="..\source\PKB\GNode.cpp" />
