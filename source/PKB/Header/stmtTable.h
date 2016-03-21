@@ -41,6 +41,7 @@ public:
 	// get data from parent
 	static std::vector<int> stmtTable::getParent(int stmtNo);
 	static std::vector<int> stmtTable::getChild(int stmtNo);
+	static std::vector<int> stmtTable::getParentStar(int stmtNo);
 	static bool isParent(int s1, int s2);
 
 	static std::vector<int> stmtTable::getParentForWhile(int stmtNo);

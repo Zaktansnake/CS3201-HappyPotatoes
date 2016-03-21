@@ -8,6 +8,7 @@
 using namespace std;
 
 map<int, int> Parent::AnsMap;  //map<stmt#, index>
+map<int, vector<int>> Parent::AnsStarMap;
 std::vector<std::vector<int> > arrAns;
 std::stack<string> loopParent;
 std::stack<int> loopStmtNo;
@@ -17,6 +18,7 @@ static int conditions;
 bool firstCloseBracketOfIf = false;
 
 void setToParent(string stmtLine, int stmtNo);
+void storeParentStar(int stmtNo);
 void deleteParent(int endloop);
 void deleteStmtNo(int endloop);
 
@@ -45,6 +47,7 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			}
 			setToParent(stmtLine, stmtNo);  //set it become a parent
 			AnsMap.insert(pair<int, int>(stmtNo, parent));
+			storeParentStar(stmtNo);
 		}
 		else {
 			// if there is not a loop condition 
@@ -60,6 +63,7 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			}
 
 			AnsMap.insert(pair<int, int>(stmtNo, parent));
+			storeParentStar(stmtNo);
 		}
 	}
 
@@ -67,6 +71,29 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 		deleteParent(endLoop);
 		deleteStmtNo(endLoop);
 	}
+}
+
+void storeParentStar(int stmtNo) {
+    stack<int> temp = loopStmtNo;
+	vector<int> ans;
+	bool flag = false;
+	while (loopStmtNo.size() != 0) {
+		for (int i = 0; i < ans.size(); i++) {
+			if (ans.at(i) == loopStmtNo.top()) {
+				loopStmtNo.pop();
+				flag = true;
+				break;
+			}
+		}
+		if (!flag) {
+			ans.push_back(loopStmtNo.top());
+			loopStmtNo.pop();
+		}
+		flag = false;
+		
+	}
+	Parent::AnsStarMap.insert(pair<int,vector<int>>(stmtNo,ans));
+	loopStmtNo = temp;
 }
 
 void deleteParent(int endloop) {
@@ -119,7 +146,6 @@ bool Parent::isParent(int stmt1, int stmt2) {
 
 std::vector<int> Parent::getParent(int stmtNo) {
     int index = 0;
-	PrintProcTable();
 
 	map<int, int>::iterator iter;
     std::vector<int> result;
@@ -157,6 +183,23 @@ std::vector<int> Parent::getChild(int stmtNo) {
 			   result.push_back(iter->first);
 			}
 		}
+	}
+	return result;
+}
+
+std::vector<int> Parent::getParentStar(int stmtNo) {
+	map<int, vector<int>>::iterator iter;
+	std::vector<int> result;
+
+	if (stmtNo > AnsStarMap.size()) {
+		return result;
+	}
+	iter = AnsStarMap.find(stmtNo);
+	if (iter != AnsStarMap.end()) {
+		result = iter->second;
+	}
+	else {
+		return result;
 	}
 	return result;
 }
@@ -245,7 +288,7 @@ std::vector<int> Parent::getChildForAssign(int stmtNo) {
 	}
 	return ans;
 }
-
+/*
 void Parent::PrintProcTable() {
 	for (map<int, int>::iterator it = AnsMap.begin(); it != AnsMap.end(); ++it) {
 		cout << it->first <<" " << it->second << endl ;
@@ -255,3 +298,4 @@ void Parent::PrintProcTable() {
 	}
 
 }
+*/

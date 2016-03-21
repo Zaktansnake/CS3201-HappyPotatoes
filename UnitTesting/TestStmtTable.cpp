@@ -16,8 +16,8 @@ namespace UnitTesting
 	{
 	public:
 		TEST_METHOD(TestParent) {
-		    
-			
+
+
 			// test for getParent
 			int result;
 			bool isparent;
@@ -25,12 +25,18 @@ namespace UnitTesting
 			string expectedChildren;
 			string resultChildren;
 			std::vector<int> resultChild;
-			int expected_result01 = 14;
+			int expected_result01 = 26;
 			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
-        	vector<int> getParent = stmtTable::getParent(24);
-			result = getParent.front();
-			Parent pa;
-			pa.PrintProcTable();
+			vector<int> getParent = stmtTable::getParent(28);
+			if (getParent.size() == 0) {
+				result = 0;
+			}
+			else {
+				result = getParent.front();
+			}
+
+			//			Parent pa;
+			//			pa.PrintProcTable();
 
 			Assert::AreEqual(expected_result01, result);
 
@@ -40,9 +46,9 @@ namespace UnitTesting
 				result = 0;
 			}
 			else {
-                result = getParent.front();
+				result = getParent.front();
 			}
-			
+
 
 			Assert::AreEqual(expected_result01, result);
 
@@ -57,6 +63,18 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expected_result01, result);
+
+
+			string expected_star = "754";
+			getParent = stmtTable::getParentStar(8);
+			string actualResult;
+
+			for (std::vector<int>::iterator it = getParent.begin(); it != getParent.end(); ++it) {
+				actualResult.append(std::to_string(*it));
+			}
+
+			Assert::AreEqual(expected_star, actualResult);
+
 /*			
 			//test for getParent  for while  and assign
 
@@ -150,7 +168,7 @@ namespace UnitTesting
 
 			// test for getFollow
 			int expected_result01 = 0;
-			vector<int> getFollow = stmtTable::getFollow(30);
+			vector<int> getFollow = stmtTable::getFollow(28);
 			if (getFollow.size() == 0) {
 				result = 0;
 			}
@@ -160,11 +178,11 @@ namespace UnitTesting
 			
 
 			Assert::AreEqual(expected_result01, result);
-/*
+
 			result = 0;
 			getFollow.clear();
 			expected_result01 = 0;
-			getFollow = stmtTable::getFollow(5);
+			getFollow = stmtTable::getFollow(4);
 
 			if (getFollow.size() == 0) {
 				result = 0;
@@ -178,7 +196,7 @@ namespace UnitTesting
 			//test for getFollowForWhile
 			expected_result01 = 0;
 			std::vector<int>getFollowForWhile;
-			getFollowForWhile = stmtTable::getFollowForWhile(3);
+			getFollowForWhile = stmtTable::getFollowForWhile(7);
 
 			if (getFollowForWhile.size() == 0) {
 				result = 0;
@@ -189,9 +207,9 @@ namespace UnitTesting
 
 			Assert::AreEqual(expected_result01, result);
 			
-			expected_result01 = 0;
+			expected_result01 = 7;
 			getFollowForWhile.clear();
-			getFollowForWhile = stmtTable::getFollowForWhile(4);
+			getFollowForWhile = stmtTable::getFollowForWhile(6);
 
 			if (getFollowForWhile.size() == 0) {
 				result = 0;
@@ -206,9 +224,9 @@ namespace UnitTesting
 			//Test for getFollowFor assign
 			string expected_result02;
 			string resultString;
-			expected_result02 = "2";
+			expected_result02 = "18";
 			getFollowForWhile.clear();
-			getFollowForWhile = stmtTable::getFollowFanForAssign(3);
+			getFollowForWhile = stmtTable::getFollowFanForAssign(19);
 
 			for (std::vector<int>::iterator it = getFollowForWhile.begin(); it != getFollowForWhile.end(); ++it) {
 				resultString.append(std::to_string(*it));
@@ -222,7 +240,7 @@ namespace UnitTesting
 			
 			expected_result01 = 0;
 			getFollowForWhile.clear();
-			getFollowForWhile = stmtTable::getFollowForAssign(4);
+			getFollowForWhile = stmtTable::getFollowForAssign(8);
 
 			if (getFollowForWhile.size() == 0) {
 				result = 0;
@@ -241,8 +259,8 @@ namespace UnitTesting
 			Assert::AreEqual(expectedIsFollow, resultIsFollow);
 			
 			//test for follow start
-			expectFollowFan = 0;
-			followFan = stmtTable::getFollowFan(1);
+			expectFollowFan = 6;
+			followFan = stmtTable::getFollowFan(7);
 
 			if (followFan.size() == 0) {
 				resultFollowFan = 0;
@@ -252,7 +270,7 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expectFollowFan, resultFollowFan);
-*/
+
 		}  
 	}; 
 }
