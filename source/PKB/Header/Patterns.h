@@ -15,6 +15,7 @@ public:
 	Patterns();
 	~Patterns();
 
+	static bool compareAssignments(string assignment1, string assignment2);
 	static string patternAssignment(string assignment);
 
 private:

@@ -20,6 +20,7 @@
 #include "./Header/ProcTable.h"
 #include "./Header/VarTable.h"
 #include "./Header/stmtTable.h"
+#include "./Header/PatternTable.h"
 #include "Header\CFG.h"
 
 using namespace std;
@@ -282,16 +283,20 @@ static void calls(string str, int stmtLine) {
 }
 
 void PKB::updateTables() {
-	// parse the assign table to Patterns
-	// update uses table one more time
 	VarTable::updateModifiesUsesTables();
 	ProcTable::updateProcCallsTables();
 	PKB::updateAllTables();
+	PatternTable::updatePatternTable();
 
 	VarTable::printTables();
+
+	//stmtTable::printParent();
+	//PatternTable::getPatternAssignNum("_","_\"x+y+1\"_");
+	//PatternTable::getPatternAssignNum("Romeo", "\"Romeo - 1\"");
 }
 
 void PKB::updateAllTables() {
+
 	std::vector<std::tuple<string, string, int>> AllCallsStmt = ProcTable::getCallsTable();
 	int allCallsStmtSize = AllCallsStmt.size() - 1;
 	for (int i = allCallsStmtSize; i >= 0 ; i--) {
@@ -304,13 +309,17 @@ void PKB::updateAllTables() {
 				vector<string> tempModifies = ProcTable::getProcModifiesVar(procB);
 				for (int i = 0; i < tempModifies.size(); i++) {
 					VarTable::addDataToModifies(tempModifies[i], tempStmtLine);
-					VarTable::addDataToModifies(tempModifies[i], getAllParent[j]);
+					if (getAllParent[j] != 0) {
+						VarTable::addDataToModifies(tempModifies[i], getAllParent[j]);
+					}
 				}
 
 				vector<string> tempUses = ProcTable::getProcUsesVar(procB);
 				for (int i = 0; i < tempUses.size(); i++) {
 					VarTable::addDataToUses(tempUses[i], tempStmtLine);
-					VarTable::addDataToUses(tempUses[i], getAllParent[j]);
+					if (getAllParent[j] != 0) {
+						VarTable::addDataToUses(tempUses[i], getAllParent[j]);
+					}
 				}
 			}
 		}
@@ -325,7 +334,6 @@ void PKB::updateAllTables() {
 			}
 		}
 	}
-	//stmtTable::printParent();
 	VarTable::sortVarLeftAndRight();
 }
 
@@ -388,12 +396,16 @@ void detectRightBracket() {
 			vector<string> tempArrayListRight = VarTable::findVariableRight(currentElseFirstStartNum, tempStmtNum);
 			if (tempArrayListLeft.size() > 0 && tempArrayListRight.size() > 0) {
 				for (int i = 0; i < tempArrayListLeft.size(); i++) {
-					VarTable::addDataToModifies(tempArrayListLeft[i], currentParentLine);
+					if (currentParentLine != 0) {
+						VarTable::addDataToModifies(tempArrayListLeft[i], currentParentLine);
+					}
 					VarTable::addDataToModifies(tempArrayListLeft[i], currentIfStmtNum);
 				}
 
 				for (int i = 0; i < tempArrayListRight.size(); i++) {
-					VarTable::addDataToUses(tempArrayListRight[i], currentParentLine);
+					if (currentParentLine != 0) {
+						VarTable::addDataToUses(tempArrayListRight[i], currentParentLine);
+					}
 					VarTable::addDataToUses(tempArrayListRight[i], currentIfStmtNum);
 				}
 			}
