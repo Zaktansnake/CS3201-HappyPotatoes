@@ -105,6 +105,7 @@ vector<int> PatternTable::getPatternResult(string line1, string line2, bool left
 
 		// check line2 contains "+" || "-" || "-" -> only consists of variable
 		if (line2.find("+") == std::string::npos && line2.find("-") == std::string::npos && line2.find("*") == std::string::npos) {
+			// underscore at both sides
 			if (right) {
 				vector<int> rightAns = setRightAns(line1, left);
 				if (leftAns.size() > 0 && rightAns.size() > 0) {
@@ -126,6 +127,7 @@ vector<int> PatternTable::getPatternResult(string line1, string line2, bool left
 				ans.push_back(leftAns[i]);
 			}
 			else {
+				// splitX[1] -> original after "="; line2 -> user input
 				bool finalResult = Patterns::compareAssignments(splitX[1], line2);
 				if (finalResult == true) {
 					ans.push_back(leftAns[i]);
@@ -222,7 +224,12 @@ bool checkStringSize(string line2, string tempLine) {
 	tempLine.erase(end_pos2, tempLine.end());
 
 	if (line2.size() == tempLine.size()) {
-		return true;
+		if (line2.compare(tempLine) == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	else {
 		return false;
