@@ -11,169 +11,126 @@ CFG::CFG() {
 CFG::~CFG() {
 }
 
+int setConditions(string stmtLine);
+
 static int currentPro = 0;
 std::vector<std::vector<std::vector<int> >> CFGTable;
 std::vector<std::vector<int>> CFG;
 std::vector<int> CFGline;
 std::map <string, int> procedureMap;
+map<int, int> startAndEndOfProcedure;
 int condition;
-stack <int> conditionStack;
-stack <int> conditionStmtNo;
-stack <int> ifCondition;
-stack <int> elseCondition;
-stack <int> whileCondition;
-stack <int> dummyNodeStack;
-int endloop = 0;
-int prevStmtNo = 0;
-std::vector<string> totalStmtLine;
-bool elseFlag = false;
-int dummyStmtNo = -1;
-bool flagForNextOfLoop = false;
-bool flagForNextOfLoopBackWhile = false;
-int prevLoop = 0;
+int prevStmtNo;
+stack<int> conditionStack;
+stack<int> parentStack;
+stack<int> procedureStack;
+bool flagForNextLevel;
+bool flagForElseStart;
+int endloopNo;
 
-void setRoot(std::string procedure) {
-	map<string, int>::iterator iter;
-	iter = procedureMap.find(procedure);
-	if (iter == procedureMap.end()) {
-		procedureMap.insert(pair<string, int>(procedure, currentPro++));
-		prevStmtNo = 0;
+
+void setRoot(string procedure, int stmtNo ) {
+	if (procedure.find("procedure ") != string::npos) {
+		if (startAndEndOfProcedure.size() == 0) {
+			startAndEndOfProcedure.insert(pair<int, int>(stmtNo + 1, -1));
+			procedureStack.push(stmtNo + 1);
+		}
+		else {
+			startAndEndOfProcedure.insert(pair<int, int>(stmtNo + 1, -1));
+			int index = procedureStack.top();
+			procedureStack.pop();
+			procedureStack.push(stmtNo + 1);
+			startAndEndOfProcedure.at(index) = stmtNo - 1;
+		}
 	}
 }
 
 void addNextNode(int stmtNo, string stmt) {
+	condition = setConditions(stmt);
 	CFGline.clear();
-	totalStmtLine.push_back(stmt); // use to store the whole procedure stmtline as reference later
-	// check if there is flag shows prev stmt is end of loop
-	if (flagForNextOfLoop) {   // prev is the end of else
-		while (dummyNodeStack.size() != 0) {
-			int index = dummyNodeStack.top();
-
-			
-		}
-	    
-		flagForNextOfLoop = false;
-	}
-
-	if (flagForNextOfLoopBackWhile) {
-		CFGline.push_back(whileCondition.top());
-		whileCondition.pop();
-		CFG.push_back(CFGline);
-		CFGTable.at(currentPro) = CFG;
-	}
-
-	// decide on conditions
-	if (stmt.find("if") != std::string::npos) {
-		condition = 1;
-
-	}
-	else if (stmt.find("else") != std::string::npos) {
-		condition = 2;
-
-	}
-	else if (stmt.find("while") != std::string::npos) {
-		condition = 3;
-
-	}
-	else {
-		condition = 0;
-	}
-	// there are four condition, with loop, normal stmt, with } , only }
-	// with loop
-	
-	if (condition != 0) {
-		CFGline.push_back(stmtNo);
-		CFG.push_back(CFGline);
-		if (CFGTable.size() == 0) {      // if the CFGtable is empty just push back the CFG
-			CFGTable.push_back(CFG);
+	endloopNo = std::count(stmt.begin(), stmt.end(), '}');
+	if (condition == 0 && endloopNo == 0) {   // normal statement
+		if (flagForElseStart) {
+		   int parent = parentStack.top();
+		   CFGline = CFGTable.at(currentPro).at(parent);
+		   CFGline.push_back(stmtNo);
+		   CFG.at(parent) = CFGline;
+		   CFGTable.at(currentPro) = CFG;
+		   flagForElseStart = false;
 		}
 		else {
-            CFGTable.at(currentPro) = CFG;   // else replace the new CFG to old CFG
+			CFGline.push_back(stmtNo);
+			CFG.push_back(CFGline);
+			CFGTable.at(currentPro) = CFG;
 		}
-
-		// push to loop stack
+		
+	}
+	else if (condition == 1) {  // if statement
 	    conditionStack.push(condition);
-		conditionStmtNo.push(stmtNo);
-		prevStmtNo = stmtNo;
-	}
-
-	endloop = std::count(stmt.begin(), stmt.end(), '}'); // count if there is } in the string
-	if (endloop > 0 && stmt.size() != endloop) {   // it is stmtment contains }
-		for (int i = 0; i < endloop; i++) {
-			if (conditionStack.size() == 0) {   //if it is empty stack --> no condition stmt, end procedure
-				break;
-			}
-			if (conditionStack.top() == 1) {  // it is if stmt
-				ifCondition.push(conditionStmtNo.top());
-				dummyNodeStack.push(stmtNo);
-				conditionStmtNo.pop();
-				conditionStack.pop();
-				// get the current line into the table
-				CFGline.push_back(stmtNo);
-				CFG.push_back(CFGline);
-				CFGTable.at(currentPro) = CFG;
-				CFGline.clear();
-				prevStmtNo = stmtNo;
-			}
-			else if (conditionStack.top() == 2) {
-				elseCondition.push(conditionStmtNo.top());
-				dummyNodeStack.push(stmtNo);
-				conditionStmtNo.pop();
-				conditionStack.pop();
-				flagForNextOfLoop = true;   // which means next line will be the prev of endif and endElse
-											// get the current line into the table
-				CFGline.push_back(stmtNo);
-				CFG.push_back(CFGline);
-				CFGTable.at(currentPro) = CFG;
-				CFGline.clear();
-				prevStmtNo = stmtNo;
-			}
-			else if (conditionStack.top() == 3) {
-				flagForNextOfLoopBackWhile = true;
-				whileCondition.push(stmtNo);
-				CFGline.push_back(stmtNo);  // add the line as normal
-				CFG.push_back(CFGline);
-				CFGTable.at(currentPro) = CFG;
-				CFGline.clear();
-				prevStmtNo = stmtNo;
-			}
-		}
-	}
-	else if (endloop > 0 && stmt.size() == endloop) {  // only contains}
-		for (int i = 0; i < endloop; i++) {
-			if (conditionStack.size() == 0) {   //if it is empty stack --> no condition stmt, end procedure
-				break;
-			}
-			if (conditionStack.top() == 1) {   // end if
-				ifCondition.push(conditionStmtNo.top());
-				dummyNodeStack.push(prevStmtNo);
-				conditionStmtNo.pop();
-				conditionStack.pop();
-			}
-			else if (conditionStack.top() == 2) {   // end else
-				elseCondition.push(conditionStmtNo.top());
-				dummyNodeStack.push(prevStmtNo);
-				conditionStmtNo.pop();
-				conditionStack.pop();
-				flagForNextOfLoop = true;
-			}
-			else if (conditionStack.top() == 3) {   // end while
-				flagForNextOfLoopBackWhile = true;
-				whileCondition.push(prevStmtNo);
-			}
-		}
-	}
-
-	if (condition == 0 && endloop == 0) {  // normal stmt
+		parentStack.push(stmtNo);
 		CFGline.push_back(stmtNo);
 		CFG.push_back(CFGline);
 		CFGTable.at(currentPro) = CFG;
-		CFGline.clear();
-		prevStmtNo = stmtNo;
+		flagForNextLevel = true;
+
 	}
+	else if (condition == 2) {   // else statement, set the else statement next to the if statement
+	   conditionStack.push(condition);
+	   int parent = parentStack.top();
+	   parentStack.push(parent);
+	   flagForElseStart = true;
+
+	}
+	else if (condition == 3) {   // while statement
+		flagForNextLevel = true;
+		conditionStack.push(condition);
+		parentStack.push(stmtNo);
+		CFGline.push_back(stmtNo);
+		CFG.push_back(CFGline);
+		CFGTable.at(currentPro) = CFG;
+		flagForNextLevel = true;
+	}
+
+	if (endloopNo > 0) {
+		for (int i = 0; i < endloopNo; i++) {
+			if (conditionStack.top() == 2) { // it is in the while statement
+											 // set the current line back to the while
+				int parent = parentStack.top();
+				CFGline.push_back(parent);
+				CFG.push_back(CFGline);
+				CFGTable.at(currentPro) = CFG;
+				parentStack.pop();
+				conditionStack.pop();
+
+			}
+			else {
+			    parentStack.pop();
+				conditionStack.pop();
+			}
+		}
+	}
+
 }
 
-void setConditions(string stmtLine) {
+vector<int> CFG::getNext(int stmtNo) {
+
+     vector<int> result;
+	 return result;
+
+}
+
+vector<int> CFG::getPrev(int stmtNo) {
+
+	vector<int> result;
+	return result;
+
+}
+
+bool CFG::isNext(int stmt1, int stmt2) {
+	return false;
+}
+
+int setConditions(string stmtLine) {
 	if (stmtLine.find("if") != std::string::npos) {
 		condition = 1;
 		

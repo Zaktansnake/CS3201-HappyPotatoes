@@ -96,11 +96,13 @@ void findMethod(string file_contents) {
 		}
 		procedure();
 		stmtTable::setProcedure(str, stmtLine);
+		CFG::addRoot (str,stmtLine);
 	}
 	else if (word.compare("if") == 0 || word.compare("else") == 0
 		|| (word.compare("call") == 0) || (word.compare("while") == 0)) {
 		stmtLst();
 		stmtTable::addStmtTable(str, stmtLine);
+		CFG::addNextNode(stmtLine, str);
 	}
 	else if (word.compare("") == 0) {
 		if (!bracstack.empty()) {
@@ -122,10 +124,12 @@ void findMethod(string file_contents) {
 			bracstack.pop();
 		}
 		stmtTable::addStmtTable(str, stmtLine);
+		CFG::addNextNode(stmtLine, str);
 	}
 	else {
 		assign();
 		stmtTable::addStmtTable(str, stmtLine);
+		CFG::addNextNode(stmtLine, str);
 	}
 }
 
