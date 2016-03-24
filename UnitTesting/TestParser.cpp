@@ -7,10 +7,10 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTesting
 {
-	TEST_CLASS(UnitTesting)
+	TEST_CLASS(TestPARSER)
 	{
 	public:
-		TEST_METHOD(TestParse)
+		TEST_METHOD(TestParser)
 		{
 			
 			//normal

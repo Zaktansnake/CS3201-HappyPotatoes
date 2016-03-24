@@ -32,6 +32,7 @@ stack<pair<string, int>> bracstack; // string -> {; int -> currentStmtLine
 stack<int> ifStmtNum, afterElseStmtNum;
 bool firstTime, firstLine;
 static int stmtLine = 0, afterElseStartNum = 0; // ifParentStmtNum -> very first "if" stmtNum
+static string tempLine;
 	
 static void procedure();
 static void stmtLst();
@@ -39,6 +40,7 @@ static void assign();
 static void calls(string procedureName);
 static void stmt(int num);
 
+void getProgramLine(string lineFromSource);
 static void findMethod(string file_contents);
 vector<string> split(string str, char delimiter);
 vector<string> splitTheString(string line);
@@ -50,6 +52,10 @@ static inline std::string &ltrim(std::string &s);
 static inline std::string &rtrim(std::string &s);
 static inline std::string &trim(std::string &s);
 
+int PKB::getStmtNum() {
+	return stmtLine - 1;
+}
+
 void PKB::create(string fileName) {
 	firstTime = true;
 	firstLine = true;
@@ -58,8 +64,7 @@ void PKB::create(string fileName) {
 
 	while (!myFile.eof()) {
 		getline(myFile, str);
-		findMethod(str);
-        stmtLine++;
+		getProgramLine(str);
 	}
 
 	myFile.close();
@@ -67,19 +72,21 @@ void PKB::create(string fileName) {
 	
 }
 
-int PKB::getStmtNum() {
-	return stmtLine - 1;
-}
+void findMethod(string lineFromSample) {
 
-void findMethod(string file_contents) {
-	istringstream iss(file_contents);
+	str = lineFromSample;
+	if (str.find("{") != std::string::npos) {
+		str = trim(str.erase(str.size() - 1));
+		if (str.find("{") == std::string::npos) {
+			str = str + " {";
+		}
+	}
 
-	if (file_contents.compare("") != 0) {
+	istringstream iss(trim(str));
+
+	if (str.compare("") != 0) {
 		iss >> word; // get the first word
 		oss << iss.rdbuf(); // get the remain words
-	}
-	else {
-		word = "";
 	}
 
 	if (firstLine) {
@@ -88,49 +95,57 @@ void findMethod(string file_contents) {
 			PKB::abort();
 		}
 		firstLine = false;
+		firstTime = false;
 	}
 
 	if (word.compare("procedure") == 0) {
 		if (!firstTime && stmtLine > 0) {
+			if (!bracstack.empty()) {
+				cout << "Error: Structure. (backStack problem)" << endl;
+				PKB::abort();
+			}
+			afterElseStartNum = 0;
 			stmtLine--;
 		}
 		procedure();
 		stmtTable::setProcedure(str, stmtLine);
 	}
-	else if (word.compare("if") == 0 || word.compare("else") == 0
-		|| (word.compare("call") == 0) || (word.compare("while") == 0)) {
+	else if (word.compare("if") == 0 || word.compare("else") == 0 || word.compare("call") == 0 || word.compare("while") == 0) {
 		stmtLst();
 		stmtTable::addStmtTable(str, stmtLine);
 	}
-	else if (word.compare("") == 0) {
-		if (!bracstack.empty()) {
-			cout << "Error: Structure. (backStack problem)" << endl;
-			PKB::abort();
-		}
-
-		firstTime = false;
-		afterElseStartNum = 0;
-		stmtLine--;
-	}
-	else if (word.compare("}") == 0) {
+	else if (word.compare("}") == 0 || str.find("}") != std::string::npos) {
 		vector<string> ans;
-		if (file_contents.find("else") != std::string::npos) {
+		if (str.find("else") != std::string::npos) {
 			stmt(1);
-		} else {
-			stmtLine--;
-			detectRightBracket();
-			bracstack.pop();
+			stmtTable::addStmtTable(str, stmtLine);
 		}
-		stmtTable::addStmtTable(str, stmtLine);
+		else {
+			stmtLine--;
+			string lineWithVar = str;
+			int ln = str.length() - 1;
+			for (int n = 0; n <= ln; n++) {
+				string letter(1, lineWithVar[n]);
+				if (letter.compare("}") == 0) {
+					detectRightBracket();
+					bracstack.pop();
+					stmtTable::addStmtTable(letter, stmtLine);
+				}
+			}
+		}
 	}
 	else {
 		assign();
 		stmtTable::addStmtTable(str, stmtLine);
 	}
+
+	stmtLine++;
 }
 
 void procedure() {
+
 	vector<string> v = splitTheString(str);
+
 	if (v.size() > 3) {
 		cout << "Error: Structure. (procedure size)" << endl;
 		PKB::abort();
@@ -152,8 +167,6 @@ void procedure() {
 		}
 		procname = v[1];
 		ProcTable::addTableData(v[1]);
-		
-		
 	}
 }
 
@@ -177,6 +190,7 @@ void stmtLst() {
 }
 
 static void stmt(int num) {
+
 	vector<string> v = splitTheString(str);
 
 	switch (num) {
@@ -196,21 +210,32 @@ static void stmt(int num) {
 		break;
 	case 1: // else
 		stmtLine--;
-		if (v.size() == 3) {
-			vector<string> ans;
-			detectRightBracket();
-			bracstack.pop();
-		}
-		else if (v.size() == 2) {
-			if (v[1].compare("{") != 0) {
-				cout << "Error: Structure. ({)" << endl;
-				PKB::abort();
+		if (v.size() <= 3) {
+			if (v.size() == 3) {
+				if (v[0].compare("}") != 0 && v[2].compare("}") != 0) {
+					cout << "Error: Structure. ({)" << endl;
+					PKB::abort();
+				}
+				vector<string> ans;
+				detectRightBracket();
+				bracstack.pop();
 			}
+			else if (v.size() == 2) {
+				if (v[1].compare("{") != 0) {
+					cout << "Error: Structure. ({)" << endl;
+					PKB::abort();
+				}
+			}
+			bracstack.push(make_pair("{", -2));
+			afterElseStartNum = stmtLine + 1;
+			afterElseStmtNum.push(afterElseStartNum);
+
+			break;
 		}
-		bracstack.push(make_pair("{", -2));
-		afterElseStartNum = stmtLine + 1;
-		afterElseStmtNum.push(afterElseStartNum);
-		break;
+		else {
+			cout << "Error: Structure. else" << endl;
+			PKB::abort();
+		}
 	case 2: // while
 		if (v[2].compare("{") == 0) {
 			VarTable::addDataToUses(v[1], stmtLine);
@@ -448,4 +473,57 @@ bool PKB::is_number(const std::string& s)
 {
 	return !s.empty() && std::find_if(s.begin(),
 		s.end(), [](char c) { return !::isdigit(c); }) == s.end();
+}
+
+void getProgramLine(string lineFromSource) {
+
+	if (lineFromSource.compare("") != 0) {
+		// found ";" "{" "}"
+		if (lineFromSource.find_last_of("{") != std::string::npos) {
+			if (lineFromSource.find("}") != std::string::npos) {
+				if (lineFromSource.find("else") != std::string::npos) {
+					findMethod(lineFromSource);
+				}
+				else {
+					std::size_t found;
+					if (lineFromSource.find("while") != std::string::npos) {
+						found = lineFromSource.find("while");
+					}
+					else if (lineFromSource.find("if") != std::string::npos) {
+						found = lineFromSource.find("if");
+					}
+					string normalLine = lineFromSource.substr(found);
+					findMethod("}");
+					findMethod(normalLine);
+				}
+			}
+			else {
+				tempLine += lineFromSource;
+				findMethod(tempLine);
+				tempLine = "";
+			}
+		}
+		else if (lineFromSource.find("}") != std::string::npos) {
+			if (lineFromSource.find(";") != std::string::npos) {
+				std::size_t foundSemiColon = lineFromSource.find(";");
+				string normalLine = lineFromSource.substr(0, foundSemiColon + 1);
+				string bracket = lineFromSource.substr(foundSemiColon + 1);
+				findMethod(normalLine);
+				findMethod(bracket);
+			}
+			else if (lineFromSource.find("else") != std::string::npos) {
+				findMethod(lineFromSource);
+			}
+			else {
+				findMethod(lineFromSource);
+			}
+		}
+		else if (lineFromSource.find(";") != std::string::npos) {
+			// calls or normal assignment statement
+			findMethod(lineFromSource);
+		}
+		else {
+			tempLine = lineFromSource + " ";
+		}
+	}
 }
