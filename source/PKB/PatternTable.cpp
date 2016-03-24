@@ -86,9 +86,15 @@ vector<int> PatternTable::getPatternAssignNum(string left, string right) {
 	return ans;
 }
 
-vector<int> PatternTable::getPatternIfsNum(string left, string middle, string right) {}
+vector<int> PatternTable::getPatternIfsNum(string left, string middle, string right) {
+	vector<int> ans;
+	return ans;
+}
 
-vector<int> PatternTable::getPatternWhileNum(string left, string right) {}
+vector<int> PatternTable::getPatternWhileNum(string left, string right) {
+	vector<int> ans;
+	return ans;
+}
 
 vector<int> PatternTable::getPatternResult(string line1, string line2, bool left, bool right) {
 
