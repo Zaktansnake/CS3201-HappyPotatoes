@@ -21,7 +21,8 @@
 #include "./Header/VarTable.h"
 #include "./Header/stmtTable.h"
 #include "./Header/PatternTable.h"
-#include "Header\CFG.h"
+#include "./Header/ConstantTable.h"
+#include "./Header/CFG.h"
 
 using namespace std;
 
@@ -298,7 +299,7 @@ void assign() {
 						ProcTable::setProcUsesVar(procname, v[i]);
 					}
 					else {
-						//upadate to ConstantTable(var, stmtLine)
+						ConstantTable::setConstantValue(var, stmtLine);
 					}
 				}
 			}
@@ -318,12 +319,7 @@ void PKB::updateTables() {
 	PKB::updateAllTables();
 	PatternTable::updatePatternTable();
 
-	VarTable::printTables();
-
-	//stmtTable::printParent();
-	//PatternTable::getPatternAssignNum("_","_\"x+y+1\"_");
-	//PatternTable::getPatternAssignNum("Romeo", "\"Romeo-1\"");
-	//PatternTable::getPatternAssignNum("Romeo", "\"Romeo\"");
+	//VarTable::printTables();
 }
 
 void PKB::updateAllTables() {
