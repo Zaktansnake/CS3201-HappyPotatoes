@@ -48,13 +48,18 @@ string PatternTable::getStatementLine(int stmtNo) {
 }
 
 bool PatternTable::isPattern(string variable, string key) {
+
+	vector<int> ans = PatternTable::getPatternAssignNum(variable, key);
+
+	if (ans.size() > 0){
+		return true;
+	}
 	return false;
 }
 
 vector<int> PatternTable::getPatternAssignNum(string left, string right) {
 	vector<int> ans;
 	int condition = checkLocationUnderscore(left, right);
-
 	left = removeUnderScore(removeDoubleQuote(left));
 	right = removeUnderScore(removeDoubleQuote(right));
 
@@ -160,11 +165,11 @@ int PatternTable::checkLocationUnderscore(string line1, string line2) {
 		// (_,_"x+y+1"_)
 		result = 3;
 	}
-	else if (line1.compare("_") != 0 && line2.substr(0, 1).compare("_") == 0 && line2.substr(line2.size() - 1).compare("_") == 0) {
+	else if (line1.compare("_") != 0 && line2.size()!= 1 && line2.substr(0, 1).compare("_") == 0 && line2.substr(line2.size() - 1).compare("_") == 0) {
 		// ("x",_"x+y+1"_)
 		result = 4;
 	}
-	else if (line1.compare("_") != 0 && line2.substr(0, 1).compare("_") != 0 && line2.substr(line2.size() - 1).compare("_") != 0) {
+	else if (line1.compare("_") != 0 && line2.size() != 1 && line2.substr(0, 1).compare("_") != 0 && line2.substr(line2.size() - 1).compare("_") != 0) {
 		// ("x","x+y+1")
 		result = 5;
 	}
@@ -212,7 +217,7 @@ string removeDoubleQuote(string s) {
 }
 
 string removeUnderScore(string s) {
-	if (s.front() == '_') {
+	if (s.front() == '_' && s.back() == '_' && s.size() != 1) {
 		s.erase(0, 1); // erase the first character
 		s.erase(s.size() - 1); // erase the last character
 		return s;
