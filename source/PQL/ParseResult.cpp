@@ -14,16 +14,23 @@ ClauseSet ParseResult::getClauses() {
 PatternSet ParseResult::getPatterns() {
 	return patterns_;
 }
+WithSet ParseResult::getWithClauses() {
+	return withClauses_;
+}
 
 ParseResult::ParseResult() {
 }
-
 ParseResult::ParseResult(ParameterSet selectParameter) {
 	selectParameter_ = selectParameter;
 }
 ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses) {
 	selectParameter_ = selectParameter;
 	condClauses_ = condClauses;
+}
+ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, WithSet withClauses) {
+	selectParameter_ = selectParameter;
+	condClauses_ = condClauses;
+	withClauses_ = withClauses;
 }
 ParseResult::ParseResult(ParameterSet selectParameter, PatternSet patterns) {
 	selectParameter_ = selectParameter;
@@ -33,6 +40,12 @@ ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, Pa
 	selectParameter_ = selectParameter;
 	condClauses_ = condClauses;
 	patterns_ = patterns;
+}
+ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, PatternSet patterns, WithSet withClauses) {
+	selectParameter_ = selectParameter;
+	condClauses_ = condClauses;
+	patterns_ = patterns;
+	withClauses_ = withClauses;
 }
 
 // constants for project iteration 1

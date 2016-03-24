@@ -19,13 +19,11 @@ using namespace std;
 map<int, string> AllAssignsTable;
 vector<int> AllAssignLineNum;
 
-int checkLocationUnderscore(string line1, string line2);
-vector<int> getPatternResult(string line1, string line2, bool leftUnderScore, bool rightUnderScore);
-vector<string> getPatternResultWithVar(string line1, string line2, bool leftUnderScore, bool rightUnderScore);
+bool checkStringSize(string line2, string tempLine);
 string removeDoubleQuote(string s);
 string removeUnderScore(string s);
-vector<int> setLeftAns(string line1, bool left);
-vector<int> setRightAns(string line2, bool right);
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
+std::vector<std::string> split(const std::string &s, char delim);
 
 void PatternTable::setAssignTable() {
 	AllAssignsTable = VarTable::getAssignTable();
@@ -57,6 +55,9 @@ vector<int> PatternTable::getPatternAssignNum(string left, string right) {
 	vector<int> ans;
 	int condition = checkLocationUnderscore(left, right);
 
+	left = removeUnderScore(removeDoubleQuote(left));
+	right = removeUnderScore(removeDoubleQuote(right));
+
 	if (condition == 1) {
 		// (_,_)
 		ans = AllAssignLineNum;
@@ -85,58 +86,67 @@ vector<int> PatternTable::getPatternAssignNum(string left, string right) {
 	return ans;
 }
 
-vector<string> PatternTable::getPatternWithVar(string left, string right) {
-	vector<string> ans;
-
+vector<int> PatternTable::getPatternIfsNum(string left, string middle, string right) {
+	vector<int> ans;
 	return ans;
 }
 
-vector<int> getPatternResult(string line1, string line2, bool left, bool right) {
+vector<int> PatternTable::getPatternWhileNum(string left, string right) {
+	vector<int> ans;
+	return ans;
+}
+
+vector<int> PatternTable::getPatternResult(string line1, string line2, bool left, bool right) {
 
 	string tempLine;
-	string testKey = removeUnderScore(removeDoubleQuote(line2));
 	vector<int> ans;
 	vector<int> leftAns = setLeftAns(line1, left);
-	vector<int> rightAns = setRightAns(line2, left);
 
-	if (leftAns.size() > 0 && rightAns.size() > 0) {
-		std::sort(leftAns.begin(), leftAns.end());
-		std::sort(rightAns.begin(), rightAns.end());
-		std::vector<int> v_intersection;
-		std::set_intersection(leftAns.begin(), leftAns.end(),
-			rightAns.begin(), rightAns.end(),
-			std::back_inserter(v_intersection));
-		return v_intersection;
-	}
-	
 	for (int i = 0; i < leftAns.size(); i++) {
-		cout << leftAns[i] << endl;
 		tempLine = AllAssignsTable[leftAns[i]];
 
-		if (tempLine.find("=") != std::string::npos) {
-			int length = tempLine.size();
-			length = length - 2;
-			tempLine.substr(2, length);
+		std::vector<std::string> splitX = split(tempLine, '=');
+		splitX[1] = splitX[1].erase(0, 1);
+		splitX[1] = splitX[1].erase(splitX[1].size() - 2);
 
-			while (tempLine.back() == ';' || tempLine.back() == '}') {
-				tempLine.pop_back();
+		// check line2 contains "+" || "-" || "-" -> only consists of variable
+		if (line2.find("+") == std::string::npos && line2.find("-") == std::string::npos && line2.find("*") == std::string::npos) {
+			// underscore at both sides
+			if (right) {
+				vector<int> rightAns = setRightAns(line1, left);
+				if (leftAns.size() > 0 && rightAns.size() > 0) {
+					std::vector<int> v_intersection;
+					std::set_intersection(leftAns.begin(), leftAns.end(),
+						rightAns.begin(), rightAns.end(),
+						std::back_inserter(v_intersection));
+					return v_intersection;
+				}
 			}
-
-			tempLine = Patterns::patternAssignment(tempLine);
-			std::size_t found = tempLine.find(Patterns::patternAssignment(testKey));
-
-			if (found != std::string::npos) {
+			else {
+				if (checkStringSize(line2, splitX[1])) {
+					ans.push_back(leftAns[i]);
+				}
+			}
+		}
+		else {
+			if (checkStringSize(line2, splitX[1])) {
 				ans.push_back(leftAns[i]);
+			}
+			else {
+				// splitX[1] -> original after "="; line2 -> user input
+				bool finalResult = Patterns::compareAssignments(splitX[1], line2);
+				if (finalResult == true) {
+					ans.push_back(leftAns[i]);
+				}
 			}
 		}
 	}
 
+	
 	return ans;
 }
 
-// vector<string> getPatternResultWithVar(string line1, string line2, bool left, bool right) {}
-
-int checkLocationUnderscore(string line1, string line2) {
+int PatternTable::checkLocationUnderscore(string line1, string line2) {
 	int result = 0;
 	if (line1.compare("_") == 0 && line2.compare("_") == 0) {
 		// (_,_)
@@ -166,26 +176,26 @@ int checkLocationUnderscore(string line1, string line2) {
 	return result;
 }
 
-vector<int> setLeftAns(string line1, bool left) {
+vector<int> PatternTable::setLeftAns(string line1, bool left) {
 	vector<int> leftAns;
 	if (left) {
 		leftAns = AllAssignLineNum;
-		cout << "hiihihihi" << endl;
 	}
 	else {
-		cout << "lalalalla" << endl;
-		leftAns = PatternTable::getModifiesVariable(removeDoubleQuote(line1));
+		leftAns = PatternTable::getModifiesVariable(line1);
 	}
 	return leftAns;
 }
 
-vector<int> setRightAns(string line2, bool right) {
+vector<int> PatternTable::setRightAns(string line2, bool right) {
 	string tempLine = removeDoubleQuote(removeUnderScore(line2));
 	vector<int> rightAns;
 	if (right == true) {
 		if (line2.compare("_") == 0) {
 			rightAns = AllAssignLineNum;
 		}
+	} else {
+		rightAns = PatternTable::getUsesVariable(line2);
 	}
 	return rightAns;
 }
@@ -212,7 +222,42 @@ string removeUnderScore(string s) {
 	}
 }
 
+bool checkStringSize(string line2, string tempLine) {
+	std::string::iterator end_pos = std::remove(line2.begin(), line2.end(), ' ');
+	line2.erase(end_pos, line2.end());
+
+	std::string::iterator end_pos2 = std::remove(tempLine.begin(), tempLine.end(), ' ');
+	tempLine.erase(end_pos2, tempLine.end());
+
+	if (line2.size() == tempLine.size()) {
+		if (line2.compare(tempLine) == 0) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	else {
+		return false;
+	}
+}
+
 void PatternTable::updatePatternTable() {
 	setAssignTable();
 	setAssignNum();
+}
+
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+	std::stringstream ss(s);
+	std::string item;
+	while (std::getline(ss, item, delim)) {
+		elems.push_back(item);
+	}
+	return elems;
+}
+
+std::vector<std::string> split(const std::string &s, char delim) {
+	std::vector<std::string> elems;
+	split(s, delim, elems);
+	return elems;
 }

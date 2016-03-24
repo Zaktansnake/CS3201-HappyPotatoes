@@ -268,8 +268,13 @@ void assign() {
 			}
 			else {
 				if (var.compare("=") != 0 && var.compare("+") != 0 && var.compare("-") != 0 && var.compare(";") != 0 && var.compare("*") != 0 && var.compare("(") != 0 && var.compare(")") != 0 && var.compare("}") != 0 && var.compare(" ") != 0 && var.compare("' '") != 0 && var.compare("") != 0) {
-					VarTable::addDataToUses(var, stmtLine);
-					ProcTable::setProcUsesVar(procname, v[i]);
+					if (!PKB::is_number(var)) {
+						VarTable::addDataToUses(var, stmtLine);
+						ProcTable::setProcUsesVar(procname, v[i]);
+					}
+					else {
+						//upadate to ConstantTable(var, stmtLine)
+					}
 				}
 			}
 		}
@@ -292,7 +297,8 @@ void PKB::updateTables() {
 
 	//stmtTable::printParent();
 	//PatternTable::getPatternAssignNum("_","_\"x+y+1\"_");
-	//PatternTable::getPatternAssignNum("Romeo", "\"Romeo - 1\"");
+	//PatternTable::getPatternAssignNum("Romeo", "\"Romeo-1\"");
+	//PatternTable::getPatternAssignNum("Romeo", "\"Romeo\"");
 }
 
 void PKB::updateAllTables() {
