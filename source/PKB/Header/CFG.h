@@ -14,10 +14,10 @@ public:
 	static void addRoot (std::string root);
 	static void addNextNode (int stmtNo, string stmt);
 
-	static int getChildNode (int stmtNo);
-	static int getParentNode (int stmtNo);
-	static int getLeftNode (int stmtNo);
-	static int getRightNode (int stmtNo);
+	
+	static int getNext (int stmtNo);
+	static int getPrev (int stmtNo);
+	static int isNext (int stmtNo1, int stmtNo2);
 
 private : 
     bool isConditions (string stmt);

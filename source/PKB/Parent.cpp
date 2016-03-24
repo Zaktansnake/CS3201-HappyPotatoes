@@ -288,6 +288,49 @@ std::vector<int> Parent::getChildForAssign(int stmtNo) {
 	}
 	return ans;
 }
+
+std::vector<int> Parent::getParentForIf(int stmtNo) {
+	std::vector<int> temp = getParent(stmtNo);
+	std::vector<int> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("If ") != std::string::npos || line.find("if ") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+	}
+	return ans;
+
+}
+std::vector<int> Parent::getChildForIf(int stmtNo) {
+	std::vector<int> temp = getChild(stmtNo);
+	std::vector<int> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("if ") != std::string::npos || line.find("If ") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+	}
+	return ans;
+
+}
 /*
 void Parent::PrintProcTable() {
 	for (map<int, int>::iterator it = AnsMap.begin(); it != AnsMap.end(); ++it) {

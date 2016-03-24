@@ -22,6 +22,8 @@ public:
 	std::vector<int> Parent::getChildForWhile(int stmtNo);
 	std::vector<int> Parent::getParentForAssign(int stmtNo);
 	std::vector<int> Parent::getChildForAssign(int stmtNo);
+	std::vector<int> Parent::getParentForIf(int stmtNo);
+	std::vector<int> Parent::getChildForIf(int stmtNo);
 
 	bool isParent(int stmt1, int stmt2);
 

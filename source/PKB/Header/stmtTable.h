@@ -37,6 +37,8 @@ public:
 	static std::vector<int> stmtTable::getFollowFanForWhile (int stmtNo);
 	static std::vector<int> stmtTable::getFollowForAssign (int stmtNo);
 	static std::vector<int> stmtTable::getFollowFanForAssign(int stmtNo);
+	static std::vector<int> stmtTable::getFollowForIf(int stmtNo);
+	static std::vector<int> stmtTable::getFollowFanForIf(int stmtNo);
 
 	// get data from parent
 	static std::vector<int> stmtTable::getParent(int stmtNo);
@@ -48,4 +50,6 @@ public:
 	static std::vector<int> stmtTable::getChildForWhile(int stmtNo);
 	static std::vector<int> stmtTable::getParentForAssign(int stmtNo);
 	static std::vector<int> stmtTable::getChildForAssign(int stmtNo);
+	static std::vector<int> stmtTable::getParentForIf(int stmtNo);
+	static std::vector<int> stmtTable::getChildForIf(int stmtNo);
 };

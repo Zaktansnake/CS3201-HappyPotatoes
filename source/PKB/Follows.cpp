@@ -274,6 +274,47 @@ std::vector<int> Follows::getFollowFanForAssign(int stmtNo) {
 	return ans;
 }
 
+std::vector<int> Follows::getFollowForIf(int stmtNo) {
+	std::vector<int> temp = getFollow(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i < temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("if ") != std::string::npos || line.find("If") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+std::vector<int> Follows::getFollowFanForIf(int stmtNo) {
+	std::vector<int> temp = getFollowFan(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i < temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("if ") != std::string::npos || line.find("If ") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+
 
 
 

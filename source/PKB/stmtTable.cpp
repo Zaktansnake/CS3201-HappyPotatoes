@@ -196,6 +196,16 @@ std::vector<int> stmtTable::getFollowFanForAssign(int stmtNo) {
 	ans = checkWithProcedure(stmtNo, ans);
 	return ans;
 }
+std::vector<int> stmtTable::getFollowForIf(int stmtNo) {
+	std::vector<int> ans = follow.getFollowForIf(stmtNo);
+	ans = checkWithProcedure(stmtNo, ans);
+	return ans;
+}
+std::vector<int> stmtTable::getFollowFanForIf(int stmtNo) {
+	std::vector<int> ans = follow.getFollowFanForIf(stmtNo);
+	ans = checkWithProcedure(stmtNo, ans);
+	return ans;
+}
 
 
 
@@ -233,6 +243,16 @@ std::vector<int> stmtTable::getParentForAssign(int stmtNo) {
 }
 
 std::vector<int> stmtTable::getChildForAssign(int stmtNo) {
+	std::vector<int> ans = parent.getChildForAssign(stmtNo);
+	return ans;
+}
+
+std::vector<int> stmtTable::getParentForIf(int stmtNo) {
+	std::vector<int> ans = parent.getParentForAssign(stmtNo);
+	return ans;
+}
+
+std::vector<int> stmtTable::getChildForIf(int stmtNo) {
 	std::vector<int> ans = parent.getChildForAssign(stmtNo);
 	return ans;
 }
