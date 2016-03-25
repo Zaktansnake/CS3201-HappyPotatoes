@@ -53,7 +53,8 @@ const string selectClause = "\\s*Select\\s+(\\w+\\d*#*)\\s+";
 const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
 const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
 
-const regex declarationRegex("(\\s*(stmt|assign|while|variable|constant|prog_line)\\s+(\\w+\\d*#*\\s*,\\s*)*(\\w+\\d*#*\\s*;\\s*)+)+");
+const regex declarationChecking("(\\s*(stmt|assign|while|variable|constant|prog_line)\\s+(?:(\\w+\\d*#*)\\s*,\\s*)*(?:(\\w+\\d*#*)\\s*;\\s*)+)+");
+const regex declarationParsing("\\w+\\d*#*");
 const regex queryRegex1(selectClause + conditionClause + patternClause);
 const regex queryRegex2(selectClause + patternClause + conditionClause);
 
@@ -70,44 +71,34 @@ ParseResult ParseResult::generateParseResult(string declarationSentence, string 
 
 bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<string, string>& declarationTable) {
 	declarationTable.clear();
-
-	if (!regex_match(declaration, declarationRegex)) {
+	if (!regex_match(declaration, declarationChecking)) {
 		signalErrorAndStop();
 		return false;	// declaration with syntax error
 	}
+	vector<string> word;
+	string declarationSubstr;
 
-	// store the correct declaration in a vector
-	istringstream iss(declaration);
-	vector<string> decWord;
-
-	while (iss) {
-		string word;
-		iss >> word;
-		decWord.push_back(word);
-	}
-
-	// populate the hashmap
-	string synType;
-
-	for (unsigned int i = 0; i < decWord.size() - 1; i++) {
-		string current = decWord.at(i);
-		char lastChar = current.back();
-		if (lastChar != ',' && lastChar != ';') {
-			if (current == "stmt" || current == "assign" || current == "while" ||
-				current == "variable" || current == "constant" || current == "prog_line") {
-				synType = current;
-			}
-			else declarationTable[current] = synType;
-		}
-		else {
-			if (current.size() == 1) continue;
-			else {
-				current = current.substr(0, current.size() - 1);
-				declarationTable[current] = synType;
-			}
+	while (!declaration.empty()) {
+		int endIndex = declaration.find(";");
+		int startIndex = endIndex + 1;
+		declarationSubstr = declaration.substr(0, endIndex + 1);
+		declaration = declaration.substr(startIndex, declaration.size() - startIndex);
+		sregex_iterator next(declarationSubstr.begin(), declarationSubstr.end(), declarationParsing);
+		sregex_iterator end;
+		while (next != end) {
+			smatch match = *next;
+			word.push_back(match.str(0));
+			next++;
 		}
 	}
-
+	string type;
+	for (vector<string>::iterator it = word.begin(); it != word.end(); ++it) {
+		if (*it == "stmt" || *it == "assign" || *it == "while" || *it == "variable"
+			|| *it == "constant" || *it == "prog_line") {
+			type = *it;
+		}
+		else declarationTable[*it] = type;
+	}
 	return true;
 }
 
