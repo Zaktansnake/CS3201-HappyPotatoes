@@ -44,5 +44,5 @@ private:
 	ParameterSet selectParameter_;
 	ClauseSet condClauses_;
 	PatternSet patterns_;
-	WithSet withClauses_
+	WithSet withClauses_;
 };
