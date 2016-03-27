@@ -49,12 +49,28 @@ ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, Pa
 }
 
 // constants for project iteration 1
-const string selectClause = "\\s*Select\\s+(\\w+\\d*#*)\\s+";
+const string IDENT = "(?:\\w(?:\\w|\\d|#)*)";
+const string INTEGER = "(?:\\d+)";
+const string space = "\\s*";
+const string attrName = "(?:procName|varName|value|stmt#)";
+const string attrRef = "(?:" + IDENT + "." + attrName + ")";
+const string elem = "(?:" + IDENT + "|" + attrRef + ")";
+const string TUPLE = "(?:" + elem + "|<" + space + elem + space + "(?:," + space + elem + space + ")*>)";
+const string entRef = "(?:" + IDENT + "|_|" + "\"" + IDENT + "\"|" + INTEGER + ")";
+const string stmtRef = "(?:" + IDENT + "|_|" + INTEGER + ")";
+const string lineRef = stmtRef;
+const string designEntity = "(?:procedure|stmt|assign|call|while|if|variable|constant|prog_line)";
+
+
+const string declar = "(?:" + space + designEntity + space + IDENT + space + "(?:," + space + IDENT + space + ")*" + ";)*";
+const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
+const string selectClause = "\\s*Select\\s+(\\w(\\w|\\d|#)*|<\\w+\\d*#*\\s*(,\\s*\\w+\\d*#*\\s*)+>)\\s+";
+
 const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
 const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
 
-const regex declarationChecking("(\\s*(stmt|assign|while|variable|constant|prog_line)\\s+(?:(\\w+\\d*#*)\\s*,\\s*)*(?:(\\w+\\d*#*)\\s*;\\s*)+)+");
-const regex declarationParsing("\\w+\\d*#*");
+const regex declarationChecking(declar);
+const regex declarationParsing(IDENT);
 const regex queryRegex1(selectClause + conditionClause + patternClause);
 const regex queryRegex2(selectClause + patternClause + conditionClause);
 

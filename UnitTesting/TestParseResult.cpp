@@ -30,7 +30,14 @@ namespace UnitTesting
 			return;
 		}
 
-		TEST_METHOD(testRegex) {
+		TEST_METHOD(testCheckAndParseDeclarationDuplicateSynonym) {
+			unordered_map<string, string> declarationTable;
+			string declarationSentence = "assign a1, a2, a3; stmt a1;";
+			bool correct = ParseResult::checkAndParseDeclaration(declarationSentence, declarationTable);
+			Assert::IsFalse(correct);
+		}
+
+		/* TEST_METHOD(testRegex) {
 			const string selectClause = "\\s*Select\\s+(\\w+\\d*#*|<\\w+\\d*#*\\s*(,\\s*\\w+\\d*#*\\s*)+>)\\s+";
 			const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
 			const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
@@ -39,7 +46,7 @@ namespace UnitTesting
 			regex test1(selectClause);
 			Assert::IsTrue(regex_match("Select <s1, s2, v2   > ", test1));
 			Assert::IsFalse(regex_match("Select <s1, s2, v2 126879  > ", test1));
-		}
+		} */
 
 	};
 }
