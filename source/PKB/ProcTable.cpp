@@ -65,21 +65,27 @@ static void updateProcWithModAndUses() {
 		string procA = tempSet.first; // parent
 		string procB = tempSet.second; // child
 
-		vector<string> tempMod = ProcTable::getProcModifiesVar(procB);
-		for (int i = 0; i < tempMod.size(); i++) {
-			ProcWithModifies[procA].push_back(tempMod[i]);
+		if (ProcTable::isContains(procB)) {
+			vector<string> tempMod = ProcTable::getProcModifiesVar(procB);
+			for (int i = 0; i < tempMod.size(); i++) {
+				ProcWithModifies[procA].push_back(tempMod[i]);
+			}
+
+			sort(ProcWithModifies[procA].begin(), ProcWithModifies[procA].end());
+			ProcWithModifies[procA].erase(unique(ProcWithModifies[procA].begin(), ProcWithModifies[procA].end()), ProcWithModifies[procA].end());
+
+			vector<string> tempUses = ProcTable::getProcUsesVar(procB);
+			for (int i = 0; i < tempUses.size(); i++) {
+				ProcWithUses[procA].push_back(tempUses[i]);
+			}
+
+			sort(ProcWithUses[procA].begin(), ProcWithUses[procA].end());
+			ProcWithUses[procA].erase(unique(ProcWithUses[procA].begin(), ProcWithUses[procA].end()), ProcWithUses[procA].end());
 		}
-
-		sort(ProcWithModifies[procA].begin(), ProcWithModifies[procA].end());
-		ProcWithModifies[procA].erase(unique(ProcWithModifies[procA].begin(), ProcWithModifies[procA].end()), ProcWithModifies[procA].end());
-
-		vector<string> tempUses = ProcTable::getProcUsesVar(procB);
-		for (int i = 0; i < tempUses.size(); i++) {
-			ProcWithUses[procA].push_back(tempUses[i]);
+		else {
+			cout << "Error: procedure does not exist." << endl;
+			PKB::abort();
 		}
-
-		sort(ProcWithUses[procA].begin(), ProcWithUses[procA].end());
-		ProcWithUses[procA].erase(unique(ProcWithUses[procA].begin(), ProcWithUses[procA].end()), ProcWithUses[procA].end());
 	}
 
 	//Calls::printCallsTable();
