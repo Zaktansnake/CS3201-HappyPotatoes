@@ -3,6 +3,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <sstream>
 
 #include "./Header/Patterns.h"
 
@@ -22,11 +23,27 @@ bool Patterns::compareAssignments(string assignment1, string assignment2) {
 	string augmentAssignment1 = patternAssignment(assignment1);
 	string augmentAssignment2 = patternAssignment(assignment2);
 
-	if (augmentAssignment1 == augmentAssignment2) {
-		return true;
+	//use find to use size_t for comparing
+
+	if (augmentAssignment1.size >= augmentAssignment2.size) {
+		size_t found = augmentAssignment1.find(augmentAssignment2);
+		
+		if (found != std::string::npos) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 	else {
-		return false;
+		size_t found = augmentAssignment2.find(augmentAssignment1);
+		
+		if (found != std::string::npos) {
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 }
 
@@ -36,28 +53,42 @@ string Patterns::patternAssignment(string assignment) {
 
 	//For example, we get a string assignment, we need to read it left to right, once we encounter a higher order of operation we bracket the variables aroud it
 	//Once completed, method will return the updated string to PKB for storage
-	string statement = assignment;
-	string underscore = "_";
-	string underscoreStatement;
-	size_t underscoreFound;
-	int underscorePos1, underscorePos2;
+	//Convert assignments to arrays using whitespace to determine the arrays.
 
-	if (statement.size() <= 3) {
-		return statement;
+	string assign = assignment;
+	string statement[assign.size];
+	string result;
+
+	int i = 0;
+	stringstream ssin(assign);
+	
+	while (ssin.good() && i < assign.size()) {
+		ssin >> statement[i];
+		++i;
 	}
 
-	if (statement.find(underscore) != std::string::npos) {
-		underscoreFound = statement.find(underscore);
-		underscorePos1 = underscoreFound;
-		underscoreFound = statement.find(underscore, underscoreFound + 1);
-		underscorePos2 = underscoreFound - underscorePos1;
-		underscoreStatement = statement.substr(underscorePos1, underscorePos2);
+	if (sizeof(statement) / sizeof(statement[0]) <= 3) {
+		string result = "";
+		string temp[5];
+		temp[0] = "(";
+		
+		for (int i = 0; i < sizeof(statement) / sizeof(statement[0]); ++i) {
+			temp[i + 1] = statement[i];
+		}
+		
+		temp[5] = ")";
+
+		for (int j = 0; j < sizeof(temp) / sizeof(temp[0]); ++i) {
+			result.append(temp[j]);
+		}
+		
+		return result;
 	}
 
-	for (int i = 0; i < statement.size(); ++i) {
-		//cout << statement.size();
-		string temp = statement;
-		string c = statement.substr(i, 1);
+	for (int i = 0; i < sizeof(statement) / sizeof(statement[0]); ++i) {
+		string result = "";
+		string c = statement[i];
+		string temp[sizeof(statement) / sizeof(statement[0])];
 
 		if (c.compare("*") == 0) {
 			if (multiplicationDetermine(statement, i)) {
@@ -99,7 +130,11 @@ string Patterns::patternAssignment(string assignment) {
 		statement = temp;
 	}
 
-	return statement;
+	for (int j = 0; j < sizeof(statement) / sizeof(statement[0]); ++i) {
+		result.append(statement[j]);
+	}
+
+	return result;
 }
 
 bool Patterns::multiplicationDetermine(string statement, int marker) {
