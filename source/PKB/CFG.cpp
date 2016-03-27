@@ -43,10 +43,15 @@ int lastElse = 0;
 
 int endloop;
 
+vector<int> resultStar;
+map<int,int> resultStarMap;
+map<int,int>::iterator itStar;
+
 
 int setConditions(string stmtLine);
 string trimString(string stmt);
 bool checkProcedure(int s1, int s2);
+int getEndProcNo (int s1);
 
 
 void CFG::addRoot(string procedure, int stmtNo) {
@@ -432,6 +437,82 @@ bool CFG::isNext(int stmtNo1, int stmtNo2) {
 	}
 	return false;
 	
+}
+
+
+bool CFG::isNextStar(int s1, int s2) {
+      
+	  vector<int> temp = CFGTable.at(currentPro).at(s1);
+	  int start = 0;
+	  int end = 0;
+	  // get the start and end procedure
+	  if (isNext(s1, s2)) {
+		  return true;
+	  }
+	  for (map<int, int>::iterator it = startEndOfProcedure.begin(); it != startEndOfProcedure.end(); ++it) {
+		  if (it->first <= s1 && it->second >= s1) {
+			  if (it->first <= s2 && it->second >= s2) {
+				  start = it->first;
+				  end = it->second;
+				  break;
+			  }
+		  }
+		  else if (it->first <= s1 && it->second == -1) {
+			  if (it->first <= s2) {
+				  start = it->first;
+				  end = CFGTable.at(currentPro).size() - 1 ;
+				  break;
+			  }  
+		  }
+	  }
+
+	  //need to complete
+}
+
+vector<int> CFG::getNextStar(int stmtNo) {
+	if (getNext(stmtNo).size() == 0) {
+		if (getEndProcNo(stmtNo) != stmtNo) { // not the end of 
+
+		}
+		return resultStar;
+	}
+	else {
+		vector<int> temp = getNext(stmtNo);
+		for (int i = 0; i < temp.size(); i++) {
+			itStar = resultStarMap.find(temp.at(i));
+			if (itStar != resultStarMap.end()) {
+				i++;
+				if (i >= temp.size()) {
+				return getNextStar(temp.at(i-1));
+				}
+				else {
+					resultStar.push_back(temp.at(i));
+					resultStarMap.insert(pair<int, int>(temp.at(i), -1));
+					return getNextStar(temp.at(i));
+				}
+			}
+			resultStar.push_back(temp.at(i));
+			resultStarMap.insert(pair<int,int>(temp.at(i), -1));
+			return getNextStar(temp.at(i));
+		}
+	}
+}
+
+
+int getEndProcNo(int s1) {
+    int start = 0;
+	int end = 0;
+	for (map<int, int>::iterator it = startEndOfProcedure.begin(); it != startEndOfProcedure.end(); ++it) {
+		if (it->first <= s1 && it->second >= s1) {
+		    start = it->first;
+			end = it->second;
+		}
+		else if (it->first <= s1 && it->second == -1) {
+			start = it->first;
+			end = CFGTable.at(currentPro).size()-1;
+		}
+	}
+	return end;
 }
 
 
