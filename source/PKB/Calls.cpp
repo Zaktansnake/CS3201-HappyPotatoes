@@ -23,7 +23,8 @@ void Calls::setCallProcedure(string mainProcedure, string procedure, int stmtLin
 			string procA = get<0>(CallsTable[i]);
 			string procB = get<1>(CallsTable[i]);
 
-			if (procA.compare(procedure) == 0 && procB.compare(mainProcedure) == 0) {
+			if ((procA.compare(procedure) == 0 && procB.compare(mainProcedure) == 0) || (procedure.compare(mainProcedure) == 0)) {
+				cout << "Error: Recrusive calls present." << endl;
 				PKB::abort();
 			}
 		}
