@@ -92,6 +92,11 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 				 CFGstmt.at(prev) = CFGline;
 				 CFGTable.at(currentPro) = CFGstmt;
 			  }
+			  else {
+				  CFGline.push_back(dummy);
+				  CFGstmt.push_back(CFGline);
+				  CFGTable.at(currentPro) = CFGstmt;
+			  }
 			  // need to complete.......................................
 			}
 		}
