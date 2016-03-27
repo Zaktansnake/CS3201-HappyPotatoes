@@ -20,7 +20,7 @@ int loopStatus;
 int endLoopNo = 0;
 bool isFirstElse = false;  // the first stmtNo after else do not have follow
 std::vector<int> stmtLst;
-int condition;
+int conditionStmtTable;
 Follows follow;
 Parent parent;
 map<int,int> startAndEndOfProcedure;
@@ -73,7 +73,7 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 		//elseFlag = false;
 
 		if (isCon) {
-			switch (condition) {
+			switch (conditionStmtTable) {
 			case IF:
 				flagForNextLevel = true;
 				//	ifFlag = true;
@@ -107,12 +107,12 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 			nestLevel++;
 			flagForNextLevel = false;
 		}
-		if (condition == 2 && endLoopNo == 0) {
+		if (conditionStmtTable == 2 && endLoopNo == 0) {
 			nestLevel++;
 		}
 
 		// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
-		if (endLoopNo > 0 && condition != 2) {
+		if (endLoopNo > 0 && conditionStmtTable != 2) {
 			nestLevel = nestLevel - endLoopNo;
 			if (nestLevel < 0) {
 				nestLevel == 0;
@@ -122,10 +122,10 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 }
 
 void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
-     follow.setFollow(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, condition);
+     follow.setFollow(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, conditionStmtTable);
 }
 void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
-	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, condition);
+	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, conditionStmtTable);
 }
 //-------------------------------------get answer of follow
 std::vector<int> checkWithProcedure(int stmtNo, vector<int> ans) {
@@ -263,17 +263,17 @@ std::vector<int> stmtTable::getChildForIf(int stmtNo) {
 // check condition
 bool isCondition(string stmtLine) {
 	if (stmtLine.find("if") != std::string::npos) {
-	    condition = 1;
+		conditionStmtTable = 1;
 		return true;
 	}
 	else if (stmtLine.find("else") != std::string::npos) {
-	    condition = 2;
+		conditionStmtTable = 2;
 		return true;
 	}
 	else if (stmtLine.find("while") != std::string::npos) {
-	    condition = 3;
+		conditionStmtTable = 3;
 		return true;
 	}
-	condition = 0;
+	conditionStmtTable = 0;
 	return false;
 }

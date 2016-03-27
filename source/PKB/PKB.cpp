@@ -15,13 +15,14 @@
 #include <functional> 
 #include <cctype>
 #include <locale>
+#include <map>
 
 #include "./Header/PKB.h"
 #include "./Header/ProcTable.h"
 #include "./Header/VarTable.h"
 #include "./Header/stmtTable.h"
 #include "./Header/PatternTable.h"
-#include "Header\CFG.h"
+#include "Header/CFG.h"
 
 using namespace std;
 
@@ -64,6 +65,7 @@ void PKB::create(string fileName) {
 
 	myFile.close();
 	PKB::updateTables();
+	
 	
 }
 

@@ -173,6 +173,7 @@
       <SubType>
       </SubType>
     </ClCompile>
+    <ClCompile Include="TestCFG.cpp" />
     <ClCompile Include="TestGetPattern.cpp" />
     <ClCompile Include="TestModifies.cpp" />
     <ClCompile Include="TestParser.cpp" />

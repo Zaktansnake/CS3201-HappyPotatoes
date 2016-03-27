@@ -11,8 +11,9 @@ public:
 	CFG();
 	~CFG();
 
-	static void addRoot (std::string root, int stmtNo);
-	static void addNextNode (int stmtNo, string stmt);
+
+	static void CFG::addRoot (string root, int stmtNo);
+	static void CFG::addNextNode (int stmtNo, string stmt);
 
 	
 	static vector<int> getNext (int stmtNo);
@@ -20,6 +21,6 @@ public:
 	static bool isNext (int stmtNo1, int stmtNo2);
 
 private : 
-    bool isConditions (string stmt);
+    bool checkConditions (string stmt);
 	void countCloseLoop (string stmt);
 };

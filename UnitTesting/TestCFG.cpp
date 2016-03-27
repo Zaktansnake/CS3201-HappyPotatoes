@@ -16,24 +16,45 @@ namespace UnitTesting
 	TEST_CLASS(TestCFG)
 	{
 	public:
-		TEST_METHOD(TestforCFG)
+		TEST_METHOD(CFG)
 		{
-			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source06.txt");
 
-			int result;
-			int expectedResult;
+			string result;
+			string expectedResult;
 			vector<int> actual; 
+			int expectBoo;
+			bool resultBoo;
+			int resultB;
 
-			expectedResult = 1;
-			actual = CFG::getNext(1);
-			if (actual.size() == 0) {
-				result = 0;
-			}
-			else {
-				result = actual.front();
+			expectedResult = "21";
+			actual = CFG::getNext(20);
+			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
+				result.append(std::to_string(*it));
 			}
 
 			Assert::AreEqual(expectedResult, result);
+
+			//test getPrev
+			result.clear();
+			expectedResult = "69";
+			actual = CFG::getPrev(7);
+			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
+				result.append(std::to_string(*it));
+			}
+
+			Assert::AreEqual(expectedResult, result);
+
+			expectBoo = 0;
+			resultBoo = CFG::isNext(10, 12);
+			if (resultBoo) {
+				resultB = 1;
+			}
+			else {
+				resultB = 0;
+			}
+			Assert::AreEqual(expectBoo, resultB);
+
 
 
 

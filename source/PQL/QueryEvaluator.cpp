@@ -10,7 +10,7 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "Header\Clause.h"
-#include "C:\Users\Jayden Shen\Documents\Visual Studio 2015\Projects\CS3201-HappyPotatoes\SPA\ConditionResults.h"
+//#include "C:\Users\Jayden Shen\Documents\Visual Studio 2015\Projects\CS3201-HappyPotatoes\SPA\ConditionResults.h"
 
 
 using namespace std;

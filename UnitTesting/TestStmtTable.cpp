@@ -26,7 +26,7 @@ namespace UnitTesting
 			string resultChildren;
 			std::vector<int> resultChild;
 			int expected_result01 = 26;
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source02.txt");
 			vector<int> getParent = stmtTable::getParent(28);
 			if (getParent.size() == 0) {
 				result = 0;

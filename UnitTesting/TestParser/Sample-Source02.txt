@@ -7,4 +7,5 @@ procedure ABC {
 	} else {
 		oSCar  = 1 * beta + tmp; 
 	}
-}
+
+a = a + b;}
