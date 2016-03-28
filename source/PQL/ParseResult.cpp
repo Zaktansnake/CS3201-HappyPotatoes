@@ -77,8 +77,10 @@ const string Follows = "(?:Follows" + space + "\\(" + space + stmtRef + space + 
 const string FollowsT = "(?:Follows\\*" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
 const string Next = "(?:Next" + space + "\\(" + space + lineRef + space + "," + space + lineRef + space + "\\))";
 const string NextT = "(?:Next\\*" + space + "\\(" + space + lineRef + space + "," + space + lineRef + space + "\\))";
-const string relRef = "(?:" + Modifies + "|" + Uses + "|" + Calls + "|" + CallsT + "|" +
-Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
+const string Affects = "(?:Affects" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
+const string AffectsT = "(?:Affects*" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
+const string relRef = "(?:" + Modifies + "|" + Uses + "|" + Calls + "|" + CallsT + "|" + Affects + "|" + AffectsT + "|"
+						+ Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
 const string relCond = "(?:" + relRef + space + "(?:and" + space + relRef + space + ")*)";
 
 const string NAME = "(?:\\w(?:\\w|\\d)*)";
@@ -88,8 +90,7 @@ const string expressionSpec = "(?:\"" + space + expr + space + "\"|_\"" + space 
 const string IF = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space +
 "," + space + "_" + space + "\\))";
 const string WHILE = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "\\))";
-const string assign = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space +
-"(?:" + expressionSpec + "|" + "_)" + space + "\\))";
+const string assign = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "(?:" + expressionSpec + "|" + "_)" + space + "\\))";
 const string pattern = "(?:" + assign + "|" + WHILE + "|" + IF + ")";
 const string patternCond = "(?:" + pattern + space + "(?:and" + space + pattern + space + ")*)";
 
@@ -98,10 +99,8 @@ const string suchthatCl = "(?:such that" + space + relCond + ")";
 const string patternCl = "(?:pattern" + space + patternCond + ")";
 
 const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
-const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
-
-const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
-const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
+const string selectClause = space + "Select" + space + resultCl + space +
+"(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
 const regex declarationChecking(declar);
 const regex declarationParsing(IDENT);
