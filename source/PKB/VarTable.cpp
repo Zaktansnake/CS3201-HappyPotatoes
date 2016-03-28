@@ -13,6 +13,8 @@
 #include "./Header/Modifies.h"
 #include "./Header/Uses.h"
 
+#include "./Header/PatternTable.h"
+
 using namespace std;
 
 // (Modifies) int -> stmtLine, string -> variable
@@ -21,10 +23,10 @@ vector<pair<int, string>> varTableLeft;
 vector<pair<int, string>> varTableRight;
 // (While) string -> variable name, vector<int> -> stmtLine
 map<string, vector<int>> whileTable;
+// (Ifs) string -> variable, int -> stmtLine
+map<string, vector<int>> ifsTable;
 // (Assign) int -> stmtLine, string -> line
 map<int, string> assignTable;
-// (Ifs) int -> stmtLine, string -> variable
-map<int, string> ifsTable;
 
 vector<int> allStmtNum;
 vector<int> assignNum;
@@ -91,6 +93,14 @@ vector<int> VarTable::getAllIfs() {
 	return ifStmtNum;
 }
 
+vector<pair<int, string>> VarTable::getModifiesInPair() {
+	return varTableLeft;
+}
+
+vector<pair<int, string>> VarTable::getUsesInPair() {
+	return varTableRight;
+}
+
 // add stmtLine into stmtNum
 void addDataToStmt() {
 	int tempNum = PKB::getStmtNum();
@@ -106,16 +116,32 @@ vector<int> VarTable::setAssign() {
 	return assignNum;
 }
 
+// ---------------------- IFS table ---------------------------------
+void VarTable::addDataToIfsTable(string variable, int stmtNum) {
+	ifsTable[variable].push_back(stmtNum);
+	ifStmtNum.push_back(stmtNum);
+}
+
+vector<int> VarTable::getAssignFromIfsTable(string variable) {
+	vector<int> ans;
+	if (ifsTable.count(variable)) {
+		ans = ifsTable[variable];
+	}
+	return ans;
+}
+
 // ---------------------- While table ---------------------------------
 void VarTable::addDataToWhileTable(string variable, int stmtNum) {
 	whileTable[variable].push_back(stmtNum);
 	whileStmtNum.push_back(stmtNum);
 }
 
-// ---------------------- IFS table ---------------------------------
-void VarTable::addDataToIfsTable(string variable, int stmtNum) {
-	ifsTable.insert(pair<int, string>(stmtNum, variable));
-	ifStmtNum.push_back(stmtNum);
+vector<int> VarTable::getAssignFromWhileTable(string variable) {
+	vector<int> ans;
+	if (whileTable.count(variable)) {
+		ans = whileTable[variable];
+	}
+	return ans;
 }
 
 //----------------------- Assign Table ---------------------------------

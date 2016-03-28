@@ -24,8 +24,8 @@ public:
 	static void updateModifiesUsesTables();
 
 	// getSize
-	static int  varTableLeftSize();
-	static int  varTableRightSize();
+	static int varTableLeftSize();
+	static int varTableRightSize();
 	static int whileTableSize();
 	static int assignTableSize();
 
@@ -33,15 +33,19 @@ public:
 	static vector<int> getAllAssign();
 	static vector<int> getAllWhile();
 	static vector<int> getAllIfs();
+	static vector<pair<int, string>> getModifiesInPair();
+	static vector<pair<int, string>> getUsesInPair();
 
 	static vector<string> findVariableLeft(int stmtLine1, int stmtLine2);
 	static vector<string> findVariableRight(int stmtLine1, int stmtLine2);
 
 	//----------------------- IFS Table -------------------------
 	static void addDataToIfsTable(string variable, int stmtNum);
+	static vector<int> getAssignFromIfsTable(string variable);
 
 	//----------------------- While Table -------------------------
 	static void addDataToWhileTable(string variable, int stmtNum);
+	static vector<int> getAssignFromWhileTable(string variable);
 
 	//----------------------- Assign Table ------------------------
 	static void addDataToAssignTable(string variable, int stmtNum);
