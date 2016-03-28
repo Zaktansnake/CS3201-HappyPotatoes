@@ -10,10 +10,10 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTesting
 {
-	TEST_CLASS(TestGetPattern)
+	TEST_CLASS(TestPattern)
 	{
 	public:
-		TEST_METHOD(TestisPattern) {
+		TEST_METHOD(TestPatternTable) {
 			
 			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
 
