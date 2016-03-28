@@ -30,13 +30,7 @@
     <ClInclude Include="..\source\PKB\Header\Affects.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
-    <ClInclude Include="..\source\PKB\Header\AST.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
     <ClInclude Include="..\source\PKB\Header\Follows.h">
-      <Filter>Header Files\PKB</Filter>
-    </ClInclude>
-    <ClInclude Include="..\source\PKB\Header\GNode.h">
       <Filter>Header Files\PKB</Filter>
     </ClInclude>
     <ClInclude Include="..\source\PKB\Header\Modifies.h">
@@ -101,16 +95,7 @@
     <ClCompile Include="..\source\PKB\Affects.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\PKB\AST.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\PKB\DesignExtractor.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\PKB\Follows.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\PKB\GNode.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PKB\Modifies.cpp">

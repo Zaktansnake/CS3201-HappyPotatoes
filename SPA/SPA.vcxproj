@@ -12,12 +12,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\source\PKB\Header\Affects.h" />
-    <ClInclude Include="..\source\PKB\Header\AST.h" />
     <ClInclude Include="..\source\PKB\Header\Calls.h" />
     <ClInclude Include="..\source\PKB\Header\CFG.h" />
     <ClInclude Include="..\source\PKB\Header\ConstantTable.h" />
     <ClInclude Include="..\source\PKB\Header\Follows.h" />
-    <ClInclude Include="..\source\PKB\Header\GNode.h" />
     <ClInclude Include="..\source\PKB\Header\Modifies.h" />
     <ClInclude Include="..\source\PKB\Header\Parent.h" />
     <ClInclude Include="..\source\PKB\Header\Parser.h" />
@@ -38,13 +36,10 @@
   <ItemGroup>
     <ClCompile Include="..\source\Main.cpp" />
     <ClCompile Include="..\source\PKB\Affects.cpp" />
-    <ClCompile Include="..\source\PKB\AST.cpp" />
     <ClCompile Include="..\source\PKB\Calls.cpp" />
     <ClCompile Include="..\source\PKB\CFG.cpp" />
     <ClCompile Include="..\source\PKB\ConstantTable.cpp" />
-    <ClCompile Include="..\source\PKB\DesignExtractor.cpp" />
     <ClCompile Include="..\source\PKB\Follows.cpp" />
-    <ClCompile Include="..\source\PKB\GNode.cpp" />
     <ClCompile Include="..\source\PKB\Modifies.cpp" />
     <ClCompile Include="..\source\PKB\Parent.cpp" />
     <ClCompile Include="..\source\PKB\Parser.cpp" />
