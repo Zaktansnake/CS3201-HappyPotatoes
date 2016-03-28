@@ -8,7 +8,7 @@ using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
 namespace UnitTesting
 {
-	const string IDENT = "(?:\\w(?:\\w|\\d|#)*)";
+	const string IDENT = "(?:[[:alpha:]](?:[[:alpha:]]|\\d|#)*)";
 	const string INTEGER = "(?:\\d+)";
 	const string space = "\\s*";
 	const string attrName = "(?:procName|varName|value|stmt#)";
@@ -42,7 +42,7 @@ namespace UnitTesting
 		+ Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
 	const string relCond = "(?:" + relRef + space + "(?:and" + space + relRef + space + ")*)";
 
-	const string NAME = "(?:\\w(?:\\w|\\d)*)";
+	const string NAME = "(?:[[:alpha:]](?:[[:alpha:]]|\\d)*)";
 	const string expr = "(?:\\(?(?:" + NAME + "|" + INTEGER + ")" + space + "(?:(?:\\+|\\*)" + space + "\\(?(?:" + NAME + "|" + INTEGER + ")\\)?" + space + ")*)";
 	const string expressionSpec = "(?:\"" + space + expr + space + "\"|_\"" + space + expr + space + "\"_)";
 
@@ -58,8 +58,7 @@ namespace UnitTesting
 	const string patternCl = "(?:pattern" + space + patternCond + ")";
 
 	const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
-	const string selectClause = space + "Select" + space + resultCl + space +
-		"(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
+	const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
 	const regex declarationChecking(declar);
 	const regex declarationParsing(IDENT);
@@ -79,8 +78,6 @@ namespace UnitTesting
 			Assert::IsFalse(regex_match("ASSIGN a1, a2;",test));
 			// wrong synonym syntax
 			Assert::IsFalse(regex_match("stmt 9999;", test));
-			// duplicated synonym
-			Assert::IsFalse(regex_match("stmt s1,s1;", test));
 			// redundant punctuation
 			Assert::IsFalse(regex_match("stmt s1,,s2;", test));
 			Assert::IsFalse(regex_match("stmt s1,s2;;", test));

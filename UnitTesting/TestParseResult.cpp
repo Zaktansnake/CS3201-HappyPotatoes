@@ -37,16 +37,7 @@ namespace UnitTesting
 			Assert::IsFalse(correct);
 		}
 
-		/* TEST_METHOD(testRegex) {
-			const string selectClause = "\\s*Select\\s+(\\w+\\d*#*|<\\w+\\d*#*\\s*(,\\s*\\w+\\d*#*\\s*)+>)\\s+";
-			const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
-			const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
-			
-			// test selectClause regex
-			regex test1(selectClause);
-			Assert::IsTrue(regex_match("Select <s1, s2, v2   > ", test1));
-			Assert::IsFalse(regex_match("Select <s1, s2, v2 126879  > ", test1));
-		} */
+	
 
 	};
 }

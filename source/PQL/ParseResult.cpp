@@ -49,7 +49,7 @@ ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, Pa
 }
 
 // constants for project iteration 1
-const string IDENT = "(?:\\w(?:\\w|\\d|#)*)";
+const string IDENT = "(?:[[:alpha:]](?:[[:alpha:]]|\\d|#)*)";
 const string INTEGER = "(?:\\d+)";
 const string space = "\\s*";
 const string attrName = "(?:procName|varName|value|stmt#)";
@@ -83,12 +83,11 @@ const string relRef = "(?:" + Modifies + "|" + Uses + "|" + Calls + "|" + CallsT
 						+ Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
 const string relCond = "(?:" + relRef + space + "(?:and" + space + relRef + space + ")*)";
 
-const string NAME = "(?:\\w(?:\\w|\\d)*)";
+const string NAME = "(?:[[:alpha:]](?:[[:alpha:]]|\\d)*)";
 const string expr = "(?:\\(?(?:" + NAME + "|" + INTEGER + ")" + space + "(?:(?:\\+|\\*)" + space + "\\(?(?:" + NAME + "|" + INTEGER + ")\\)?" + space + ")*)";
 const string expressionSpec = "(?:\"" + space + expr + space + "\"|_\"" + space + expr + space + "\"_)";
 
-const string IF = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space +
-"," + space + "_" + space + "\\))";
+const string IF = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "," + space + "_" + space + "\\))";
 const string WHILE = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "\\))";
 const string assign = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "(?:" + expressionSpec + "|" + "_)" + space + "\\))";
 const string pattern = "(?:" + assign + "|" + WHILE + "|" + IF + ")";
@@ -99,8 +98,7 @@ const string suchthatCl = "(?:such that" + space + relCond + ")";
 const string patternCl = "(?:pattern" + space + patternCond + ")";
 
 const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
-const string selectClause = space + "Select" + space + resultCl + space +
-"(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
+const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
 const regex declarationChecking(declar);
 const regex declarationParsing(IDENT);
