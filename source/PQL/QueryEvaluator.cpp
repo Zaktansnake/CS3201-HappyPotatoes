@@ -10,63 +10,66 @@
 #include <stdlib.h>
 #include <ctype.h>
 #include "Header\Clause.h"
-//#include "C:\Users\Jayden Shen\Documents\Visual Studio 2015\Projects\CS3201-HappyPotatoes\SPA\ConditionResults.h"
+#include "Header\QueriesAnswerStorage.h"
 
 
 using namespace std;
 
+QueriesAnswerStorage QAS;
 
-void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector) {
+void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector,
+	PatternSet PS, vector<With> WithClauses) {
+	for (int i = 0; i < ClausesVector.size(); i++) {
 
-	vector<int> temp;
-	vector<char> tempString;
-	Clause clauses = ClausesVector.at(0);
-	std::string clausesOperation = clauses.getClauseOperation();
-	int clausesSize = clausesOperation.size();
-	char firstParameterType = clausesOperation.at(clausesSize - 2);
-	char secondParameterType = clausesOperation.at(clausesSize - 1);
-	std::string firstSecondParameterType = "";
-	firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
-	Parameter1 firstParameter = clauses.getFirstParameter();
-	Parameter2 secondParameter = clauses.getSecondParameter();
-	char firstLetter = clausesOperation.at(0);
-	std::string sp = SelectParameterVector.at(1);
-	std::size_t found = clausesOperation.find("*");
+		vector<int> temp;
+		vector<char> tempString;
+		Clause clauses = ClausesVector.at(i);
+		std::string clausesOperation = clauses.getClauseOperation();
+		int clausesSize = clausesOperation.size();
+		char firstParameterType = clausesOperation.at(clausesSize - 2);
+		char secondParameterType = clausesOperation.at(clausesSize - 1);
+		std::string firstSecondParameterType = "";
+		firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
+		Parameter1 firstParameter = clauses.getFirstParameter();
+		Parameter2 secondParameter = clauses.getSecondParameter();
+		char firstLetter = clausesOperation.at(0);
+		std::size_t found = clausesOperation.find("*");
 
 
-	if (found != std::string::npos) {
-		if (firstLetter == 'P') {
+		if (found != std::string::npos) {
+			if (firstLetter == 'P') {
 
-		}
-		if (firstLetter == 'F') {
+			}
+			if (firstLetter == 'F') {
 
-		}
-	}
-	else {
-		if (firstLetter == 'M') {
-
-		}
-		else if (firstLetter == 'U') {
-
-		}
-		else if (firstLetter == 'P') {
-
-		}
-		else if (firstLetter == 'F') {
-
+			}
 		}
 		else {
+			if (firstLetter == 'M') {
 
+			}
+			else if (firstLetter == 'U') {
+
+			}
+			else if (firstLetter == 'P') {
+
+			}
+			else if (firstLetter == 'F') {
+				
+			}
+			else {
+
+			}
 		}
 	}
 }
-
 void assessParseResult(ParseResult pr) {
 
 	std::vector<std::string> SelectParameterVector = pr.getSelectParameter();
 	std::vector<Clause> ClausesVector = pr.getClauses();
 	PatternSet PatternQueryVector = pr.getPatterns();
-	assessClauses(ClausesVector, SelectParameterVector);
+	std::vector<With> WithClauses = pr.getWithClauses();
+	assessClauses(ClausesVector, SelectParameterVector,PatternQueryVector,WithClauses);
 }
 
 vector<string> splitComma(string line) {
@@ -85,6 +88,8 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
 
 	assessParseResult(mustPr);
+	return QAS.MergeResults();
+
 }
 
 QueryEvaluator::QueryEvaluator()
