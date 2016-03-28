@@ -49,14 +49,65 @@ ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, Pa
 }
 
 // constants for project iteration 1
-const string selectClause = "\\s*Select\\s+(\\w+\\d*#*)\\s+";
+const string IDENT = "(?:\\w(?:\\w|\\d|#)*)";
+const string INTEGER = "(?:\\d+)";
+const string space = "\\s*";
+const string attrName = "(?:procName|varName|value|stmt#)";
+const string attrRef = "(?:" + IDENT + "\\." + attrName + ")";
+const string elem = "(?:" + IDENT + "|" + attrRef + ")";
+const string TUPLE = "(?:" + elem + "|<" + space + elem + space + "(?:," + space + elem + space + ")*>)";
+const string entRef = "(?:" + IDENT + "|_|" + "\"" + IDENT + "\"|" + INTEGER + ")";
+const string stmtRef = "(?:" + IDENT + "|_|" + INTEGER + ")";
+const string lineRef = stmtRef;
+const string designEntity = "(?:procedure|stmt|assign|call|while|if|variable|constant|prog_line)";
+const string declar = "(?:" + space + designEntity + space + IDENT + space + "(?:," + space + IDENT + space + ")*" + ";)*";
+
+const string REF = "(?:" + attrRef + "|" + IDENT + "|\"" + IDENT + "\"|" + INTEGER + ")";
+const string attrCompare = "(?:" + REF + space + "=" + space + REF + ")";
+const string attrCond = "(?:" + attrCompare + space + "(?:and" + space + attrCompare + space + ")*)";
+const string varRef = "(?:" + IDENT + "|_|\"" + IDENT + "\")";
+
+const string Modifies = "(?:Modifies" + space + "\\(" + space + entRef + space + "," + space + varRef + space + "\\))";
+const string Uses = "(?:Uses" + space + "\\(" + space + entRef + space + "," + space + varRef + space + "\\))";
+const string Calls = "(?:Calls" + space + "\\(" + space + entRef + space + "," + space + entRef + space + "\\))";
+const string CallsT = "(?:Calls\\*" + space + "\\(" + space + entRef + space + "," + space + entRef + space + "\\))";
+const string Parent = "(?:Parent" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
+const string ParentT = "(?:Parent\\*" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
+const string Follows = "(?:Follows" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
+const string FollowsT = "(?:Follows\\*" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
+const string Next = "(?:Next" + space + "\\(" + space + lineRef + space + "," + space + lineRef + space + "\\))";
+const string NextT = "(?:Next\\*" + space + "\\(" + space + lineRef + space + "," + space + lineRef + space + "\\))";
+const string relRef = "(?:" + Modifies + "|" + Uses + "|" + Calls + "|" + CallsT + "|" +
+Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
+const string relCond = "(?:" + relRef + space + "(?:and" + space + relRef + space + ")*)";
+
+const string NAME = "(?:\\w(?:\\w|\\d)*)";
+const string expr = "(?:\\(?(?:" + NAME + "|" + INTEGER + ")" + space + "(?:(?:\\+|\\*)" + space + "\\(?(?:" + NAME + "|" + INTEGER + ")\\)?" + space + ")*)";
+const string expressionSpec = "(?:\"" + space + expr + space + "\"|_\"" + space + expr + space + "\"_)";
+
+const string IF = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space +
+"," + space + "_" + space + "\\))";
+const string WHILE = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "\\))";
+const string assign = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space +
+"(?:" + expressionSpec + "|" + "_)" + space + "\\))";
+const string pattern = "(?:" + assign + "|" + WHILE + "|" + IF + ")";
+const string patternCond = "(?:" + pattern + space + "(?:and" + space + pattern + space + ")*)";
+
+const string withCl = "(?:with" + space + attrCond + ")";
+const string suchthatCl = "(?:such that" + space + relCond + ")";
+const string patternCl = "(?:pattern" + space + patternCond + ")";
+
+const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
+const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
+
 const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
 const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
 
-const regex declarationChecking("(\\s*(stmt|assign|while|variable|constant|prog_line)\\s+(?:(\\w+\\d*#*)\\s*,\\s*)*(?:(\\w+\\d*#*)\\s*;\\s*)+)+");
-const regex declarationParsing("\\w+\\d*#*");
-const regex queryRegex1(selectClause + conditionClause + patternClause);
-const regex queryRegex2(selectClause + patternClause + conditionClause);
+const regex declarationChecking(declar);
+const regex declarationParsing(IDENT);
+const regex queryChecking(selectClause);
+const regex queryWordParsing(entRef);
+const regex queryPatternParsing(expressionSpec);
 
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
 	unordered_map<string, string> declarationTable;
@@ -105,7 +156,7 @@ bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<str
 ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, string>& declarationTable) {
 	smatch sm;
 
-	if (!regex_match(query, sm, queryRegex1) && !regex_match(query, sm, queryRegex2)) {
+	if (!regex_match(query,queryChecking)) {
 		signalErrorAndStop();
 		return ParseResult();
 	}
@@ -132,7 +183,7 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 	checker = sm[3];
 
 	// "such that" comes first
-	if (regex_match(query, sm, queryRegex1)) {
+	if (regex_match(query, queryChecking)) {
 		conditionT = checker;
 		checker = sm[4];
 
@@ -190,7 +241,7 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 		}
 	}
 	// "pattern" comes first
-	else if (regex_match(query, sm, queryRegex2)) {
+	else if (regex_match(query, queryChecking)) {
 		checker = sm[4];
 		PatternType patternT = checker;
 

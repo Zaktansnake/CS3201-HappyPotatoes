@@ -20,7 +20,7 @@ map<int, string> AllAssignsTable;
 vector<int> AllAssignLineNum;
 
 bool checkStringSize(string line2, string tempLine);
-string removeDoubleQuote(string s);
+string removeDoubleQuotePattern(string s);
 string removeUnderScore(string s);
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
 std::vector<std::string> split(const std::string &s, char delim);
@@ -60,8 +60,8 @@ bool PatternTable::isPattern(string variable, string key) {
 vector<int> PatternTable::getPatternAssignNum(string left, string right) {
 	vector<int> ans;
 	int condition = checkLocationUnderscore(left, right);
-	left = removeUnderScore(removeDoubleQuote(left));
-	right = removeUnderScore(removeDoubleQuote(right));
+	left = removeUnderScore(removeDoubleQuotePattern(left));
+	right = removeUnderScore(removeDoubleQuotePattern(right));
 
 	if (condition == 1) {
 		// (_,_)
@@ -114,7 +114,7 @@ vector<int> PatternTable::getPatternResult(string line1, string line2, bool left
 		splitX[1] = splitX[1].erase(0, 1);
 		splitX[1] = splitX[1].erase(splitX[1].size() - 2);
 
-		// check line2 contains "+" || "-" || "-" -> only consists of variable
+		// check line2 does not contain "+" || "-" || "-" -> only consists of variable
 		if (line2.find("+") == std::string::npos && line2.find("-") == std::string::npos && line2.find("*") == std::string::npos) {
 			// underscore at both sides
 			if (right) {
@@ -139,9 +139,13 @@ vector<int> PatternTable::getPatternResult(string line1, string line2, bool left
 			}
 			else {
 				// splitX[1] -> original after "="; line2 -> user input
-				bool finalResult = Patterns::compareAssignments(splitX[1], line2);
-				if (finalResult == true) {
-					ans.push_back(leftAns[i]);
+				line2 = removeDoubleQuotePattern(line2);
+				std::size_t foundWord = splitX[1].find((line2));
+				if (splitX[1].size() > line2.size() && foundWord != std::string::npos) {
+					bool finalResult = Patterns::compareAssignments(splitX[1], line2);
+					if (finalResult == true) {
+						ans.push_back(leftAns[i]);
+					}
 				}
 			}
 		}
@@ -193,7 +197,7 @@ vector<int> PatternTable::setLeftAns(string line1, bool left) {
 }
 
 vector<int> PatternTable::setRightAns(string line2, bool right) {
-	string tempLine = removeDoubleQuote(removeUnderScore(line2));
+	string tempLine = removeDoubleQuotePattern(removeUnderScore(line2));
 	vector<int> rightAns;
 	if (right == true) {
 		if (line2.compare("_") == 0) {
@@ -205,7 +209,7 @@ vector<int> PatternTable::setRightAns(string line2, bool right) {
 	return rightAns;
 }
 
-string removeDoubleQuote(string s) {
+string removeDoubleQuotePattern(string s) {
 	if (s.front() == '"') {
 		s.erase(0, 1); // erase the first character
 		s.erase(s.size() - 1); // erase the last character
