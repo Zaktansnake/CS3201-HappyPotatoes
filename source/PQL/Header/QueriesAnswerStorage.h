@@ -9,6 +9,7 @@ public:
 	bool HasKey(string);
 	void update(string, vector<string>);
 	vector<string> MergeResults();
+	vector<string> GetColFromResultsTable(string);
 	void clear();
 	QueriesAnswerStorage();
 	~QueriesAnswerStorage();

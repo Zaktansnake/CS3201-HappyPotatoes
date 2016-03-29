@@ -11,7 +11,7 @@
 #include <ctype.h>
 #include "Header\Clause.h"
 #include "Header\QueriesAnswerStorage.h"
-
+#include <iostream>
 
 using namespace std;
 
@@ -147,44 +147,86 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 	}
 }
 
-bool QueryEvaluator::Follows(string, string, string, string, bool, string, string)
+bool QueryEvaluator::Follows(string P1, string P2, string P1Type, string P2Type, 
+	bool IsWith, string Left, string Right)
 {
-	return false;
+
+
+
+
+
+	return true;
 }
 
-bool QueryEvaluator::Modifies(string, string, string, string, bool, string, string)
+bool QueryEvaluator::Modifies(string P1, string P2, string P1Type, string P2Type,
+	bool IsWith, string Left, string Right)
 {
-	return false;
+	return true;
 }
 
-bool QueryEvaluator::FollowsStar(string, string, string, string, bool, string, string)
+bool QueryEvaluator::FollowsStar(string P1, string P2, string P1Type, string P2Type,
+	bool IsWith, string Left, string Right)
 {
-	return false;
+	return true;
 }
 
-bool QueryEvaluator::Next(string, string, string, string, bool, string, string)
+bool QueryEvaluator::Next(string P1, string P2, string P1Type, string P2Type,
+	bool IsWith, string Left, string Right)
 {
-	return false;
+	return true;
 }
 
-bool QueryEvaluator::NextStar(string, string, string, string, bool, string, string)
+bool QueryEvaluator::NextStar(string P1, string P2, string P1Type, string P2Type,
+	bool IsWith, string Left, string Right)
 {
-	return false;
+	return true;
 }
 
-bool QueryEvaluator::Parents(string, string, string, string, bool, string, string)
+bool QueryEvaluator::Parents(string P1, string P2, string P1Type, string P2Type,
+	bool IsWith, string Left, string Right)
 {
-	return false;
+	return true;
 }
 
-bool QueryEvaluator::ParentsStar(string, string, string, string, bool, string, string)
+bool QueryEvaluator::ParentsStar(string P1, string P2, string P1Type, string P2Type,
+	bool IsWith, string Left, string Right)
 {
-	return false;
+	return true;
 }
 
-bool QueryEvaluator::Uses(string, string, string, string, bool, string, string)
+bool QueryEvaluator::Uses(string P1, string P2, string P1Type, string P2Type,
+	bool IsWith, string Left, string Right)
 {
-	return false;
+	return true;
+}
+
+int QueryEvaluator::ChangeStringToInt(string s)
+{
+	int value = atoi(s.c_str());
+}
+
+string QueryEvaluator::ChangeIntToString(int i)
+{
+	ostringstream temp;
+	temp << i;
+	return temp.str();
+}
+
+bool QueryEvaluator::HaveQuotation(string s)
+{
+	size_t found;
+	found = s.find("\"");
+	if (found == string::npos) {
+		return false;
+	}
+	return true;;
+}
+
+bool QueryEvaluator::IsNumber(string s)
+{
+	std::string::const_iterator it = s.begin();
+	while (it != s.end() && isdigit(*it)) ++it;
+	return !s.empty() && it == s.end();
 }
 
 QueryEvaluator::QueryEvaluator()

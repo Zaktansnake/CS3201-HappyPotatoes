@@ -64,6 +64,7 @@ bool QueriesAnswerStorage::HasKey(string s)
 	}
 }
 
+
 void QueriesAnswerStorage::update(string s, vector<string> v)
 {
 	bool exist = false;
@@ -130,6 +131,23 @@ vector<string> QueriesAnswerStorage::MergeResults()
 		}
 	}
 	return MergeResults;
+}
+
+vector<string> QueriesAnswerStorage::GetColFromResultsTable(string s)
+{
+	int ColIndex = ClausesParameterPositionInTable[s];
+	vector<string> temp;
+	for (int index = 0; index < ResultsTable.size(); index++) {
+		vector<string> Row = ResultsTable.at(index);
+		string ColElement = Row.at(ColIndex);
+		if (std::find(temp.begin(), temp.end(), ColElement) != temp.end()) {
+			continue;
+		}
+		else {
+			temp.push_back(ColElement);
+		}
+	}
+	return temp;
 }
 
 QueriesAnswerStorage::QueriesAnswerStorage()
