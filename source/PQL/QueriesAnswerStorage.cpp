@@ -9,8 +9,7 @@
 using namespace std;
 
 
-VarTable vr;
-ProcTable pr;
+
 
 std::unordered_map<std::string, int> QueriesAnswerStorage::ClausesParameterPositionInTable;
 vector<vector<string>> QueriesAnswerStorage::ResultsTable;
@@ -21,7 +20,7 @@ vector<pair<std::string,std::string>> QueriesAnswerStorage::SelectParameter;
 
 void QueriesAnswerStorage::SetSelect(vector<string> sv)
 {
-	for (int index = 0; index < sv.size; index++) {
+	for (int index = 0; index < sv.size(); index++) {
 		string s = sv.at(index);
 		stringstream ss(s);
 		vector<string> result;
@@ -47,7 +46,7 @@ void QueriesAnswerStorage::clear() {
 
 void QueriesAnswerStorage::SetTable(string s)
 {
-	if (!HasKey) {
+	if (HasKey(s) != true) {
 		ClausesParameterPositionInTable[s] = ClausesParameterPositionInTable.size() - 1;
 	}
 	else {
@@ -65,14 +64,15 @@ bool QueriesAnswerStorage::HasKey(string s)
 	}
 }
 
-void QueriesAnswerStorage::update(string s, vector<string> v, bool hasKey)
+void QueriesAnswerStorage::update(string s, vector<string> v)
 {
 	bool exist = false;
 	int index = ClausesParameterPositionInTable[s];
 	int size = ResultsTable.size();
+	bool hasKey = HasKey(s);
 	if (!hasKey) {
 		for (int i = 0; i != size; i++) {
-			vector<string> temp = ResultsTable.at[i];
+			vector<string> temp = ResultsTable.at(i);
 			for (int j = 0; j != v.size(); j++) {
 				vector<string> copy = temp;
 				copy.push_back(v.at(j));
@@ -82,7 +82,7 @@ void QueriesAnswerStorage::update(string s, vector<string> v, bool hasKey)
 	}
 	else {
 		for (int i = 0; i != size; i++) {
-			vector<string> temp = ResultsTable.at[i];
+			vector<string> temp = ResultsTable.at(i);
 			string element = temp.at(index);
 			for (int j = 0; j != v.size(); j++) {
 				if (v.at(j) == element) {

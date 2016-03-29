@@ -7,7 +7,7 @@ public:
 	void SetSelect(vector<string>);
 	void SetTable(string);
 	bool HasKey(string);
-	void update(string, vector<string>, bool);
+	void update(string, vector<string>);
 	vector<string> MergeResults();
 	void clear();
 	QueriesAnswerStorage();

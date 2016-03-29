@@ -17,12 +17,63 @@ using namespace std;
 
 QueriesAnswerStorage QAS;
 
-void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector,
+bool assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector,
 	PatternSet PS, vector<With> WithClauses) {
+	
+	//---- do the with clauses first-------
+
+	for (int i = 0; i < WithClauses.size(); i++) {
+		
+		With w = WithClauses.at(i);
+		Clause clause = w.getNormalClause();
+		string LeftSide = w.getLeftOfEqualSign();
+		string RightSide = w.getRightOfEqualSign();
+		string clauseOperation = clause.getClauseOperation();
+		int clausesSize = clauseOperation.size();
+		char firstParameterType = clauseOperation.at(clausesSize - 2);
+		char secondParameterType = clauseOperation.at(clausesSize - 1);
+		std::string firstSecondParameterType = "";
+		firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
+		Parameter1 firstParameter = clause.getFirstParameter();
+		Parameter2 secondParameter = clause.getSecondParameter();
+		char firstLetter = clauseOperation.at(0);
+		std::size_t found = clauseOperation.find("*");
+
+
+		if (found != std::string::npos) {
+			if (firstLetter == 'P') {
+
+			}
+			if (firstLetter == 'F') {
+
+			}
+		}
+		else {
+			if (firstLetter == 'M') {
+
+			}
+			else if (firstLetter == 'U') {
+
+			}
+			else if (firstLetter == 'P') {
+
+			}
+			else if (firstLetter == 'F') {
+
+			}
+			else {
+
+			}
+		}
+	}
+	
+	
+	
+	
+	
+	//----------- then do normal clauses-----------
 	for (int i = 0; i < ClausesVector.size(); i++) {
 
-		vector<int> temp;
-		vector<char> tempString;
 		Clause clauses = ClausesVector.at(i);
 		std::string clausesOperation = clauses.getClauseOperation();
 		int clausesSize = clausesOperation.size();
@@ -63,13 +114,13 @@ void assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> S
 		}
 	}
 }
-void assessParseResult(ParseResult pr) {
+bool assessParseResult(ParseResult pr) {
 
 	std::vector<std::string> SelectParameterVector = pr.getSelectParameter();
 	std::vector<Clause> ClausesVector = pr.getClauses();
 	PatternSet PatternQueryVector = pr.getPatterns();
 	std::vector<With> WithClauses = pr.getWithClauses();
-	assessClauses(ClausesVector, SelectParameterVector,PatternQueryVector,WithClauses);
+	return assessClauses(ClausesVector, SelectParameterVector,PatternQueryVector,WithClauses);
 }
 
 vector<string> splitComma(string line) {
@@ -87,9 +138,53 @@ vector<string> splitComma(string line) {
 vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
 
-	assessParseResult(mustPr);
-	return QAS.MergeResults();
+	bool HasResults = assessParseResult(mustPr);
+	if (HasResults == true) {
+		return QAS.MergeResults();
+	}
+	else {
+		return NoResults;
+	}
+}
 
+bool QueryEvaluator::Follows(string, string, string, string, bool, string, string)
+{
+	return false;
+}
+
+bool QueryEvaluator::Modifies(string, string, string, string, bool, string, string)
+{
+	return false;
+}
+
+bool QueryEvaluator::FollowsStar(string, string, string, string, bool, string, string)
+{
+	return false;
+}
+
+bool QueryEvaluator::Next(string, string, string, string, bool, string, string)
+{
+	return false;
+}
+
+bool QueryEvaluator::NextStar(string, string, string, string, bool, string, string)
+{
+	return false;
+}
+
+bool QueryEvaluator::Parents(string, string, string, string, bool, string, string)
+{
+	return false;
+}
+
+bool QueryEvaluator::ParentsStar(string, string, string, string, bool, string, string)
+{
+	return false;
+}
+
+bool QueryEvaluator::Uses(string, string, string, string, bool, string, string)
+{
+	return false;
 }
 
 QueryEvaluator::QueryEvaluator()

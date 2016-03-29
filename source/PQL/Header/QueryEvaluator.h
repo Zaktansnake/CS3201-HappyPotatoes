@@ -7,23 +7,20 @@ class QueryEvaluator
 public:
 
 	vector<string> startEvaluator(ParseResult mustPr);
+	bool Follows(string,string,string,string,bool,string,string);
+	bool Modifies(string, string, string, string, bool, string, string);
+	bool FollowsStar(string, string, string, string, bool, string, string);
+	bool Next(string, string, string, string, bool, string, string);
+	bool NextStar(string, string, string, string, bool, string, string);
+	bool Parents(string, string, string, string, bool, string, string);
+	bool ParentsStar(string, string, string, string, bool, string, string);
+	bool Uses(string, string, string, string, bool, string, string);
 
 	// constructors
 	QueryEvaluator();
 	~QueryEvaluator();
 
 protected:
-
-	std::vector<bool> BooleanClausesQueryResults;
-	//all the variable results for all conditions in a single query will be stored here
-	std::vector<std::vector<std::string>> VariableClausesQueryResults;
-	//all the procedure results for all conditions in a single query will be stored here
-	std::vector<std::vector<std::string>> ProcedureClausesQueryResults;
-	//all the stmtline results for all conditions in a single query will be stored here
-	std::vector<std::vector<int>> StmtLineClausesQueryResults;
-	//all the assignment results for all patterns
-	std::vector<std::vector<int>> PatternClausesQueryResults;
-	//the final string that is suppose to be printed
-	std::vector<std::string> finalStringVector;
+	vector<string> NoResults;
 };
 

@@ -43,7 +43,6 @@
     <ClCompile Include="..\source\PKB\Modifies.cpp" />
     <ClCompile Include="..\source\PKB\Parent.cpp" />
     <ClCompile Include="..\source\PKB\Parser.cpp" />
-    <ClCompile Include="..\source\PKB\Patterns.cpp" />
     <ClCompile Include="..\source\PKB\PatternTable.cpp" />
     <ClCompile Include="..\source\PKB\PKB.cpp" />
     <ClCompile Include="..\source\PKB\ProcTable.cpp" />
@@ -52,7 +51,6 @@
     <ClCompile Include="..\source\PKB\VarTable.cpp" />
     <ClCompile Include="..\source\PQL\Clause.cpp" />
     <ClCompile Include="..\source\PQL\ParseResult.cpp" />
-    <ClCompile Include="..\source\PQL\Pattern.cpp" />
     <ClCompile Include="..\source\PQL\QueriesAnswerStorage.cpp" />
     <ClCompile Include="..\source\PQL\QueryEvaluator.cpp" />
     <ClCompile Include="..\source\PQL\With.cpp" />

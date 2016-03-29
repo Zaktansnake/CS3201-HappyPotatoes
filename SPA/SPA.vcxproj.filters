@@ -107,9 +107,6 @@
     <ClCompile Include="..\source\PKB\Parser.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
-    <ClCompile Include="..\source\PKB\Patterns.cpp">
-      <Filter>Source Files\PKB</Filter>
-    </ClCompile>
     <ClCompile Include="..\source\PKB\PatternTable.cpp">
       <Filter>Source Files\PKB</Filter>
     </ClCompile>
@@ -144,9 +141,6 @@
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PQL\ParseResult.cpp">
-      <Filter>Source Files\PQL</Filter>
-    </ClCompile>
-    <ClCompile Include="..\source\PQL\Pattern.cpp">
       <Filter>Source Files\PQL</Filter>
     </ClCompile>
     <ClCompile Include="..\source\PQL\QueriesAnswerStorage.cpp">
