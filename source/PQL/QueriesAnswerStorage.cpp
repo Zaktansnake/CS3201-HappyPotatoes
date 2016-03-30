@@ -80,6 +80,7 @@ void QueriesAnswerStorage::update(string s, vector<string> v)
 				ResultsTable.at(i) = copy;
 			}
 		}
+		SetTable(s);
 	}
 	else {
 		for (int i = 0; i != size; i++) {

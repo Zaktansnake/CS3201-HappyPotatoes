@@ -11,9 +11,8 @@ public:
 	// constructors
 	QueryEvaluator();
 	~QueryEvaluator();
-
-protected:
 	vector<string> NoResults;
+
 
 private:
 	bool Follows(string, string, string, string, bool, string, string);
@@ -28,5 +27,7 @@ private:
 	string ChangeIntToString(int);
 	bool HaveQuotation(string);
 	bool IsNumber(string);
+	
+	
 };
 
