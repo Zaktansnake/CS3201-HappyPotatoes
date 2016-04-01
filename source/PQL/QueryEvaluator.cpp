@@ -20,128 +20,6 @@ QueriesAnswerStorage QAS;
 
 bool SelectBool = false;
 
-bool assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector,
-	PatternSet PS, vector<With> WithClauses) {
-	
-	//---- do the with clauses first-------
-	string CheckBool = SelectParameterVector.at(0);
-	if (CheckBool == "Boolean") {
-		SelectBool = true;
-	}
-
-	for (int i = 0; i < WithClauses.size(); i++) {
-		
-		With w = WithClauses.at(i);
-		Clause clause = w.getNormalClause();
-		string LeftSide = w.getLeftOfEqualSign();
-		string RightSide = w.getRightOfEqualSign();
-		string clauseOperation = clause.getClauseOperation();
-		int clausesSize = clauseOperation.size();
-		char firstParameterType = clauseOperation.at(clausesSize - 2);
-		char secondParameterType = clauseOperation.at(clausesSize - 1);
-		std::string firstSecondParameterType = "";
-		firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
-		Parameter1 firstParameter = clause.getFirstParameter();
-		Parameter2 secondParameter = clause.getSecondParameter();
-		char firstLetter = clauseOperation.at(0);
-		std::size_t found = clauseOperation.find("*");
-
-
-		if (found != std::string::npos) {
-			if (firstLetter == 'P') {
-
-			}
-			if (firstLetter == 'F') {
-
-			}
-		}
-		else {
-			if (firstLetter == 'M') {
-
-			}
-			else if (firstLetter == 'U') {
-
-			}
-			else if (firstLetter == 'P') {
-
-			}
-			else if (firstLetter == 'F') {
-
-			}
-			else {
-
-			}
-		}
-	}
-	
-	
-	
-	
-	
-	//----------- then do normal clauses-----------
-	for (int i = 0; i < ClausesVector.size(); i++) {
-
-		Clause clauses = ClausesVector.at(i);
-		std::string clausesOperation = clauses.getClauseOperation();
-		int clausesSize = clausesOperation.size();
-		char firstParameterType = clausesOperation.at(clausesSize - 2);
-		char secondParameterType = clausesOperation.at(clausesSize - 1);
-		std::string firstSecondParameterType = "";
-		firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
-		Parameter1 firstParameter = clauses.getFirstParameter();
-		Parameter2 secondParameter = clauses.getSecondParameter();
-		char firstLetter = clausesOperation.at(0);
-		std::size_t found = clausesOperation.find("*");
-
-
-		if (found != std::string::npos) {
-			if (firstLetter == 'P') {
-
-			}
-			if (firstLetter == 'F') {
-
-			}
-		}
-		else {
-			if (firstLetter == 'M') {
-
-			}
-			else if (firstLetter == 'U') {
-
-			}
-			else if (firstLetter == 'P') {
-
-			}
-			else if (firstLetter == 'F') {
-							
-			}
-			else {
-
-			}
-		}
-	}
-}
-bool assessParseResult(ParseResult pr) {
-
-	std::vector<std::string> SelectParameterVector = pr.getSelectParameter();
-	std::vector<Clause> ClausesVector = pr.getClauses();
-	PatternSet PatternQueryVector = pr.getPatterns();
-	std::vector<With> WithClauses = pr.getWithClauses();
-	return assessClauses(ClausesVector, SelectParameterVector,PatternQueryVector,WithClauses);
-}
-
-vector<string> splitComma(string line) {
-	std::istringstream ss(line);
-	std::string token;
-	vector<string> result;
-
-	while (std::getline(ss, token, ',')) {
-		result.push_back(token);
-	}
-	return result;
-}
-
-
 vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
 
@@ -165,162 +43,328 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 	}
 }
 
-bool QueryEvaluator::Follows(string P1, string P2, string P1Type, string P2Type, 
-	bool IsWith, string Left, string Right)
-{
-	vector<string> temp;
-	//if is case like Follows(1,1)
-	if (IsNumber(P1) && IsNumber(P2)) {
-		return stmtTable::isFollow(ChangeStringToInt(P1),ChangeStringToInt(P2));
+bool QueryEvaluator::assessParseResult(ParseResult pr) {
+
+	std::vector<std::string> SelectParameterVector = pr.getSelectParameter();
+	std::vector<Clause> ClausesVector = pr.getClauses();
+	PatternSet PatternQueryVector = pr.getPatterns();
+	std::vector<With> WithClauses = pr.getWithClauses();
+	return assessClauses(ClausesVector, SelectParameterVector, PatternQueryVector, WithClauses);
+}
+
+bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector,
+	PatternSet PS, vector<With> WithClauses) {
+
+
+	string CheckBool = SelectParameterVector.at(0);
+	if (CheckBool == "Boolean") {
+		SelectBool = true;
 	}
-	//if is case like Follows(1,s)
-	else if ((IsNumber(P1))&&(!IsNumber(P2))) {
-		//if P2 has been stored in the Results table before
-		if (QAS.HasKey(P2)) {
-			vector<string> Col = QAS.GetColFromResultsTable(P2);
-			for (int i = 0; i < Col.size(); i++) {
-				//check if the stored results follows P1 or not
-				if (stmtTable::isFollow(ChangeStringToInt(P1), ChangeStringToInt(Col.at(i)))) {
-					temp.push_back(Col.at(i));
-				}
-			}
+
+	for (int i = 0; i < ClausesVector.size(); i++) {
+
+		bool ResultsExist;
+		Clause clauses = ClausesVector.at(i);
+		std::string clausesOperation = clauses.getClauseOperation();
+		int clausesSize = clausesOperation.size();
+		char firstParameterType = clausesOperation.at(clausesSize - 2);
+		char secondParameterType = clausesOperation.at(clausesSize - 1);
+		string clauseType = clausesOperation.substr(0,clausesSize-2);
+		std::string firstSecondParameterType = "";
+		firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
+		Parameter1 firstParameter = clauses.getFirstParameter();
+		Parameter2 secondParameter = clauses.getSecondParameter();
+		char firstLetter = clausesOperation.at(0);
+		ResultsExist = CheckSynonym(firstParameter,secondParameter,firstParameterType,
+			secondParameterType,clauseType);
+		if (ResultsExist = true) {
+			
+			continue;
 		}
 		else {
-			vector<int> Results = stmtTable::getFollow(ChangeStringToInt(P1));
-			for (int i = 0; i < Results.size(); i++) {
-				temp.push_back(ChangeIntToString(Results.at(i)));
-			}
-		}
-		//check if there is actually an results. If no results return false, if there is return true
-		if (temp.size() == 0) {
 			return false;
 		}
-		else {
-			QAS.update(P2,temp);
-		}
 	}
-	// if is case like Follows(s,1)
-	else if ((IsNumber(P2))&&(!IsNumber(P1))) {
-		if (QAS.HasKey(P1)) {
-			vector<string> Col = QAS.GetColFromResultsTable(P1);
-			for (int i = 0; i < Col.size(); i++) {
-				//check if the all the p1 stored follows p2
-				if (stmtTable::isFollow(ChangeStringToInt(Col.at(i)), ChangeStringToInt(P2))) {
-					temp.push_back(Col.at(i));
-				}
-			}
-		}
-		else {
-			vector<int> Results = stmtTable::getFollowFan(ChangeStringToInt(P2));
-			for (int i = 0; i < Results.size(); i++) {
-				temp.push_back(ChangeIntToString(Results.at(i)));
-			}
-		}
-		//check if there is actually an results. If no results return false, if there is return true
-		if (temp.size() == 0) {
-			return false;
-		}
-		else {
-			QAS.update(P2, temp);
-		}
+	return true;
+}
+
+bool QueryEvaluator::CheckSynonym(string firstParameter,string secondParameter,
+	char firstParameterType,char secondParameterType,string clauseType) {
+	if ((IsSynonym(firstParameter[0])) && (IsSynonym(secondParameter[0]))) {
+		GetResultsForBothSynonym(firstParameter, secondParameter,
+			firstParameterType, secondParameterType, clauseType);
 	}
-	//if is case like follows(s,s1)
+	else if (IsSynonym(firstParameter[0])) {
+		GetResultsForFirstSynonym(firstParameter, secondParameter,
+			firstParameterType, secondParameterType, clauseType);
+	}
+	else if (IsSynonym(secondParameter[0])) {
+		GetResultsForSecondSynonym(firstParameter, secondParameter,
+			firstParameterType, secondParameterType, clauseType);
+	}
 	else {
-		// if both P1 and P2 is stored before
-		if (QAS.HasKey(P1) && QAS.HasKey(P2)) {
-			vector<string> Col1 = QAS.GetColFromResultsTable(P1);
-			vector<string> Col2 = QAS.GetColFromResultsTable(P2);
+		CheckTrueOrFalse(firstParameter, secondParameter,
+			firstParameterType, secondParameterType, clauseType);
+	}
+}
+
+bool QueryEvaluator::GetResultsForBothSynonym(string P1, string P2, char P1Type
+	, char P2Type, string ClauseType)
+{
+	vector<string> Results;
+	vector<string> temp;
+	if (QAS.HasKey(P1) && QAS.HasKey(P2)) {
+		vector<string> Col1 = QAS.GetColFromResultsTable(P1);
+		vector<string> Col2 = QAS.GetColFromResultsTable(P2);
+	}
+	// if only P1 is stored before
+	else if ((QAS.HasKey(P1)) && (!QAS.HasKey(P2))) {
+		vector<string> Col1 = QAS.GetColFromResultsTable(P1);
+		for (int i = 0; i < Col1.size(); i++) {
+			
 		}
-		// if only P1 is stored before
-		else if ((QAS.HasKey(P1)) && (!QAS.HasKey(P2))) {
-			vector<string> Col1 = QAS.GetColFromResultsTable(P1);
-			for (int i = 0; i < Col1.size(); i++) {
-				vector<int> Results = stmtTable::getFollow(ChangeStringToInt(Col1.at(i)));
-				for (int j = 0; j < Results.size(); j++) {
-					temp.push_back(ChangeIntToString(Results.at(j)));
-				}
+		QAS.update(P2, Results);
+	}
+	//if only P2 is stored before
+	else if (!(QAS.HasKey(P1)) && (QAS.HasKey(P2))) {
+		vector<string> Col2 = QAS.GetColFromResultsTable(P2);
+		for (int i = 0; i < Col2.size(); i++) {
+		
+		}
+		QAS.update(P1, Results);
+	}
+	//if both is not stored before
+	else {
+		vector<string> AllVector = GetAll(P1Type);
+		for (int i = 0; AllVector.size(); i++) {
+			Results.push_back(AllVector.at(i));
+		}
+		QAS.update(P1, Results);
+		Results.clear();
+		for (int i = 0; i < AllVector.size(); i++) {
+			temp = GetAllSecondSynonymFromPKB(AllVector.at(i), P2, P1Type, P2Type, ClauseType);
+			for (int j = 0; j < temp.size(); j++) {
+				Results.push_back(temp.at(j));
 			}
-			QAS.update(P2,temp);
 		}
-		//if only P2 is stored before
-		else if (!(QAS.HasKey(P1)) && (QAS.HasKey(P2))) {
-			vector<string> Col2 = QAS.GetColFromResultsTable(P2);
-			for (int i = 0; i < Col2.size(); i++) {
-				vector<int> Results = stmtTable::getFollowFan(ChangeStringToInt(Col2.at(i)));
-				for (int j = 0; j < Results.size(); j++) {
-					temp.push_back(ChangeIntToString(Results.at(j)));
-				}
+		QAS.update(P2, Results);
+	}
+	return CheckTempResultSize(Results);
+}
+
+bool QueryEvaluator::GetResultsForFirstSynonym(string P1, string P2, char P1Type
+	, char P2Type, string ClauseType)
+{
+	vector<string> Results;	
+	if (QAS.HasKey(P1)) {
+		vector<string> Col = QAS.GetColFromResultsTable(P1);
+		for (int i = 0; i < Col.size(); i++) {
+			if (CheckIsResultsFromPkb(Col.at(i), P2, P1Type, P2Type, ClauseType)) {
+				Results.push_back(Col.at(i));
 			}
-			QAS.update(P1, temp);
 		}
-		//if both is not stored before
-		else {
-			vector<int> allStmt = VarTable::getAllStmt();
-			for (int i = 0; allStmt.size(); i++) {
-				temp.push_back(ChangeIntToString(allStmt.at(i)));
+	}
+	else {
+		Results = GetAllFirstSynonymFromPKB(P1,P2,P1Type,P2Type,ClauseType);
+	}
+	//check if there is actually an results. If no results return false, if there is return true
+	return CheckTempResultSize(Results);
+}
+
+bool QueryEvaluator::GetResultsForSecondSynonym(string P1, string P2, char P1Type
+	, char P2Type, string ClauseType)
+{
+	vector<string> Results;
+	if (QAS.HasKey(P2)) {
+		vector<string> Col = QAS.GetColFromResultsTable(P1);
+		for (int i = 0; i < Col.size(); i++) {
+			if (CheckIsResultsFromPkb(P1, Col.at(i), P1Type, P2Type, ClauseType)) {
+				Results.push_back(Col.at(i));
 			}
-			QAS.update(P1, temp);
-			temp.clear();
-			for (int i = 0; i < allStmt.size(); i++) {
-				vector<int> Results = stmtTable::getFollow(ChangeStringToInt(Col1.at(i)));
-				for (int j = 0; j < Results.size(); j++) {
-					temp.push_back(ChangeIntToString(Results.at(j)));
-				}
-			}
-			QAS.update(P2, temp);
 		}
-		if (temp.size() == 0) {
-			return false;
-		}
+	}
+	else {
+		Results = GetAllSecondSynonymFromPKB(P1, P2, P1Type, P2Type, ClauseType);
+	}
+	//check if there is actually an results. If no results return false, if there is return true
+	return CheckTempResultSize(Results);
+}
+
+bool QueryEvaluator::CheckTrueOrFalse(string P1, string P2, char P1Type
+	, char P2Type, string ClauseType) {
+	return CheckIsResultsFromPkb(P1,P2,P1Type,P2Type,ClauseType);
+}
+
+vector<string> QueryEvaluator::GetAll(char Type) {
+	if (Type == 'P') {
+		//getallprocedure
+	}
+	else if (Type == 'V') {
+		//getallvariable
+	}
+	else if (Type == 'S') {
+		//getallstmt
+	}
+	else if (Type == 'I') {
+		//getallif
+	}
+	else if (Type == 'W') {
+		//getallwhile
+	}
+	else if (Type == 'A') {
+		//getallassign
+	}
+	else if (Type == 'C') {
+		//getallconstant
+	}
+	else {
+		
+	}
+}
+
+vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, char P1Type,
+	char P2Type, string clausesType) {
+
+	if (clausesType == "Follows") {
+
+	}
+	else if (clausesType == "Follows*") {
+
+	}
+	else if (clausesType == "Uses") {
+
+	}
+	else if (clausesType == "Calls") {
+
+	}
+	else if (clausesType == "Modifies") {
+
+	}
+	else if (clausesType == "Parent") {
+
+	}
+	else if (clausesType == "Parent*") {
+
+	}
+	else if (clausesType == "Next") {
+
+	}
+	else if (clausesType == "Next*") {
+
+	}
+	else if (clausesType == "Affects") {
+
+	}
+	else if (clausesType == "Affects*") {
+
+	}
+}
+
+vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, char P1Type,
+	char P2Type, string clausesType) {
+
+	if (clausesType == "Follows") {
+
+	}
+	else if (clausesType == "Follows*") {
+
+	}
+	else if (clausesType == "Uses") {
+
+	}
+	else if (clausesType == "Calls") {
+
+	}
+	else if (clausesType == "Modifies") {
+
+	}
+	else if (clausesType == "Parent") {
+
+	}
+	else if (clausesType == "Parent*") {
+
+	}
+	else if (clausesType == "Next") {
+
+	}
+	else if (clausesType == "Next*") {
+
+	}
+	else if (clausesType == "Affects") {
+
+	}
+	else if (clausesType == "Affects*") {
+
+	}
+}
+
+bool QueryEvaluator::CheckIsResultsFromPkb(string P1,string P2,char P1Type,
+	char P2Type,string clausesType) {
+
+	if (clausesType == "Follows") {
+
+	}
+	else if (clausesType == "Follows*") {
+
+	}
+	else if (clausesType == "Uses") {
+
+	}
+	else if (clausesType == "Calls") {
+
+	}
+	else if (clausesType == "Modifies") {
+
+	}
+	else if (clausesType == "Parent") {
+
+	}
+	else if (clausesType == "Parent*") {
+
+	}
+	else if (clausesType == "Next") {
+
+	}
+	else if (clausesType == "Next*") {
+
+	}
+	else if (clausesType == "Affects") {
+
+	}
+	else if (clausesType == "Affects*") {
+
+	}
+}
+
+bool QueryEvaluator::CheckTempResultSize(vector<string> v) {
+	if (v.size() == 0) {
+		return false;
 	}
 	return true;
 }
 
-bool QueryEvaluator::Modifies(string P1, string P2, string P1Type, string P2Type,
-	bool IsWith, string Left, string Right)
-{
-	return true;
+vector<string> splitComma(string line) {
+	std::istringstream ss(line);
+	std::string token;
+	vector<string> result;
+
+	while (std::getline(ss, token, ',')) {
+		result.push_back(token);
+	}
+	return result;
 }
 
-bool QueryEvaluator::FollowsStar(string P1, string P2, string P1Type, string P2Type,
-	bool IsWith, string Left, string Right)
-{
-	return true;
-}
-
-bool QueryEvaluator::Next(string P1, string P2, string P1Type, string P2Type,
-	bool IsWith, string Left, string Right)
-{
-	return true;
-}
-
-bool QueryEvaluator::NextStar(string P1, string P2, string P1Type, string P2Type,
-	bool IsWith, string Left, string Right)
-{
-	return true;
-}
-
-bool QueryEvaluator::Parents(string P1, string P2, string P1Type, string P2Type,
-	bool IsWith, string Left, string Right)
-{
-	return true;
-}
-
-bool QueryEvaluator::ParentsStar(string P1, string P2, string P1Type, string P2Type,
-	bool IsWith, string Left, string Right)
-{
-	return true;
-}
-
-bool QueryEvaluator::Uses(string P1, string P2, string P1Type, string P2Type,
-	bool IsWith, string Left, string Right)
-{
-	return true;
+bool QueryEvaluator::IsSynonym(char c) {
+	if (isalpha(c)) {
+		return true;
+	}
+	return false;
 }
 
 int QueryEvaluator::ChangeStringToInt(string s)
 {
 	int value = atoi(s.c_str());
+	return value;
 }
 
 string QueryEvaluator::ChangeIntToString(int i)
@@ -352,8 +396,6 @@ QueryEvaluator::QueryEvaluator()
 
 
 }
-
-
 
 QueryEvaluator::~QueryEvaluator()
 {

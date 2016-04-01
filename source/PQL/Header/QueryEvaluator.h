@@ -15,19 +15,24 @@ public:
 
 
 private:
-	bool Follows(string, string, string, string, bool, string, string);
-	bool Modifies(string, string, string, string, bool, string, string);
-	bool FollowsStar(string, string, string, string, bool, string, string);
-	bool Next(string, string, string, string, bool, string, string);
-	bool NextStar(string, string, string, string, bool, string, string);
-	bool Parents(string, string, string, string, bool, string, string);
-	bool ParentsStar(string, string, string, string, bool, string, string);
-	bool Uses(string, string, string, string, bool, string, string);
+
 	int ChangeStringToInt(string);
 	string ChangeIntToString(int);
 	bool HaveQuotation(string);
 	bool IsNumber(string);
-	
-	
+	bool assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector,
+		PatternSet PS, vector<With> WithClauses);
+	bool assessParseResult(ParseResult pr);
+	bool IsSynonym(char c);
+	bool CheckSynonym(string, string,char, char, string);
+	bool GetResultsForBothSynonym(string,string,char,char,string);
+	bool GetResultsForFirstSynonym(string, string, char, char, string);
+	bool GetResultsForSecondSynonym(string, string,char, char, string);
+	bool CheckTrueOrFalse(string, string, char, char, string);
+	vector<string> GetAll(char Type);
+	vector<string> GetAllSecondSynonymFromPKB(string P1, string P2, char P1Type, char P2Type, string clausesType);
+	vector<string> GetAllFirstSynonymFromPKB(string P1, string P2, char P1Type, char P2Type, string clausesType);
+	bool CheckIsResultsFromPkb(string P1, string P2, char P1Type, char P2Type, string clausesType);
+	bool CheckTempResultSize(vector<string> v);
 };
 
