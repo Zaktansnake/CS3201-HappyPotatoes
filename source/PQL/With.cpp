@@ -1,8 +1,5 @@
 #include "./Header/With.h"
 
-Clause With::getNormalClause() {
-	return normalClause_;
-}
 LeftSide With::getLeftOfEqualSign() {
 	return leftOfEqualSign_;
 }
@@ -13,8 +10,7 @@ RightSide With::getRightOfEqualSign() {
 With::With() {
 }
 
-With::With(Clause normalClause, LeftSide leftOfEqualSign, RightSide rightOfEqualSign) {
-	normalClause_ = normalClause;
+With::With(LeftSide leftOfEqualSign, RightSide rightOfEqualSign) {
 	leftOfEqualSign_ = leftOfEqualSign;
 	rightOfEqualSign_ = rightOfEqualSign;
 }

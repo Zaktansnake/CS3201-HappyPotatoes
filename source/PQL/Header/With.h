@@ -9,16 +9,14 @@ typedef string RightSide;
 class With {
 public:
 	// getters
-	Clause getNormalClause();
 	LeftSide getLeftOfEqualSign();
 	RightSide getRightOfEqualSign();
 
 	// constructors
 	With();
-	With(Clause, LeftSide, RightSide);
+	With(LeftSide, RightSide);
 
 private:
-	Clause normalClause_;
 	LeftSide leftOfEqualSign_;
 	RightSide rightOfEqualSign_;
 };
