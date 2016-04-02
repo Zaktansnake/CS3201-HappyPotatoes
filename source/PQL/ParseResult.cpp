@@ -61,6 +61,8 @@ const string stmtRef = "(?:" + IDENT + "|_|" + INTEGER + ")";
 const string lineRef = stmtRef;
 const string designEntity = "(?:procedure|stmt|assign|call|while|if|variable|constant|prog_line)";
 const string declar = "(?:" + space + designEntity + space + IDENT + space + "(?:," + space + IDENT + space + ")*" + ";)*";
+// the next single regex string is for faster parsing of declaration
+const string declarPar = "(?:" + space + designEntity + space + IDENT + space + "(?:," + space + IDENT + space + ")*" + ";)";
 
 const string REF = "(?:" + attrRef + "|" + IDENT + "|\"" + IDENT + "\"|" + INTEGER + ")";
 const string attrCompare = "(?:" + REF + space + "=" + space + REF + ")";
@@ -101,7 +103,8 @@ const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
 const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
 const regex declarationChecking(declar);
-const regex declarationParsing(IDENT);
+const regex declarationParsing(declarPar);
+const regex declarationWordParsing(IDENT);
 const regex queryChecking(selectClause);
 const regex queryWordParsing(entRef);
 const regex queryPatternParsing(expressionSpec);
@@ -123,30 +126,52 @@ bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<str
 		signalErrorAndStop();
 		return false;	// declaration with syntax error
 	}
-	vector<string> word;
+
+	vector<string> sentence;
 	string declarationSubstr;
 
-	while (!declaration.empty()) {
-		int endIndex = declaration.find(";");
-		int startIndex = endIndex + 1;
-		declarationSubstr = declaration.substr(0, endIndex + 1);
-		declaration = declaration.substr(startIndex, declaration.size() - startIndex);
-		sregex_iterator next(declarationSubstr.begin(), declarationSubstr.end(), declarationParsing);
+	sregex_iterator next(declaration.begin(), declaration.end(), declarationParsing);
+	sregex_iterator end;
+	while (next != end) {
+		smatch match = *next;
+		sentence.push_back(match.str(0));
+		next++;
+	}
+
+	vector<string>::iterator it;
+	for (it = sentence.begin(); it != sentence.end(); ++it) {
+		string current = *it;
+		sregex_iterator next(current.begin(), current.end(), declarationWordParsing);
 		sregex_iterator end;
+		string type;
+		bool typeSelected = false;
 		while (next != end) {
 			smatch match = *next;
-			word.push_back(match.str(0));
+			string word = match.str(0);
+			if (word == "stmt" || word == "assign" || word == "while" || word == "variable"
+				|| word == "constant" || word == "prog_line") {
+				if (!typeSelected) {
+					type = word;
+					typeSelected = true;
+				}
+				else {
+					signalErrorAndStop();
+					return false;
+				}
+			}
+			// the word being checked is not a keyword
+			else {
+				if (declarationTable[word] != "") {	// the synonym has already been used
+					signalErrorAndStop();
+					return false;
+				}
+				declarationTable[word] = type;
+			}
 			next++;
 		}
+		typeSelected = false;
 	}
-	string type;
-	for (vector<string>::iterator it = word.begin(); it != word.end(); ++it) {
-		if (*it == "stmt" || *it == "assign" || *it == "while" || *it == "variable"
-			|| *it == "constant" || *it == "prog_line") {
-			type = *it;
-		}
-		else declarationTable[*it] = type;
-	}
+
 	return true;
 }
 

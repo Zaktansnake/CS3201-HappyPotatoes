@@ -37,7 +37,12 @@ namespace UnitTesting
 			Assert::IsFalse(correct);
 		}
 
-	
+		TEST_METHOD(testCheckAndParseDeclarationSynonymSameAsKeyword) {
+			unordered_map<string, string> declarationTable;
+			string declarationSentence = "assign a1, a2, a3; stmt stmt;";
+			bool correct = ParseResult::checkAndParseDeclaration(declarationSentence, declarationTable);
+			Assert::IsFalse(correct);
+		}
 
 	};
 }
