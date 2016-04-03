@@ -67,6 +67,7 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 	}
 	QAS.SetSelect(SelectParameterVector);
 	QAS.SetWithTable(WithClauses);
+	//if there is no clause and no with clause at allw
 	if (ClausesVector.size() == 0 && WithClauses.size() == 0) {
 		NoClause = true;
 		GetResultsForNoClause(QAS.GetSelectParameter());
@@ -167,17 +168,26 @@ bool QueryEvaluator::GetResultsForBothSynonym(string P1, string P2, char P1Type
 bool QueryEvaluator::GetResultsForFirstSynonym(string P1, string P2, char P1Type
 	, char P2Type, string ClauseType)
 {
+	vector<string> WithClauseResult;
+	string WithClause = MatchWithClause(P1,P1Type);
+	string WithClauseName;
+	if (WithClause != "none") {
+		WithClauseResult = GetAllRightSideOfWithClause(WithClause);
+		WithClauseName = SplitWithClause(WithClause).first;
+	}
 	vector<string> Results;	
 	if (QAS.HasKey(P1)) {
 		vector<string> Col = QAS.GetColFromResultsTable(P1);
 		for (int i = 0; i < Col.size(); i++) {
 			if (CheckIsResultsFromPkb(Col.at(i), P2, P1Type, P2Type, ClauseType)) {
 				Results.push_back(Col.at(i));
+				
 			}
 		}
 	}
 	else {
 		Results = GetAllFirstSynonymFromPKB(P1,P2,P1Type,P2Type,ClauseType);
+		QAS.update(P1,Results);
 	}
 	//check if there is actually an results. If no results return false, if there is return true
 	return CheckTempResultSize(Results);
@@ -194,9 +204,11 @@ bool QueryEvaluator::GetResultsForSecondSynonym(string P1, string P2, char P1Typ
 				Results.push_back(Col.at(i));
 			}
 		}
+		QAS.update(P1,Results);
 	}
 	else {
 		Results = GetAllSecondSynonymFromPKB(P1, P2, P1Type, P2Type, ClauseType);
+		QAS.update(P1, Results);
 	}
 	//check if there is actually an results. If no results return false, if there is return true
 	return CheckTempResultSize(Results);
@@ -208,6 +220,7 @@ bool QueryEvaluator::CheckTrueOrFalse(string P1, string P2, char P1Type
 }
 
 vector<string> QueryEvaluator::GetAll(char Type) {
+	vector<string> Results;
 	if (Type == 'P') {
 		//getallprocedure
 	}
@@ -230,7 +243,7 @@ vector<string> QueryEvaluator::GetAll(char Type) {
 		//getallconstant
 	}
 	else {
-		
+		return Results;
 	}
 }
 
@@ -379,8 +392,11 @@ bool QueryEvaluator::GetResultsForNoClause(vector<pair<string, string>> SP)
 		else if (type == "constant") {
 			Result = GetAll('C');
 		}
+		else if(type == "procedure") {
+			Result = GetAll('P');
+		}
 		else {
-			continue;
+			return false;
 		}
 		if (Result.size() == 0) {
 			return false;
@@ -406,6 +422,91 @@ bool QueryEvaluator::IsSynonym(char c) {
 		return true;
 	}
 	return false;
+}
+
+string QueryEvaluator::MatchWithClause(string ToBeMatch,char type)
+{
+	string Results;
+	string WTK = WithTableKey(ToBeMatch,type);
+	string WithClause = QAS.GetWithTableElement(WTK);
+	if (WithClause == "none") {
+		return Results;
+	}
+	else {
+		return WithClause;
+	}
+}
+
+
+
+pair<string, string>QueryEvaluator::SplitWithClause(string s ) {
+	string ClauseName = s.substr(0,1);
+	string type = s.substr(2);
+	return make_pair(ClauseName,type);
+}
+
+vector<string> QueryEvaluator::GetAllRightSideOfWithClause(string s) {
+	
+	if (QAS.HasKey(s)) {
+		return QAS.GetColFromResultsTable(s);
+	}
+	else {
+		string type = QAS.GetSelectType(s);
+		if (type == "stmt") {
+			//return all stmt
+		}
+		else if (type == "assignment") {
+			//return all assignment
+		}
+		else if (type == "procedure") {
+			//return all procedure
+		}
+		else if (type == "while") {
+			//return all while
+		}
+		else if (type == "assign") {
+			//return all assign
+		}
+		else if (type == "constant") {
+			//return all constant
+		}
+		else {
+			//return empty
+		}
+	}
+}
+
+string QueryEvaluator::WithTableKey(string ToBeMatch,char type) {
+	
+	if (type = 'C') {
+		return ToBeMatch+".value";
+	}
+	else if (type = 'V') {
+		return ToBeMatch + ".varName";
+	}
+	else if (type = 'A') {
+		//---not sure
+	}
+	else if (type = 'W') {
+		//----not sure
+	}
+	else if (type = 'I') {
+		//---not sure
+	}
+	else if (type = 'S') {
+		return ToBeMatch + ".stmt#";
+	}
+	else if(type = 'P'){
+		return ToBeMatch + ".procName";
+	}
+	else {
+		//--not sure
+	}
+}
+
+
+void QueryEvaluator::clear()
+{
 }
 
 int QueryEvaluator::ChangeStringToInt(string s)

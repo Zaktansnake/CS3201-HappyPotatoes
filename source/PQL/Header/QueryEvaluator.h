@@ -16,6 +16,11 @@ public:
 
 private:
 
+	
+	vector<string> GetAllRightSideOfWithClause(string);
+	string WithTableKey(string, char);
+	string MatchWithClause(string,char);
+	pair<string, string> SplitWithClause(string);
 	void clear();
 	bool NoClause = false;
 	int ChangeStringToInt(string);

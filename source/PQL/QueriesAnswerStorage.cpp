@@ -68,19 +68,29 @@ vector<pair<std::string, std::string>> QueriesAnswerStorage::GetSelectParameter(
 	return SelectParameter;
 }
 
+string QueriesAnswerStorage::GetWithTableElement(string s)
+{
+	if (WithTable.find(s) == WithTable.end()) {
+		return "none";
+	}
+	return WithTable[s];
+}
+
 void QueriesAnswerStorage::SetTable(string s)
 {
 	if (HasKey(s) != true) {
 		ClausesParameterPositionInTable[s] = ClausesParameterPositionInTable.size() - 1;
 	}
 	else {
+
 		return;
 	}
 }
 
 bool QueriesAnswerStorage::HasKey(string s)
 {
-	if (ClausesParameterPositionInTable[s] == 0) {
+	
+	if (ClausesParameterPositionInTable.find(s)== ClausesParameterPositionInTable.end()) {
 		return false;
 	}
 	else {
@@ -88,11 +98,26 @@ bool QueriesAnswerStorage::HasKey(string s)
 	}
 }
 
-
+bool QueriesAnswerStorage::HasKeyInWithMap(string s) {
+	if (WithMap.find(s) == WithMap.end()) {
+		return false;
+	}
+	else {
+		true;
+	}
+}
 void QueriesAnswerStorage::update(string s, vector<string> v)
 {
 	bool exist = false;
-	int index = ClausesParameterPositionInTable[s];
+	vector<int> MightHaveToDelete;
+	if (HasKeyInWithMap(s)) {
+		vector<string> AllLeftSide = WithMap[s];
+		for (int i = 0; i < AllLeftSide.size(); i++) {
+			MightHaveToDelete.push_back
+				(ClausesParameterPositionInTable[AllLeftSide.at(i)]);
+		}
+	}
+	MightHaveToDelete.push_back(ClausesParameterPositionInTable[s]);
 	int size = ResultsTable.size();
 	bool hasKey = HasKey(s);
 	if (!hasKey) {
@@ -107,21 +132,23 @@ void QueriesAnswerStorage::update(string s, vector<string> v)
 		SetTable(s);
 	}
 	else {
-		for (int i = 0; i != size; i++) {
-			vector<string> temp = ResultsTable.at(i);
-			string element = temp.at(index);
-			for (int j = 0; j != v.size(); j++) {
-				if (v.at(j) == element) {
-					exist = true;
+		for (int k = 0; k < MightHaveToDelete.size();k++) {
+			int index = MightHaveToDelete.at(k);
+			for (int i = 0; i < size; i++) {
+				vector<string> temp = ResultsTable.at(i);
+				string element = temp.at(index);
+				for (int j = 0; j != v.size(); j++) {
+					if (v.at(j) == element) {
+						exist = true;
+					}
 				}
-			}
-			if (exist == false) {
-				ResultsTable.erase(ResultsTable.begin() + i);
-				i = i - 1;
+				if (exist == false) {
+					ResultsTable.erase(ResultsTable.begin() + i);
+					i = i - 1;
+				}
 			}
 		}
 	}
-
 }
 
 vector<string> QueriesAnswerStorage::MergeResults()
@@ -156,6 +183,28 @@ vector<string> QueriesAnswerStorage::MergeResults()
 		}
 	}
 	return MergeResults;
+}
+
+string QueriesAnswerStorage::GetSelectType(string s) {
+	for (int i = 0; i < SelectParameter.size(); i++) {
+		if (SelectParameter.at(i).second == s) {
+			return SelectParameter.at(i).first;
+		}
+	}
+}
+
+void QueriesAnswerStorage::SetWithMap(string right,string left) {
+	
+	if (WithMap.find(right) == WithMap.end()) {
+		vector<string> v = WithMap[right];
+		v.push_back(left);
+		WithMap[right] = v;
+	}
+	else {
+		vector<string> v;
+		v.push_back(left);
+		WithMap[right] = v;
+	}
 }
 
 vector<string> QueriesAnswerStorage::GetColFromResultsTable(string s)

@@ -16,6 +16,10 @@ public:
 	void SetNoClause(vector<string>);
 	vector<string> GetNoClause();
 	vector<pair<std::string, std::string>> GetSelectParameter();
+	string GetWithTableElement(string);
+	string GetSelectType(string);
+	void SetWithMap(string,string);
+	bool HasKeyInWithMap(string);
 	QueriesAnswerStorage();
 	~QueriesAnswerStorage();
 protected:
@@ -25,4 +29,5 @@ protected:
 	static vector<pair<std::string,std::string>> SelectParameter;
 	static std::unordered_map<std::string, std::string> WithTable;
 	static vector<string> NoClause;
+	static unordered_map<string, vector<string>> WithMap;
 };
