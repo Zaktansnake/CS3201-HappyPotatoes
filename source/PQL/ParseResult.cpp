@@ -100,12 +100,15 @@ const string suchthatCl = "(?:such that" + space + relCond + ")";
 const string patternCl = "(?:pattern" + space + patternCond + ")";
 
 const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
+const string selectOnly = space + "Select" + space + resultCl + space;
 const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
 const regex declarationChecking(declar);
 const regex declarationParsing(declarPar);
 const regex declarationWordParsing(IDENT);
+
 const regex queryChecking(selectClause);
+const regex queryParseSelect(selectOnly);
 const regex queryWordParsing(entRef);
 const regex queryPatternParsing(expressionSpec);
 
@@ -175,158 +178,71 @@ bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<str
 	return true;
 }
 
-ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, string>& declarationTable) {
-	smatch sm;
+ParameterSet ParseResult::parseSelect(string query, unordered_map<string, string>& declarationTable) {
+	ParameterSet selectParameter;
+	string selectPhrase;	// stores query words
+	sregex_iterator next(query.begin(), query.end(), queryParseSelect);
+	sregex_iterator end;
+	smatch match = *next;
+	selectPhrase = match.str(0);
 
-	if (!regex_match(query,queryChecking)) {
-		signalErrorAndStop();
-		return ParseResult();
+	vector<string> word;
+	next = sregex_iterator(selectPhrase.begin(), selectPhrase.end(), queryWordParsing);
+	while (next != end) {
+		smatch match = *next;
+		next++;
+		if (match.str(0) == "Select") continue;
+		word.push_back(match.str(0));
 	}
-
-	// param required for a complete ParseResult object
-	ParameterSet selectPSet;
-	ClauseSet clauseSet;
-	PatternSet patternSet;
-
-	string checker;
-	checker = sm[1];	// parameter of "Select"
-
-	if (declarationTable[checker] == "") {
-		signalErrorAndStop();
-		return ParseResult();
-	}
-
-	string selectT = declarationTable[sm[1]];
-	string selectP = sm[1];
-	selectPSet.push_back(selectP + "," + selectT);
-
-	string conditionT, conditionP1, conditionP2, appendP1, appendP2;
-	string patternT, patternP1, patternP2, patternP3;
-	checker = sm[3];
-
-	// "such that" comes first
-	if (regex_match(query, queryChecking)) {
-		conditionT = checker;
-		checker = sm[4];
-
-		if ((declarationTable[checker] == "" && !regex_match(checker, regex("\\d+"))) ||
-			declarationTable[checker] == "variable") {
-			signalErrorAndStop();	// the 1st param of a condition clause cannot be a variable
-			return ParseResult();
+	vector<string>::iterator it;
+	for (it = word.begin(); it != word.end(); ++it) {
+		if ((*it == "procName" || *it == "varName" || *it == "value" || *it == "stmt#") && it != word.begin()) {
+			*(prev(it)) += "." + *it;
+			*it = "dummy";
 		}
 		else {
-			conditionP1 = checker;
-			if (regex_match(conditionP1, regex("\\d+"))) appendP1 = "s";
-			else appendP1 = declarationTable[checker];
-		}
-
-		checker = sm[5];
-
-		if (conditionT == "Uses" || conditionT == "Modifies") {
-			if (declarationTable[checker] != "variable" && checker.front() != '"') {
-				signalErrorAndStop();	// the 2nd param of a Uses/Modifies clause must be a variable
-				return ParseResult();
-			}
-			else {
-				conditionP2 = checker;
-				appendP2 = "v";
-			}
-		}
-		else {	// case: the 2nd param is not of a Uses/Modifies clause
-			if (declarationTable[checker] == "variable" || checker.front() == '"') {
-				signalErrorAndStop();	// the 2nd param must not be a variable
-				return ParseResult();
-			}
-			else {
-				conditionP2 = checker;
-				if (regex_match(conditionP2, regex("\\d+"))) appendP2 = "s";
-				else appendP2 = declarationTable[checker];
-			}
-		}
-
-		// change the string according to agreed format
-		conditionT += appendP1.substr(0, 1) + appendP2.substr(0, 1);
-		clauseSet.push_back(Clause(conditionT, conditionP1, conditionP2));
-		checker = sm[7];
-
-		if (checker.empty()) {
-			return ParseResult(selectPSet, clauseSet);
-		}
-		else {	// there is pattern clause following
-			checker = sm[8];
-			PatternType patternT = checker;
-			if (declarationTable[patternT] == "") return ParseResult();
-			Parameter1 patternP1 = sm[9];
-			Parameter2 patternP2 = sm[10];
-			patternSet.push_back(Pattern(patternT, patternP1, patternP2));
-			return ParseResult(selectPSet, clauseSet, patternSet);
-		}
-	}
-	// "pattern" comes first
-	else if (regex_match(query, queryChecking)) {
-		checker = sm[4];
-		PatternType patternT = checker;
-
-		if (declarationTable[patternT] == "") {
-			return ParseResult();
-		}
-
-		Parameter1 patternP1 = sm[5];
-		Parameter2 patternP2 = sm[6];
-		patternSet.push_back(Pattern(patternT, patternP1, patternP2));
-		checker = sm[8];
-
-		// only pattern clause is present
-		if (checker.empty()) {
-			return ParseResult(selectPSet, patternSet);
-		}
-		else {
-			conditionT = checker;
-			checker = sm[9];
-			if ((declarationTable[checker] == "" && !regex_match(checker, regex("\\d+")))
-				|| declarationTable[checker] == "variable") {
+			// the synonym is not declared
+			if (declarationTable[*it] == "") {
 				signalErrorAndStop();
-				return ParseResult();
+				return ParameterSet();
 			}
-			else {
-				conditionP1 = checker;
-				if (regex_match(conditionP1, regex("\\d+"))) appendP1 = "s";
-				else appendP1 = declarationTable[checker];
+			// if the current word is a synonym, check whether the next word is an attrName
+			else if (it != prev(word.end()) && (*std::next(it) == "procName" || *std::next(it) == "varName" ||
+				*std::next(it) == "value" || *std::next(it) == "stmt#")) {
+				continue;	// the next word is an attrName then we dont append ","+type to the current synonym
 			}
-
-			checker = sm[10];
-
-			if (conditionT == "Uses" || conditionT == "Modifies") {
-				if (declarationTable[checker] != "variable" && checker.front() != '"') {
-					signalErrorAndStop();
-					return ParseResult();
-				}
-				else {
-					conditionP2 = checker;
-					appendP2 = "v";
-				}
-			}
-			else {
-				if (declarationTable[checker] == "variable" || checker.front() == '"') {
-					signalErrorAndStop();
-					return ParseResult();
-				}
-				else {
-					conditionP2 = checker;
-					if (regex_match(conditionP2, regex("\\d+"))) appendP2 = "s";
-					else appendP2 = declarationTable[checker];
-				}
-			}
-
-			conditionT += appendP1.substr(0, 1) + appendP2.substr(0, 1);
-			clauseSet.push_back(Clause(conditionT, conditionP1, conditionP2));
-			return ParseResult(selectPSet, clauseSet, patternSet);
+			else *it += "," + declarationTable[*it];
 		}
 	}
-	// has only select clause
-	else {
-		return ParseResult(selectPSet);
+
+	for (it = word.begin(); it != word.end(); ++it) {
+		if (*it == "dummy") continue;
+		selectParameter.push_back(*it);
 	}
+
+	return selectParameter;
+}
+
+bool ParseResult::checkWholeQuery(string query) {
+	// query with syntax error
+	if (!regex_match(query, queryChecking)) return false;
+	else return true;
+}
+
+ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, string>& declarationTable) {
+	ParameterSet selectParameter;
+	ClauseSet clauses;
+	PatternSet patterns;
+	WithSet withClauses;
+
+	bool correct = ParseResult::checkWholeQuery(query);
+	if (!correct) {
+		signalErrorAndStop();
+		return ParseResult();
+	}
+
+	selectParameter = ParseResult::parseSelect(query, declarationTable);
+	if (selectParameter.empty()) return ParseResult();
 }
 
 void ParseResult::signalErrorAndStop() {

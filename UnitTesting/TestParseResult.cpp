@@ -44,5 +44,29 @@ namespace UnitTesting
 			Assert::IsFalse(correct);
 		}
 
+		TEST_METHOD(testParsingSelectWithoutAttrCompare) {
+			unordered_map<string, string> declarationTable{ { "s1","stmt" },{ "s2","stmt" },{ "v2","variable" } };
+			string querySentence = "Select <s1, s2, v2> such that Uses (5, \"y\") and Follows (3, 4)";
+			ParameterSet selectParameter = ParseResult::parseSelect(querySentence, declarationTable);
+			vector<string>::iterator it;
+			string result;
+			for (it = selectParameter.begin(); it != selectParameter.end(); ++it) {
+				result += "[" + *it + "]";
+			}
+			Assert::AreEqual(result, string("[s1,stmt][s2,stmt][v2,variable]"));
+		}
+
+		TEST_METHOD(testParsingSelectWithAttrCompare) {
+			unordered_map<string, string> declarationTable{ { "s1","stmt" },{ "s2","stmt" },{ "v2","variable" } };
+			string querySentence = "Select <s1.stmt#,   v2.varName,s2   > such that Uses (5, \"y\") and Follows (3, 4)";
+			ParameterSet selectParameter = ParseResult::parseSelect(querySentence, declarationTable);
+			vector<string>::iterator it;
+			string result;
+			for (it = selectParameter.begin(); it != selectParameter.end(); ++it) {
+				result += "[" + *it + "]";
+			}
+			Assert::AreEqual(result, string("[s1.stmt#][v2.varName][s2,stmt]"));
+		}
+
 	};
 }

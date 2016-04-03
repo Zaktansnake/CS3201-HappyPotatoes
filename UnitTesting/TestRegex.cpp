@@ -1,5 +1,6 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
+#include "../source/PQL/Header/ParseResult.h"
 #include <string>
 #include <regex>
 
@@ -83,5 +84,13 @@ namespace UnitTesting
 			Assert::IsFalse(regex_match("stmt s1,s2;;", test));
 		}
 
+		TEST_METHOD(testQueryChecking) {
+			string part1 = "Select <s1, s2, v2> such that Uses (5, \"y\") and Follows (3, 4) pattern a1 (v2, _\"x+y\"_) ";
+			string part2 = "such that Affects (a1, a2) with a2.stmt# = 20 such that Modifies (a3, v3) pattern a3 (\"z\", _) ";
+			string part3 = "such that Uses (s3, v1) and Modifies (s3, \"x\") and Follows (s1, s2) and Parent (s3, s1) and Uses (s2, v1)";
+			string query = part1 + part2 + part3;
+			bool correct = ParseResult::checkWholeQuery(query);
+			Assert::IsTrue(correct);
+		}
 	};
 }
