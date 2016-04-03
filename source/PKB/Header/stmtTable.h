@@ -29,16 +29,16 @@ public:
 	static void addParentTable(string stmtLine, int stmtNo, int nestLevel);
 
 	// get data from follow
-	static std::vector<int> stmtTable::getFollow(int stmtNo);
-	static std::vector<int> stmtTable::getFollowFan(int stmtNo);
+	static std::vector<string> stmtTable::getFollow(int stmtNo);
+	static std::vector<string> stmtTable::getFollowFan(int stmtNo);
 	static bool isFollow(int s1, int s2);
 
-	static std::vector<int> stmtTable::getFollowForWhile(int stmtNo);
-	static std::vector<int> stmtTable::getFollowFanForWhile (int stmtNo);
-	static std::vector<int> stmtTable::getFollowForAssign (int stmtNo);
-	static std::vector<int> stmtTable::getFollowFanForAssign(int stmtNo);
-	static std::vector<int> stmtTable::getFollowForIf(int stmtNo);
-	static std::vector<int> stmtTable::getFollowFanForIf(int stmtNo);
+	static std::vector<string> stmtTable::getFollowForWhile(int stmtNo);
+	static std::vector<string> stmtTable::getFollowFanForWhile (int stmtNo);
+	static std::vector<string> stmtTable::getFollowForAssign (int stmtNo);
+	static std::vector<string> stmtTable::getFollowFanForAssign(int stmtNo);
+	static std::vector<string> stmtTable::getFollowForIf(int stmtNo);
+	static std::vector<string> stmtTable::getFollowFanForIf(int stmtNo);
 
 	// get data from parent
 	static std::vector<int> stmtTable::getParent(int stmtNo);

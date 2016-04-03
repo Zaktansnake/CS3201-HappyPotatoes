@@ -128,8 +128,8 @@ void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
 	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, conditionStmtTable);
 }
 //-------------------------------------get answer of follow
-std::vector<int> checkWithProcedure(int stmtNo, vector<int> ans) {
-	std::vector<int>result;
+std::vector<string> checkWithProcedure(int stmtNo, vector<int> ans) {
+	std::vector<string>result;
 	int start;
 	int end;
 	for (map<int, int>::iterator it = startAndEndOfProcedure.begin(); it != startAndEndOfProcedure.end(); ++it) {
@@ -143,30 +143,33 @@ std::vector<int> checkWithProcedure(int stmtNo, vector<int> ans) {
 	for (int i = 0; i < ans.size(); i++) {
 		int num = ans.at(i);
 		if (start <= num && end >= num) {
-			result.push_back(num);
+
+			result.push_back(to_string(num));
 		}
 	}
 	return result;
 }
 
 
-std::vector<int> stmtTable::getFollow(int stmtNo) {
+std::vector<string> stmtTable::getFollow(int stmtNo) {
     std::vector<int> ans = follow.getFollow(stmtNo);
-	ans = checkWithProcedure(stmtNo,ans);
-    return ans;
+	std::vector<string> result;
+	result = checkWithProcedure(stmtNo,ans);
+    return result;
 }
 
-std::vector<int> stmtTable::getFollowFan(int stmtNo) {
+std::vector<string> stmtTable::getFollowFan(int stmtNo) {
 	std::vector<int> ans = follow.getFollowFan(stmtNo);
-	ans = checkWithProcedure(stmtNo, ans);
-	return ans;
+	std::vector<string> result;
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
 }
 
 bool stmtTable::isFollow(int s1, int s2) {
 	if (follow.isFollows(s1, s2)) {
 		vector<int>temp;
 		temp.push_back(s2);
-		vector<int> ans = checkWithProcedure(s1, temp);
+		vector<string> ans = checkWithProcedure(s1, temp);
 		if (ans.size() == 0) {
 			return false;
 		}
@@ -176,35 +179,41 @@ bool stmtTable::isFollow(int s1, int s2) {
 	}
 	return false;
 }
-std::vector<int> stmtTable::getFollowForWhile(int stmtNo) {
+std::vector<string> stmtTable::getFollowForWhile(int stmtNo) {
+	std::vector<string> result;
 	std::vector<int> ans = follow.getFollowForWhile(stmtNo);
-	ans = checkWithProcedure(stmtNo, ans);
-	return ans;
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
 }
-std::vector<int> stmtTable::getFollowFanForWhile(int stmtNo) {
+std::vector<string> stmtTable::getFollowFanForWhile(int stmtNo) {
+	std::vector<string> result;
 	std::vector<int> ans = follow.getFollowFanForWhile(stmtNo);
-	ans = checkWithProcedure(stmtNo, ans);
-	return ans;
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
 }
-std::vector<int> stmtTable::getFollowForAssign(int stmtNo) {
+std::vector<string> stmtTable::getFollowForAssign(int stmtNo) {
+	std::vector<string> result;
 	std::vector<int> ans = follow.getFollowForAssign(stmtNo);
-	ans = checkWithProcedure(stmtNo, ans);
-	return ans;
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
 }
-std::vector<int> stmtTable::getFollowFanForAssign(int stmtNo) {
+std::vector<string> stmtTable::getFollowFanForAssign(int stmtNo) {
+	std::vector<string> result;
 	std::vector<int> ans = follow.getFollowFanForAssign(stmtNo);
-	ans = checkWithProcedure(stmtNo, ans);
-	return ans;
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
 }
-std::vector<int> stmtTable::getFollowForIf(int stmtNo) {
+std::vector<string> stmtTable::getFollowForIf(int stmtNo) {
+	std::vector<string> result;
 	std::vector<int> ans = follow.getFollowForIf(stmtNo);
-	ans = checkWithProcedure(stmtNo, ans);
-	return ans;
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
 }
-std::vector<int> stmtTable::getFollowFanForIf(int stmtNo) {
+std::vector<string> stmtTable::getFollowFanForIf(int stmtNo) {
+	std::vector<string> result;
 	std::vector<int> ans = follow.getFollowFanForIf(stmtNo);
-	ans = checkWithProcedure(stmtNo, ans);
-	return ans;
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
 }
 
 
