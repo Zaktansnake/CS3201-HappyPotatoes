@@ -20,7 +20,7 @@ Patterns::~Patterns() {
 }
 
 bool Patterns::compareAssignments(string assignment1, string assignment2) {
-	string augmentAssignment1 = patternAssignment(assignment1);
+/*	string augmentAssignment1 = patternAssignment(assignment1);
 	string augmentAssignment2 = patternAssignment(assignment2);
 
 	//use find to use size_t for comparing
@@ -45,8 +45,10 @@ bool Patterns::compareAssignments(string assignment1, string assignment2) {
 			return false;
 		}
 	}
+	*/
+	return false;
 }
-
+/*
 string Patterns::patternAssignment(string assignment) {
 	//In-order traversal is given by assignment statement
 	//To understand the depth of each node, we can do a left to right reading and put a bracket around trees have a variable and or constant 
@@ -300,3 +302,4 @@ bool Patterns::minusDetermine(string statement, int marker) {
 		return false;
 	}
 }
+*/
