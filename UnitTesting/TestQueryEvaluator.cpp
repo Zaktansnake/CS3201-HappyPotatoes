@@ -3,6 +3,7 @@
 
 #include "stdafx.h"
 #include "CppUnitTest.h"
+#include "../source/PKB/Header/Parser.h"
 #include "../source/PQL/Header/QueryEvaluator.h"
 #include "../source/PQL/Header/QueriesAnswerStorage.h"
 
@@ -13,7 +14,12 @@ namespace UnitTesting
 	TEST_CLASS(TestQueryEvaluator)
 	{
 	public:
-		TEST_METHOD(TestP) {
+		TEST_METHOD(TestQE) {
+
+			string fileName = "..\Release\Sample-Source02.txt";
+
+			Parser::parse(fileName);
+
 			/*
 			Patterns p;
 			string testPattern, expectedPattern, returnedPattern;
