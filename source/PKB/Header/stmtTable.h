@@ -41,15 +41,15 @@ public:
 	static std::vector<string> stmtTable::getFollowFanForIf(int stmtNo);
 
 	// get data from parent
-	static std::vector<int> stmtTable::getParent(int stmtNo);
-	static std::vector<int> stmtTable::getChild(int stmtNo);
-	static std::vector<int> stmtTable::getParentStar(int stmtNo);
+	static std::vector<string> stmtTable::getParent(int stmtNo);
+	static std::vector<string> stmtTable::getChild(int stmtNo);
+	static std::vector<string> stmtTable::getParentStar(int stmtNo);
 	static bool isParent(int s1, int s2);
 
-	static std::vector<int> stmtTable::getParentForWhile(int stmtNo);
-	static std::vector<int> stmtTable::getChildForWhile(int stmtNo);
-	static std::vector<int> stmtTable::getParentForAssign(int stmtNo);
-	static std::vector<int> stmtTable::getChildForAssign(int stmtNo);
-	static std::vector<int> stmtTable::getParentForIf(int stmtNo);
-	static std::vector<int> stmtTable::getChildForIf(int stmtNo);
+	static std::vector<string> stmtTable::getParentForWhile(int stmtNo);
+	static std::vector<string> stmtTable::getChildForWhile(int stmtNo);
+	static std::vector<string> stmtTable::getParentForAssign(int stmtNo);
+	static std::vector<string> stmtTable::getChildForAssign(int stmtNo);
+	static std::vector<string> stmtTable::getParentForIf(int stmtNo);
+	static std::vector<string> stmtTable::getChildForIf(int stmtNo);
 };

@@ -15,15 +15,15 @@ public:
 
 	void setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLopp, int condition);
 	std::vector<int> getParent(int stmtNo);
-	std::vector<int> getParentStar(int stmtNo);  // to get all its parents
+	std::vector<string> getParentStar(int stmtNo);  // to get all its parents
 	std::vector<int> getChild(int stmtNo);
 
-	std::vector<int> Parent::getParentForWhile(int stmtNo);
-	std::vector<int> Parent::getChildForWhile(int stmtNo);
-	std::vector<int> Parent::getParentForAssign(int stmtNo);
-	std::vector<int> Parent::getChildForAssign(int stmtNo);
-	std::vector<int> Parent::getParentForIf(int stmtNo);
-	std::vector<int> Parent::getChildForIf(int stmtNo);
+	std::vector<string> Parent::getParentForWhile(int stmtNo);
+	std::vector<string> Parent::getChildForWhile(int stmtNo);
+	std::vector<string> Parent::getParentForAssign(int stmtNo);
+	std::vector<string> Parent::getChildForAssign(int stmtNo);
+	std::vector<string> Parent::getParentForIf(int stmtNo);
+	std::vector<string> Parent::getChildForIf(int stmtNo);
 
 	bool isParent(int stmt1, int stmt2);
 

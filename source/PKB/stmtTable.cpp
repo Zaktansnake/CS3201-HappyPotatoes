@@ -219,18 +219,26 @@ std::vector<string> stmtTable::getFollowFanForIf(int stmtNo) {
 
 
 // get data from parent
-std::vector<int> stmtTable::getParent(int stmtNo) {
+std::vector<string> stmtTable::getParent(int stmtNo) {
+    vector<string> result;
 	std::vector<int> ans = parent.getParent(stmtNo);
-    return ans;
+	for (int i = 0; i < ans.size(); i++) {
+		result.push_back(to_string(ans.at(i)));
+	}
+    return result;
 }
 
-std::vector<int> stmtTable::getChild(int stmtNo) {
+std::vector<string> stmtTable::getChild(int stmtNo) {
+	vector<string> result;
 	std::vector<int> ans = parent.getChild(stmtNo);
-	return ans;
+	for (int i = 0; i < ans.size(); i++) {
+		result.push_back(to_string(ans.at(i)));
+	}
+	return result;
 }
 
-std::vector<int> stmtTable::getParentStar(int stmtNo) {
-	std::vector<int> ans = parent.getParentStar(stmtNo);
+std::vector<string> stmtTable::getParentStar(int stmtNo) {
+	std::vector<string> ans = parent.getParentStar(stmtNo);
 	return ans;
 }
 
@@ -238,31 +246,31 @@ bool stmtTable::isParent(int s1, int s2) {
 	return parent.isParent(s1,s2);
 }
 
-std::vector<int> stmtTable::getParentForWhile(int stmtNo) {
-	std::vector<int> ans = parent.getParentForWhile(stmtNo);
+std::vector<string> stmtTable::getParentForWhile(int stmtNo) {
+	std::vector<string> ans = parent.getParentForWhile(stmtNo);
 	return ans;
 }
-std::vector<int> stmtTable::getChildForWhile(int stmtNo) {
-	std::vector<int> ans = parent.getChildForWhile(stmtNo);
+std::vector<string> stmtTable::getChildForWhile(int stmtNo) {
+	std::vector<string> ans = parent.getChildForWhile(stmtNo);
 	return ans;
 }
-std::vector<int> stmtTable::getParentForAssign(int stmtNo) {
-	std::vector<int> ans = parent.getParentForAssign(stmtNo);
-	return ans;
-}
-
-std::vector<int> stmtTable::getChildForAssign(int stmtNo) {
-	std::vector<int> ans = parent.getChildForAssign(stmtNo);
+std::vector<string> stmtTable::getParentForAssign(int stmtNo) {
+	std::vector<string> ans = parent.getParentForAssign(stmtNo);
 	return ans;
 }
 
-std::vector<int> stmtTable::getParentForIf(int stmtNo) {
-	std::vector<int> ans = parent.getParentForAssign(stmtNo);
+std::vector<string> stmtTable::getChildForAssign(int stmtNo) {
+	std::vector<string> ans = parent.getChildForAssign(stmtNo);
 	return ans;
 }
 
-std::vector<int> stmtTable::getChildForIf(int stmtNo) {
-	std::vector<int> ans = parent.getChildForAssign(stmtNo);
+std::vector<string> stmtTable::getParentForIf(int stmtNo) {
+	std::vector<string> ans = parent.getParentForAssign(stmtNo);
+	return ans;
+}
+
+std::vector<string> stmtTable::getChildForIf(int stmtNo) {
+	std::vector<string> ans = parent.getChildForAssign(stmtNo);
 	return ans;
 }
 

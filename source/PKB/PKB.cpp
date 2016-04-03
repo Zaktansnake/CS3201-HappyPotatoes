@@ -20,6 +20,7 @@
 #include "./Header/ProcTable.h"
 #include "./Header/VarTable.h"
 #include "./Header/stmtTable.h"
+#include "./Header/Parent.h"
 #include "./Header/PatternTable.h"
 #include "./Header/ConstantTable.h"
 #include "./Header/CFG.h"
@@ -52,6 +53,7 @@ vector<int> getAllParents(vector<int> v);
 static inline std::string &ltrim(std::string &s);
 static inline std::string &rtrim(std::string &s);
 static inline std::string &trim(std::string &s);
+Parent pare;
 
 int PKB::getStmtNum() {
 	return stmtLine - 1;
@@ -335,7 +337,7 @@ void PKB::updateAllTables() {
 		string procB = get<1>(AllCallsStmt[i]);
 		int tempStmtLine = get<2>(AllCallsStmt[i]);
 
-		vector<int> getAllParent = getAllParents(stmtTable::getParent(tempStmtLine));
+		vector<int> getAllParent = getAllParents(pare.getParent(tempStmtLine));
 		if (getAllParent.size() > 0) {
 			for (int j = 0; j < getAllParent.size(); j++) {
 				vector<string> tempModifies = ProcTable::getProcModifiesVar(procB);
@@ -373,7 +375,8 @@ vector<int> getAllParents(vector<int> v) {
 	vector<int> toReturn;
 	while (v.size() != 0) {
 		toReturn.push_back(v.at(0));
-		v = stmtTable::getParent(v.at(0));
+		v = pare.getParent(v.at(0));
+		
 	}
 	return toReturn;
 }

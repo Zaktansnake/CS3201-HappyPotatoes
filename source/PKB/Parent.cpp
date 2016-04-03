@@ -187,16 +187,20 @@ std::vector<int> Parent::getChild(int stmtNo) {
 	return result;
 }
 
-std::vector<int> Parent::getParentStar(int stmtNo) {
+std::vector<string> Parent::getParentStar(int stmtNo) {
 	map<int, vector<int>>::iterator iter;
-	std::vector<int> result;
+	std::vector<string> result;
+	std::vector<int> temp;
 
 	if (stmtNo > AnsStarMap.size()) {
 		return result;
 	}
 	iter = AnsStarMap.find(stmtNo);
 	if (iter != AnsStarMap.end()) {
-		result = iter->second;
+		temp = (iter->second);
+		for (int i = 0; i < temp.size(); i++) {
+			result.push_back(to_string(temp.at(i)));
+		}
 	}
 	else {
 		return result;
@@ -205,9 +209,9 @@ std::vector<int> Parent::getParentStar(int stmtNo) {
 }
 
 
-std::vector<int> Parent::getParentForWhile(int stmtNo) {
+std::vector<string> Parent::getParentForWhile(int stmtNo) {
 	std::vector<int> temp = getParent(stmtNo);
-	std::vector<int> ans;
+	std::vector<string> ans;
 	if (stmtNo > AnsMap.size()) {
 		return ans;
 	}
@@ -219,16 +223,16 @@ std::vector<int> Parent::getParentForWhile(int stmtNo) {
 		if (iter != stmtstring.end()) {
 			line = iter->second;
 			if (line.find("while") != std::string::npos || line.find("While") != std::string::npos) {
-				ans.push_back(temp.at(i));
+				ans.push_back(to_string( temp.at(i)));
 			}
 		}
 	}
 	return ans;
 
 }
-std::vector<int> Parent::getChildForWhile(int stmtNo) {
+std::vector<string> Parent::getChildForWhile(int stmtNo) {
 	std::vector<int> temp = getChild(stmtNo);
-	std::vector<int> ans;
+	std::vector<string> ans;
 	if (stmtNo > AnsMap.size()) {
 		return ans;
 	}
@@ -240,17 +244,17 @@ std::vector<int> Parent::getChildForWhile(int stmtNo) {
 		if (iter != stmtstring.end()) {
 			line = iter->second;
 			if (line.find("while") != std::string::npos || line.find("While") != std::string::npos) {
-				ans.push_back(temp.at(i));
+				ans.push_back(to_string( temp.at(i)));
 			}
 		}
 	}
 	return ans;
 
 }
-std::vector<int> Parent::getParentForAssign(int stmtNo) {
+std::vector<string> Parent::getParentForAssign(int stmtNo) {
 
 	std::vector<int> temp = getParent(stmtNo);
-	std::vector<int> ans;
+	std::vector<string> ans;
 	if (stmtNo > AnsMap.size()) {
 		return ans;
 	}
@@ -262,15 +266,15 @@ std::vector<int> Parent::getParentForAssign(int stmtNo) {
 		if (iter != stmtstring.end()) {
 			line = iter->second;
 			if (line.find("=") != std::string::npos) {
-				ans.push_back(temp.at(i));
+				ans.push_back(to_string(temp.at(i)));
 			}
 		}
 	}
 	return ans;
 }
-std::vector<int> Parent::getChildForAssign(int stmtNo) {
+std::vector<string> Parent::getChildForAssign(int stmtNo) {
 	std::vector<int> temp = getChild(stmtNo);
-	std::vector<int> ans;
+	std::vector<string> ans;
 	if (stmtNo > AnsMap.size()) {
 		return ans;
 	}
@@ -282,16 +286,16 @@ std::vector<int> Parent::getChildForAssign(int stmtNo) {
 		if (iter != stmtstring.end()) {
 			line = iter->second;
 			if (line.find("=") != std::string::npos) {
-				ans.push_back(temp.at(i));
+				ans.push_back(to_string(temp.at(i)));
 			}
 		}
 	}
 	return ans;
 }
 
-std::vector<int> Parent::getParentForIf(int stmtNo) {
+std::vector<string> Parent::getParentForIf(int stmtNo) {
 	std::vector<int> temp = getParent(stmtNo);
-	std::vector<int> ans;
+	std::vector<string> ans;
 	if (stmtNo > AnsMap.size()) {
 		return ans;
 	}
@@ -303,16 +307,16 @@ std::vector<int> Parent::getParentForIf(int stmtNo) {
 		if (iter != stmtstring.end()) {
 			line = iter->second;
 			if (line.find("If ") != std::string::npos || line.find("if ") != std::string::npos) {
-				ans.push_back(temp.at(i));
+				ans.push_back(to_string(temp.at(i)));
 			}
 		}
 	}
 	return ans;
 
 }
-std::vector<int> Parent::getChildForIf(int stmtNo) {
+std::vector<string> Parent::getChildForIf(int stmtNo) {
 	std::vector<int> temp = getChild(stmtNo);
-	std::vector<int> ans;
+	std::vector<string> ans;
 	if (stmtNo > AnsMap.size()) {
 		return ans;
 	}
@@ -324,7 +328,7 @@ std::vector<int> Parent::getChildForIf(int stmtNo) {
 		if (iter != stmtstring.end()) {
 			line = iter->second;
 			if (line.find("if ") != std::string::npos || line.find("If ") != std::string::npos) {
-				ans.push_back(temp.at(i));
+				ans.push_back(to_string(temp.at(i)));
 			}
 		}
 	}

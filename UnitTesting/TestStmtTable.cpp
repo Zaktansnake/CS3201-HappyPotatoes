@@ -19,17 +19,17 @@ namespace UnitTesting
 
 
 			// test for getParent
-			int result;
+			string result;
 			bool isparent;
 			bool expectBool;
 			string expectedChildren;
 			string resultChildren;
 			std::vector<int> resultChild;
-			int expected_result01 = 26;
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source02.txt");
-			vector<int> getParent = stmtTable::getParent(28);
+			string expected_result01 = "26";
+			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			vector<string> getParent = stmtTable::getParent(28);
 			if (getParent.size() == 0) {
-				result = 0;
+				result = "0";
 			}
 			else {
 				result = getParent.front();
@@ -40,10 +40,10 @@ namespace UnitTesting
 
 			Assert::AreEqual(expected_result01, result);
 
-			expected_result01 = 0;
+			expected_result01 = "0";
 			getParent = stmtTable::getParent(26);
 			if (getParent.size() == 0) {
-				result = 0;
+				result = "0";
 			}
 			else {
 				result = getParent.front();
@@ -52,11 +52,11 @@ namespace UnitTesting
 
 			Assert::AreEqual(expected_result01, result);
 
-			expected_result01 = 28;
+			expected_result01 = "28";
 			getParent = stmtTable::getParent(30);
 
 			if (getParent.size() == 0) {
-				result = 0;
+				result = "0";
 			}
 			else {
 				result = getParent.front();
@@ -69,8 +69,8 @@ namespace UnitTesting
 			getParent = stmtTable::getParentStar(8);
 			string actualResult;
 
-			for (std::vector<int>::iterator it = getParent.begin(); it != getParent.end(); ++it) {
-				actualResult.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = getParent.begin(); it != getParent.end(); ++it) {
+				actualResult.append(*it);
 			}
 
 			Assert::AreEqual(expected_star, actualResult);
