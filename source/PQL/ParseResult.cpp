@@ -49,7 +49,7 @@ ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, Pa
 }
 
 // constants for project iteration 1
-const string IDENT = "(?:\\w(?:\\w|\\d|#)*)";
+const string IDENT = "(?:[[:alpha:]](?:[[:alpha:]]|\\d|#)*)";
 const string INTEGER = "(?:\\d+)";
 const string space = "\\s*";
 const string attrName = "(?:procName|varName|value|stmt#)";
@@ -61,6 +61,8 @@ const string stmtRef = "(?:" + IDENT + "|_|" + INTEGER + ")";
 const string lineRef = stmtRef;
 const string designEntity = "(?:procedure|stmt|assign|call|while|if|variable|constant|prog_line)";
 const string declar = "(?:" + space + designEntity + space + IDENT + space + "(?:," + space + IDENT + space + ")*" + ";)*";
+// the next single regex string is for faster parsing of declaration
+const string declarPar = "(?:" + space + designEntity + space + IDENT + space + "(?:," + space + IDENT + space + ")*" + ";)";
 
 const string REF = "(?:" + attrRef + "|" + IDENT + "|\"" + IDENT + "\"|" + INTEGER + ")";
 const string attrCompare = "(?:" + REF + space + "=" + space + REF + ")";
@@ -77,19 +79,19 @@ const string Follows = "(?:Follows" + space + "\\(" + space + stmtRef + space + 
 const string FollowsT = "(?:Follows\\*" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
 const string Next = "(?:Next" + space + "\\(" + space + lineRef + space + "," + space + lineRef + space + "\\))";
 const string NextT = "(?:Next\\*" + space + "\\(" + space + lineRef + space + "," + space + lineRef + space + "\\))";
-const string relRef = "(?:" + Modifies + "|" + Uses + "|" + Calls + "|" + CallsT + "|" +
-Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
+const string Affects = "(?:Affects" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
+const string AffectsT = "(?:Affects*" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
+const string relRef = "(?:" + Modifies + "|" + Uses + "|" + Calls + "|" + CallsT + "|" + Affects + "|" + AffectsT + "|"
+						+ Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
 const string relCond = "(?:" + relRef + space + "(?:and" + space + relRef + space + ")*)";
 
-const string NAME = "(?:\\w(?:\\w|\\d)*)";
+const string NAME = "(?:[[:alpha:]](?:[[:alpha:]]|\\d)*)";
 const string expr = "(?:\\(?(?:" + NAME + "|" + INTEGER + ")" + space + "(?:(?:\\+|\\*)" + space + "\\(?(?:" + NAME + "|" + INTEGER + ")\\)?" + space + ")*)";
 const string expressionSpec = "(?:\"" + space + expr + space + "\"|_\"" + space + expr + space + "\"_)";
 
-const string IF = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space +
-"," + space + "_" + space + "\\))";
+const string IF = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "," + space + "_" + space + "\\))";
 const string WHILE = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "\\))";
-const string assign = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space +
-"(?:" + expressionSpec + "|" + "_)" + space + "\\))";
+const string assign = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "(?:" + expressionSpec + "|" + "_)" + space + "\\))";
 const string pattern = "(?:" + assign + "|" + WHILE + "|" + IF + ")";
 const string patternCond = "(?:" + pattern + space + "(?:and" + space + pattern + space + ")*)";
 
@@ -98,14 +100,15 @@ const string suchthatCl = "(?:such that" + space + relCond + ")";
 const string patternCl = "(?:pattern" + space + patternCond + ")";
 
 const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
+const string selectOnly = space + "Select" + space + resultCl + space;
 const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
-const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
-const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
-
 const regex declarationChecking(declar);
-const regex declarationParsing(IDENT);
+const regex declarationParsing(declarPar);
+const regex declarationWordParsing(IDENT);
+
 const regex queryChecking(selectClause);
+const regex queryParseSelect(selectOnly);
 const regex queryWordParsing(entRef);
 const regex queryPatternParsing(expressionSpec);
 
@@ -126,185 +129,120 @@ bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<str
 		signalErrorAndStop();
 		return false;	// declaration with syntax error
 	}
-	vector<string> word;
+
+	vector<string> sentence;
 	string declarationSubstr;
 
-	while (!declaration.empty()) {
-		int endIndex = declaration.find(";");
-		int startIndex = endIndex + 1;
-		declarationSubstr = declaration.substr(0, endIndex + 1);
-		declaration = declaration.substr(startIndex, declaration.size() - startIndex);
-		sregex_iterator next(declarationSubstr.begin(), declarationSubstr.end(), declarationParsing);
+	sregex_iterator next(declaration.begin(), declaration.end(), declarationParsing);
+	sregex_iterator end;
+	while (next != end) {
+		smatch match = *next;
+		sentence.push_back(match.str(0));
+		next++;
+	}
+
+	vector<string>::iterator it;
+	for (it = sentence.begin(); it != sentence.end(); ++it) {
+		string current = *it;
+		sregex_iterator next(current.begin(), current.end(), declarationWordParsing);
 		sregex_iterator end;
+		string type;
+		bool typeSelected = false;
 		while (next != end) {
 			smatch match = *next;
-			word.push_back(match.str(0));
+			string word = match.str(0);
+			if (word == "stmt" || word == "assign" || word == "while" || word == "variable"
+				|| word == "constant" || word == "prog_line") {
+				if (!typeSelected) {
+					type = word;
+					typeSelected = true;
+				}
+				else {
+					signalErrorAndStop();
+					return false;
+				}
+			}
+			// the word being checked is not a keyword
+			else {
+				if (declarationTable[word] != "") {	// the synonym has already been used
+					signalErrorAndStop();
+					return false;
+				}
+				declarationTable[word] = type;
+			}
 			next++;
 		}
+		typeSelected = false;
 	}
-	string type;
-	for (vector<string>::iterator it = word.begin(); it != word.end(); ++it) {
-		if (*it == "stmt" || *it == "assign" || *it == "while" || *it == "variable"
-			|| *it == "constant" || *it == "prog_line") {
-			type = *it;
-		}
-		else declarationTable[*it] = type;
-	}
+
 	return true;
 }
 
-ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, string>& declarationTable) {
-	smatch sm;
+ParameterSet ParseResult::parseSelect(string query, unordered_map<string, string>& declarationTable) {
+	ParameterSet selectParameter;
+	string selectPhrase;	// stores query words
+	sregex_iterator next(query.begin(), query.end(), queryParseSelect);
+	sregex_iterator end;
+	smatch match = *next;
+	selectPhrase = match.str(0);
 
-	if (!regex_match(query,queryChecking)) {
-		signalErrorAndStop();
-		return ParseResult();
+	vector<string> word;
+	next = sregex_iterator(selectPhrase.begin(), selectPhrase.end(), queryWordParsing);
+	while (next != end) {
+		smatch match = *next;
+		next++;
+		if (match.str(0) == "Select") continue;
+		word.push_back(match.str(0));
 	}
-
-	// param required for a complete ParseResult object
-	ParameterSet selectPSet;
-	ClauseSet clauseSet;
-	PatternSet patternSet;
-
-	string checker;
-	checker = sm[1];	// parameter of "Select"
-
-	if (declarationTable[checker] == "") {
-		signalErrorAndStop();
-		return ParseResult();
-	}
-
-	string selectT = declarationTable[sm[1]];
-	string selectP = sm[1];
-	selectPSet.push_back(selectP + "," + selectT);
-
-	string conditionT, conditionP1, conditionP2, appendP1, appendP2;
-	string patternT, patternP1, patternP2, patternP3;
-	checker = sm[3];
-
-	// "such that" comes first
-	if (regex_match(query, queryChecking)) {
-		conditionT = checker;
-		checker = sm[4];
-
-		if ((declarationTable[checker] == "" && !regex_match(checker, regex("\\d+"))) ||
-			declarationTable[checker] == "variable") {
-			signalErrorAndStop();	// the 1st param of a condition clause cannot be a variable
-			return ParseResult();
+	vector<string>::iterator it;
+	for (it = word.begin(); it != word.end(); ++it) {
+		if ((*it == "procName" || *it == "varName" || *it == "value" || *it == "stmt#") && it != word.begin()) {
+			*(prev(it)) += "." + *it;
+			*it = "dummy";
 		}
 		else {
-			conditionP1 = checker;
-			if (regex_match(conditionP1, regex("\\d+"))) appendP1 = "s";
-			else appendP1 = declarationTable[checker];
-		}
-
-		checker = sm[5];
-
-		if (conditionT == "Uses" || conditionT == "Modifies") {
-			if (declarationTable[checker] != "variable" && checker.front() != '"') {
-				signalErrorAndStop();	// the 2nd param of a Uses/Modifies clause must be a variable
-				return ParseResult();
-			}
-			else {
-				conditionP2 = checker;
-				appendP2 = "v";
-			}
-		}
-		else {	// case: the 2nd param is not of a Uses/Modifies clause
-			if (declarationTable[checker] == "variable" || checker.front() == '"') {
-				signalErrorAndStop();	// the 2nd param must not be a variable
-				return ParseResult();
-			}
-			else {
-				conditionP2 = checker;
-				if (regex_match(conditionP2, regex("\\d+"))) appendP2 = "s";
-				else appendP2 = declarationTable[checker];
-			}
-		}
-
-		// change the string according to agreed format
-		conditionT += appendP1.substr(0, 1) + appendP2.substr(0, 1);
-		clauseSet.push_back(Clause(conditionT, conditionP1, conditionP2));
-		checker = sm[7];
-
-		if (checker.empty()) {
-			return ParseResult(selectPSet, clauseSet);
-		}
-		else {	// there is pattern clause following
-			checker = sm[8];
-			PatternType patternT = checker;
-			if (declarationTable[patternT] == "") return ParseResult();
-			Parameter1 patternP1 = sm[9];
-			Parameter2 patternP2 = sm[10];
-			patternSet.push_back(Pattern(patternT, patternP1, patternP2));
-			return ParseResult(selectPSet, clauseSet, patternSet);
-		}
-	}
-	// "pattern" comes first
-	else if (regex_match(query, queryChecking)) {
-		checker = sm[4];
-		PatternType patternT = checker;
-
-		if (declarationTable[patternT] == "") {
-			return ParseResult();
-		}
-
-		Parameter1 patternP1 = sm[5];
-		Parameter2 patternP2 = sm[6];
-		patternSet.push_back(Pattern(patternT, patternP1, patternP2));
-		checker = sm[8];
-
-		// only pattern clause is present
-		if (checker.empty()) {
-			return ParseResult(selectPSet, patternSet);
-		}
-		else {
-			conditionT = checker;
-			checker = sm[9];
-			if ((declarationTable[checker] == "" && !regex_match(checker, regex("\\d+")))
-				|| declarationTable[checker] == "variable") {
+			// the synonym is not declared
+			if (declarationTable[*it] == "") {
 				signalErrorAndStop();
-				return ParseResult();
+				return ParameterSet();
 			}
-			else {
-				conditionP1 = checker;
-				if (regex_match(conditionP1, regex("\\d+"))) appendP1 = "s";
-				else appendP1 = declarationTable[checker];
+			// if the current word is a synonym, check whether the next word is an attrName
+			else if (it != prev(word.end()) && (*std::next(it) == "procName" || *std::next(it) == "varName" ||
+				*std::next(it) == "value" || *std::next(it) == "stmt#")) {
+				continue;	// the next word is an attrName then we dont append ","+type to the current synonym
 			}
-
-			checker = sm[10];
-
-			if (conditionT == "Uses" || conditionT == "Modifies") {
-				if (declarationTable[checker] != "variable" && checker.front() != '"') {
-					signalErrorAndStop();
-					return ParseResult();
-				}
-				else {
-					conditionP2 = checker;
-					appendP2 = "v";
-				}
-			}
-			else {
-				if (declarationTable[checker] == "variable" || checker.front() == '"') {
-					signalErrorAndStop();
-					return ParseResult();
-				}
-				else {
-					conditionP2 = checker;
-					if (regex_match(conditionP2, regex("\\d+"))) appendP2 = "s";
-					else appendP2 = declarationTable[checker];
-				}
-			}
-
-			conditionT += appendP1.substr(0, 1) + appendP2.substr(0, 1);
-			clauseSet.push_back(Clause(conditionT, conditionP1, conditionP2));
-			return ParseResult(selectPSet, clauseSet, patternSet);
+			else *it += "," + declarationTable[*it];
 		}
 	}
-	// has only select clause
-	else {
-		return ParseResult(selectPSet);
+
+	for (it = word.begin(); it != word.end(); ++it) {
+		if (*it == "dummy") continue;
+		selectParameter.push_back(*it);
 	}
+
+	return selectParameter;
+}
+
+bool ParseResult::checkWholeQuery(string query) {
+	// query with syntax error
+	if (!regex_match(query, queryChecking)) return false;
+	else return true;
+}
+
+ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, string>& declarationTable) {
+	ParameterSet selectParameter;
+	ClauseSet clauses;
+	PatternSet patterns;
+	WithSet withClauses;
+
+	bool correct = ParseResult::checkWholeQuery(query);
+	if (!correct) {
+		signalErrorAndStop();
+		return ParseResult();
+	}
+
+	selectParameter = ParseResult::parseSelect(query, declarationTable);
+	if (selectParameter.empty()) return ParseResult();
 }
 
 void ParseResult::signalErrorAndStop() {

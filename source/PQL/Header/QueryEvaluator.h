@@ -7,23 +7,35 @@ class QueryEvaluator
 public:
 
 	vector<string> startEvaluator(ParseResult mustPr);
-
+	
 	// constructors
 	QueryEvaluator();
 	~QueryEvaluator();
+	vector<string> NoResults;
 
-protected:
 
-	std::vector<bool> BooleanClausesQueryResults;
-	//all the variable results for all conditions in a single query will be stored here
-	std::vector<std::vector<std::string>> VariableClausesQueryResults;
-	//all the procedure results for all conditions in a single query will be stored here
-	std::vector<std::vector<std::string>> ProcedureClausesQueryResults;
-	//all the stmtline results for all conditions in a single query will be stored here
-	std::vector<std::vector<int>> StmtLineClausesQueryResults;
-	//all the assignment results for all patterns
-	std::vector<std::vector<int>> PatternClausesQueryResults;
-	//the final string that is suppose to be printed
-	std::vector<std::string> finalStringVector;
+private:
+
+	void clear();
+	bool NoClause = false;
+	int ChangeStringToInt(string);
+	string ChangeIntToString(int);
+	bool HaveQuotation(string);
+	bool IsNumber(string);
+	bool assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector,
+		PatternSet PS, vector<With> WithClauses);
+	bool assessParseResult(ParseResult pr);
+	bool IsSynonym(char c);
+	bool CheckSynonym(string, string,char, char, string);
+	bool GetResultsForBothSynonym(string,string,char,char,string);
+	bool GetResultsForFirstSynonym(string, string, char, char, string);
+	bool GetResultsForSecondSynonym(string, string,char, char, string);
+	bool CheckTrueOrFalse(string, string, char, char, string);
+	vector<string> GetAll(char Type);
+	vector<string> GetAllSecondSynonymFromPKB(string P1, string P2, char P1Type, char P2Type, string clausesType);
+	vector<string> GetAllFirstSynonymFromPKB(string P1, string P2, char P1Type, char P2Type, string clausesType);
+	bool CheckIsResultsFromPkb(string P1, string P2, char P1Type, char P2Type, string clausesType);
+	bool CheckTempResultSize(vector<string> v);
+	bool GetResultsForNoClause(vector<pair<string,string>>);
 };
 

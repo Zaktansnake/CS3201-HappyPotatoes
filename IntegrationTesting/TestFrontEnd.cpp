@@ -1,14 +1,9 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "PKB\Header\Follows.h"
-#include "PKB\Header\Calls.h"
-#include "PKB\Header\Parent.h"
 #include "PKB\Header\Parser.h"
 #include "PKB\Header\ProcTable.h"
 #include "PKB\Header\stmtTable.h"
-#include "PKB/Header/PKB.h"
-#include "PKB/Header/Modifies.h"
-#include "PKB/Header/VarTable.h"
+#include "PKB/Header\VarTable.h"
 
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
@@ -28,7 +23,7 @@ namespace IntegrationTesting
 			int expectFollowFan;
 			int resultFollowFan;
 			std::vector<int>followFan;
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
 
 			// test for getFollow
 			int expected_result01 = 0;
@@ -40,12 +35,10 @@ namespace IntegrationTesting
 				result = getFollow.front();
 			}
 
-
 			Assert::AreEqual(expected_result01, result);
 		}
 
 		TEST_METHOD(TestParent) {
-
 
 			// test for getParent
 			int result;
@@ -55,7 +48,7 @@ namespace IntegrationTesting
 			string resultChildren;
 			std::vector<int> resultChild;
 			int expected_result01 = 0;
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
 			vector<int> getParent = stmtTable::getParent(1);
 			if (getParent.size() == 0) {
 				result = 0;
@@ -63,9 +56,6 @@ namespace IntegrationTesting
 			else {
 				result = getParent.front();
 			}
-
-			//			Parent pa;
-			//			pa.PrintProcTable();
 
 			Assert::AreEqual(expected_result01, result);
 		}

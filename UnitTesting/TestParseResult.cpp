@@ -37,16 +37,36 @@ namespace UnitTesting
 			Assert::IsFalse(correct);
 		}
 
-		/* TEST_METHOD(testRegex) {
-			const string selectClause = "\\s*Select\\s+(\\w+\\d*#*|<\\w+\\d*#*\\s*(,\\s*\\w+\\d*#*\\s*)+>)\\s+";
-			const string conditionClause = "(such\\s+that\\s+(Follows|Follows\\*|Parent|Parent\\*|Modifies|Uses)\\s*\\(\\s*(\\d+|\\w+\\d*#*|_)\\s*,\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*\\)\\s*)?";
-			const string patternClause = "((pattern)\\s+(\\w+\\d*#*)\\s*\\(\\s*(\"\\w+\\d*#*\"|\\w+\\d*#*|_)\\s*,\\s*(_\"\\w+\\d*\"_|_|_\"\\d+\"_)\\s*\\)\\s*)?";
-			
-			// test selectClause regex
-			regex test1(selectClause);
-			Assert::IsTrue(regex_match("Select <s1, s2, v2   > ", test1));
-			Assert::IsFalse(regex_match("Select <s1, s2, v2 126879  > ", test1));
-		} */
+		TEST_METHOD(testCheckAndParseDeclarationSynonymSameAsKeyword) {
+			unordered_map<string, string> declarationTable;
+			string declarationSentence = "assign a1, a2, a3; stmt stmt;";
+			bool correct = ParseResult::checkAndParseDeclaration(declarationSentence, declarationTable);
+			Assert::IsFalse(correct);
+		}
+
+		TEST_METHOD(testParsingSelectWithoutAttrCompare) {
+			unordered_map<string, string> declarationTable{ { "s1","stmt" },{ "s2","stmt" },{ "v2","variable" } };
+			string querySentence = "Select <s1, s2, v2> such that Uses (5, \"y\") and Follows (3, 4)";
+			ParameterSet selectParameter = ParseResult::parseSelect(querySentence, declarationTable);
+			vector<string>::iterator it;
+			string result;
+			for (it = selectParameter.begin(); it != selectParameter.end(); ++it) {
+				result += "[" + *it + "]";
+			}
+			Assert::AreEqual(result, string("[s1,stmt][s2,stmt][v2,variable]"));
+		}
+
+		TEST_METHOD(testParsingSelectWithAttrCompare) {
+			unordered_map<string, string> declarationTable{ { "s1","stmt" },{ "s2","stmt" },{ "v2","variable" } };
+			string querySentence = "Select <s1.stmt#,   v2.varName,s2   > such that Uses (5, \"y\") and Follows (3, 4)";
+			ParameterSet selectParameter = ParseResult::parseSelect(querySentence, declarationTable);
+			vector<string>::iterator it;
+			string result;
+			for (it = selectParameter.begin(); it != selectParameter.end(); ++it) {
+				result += "[" + *it + "]";
+			}
+			Assert::AreEqual(result, string("[s1.stmt#][v2.varName][s2,stmt]"));
+		}
 
 	};
 }
