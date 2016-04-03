@@ -44,6 +44,30 @@ void QueriesAnswerStorage::clear() {
 	SelectParameter.clear();
 }
 
+void QueriesAnswerStorage::SetNoClause(vector<string> v)
+{
+	for (int i = 0; i < v.size(); i++) {
+		string s = v.at(i);
+		if (std::find(NoClause.begin(), NoClause.end(), s) != NoClause.end()) {
+			return;
+		}
+		else
+		{
+			NoClause.push_back(s);
+		}
+	}
+}
+
+vector<string> QueriesAnswerStorage::GetNoClause()
+{
+	return NoClause;
+}
+
+vector<pair<std::string, std::string>> QueriesAnswerStorage::GetSelectParameter()
+{
+	return SelectParameter;
+}
+
 void QueriesAnswerStorage::SetTable(string s)
 {
 	if (HasKey(s) != true) {
@@ -149,6 +173,14 @@ vector<string> QueriesAnswerStorage::GetColFromResultsTable(string s)
 		}
 	}
 	return temp;
+}
+
+void QueriesAnswerStorage::SetWithTable(vector<With> WV)
+{
+	for (int i = 0; i < WV.size(); i++) {
+		WithTable[WV.at(i).getLeftOfEqualSign()] = WV.at(i).getRightOfEqualSign();
+	}
+
 }
 
 QueriesAnswerStorage::QueriesAnswerStorage()

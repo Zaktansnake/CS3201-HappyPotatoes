@@ -16,6 +16,8 @@ public:
 
 private:
 
+	void clear();
+	bool NoClause = false;
 	int ChangeStringToInt(string);
 	string ChangeIntToString(int);
 	bool HaveQuotation(string);
@@ -34,5 +36,6 @@ private:
 	vector<string> GetAllFirstSynonymFromPKB(string P1, string P2, char P1Type, char P2Type, string clausesType);
 	bool CheckIsResultsFromPkb(string P1, string P2, char P1Type, char P2Type, string clausesType);
 	bool CheckTempResultSize(vector<string> v);
+	bool GetResultsForNoClause(vector<pair<string,string>>);
 };
 

@@ -35,7 +35,12 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 	}
 	else {
 		if (HasResults == true) {
-			return QAS.MergeResults();
+			if (NoClause) {
+				return QAS.GetNoClause();
+			}
+			else {
+				return QAS.MergeResults();
+			}
 		}
 		else {
 			return NoResults;
@@ -60,29 +65,36 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 	if (CheckBool == "Boolean") {
 		SelectBool = true;
 	}
+	QAS.SetSelect(SelectParameterVector);
+	QAS.SetWithTable(WithClauses);
+	if (ClausesVector.size() == 0 && WithClauses.size() == 0) {
+		NoClause = true;
+		GetResultsForNoClause(QAS.GetSelectParameter());
+	}
+	else {
+		for (int i = 0; i < ClausesVector.size(); i++) {
 
-	for (int i = 0; i < ClausesVector.size(); i++) {
+			bool ResultsExist;
+			Clause clauses = ClausesVector.at(i);
+			std::string clausesOperation = clauses.getClauseOperation();
+			int clausesSize = clausesOperation.size();
+			char firstParameterType = clausesOperation.at(clausesSize - 2);
+			char secondParameterType = clausesOperation.at(clausesSize - 1);
+			string clauseType = clausesOperation.substr(0, clausesSize - 2);
+			std::string firstSecondParameterType = "";
+			firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
+			Parameter1 firstParameter = clauses.getFirstParameter();
+			Parameter2 secondParameter = clauses.getSecondParameter();
+			char firstLetter = clausesOperation.at(0);
+			ResultsExist = CheckSynonym(firstParameter, secondParameter, firstParameterType,
+				secondParameterType, clauseType);
+			if (ResultsExist = true) {
 
-		bool ResultsExist;
-		Clause clauses = ClausesVector.at(i);
-		std::string clausesOperation = clauses.getClauseOperation();
-		int clausesSize = clausesOperation.size();
-		char firstParameterType = clausesOperation.at(clausesSize - 2);
-		char secondParameterType = clausesOperation.at(clausesSize - 1);
-		string clauseType = clausesOperation.substr(0,clausesSize-2);
-		std::string firstSecondParameterType = "";
-		firstSecondParameterType = firstSecondParameterType + firstParameterType + secondParameterType;
-		Parameter1 firstParameter = clauses.getFirstParameter();
-		Parameter2 secondParameter = clauses.getSecondParameter();
-		char firstLetter = clausesOperation.at(0);
-		ResultsExist = CheckSynonym(firstParameter,secondParameter,firstParameterType,
-			secondParameterType,clauseType);
-		if (ResultsExist = true) {
-			
-			continue;
-		}
-		else {
-			return false;
+				continue;
+			}
+			else {
+				return false;
+			}
 		}
 	}
 	return true;
@@ -339,6 +351,41 @@ bool QueryEvaluator::CheckIsResultsFromPkb(string P1,string P2,char P1Type,
 bool QueryEvaluator::CheckTempResultSize(vector<string> v) {
 	if (v.size() == 0) {
 		return false;
+	}
+	return true;
+}
+
+bool QueryEvaluator::GetResultsForNoClause(vector<pair<string, string>> SP)
+{	
+	for (int i = 0; i < SP.size(); i++) {
+		pair<string, string> pair = SP.at(i);
+		string type = pair.first;
+		vector<string> Result;
+		if (type == "stmt") {
+			Result = GetAll('S');
+		}
+		else if (type == "while") {
+			Result = GetAll('W');
+		}
+		else if (type == "assign") {
+			Result = GetAll('A');
+		}
+		else if (type == "if") {
+			Result = GetAll('I');
+		}
+		else if (type == "variable") {
+			Result = GetAll('V');
+		}
+		else if (type == "constant") {
+			Result = GetAll('C');
+		}
+		else {
+			continue;
+		}
+		if (Result.size() == 0) {
+			return false;
+		}
+		QAS.SetNoClause(Result);
 	}
 	return true;
 }
