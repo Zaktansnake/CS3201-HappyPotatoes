@@ -20,41 +20,7 @@ namespace UnitTesting
 
 			Parser::parse(fileName);
 
-			/*
-			Patterns p;
-			string testPattern, expectedPattern, returnedPattern;
-
-			// test for patternAssignment
-			testPattern = "a+(b+c)+d";
-			expectedPattern = "a+(b+c)+d";
-			returnedPattern = p.patternAssignment(testPattern);
-
-			Assert::AreEqual(expectedPattern, returnedPattern);
-
-			testPattern = "a+b+c+d";
-			expectedPattern = "(a+b)+c+d";
-			returnedPattern = p.patternAssignment(testPattern);
-
-			Assert::AreEqual(expectedPattern, returnedPattern);
-
-			testPattern = "a*b+c+d";
-			expectedPattern = "(a*b)+c+d";
-			returnedPattern = p.patternAssignment(testPattern);
-
-			Assert::AreEqual(expectedPattern, returnedPattern);
-
-			testPattern = "a*b+(c-d)";
-			expectedPattern = "(a*b)+(c-d)";
-			returnedPattern = p.patternAssignment(testPattern);
-
-			Assert::AreEqual(expectedPattern, returnedPattern);
-
-			testPattern = "_\"a*b+(c-d)\"_";
-			expectedPattern = "_\"(a*b)+(c-d)\"_";
-			returnedPattern = p.patternAssignment(testPattern);
-
-			Assert::AreEqual(expectedPattern, returnedPattern);
-			*/
+			
 		}
 	};
 }
