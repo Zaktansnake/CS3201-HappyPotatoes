@@ -1,0 +1,1160 @@
+1 - comment
+stmt s;  
+Select s such that Follows(s, 1)
+none
+5000
+2 - comment
+stmt s;  
+Select s such that Follows(s, 7)
+6
+5000
+3 - comment
+stmt s;  
+Select s such that Follows(s, 50)
+none
+5000
+4 - comment
+stmt a;  
+Select s such that Follows(a, 13)
+none
+5000
+5 - comment
+while w;  
+Select w such that Follows(w, 7)
+none
+5000
+6 - comment
+stmt s;  
+Select s such that Follows(7, s)
+none
+5000
+7 - comment
+stmt s;  
+Select s such that Follows(29, s)
+30
+5000
+8 - comment
+stmt s;  
+Select s such that Follows(19, a)
+none
+5000
+9 - comment
+stmt s;  
+Select s such that Follows(5, w)
+none
+5000
+10 - comment
+while w; 
+Select w such that Follows(s, w)
+none
+5000
+11 - comment
+while w; assign a; 
+Select w such that Follows(a, w)
+7, 9
+5000
+12 - comment
+while w; assign a; 
+Select w such that Follows(w, a)
+20, 34
+5000
+13 - comment
+assign a, a2; 
+Select a such that Follows(a, a2)
+1,10,17,18,2,31,32
+5000
+14 - comment
+assign a, a1; 
+Select a such that Follows(a1, a)
+11,18,19,2,3,32,33
+5000
+15 - comment
+stmt s; 
+Select s such that Follows(_, s)
+11,12,14,16,18,19,2,22,23,3,30,32,33,36,37,4,7,9
+5000
+16 - comment
+assign a; 
+Select a such that Follows(_, a)
+11,18,19,2,22,23,3,32,33,36,37
+5000
+17 - comment
+while w; 
+Select w such that Follows(_, w)
+12,7,9
+5000
+18 - comment
+stmt s; 
+Select s such that Follows(s, _)
+1,10,13,15,17,18,2,20,21,29,3,31,32,34,35,5,6,8
+5000
+19 - comment
+assign a; 
+Select a such that Follows(a, _)
+1,10,13,17,18,2,3,31,32,6,8
+5000
+20 - comment
+while w; 
+Select w such that Follows(w, _)
+20,34,5
+5000
+21 - comment
+assign a; 
+Select a such that Follows(_, _)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+22- comment
+stmt s;
+Select s such that Follows*(9, s)
+none
+5000
+23 - comment
+assign a;
+Select a such that Follows*(19, a)
+none
+5000
+24 - comment
+while w;  
+Select w such that Follows*(38, w)
+none
+5000
+25 - comment
+stmt s;
+Select s such that Follows*(s, 9)
+8
+5000
+26 - comment
+assign a;
+Select a such that Follows*(a, 19)
+17, 18
+5000
+27 - comment
+while w;  
+Select w such that Follows*(w, 38)
+none
+5000
+28 - comment
+while w; stmt s;
+Select w such that Follows*(s, w)
+12, 7, 9
+5000
+29 - comment
+while w;  stmt s;
+Select w such that Follows*(w, s)
+20, 34, 5
+5000
+30 - comment
+while w; assign a;
+Select a such that Follows*(w, a)
+23, 37
+5000
+31 - comment
+stmt s; 
+Select s such that Follows*(_, s)
+11,12,14,16,18,19,2,22,23,3,30,32,33,36,37,4,7,9
+5000
+32 - comment
+assign a; 
+Select a such that Follows*(_, _)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+33 - Parent
+stmt s1;
+Select s1 such that Parent(1, 1)
+none
+5000
+34 - Parent
+stmt s1;
+Select s1 such that Parent(s1,s1)
+none
+5000
+35 - Parent
+assign a1;
+Select a1 such that Parent(2, 3)
+none
+5000
+36 - Parent
+constant c1;
+Select c1 such that Parent(10,11)
+none
+5000
+37 - Parent
+while w1;
+Select w1 such that Parent(1, w1)
+none
+5000
+38 - Parent
+while w1;
+Select w1 such that Parent(w1, 2)
+none
+5000
+39 - Parent
+while w1,w2;
+Select w1 such that Parent(w1, w2)
+5, 7
+5000
+40 - Parent
+while w1,w2;
+Select w2 such that Parent(w1, w2)
+7, 9
+5000
+41 - Parent
+assign a1,a2;
+Select a2 such that Parent(a1, a2)
+none
+5000
+42 - Parent
+assign a1,a2;
+Select a1 such that Parent(a1, a2)
+none
+5000
+43 - Parent
+while w2;
+Select w2 such that Parent(_, 2)
+none
+5000
+44 - Parent
+while w1;
+Select w1 such that Parent(_, 1)
+none
+5000
+45 - Parent
+assign a1;
+Select a1 such that Parent(_, _)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+46 - Parent
+stmt s1;
+Select s1 such that Parent(s1,3)
+none
+5000
+47 - Parent
+stmt s1;
+Select s1 such that Parent(10, s1)
+none
+5000
+48 - comment
+stmt s;
+Select s such that Parent(19, s)
+none
+5000
+49 - comment
+assign a;
+Select a such that Parent(20, a)
+22
+5000
+50 - comment
+while w;
+Select w such that Parent(7, w)
+9
+5000
+51 - comment
+stmt s;
+Select s such that Parent(s, 19)
+16
+5000
+52 - comment
+assign a;
+Select a such that Parent(a, 20)
+none
+5000
+53 - comment
+while w;
+Select w such that Parent(w, 7)
+5
+5000
+54 - Parent
+while w1;
+Select w1 such that Parent(w1,2)
+none
+5000
+55 - comment
+while w; assign a;
+Select w such that Parent(w, a)
+12,20,34,39,5,7,9
+5000
+56 - comment
+while w; stmt s;
+Select w such that Parent(w, s)
+12,20,34,39,5,7,9
+5000
+57 - comment
+while w; stmt s;
+Select w such that Parent(s, w)
+12,20,34,5,7,9
+5000
+58 - comment
+if ifs; while w;
+Select w such that Parent(ifs, w)
+12,20,34,5
+5000
+59 - comment
+stmt s;
+Select s such that Parent(s, _)
+12,14,16,20,26,28,30,34,39,4,5,7,9
+5000
+60 - comment
+assign a;
+Select a such that Parent(_, a)
+10,11,13,17,18,19,22,23,27,31,32,33,36,37,40,6,8
+5000
+61 - comment
+stmt s;
+Select s such that Parent*(s, 16)
+12,14,4
+5000
+62 - comment
+while w;
+Select w such that Parent*(w, 10)
+5,7,9
+5000
+63 - comment
+assign a;
+Select a such that Parent*(a, 10)
+none
+5000
+64 - comment
+while w; stmt s;
+Select w such that Parent*(w, s)
+12,20,34,39,5,7,9
+5000
+65 - comment
+while w; stmt s;
+Select w such that Parent*(s, w)
+12,20,34,5,7,9
+5000
+66 - comment
+while w; assign a;
+Select w such that Parent*(w,a)
+12,20,34,39,5,7,9
+5000
+67 - comment
+stmt s;
+Select s such that Parent*(_,s)
+10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,27,28,29,30,31,32,33,34,35,36,37,38,40,5,6,7,8,9
+5000
+68 - comment
+stmt s;
+Select s such that Parent*(_,_)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+69 - comment
+variable v;
+Select v such that Modifies(13, v)
+x
+5000
+70 - comment
+variable v;
+Select v such that Modifies(v, 13)
+none
+5000
+71 - comment
+procedure p; variable v;
+Select v such that Modifies(p, v)
+Romeo,Y1,b,c,i,oSCar,x,x1
+5000
+72 - comment
+variable v;
+Select v such that Modifies("ABC", v)
+Romeo,Y1,b,c,i,oSCar,x,x1
+5000
+73 - comment
+variable v;
+Select v such that Modifies("X1x1", v)
+none
+5000
+74 - comment
+stmt s;
+Select s such that Modifies("ABC",s)
+none
+5000
+75 - comment
+while w;
+Select w such that Modifies(w, "Romeo")
+12
+5000
+76 - comment
+assign a;
+Select a such that Modifies(a, "Romeo")
+17, 31
+5000
+77 - comment
+stmt s;
+Select s such that Modifies(s, "Romeo")
+12,14,15,16,17,26,28,30,31,4
+5000
+78 - comment
+stmt s;
+Select s such that Modifies(s, "right")
+none
+5000
+79 - comment
+stmt s;
+Select s such that Modifies(s, "x1")
+12,14,15,16,20,21,24,25,26,28,29,30,34,35,38,39,4,40
+5000
+80 - comment
+stmt s;
+Select s such that Modifies(s, "Y1")
+12,14,15,26,27,4
+5000
+81 - comment
+while w;
+Select w such that Modifies(w, "x")
+12
+5000
+82 - comment
+assign a;
+Select a such that Modifies(a, "b")
+18,2,32
+5000
+83 - comment
+while w;
+Select BOOLEAN such that Modifies(15,"c")
+true
+5000
+84 - comment
+assign a;
+Select BOOLEAN such that Modifies(23,"x")
+true
+5000
+85 - comment
+stmt s;
+Select s such that Modifies(s,"x")
+12,13,14,15,16,23,26,28,30,37,4
+5000
+86 - comment
+variable v;
+Select v such that Modifies(30, v)
+Romeo,b,c,x,x1
+5000
+87 - comment
+variable v;
+Select v such that Modifies(41, v)
+none
+5000
+88 - comment
+stmt s;
+Select s such that Modifies(s, _)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+89 - comment
+assign a;
+Select a such that Modifies(a, _)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+90 - comment
+while w;
+Select w such that Modifies(w, _)
+12,20,34,39,5,7,9
+5000
+91 - comment
+procedure p;
+Select p such that Modifies(p,"x")
+ABC,Second
+5000
+92 - comment
+procedure p;
+Select p such that Modifies(p,"right")
+none
+5000
+93 - comment
+procedure p;
+Select p such that Modifies(p,"oSCar")
+ABC
+5000
+94 - comment
+variable v;
+Select v such that Uses("Init", v)
+a
+5000
+95 - comment
+procedure p; variable v;
+Select v such that Uses("ABC", v)
+I,Romeo,a,b,beta,c,chArLie,chArlie,delta,i,j1k,k,l,left,oSCar,right,tmp,width,x
+5000
+96 - comment
+procedure p; variable v;
+Select v such that Uses("abc", v)
+none
+5000
+97 - comment
+while w1,w2,w3,w4;
+Select BOOLEAN such that Uses("ABC","left")
+true
+5000
+98 - comment
+assign a,a1,a2,a3,a4; 
+Select BOOLEAN such that Uses("ABC","a")
+true
+5000
+99 - comment
+while w;
+Select s such that Uses(w, "a")
+none
+5000
+100 - comment
+stmt s;
+Select s such that Uses(s, "width")
+12,14,15,16,19,26,28,30,33,4
+5000
+101 - comment
+assign a;
+Select a such that Uses(a, "Romeo")
+17,19,31,33
+5000
+102 - comment
+while w;
+Select s such that Uses(w, "x)
+none
+5000
+103 - comment
+stmt s;
+Select s such that Uses(s, "c")
+10,11,12,14,15,16,20,22,26,28,30,32,34,36,4,5,7,9
+5000
+104 - comment
+stmt s;
+Select s such that Uses(s, "a")
+10,12,14,15,16,20,21,24,25,26,28,29,3,30,34,35,38,39,4,5,7,9
+5000
+105 - comment
+assign a;
+Select a such that Uses(a, "x")
+13,23,37
+5000
+106 - comment
+variable v;
+Select v such that Uses(11, v)
+b,beta,c,chArLie,i,tmp
+5000
+107 - comment
+variable v;
+Select v such that Uses(0, v)
+none
+5000
+108 - comment
+stmt s;
+Select s such that Uses(s, _)
+10,11,12,13,14,15,16,17,19,20,21,22,23,24,25,26,28,29,3,30,31,32,33,34,35,36,37,38,39,4,5,6,7,8,9
+5000
+109 - comment
+assign a;
+Select a such that Uses(a, _)
+10,11,13,17,19,22,23,3,31,32,33,36,37,6,8
+5000
+110 - comment
+while w;
+Select w such that Uses(w, _)
+12,20,34,39,5,7,9
+5000
+111 - comment
+procedure p;
+Select p such that Uses(p,"a")
+ABC,Init,Second
+5000
+112 - comment
+procedure p;
+Select p such that Uses(p,"right")
+ABC,Second
+5000
+113 - comment
+procedure p;
+Select p such that Uses(p,"tmp")
+ABC
+5000
+114 - comment
+procedure p;
+Select p such that Calls("ABC", p)
+Init,Second
+5000
+115 - comment
+procedure p;
+Select p such that Calls("Happy", p)
+none
+5000
+116 - comment
+procedure p, q;
+Select p such that Calls(p, q)
+ABC,Second
+5000
+117 - comment
+procedure p, q; stmt s;
+Select s such that Calls(p, q)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+118 - comment
+procedure p, q;
+Select p such that Calls(q, p)
+Init,Second
+5000
+119 - comment
+procedure p;
+Select p such that Calls(p, "Second")
+ABC
+5000
+120 - comment
+procedure p; stmt s;
+Select s such that Calls(p, "Second")
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+121 - comment
+procedure p; assign a;
+Select a such that Calls(p, "Second")
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+122 - comment
+stmt s;
+Select s such that Calls(_,_)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+123 - comment
+assign a;
+Select a such that Calls(_,_)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+124 - comment
+assign a;
+Select a such that Calls(_,"Second")
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+125 - comment
+assign a;
+Select a such that Calls("ABC",_)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+126 - comment
+procedure p;
+Select p such that Calls*("ABC", p)
+Init,Second
+5000
+127 - comment
+procedure p; stmt s;
+Select s such that Calls*("ABC", p)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+128 - comment
+procedure p; assign a;
+Select a such that Calls*("ABC", p)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+129 - comment
+procedure p;
+Select p such that Calls*(p, "Second")
+ABC
+5000
+130 - comment
+procedure p;
+Select p such that Calls*(p, "First")
+none
+5000
+131 - comment
+procedure p, q; stmt s;
+Select s such that Calls*(p, q)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+132 - comment
+stmt s;
+Select s such that Calls*("ABC","Second")
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+133 - comment
+stmt s;
+Select s such that Calls*("ABC","First")
+none
+5000
+134 - comment
+stmt s;
+Select s such that Calls*(_,_)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+135 - comment
+assign a;
+Select a such that Calls*(_,_)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+136 - comment
+assign a;
+Select a such that Calls*(_,"Second")
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+137 - comment
+assign a;
+Select a such that Calls*("ABC",_)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+138 - comment
+procedure p;
+Select p such that Calls("ABC", p) and Modifies(p,"c") and Uses(p,"width")
+Second
+5000
+139 - comment
+procedure p;
+Select p such that Calls*("Second", p) and Modifies(p,"x1")
+Init
+5000
+140 - comment
+if ifs;
+Select ifs such that Calls*(_,_)
+14,16,26,28,30,4
+5000
+141 - comment
+procedure p, q; if ifs;
+Select ifs such that Calls*(p, q)
+14,16,26,28,30,4
+5000
+142 - comment
+procedure p, q; if ifs;
+Select ifs such that Calls*(p,"Second")
+14,16,26,28,30,4
+5000
+143 - comment
+procedure p; if ifs;
+Select ifs such that Calls*(p,"First")
+none
+5000
+144 - comment
+procedure q; if ifs;
+Select ifs such that Calls*("ABC", q)
+14,16,26,28,30,4
+5000
+145 - comment
+if ifs;
+Select ifs such that Calls*("ABC","Init")
+14,16,26,28,30,4
+5000
+146 - comment
+if ifs;
+Select ifs such that Calls*(_,"Init")
+14,16,26,28,30,4
+5000
+147 - comment
+if ifs;
+Select ifs such that Calls*("ABC",_)
+14,16,26,28,30,4
+5000
+148 - comment
+while w;
+Select w such that Calls*(_,_)
+12,20,34,39,5,7,9
+5000
+149 - comment
+procedure p, q; while w;
+Select w such that Calls*(p, q)
+12,20,34,39,5,7,9
+5000
+150 - comment
+procedure p, q; while w;
+Select w such that Calls*(p,"Second")
+12,20,34,39,5,7,9
+5000
+151 - comment
+procedure p; while w;
+Select w such that Calls*(p,"First")
+none
+5000
+152 - comment
+procedure q; while w;
+Select w such that Calls*("ABC", q)
+12,20,34,39,5,7,9
+5000
+153 - comment
+while w;
+Select w such that Calls*("ABC","Init")
+12,20,34,39,5,7,9
+5000
+154 - comment
+variable v;
+Select v such that Calls*(_,_)
+I,Romeo,Y1,a,b,beta,c,chArLie,chArlie,delta,i,j1k,k,l,left,oSCar,right,tmp,width,x,x1
+5000
+155 - comment
+procedure p, q; variable v;
+Select v such that Calls*(p, q)
+I,Romeo,Y1,a,b,beta,c,chArLie,chArlie,delta,i,j1k,k,l,left,oSCar,right,tmp,width,x,x1
+5000
+156 - comment
+procedure p, q; variable v;
+Select v such that Calls*(p,"Second")
+I,Romeo,Y1,a,b,beta,c,chArLie,chArlie,delta,i,j1k,k,l,left,oSCar,right,tmp,width,x,x1
+5000
+157 - comment
+procedure p, q; variable v;
+Select v such that Calls*(p,"First")
+none
+5000
+158 - comment
+procedure q; variable v;
+Select v such that Calls*("ABC", q)
+I,Romeo,Y1,a,b,beta,c,chArLie,chArlie,delta,i,j1k,k,l,left,oSCar,right,tmp,width,x,x1
+5000
+159 - comment
+variable v;
+Select v such that Calls*("ABC","Init")
+I,Romeo,Y1,a,b,beta,c,chArLie,chArlie,delta,i,j1k,k,l,left,oSCar,right,tmp,width,x,x1
+5000
+160 - comment
+stmt s;
+Select BOOLEAN such that Next(1,2)
+true
+5000
+161 - comment
+stmt s;
+Select BOOLEAN such that Next(1,39)
+false
+5000
+162 - comment
+prog_line n;
+Select n such that Next(n,39)
+40
+5000
+163 - comment
+prog_line n;
+Select n such that Next(10,n)
+11
+5000
+164 - comment
+prog_line n;
+Select n such that Next(17,n)
+18
+5000
+165 - comment
+prog_line n;
+Select n such that Next(31,n)
+32
+5000
+166 - comment
+prog_line n;
+Select n such that Next(40,n)
+39
+5000
+167 - comment
+prog_line n;
+Select n such that Next(50,n)
+none
+5000
+168 - comment
+prog_line n;
+Select n such that Next(n,20)
+16,22
+5000
+169 - comment
+prog_line n;
+Select n such that Next(n,25)
+4
+5000
+170 - comment
+prog_line n;
+Select n such that Next(n,37)
+34
+5000
+171 - comment
+prog_line n;
+Select n such that Next(_,_)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+172 - comment
+stmt s;
+Select BOOLEAN such that Next*(1,39)
+false
+5000
+173 - comment
+prog_line n;
+Select n such that Next*(10,n)
+10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,5,6,7,8,9
+5000
+174 - comment
+prog_line n;
+Select n such that Next*(17,n)
+12,13,14,15,16,17,18,19,20,21,22,23,24
+5000
+175 - comment
+prog_line n;
+Select n such that Next*(31,n)
+32,33
+5000
+176 - comment
+prog_line n;
+Select n such that Next*(40,n)
+39,40
+5000
+177 - comment
+prog_line n;
+Select n such that Next*(50,n)
+none
+5000
+178 - comment
+prog_line n;
+Select n such that Next*(n,20)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,3,4,5,6,7,8,9
+5000
+179 - comment
+prog_line n;
+Select n such that Next*(n,25)
+1,2,3,4
+5000
+180 - comment
+prog_line n;
+Select n such that Next*(n,37)
+26,28,29,30,34,35,36
+5000
+181 - comment
+prog_line n;
+Select n such that Next*(_,_)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+182 - comment
+assign a;
+Select a pattern a("x",_)
+13,23,37
+5000
+183 - comment
+assign a;
+Select a pattern a("Romeo",_)
+17,31
+5000
+184 - comment
+assign a;
+Select a pattern a(_,"c - 1")
+22,36
+5000
+185 - comment
+assign a;
+Select a pattern a("c",_"c -1"_)
+22,36
+5000
+186 - comment
+assign a;
+Select a pattern a("c",_"c"_)
+22,36
+5000
+187 - comment
+assign a;
+Selq
+none
+5000
+188 - comment
+assign a;
+Select a pattern a("c","c-1")
+22,36
+5000
+189 - comment
+assign a;
+Select a pattern a(_,_"beta+tmp")
+none
+5000
+190 - comment
+assign a;
+Select a pattern a(_,_"j1k"_)
+8
+5000
+191 - comment
+assign a;
+Select a pattern a(_,_)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+192 - comment
+assign a1;
+Select a1 pattern a1(_,_)
+1,10,11,13,17,18,19,2,22,23,27,3,31,32,33,36,37,40,6,8
+5000
+193 - comment
+variable v;
+Select v pattern a(v,_)
+none
+5000
+194 - comment
+assign a1; stmt s1;
+Select a1 pattern a1("a","a+b-c*d+1") and pattern a1(_,"(a+b)*c+2-d") and pattern a1(_,"(a-(b+c)*d)*2") and pattern a1(_,"a*((b-c)+(d*2))")
+none
+5000
+195 - comment
+assign a;
+Select a such that Affects(20,a)
+none
+5000
+196 - comment
+assign a;
+Select a such that Affects (a,20)
+none
+5000
+197 - comment
+assign a1, a2;
+Select a2 such that Affects (a1,a2)
+10,11,13,19,22,33,36
+5000
+198 - comment
+assign a;
+Select a such that Affects*(20,a)
+none
+5000
+199 - comment
+assign a;
+Select a such that Affects*(a,20)
+none
+5000
+200 - comment
+assign a1, a2;
+Select a1 such that Affects*(a1,a2)
+1,10,13,17,2,22,23,3,31,36
+5000
+201 - comment
+assign a; 
+Select a such that Modifies(a,"oscar") pattern a (_,_"1+beta"_)
+5
+5000
+202 - comment
+stmt s;assign a;
+Select s such that Modifies(s,"x") pattern a (_,_"x+1"_) 
+12,13,14,15,16,23,26,28,30,37,4
+5000
+203 - comment 
+assign a;
+Select a such that Modifies(a,"x") pattern a (_,_"1+w"_)
+none
+5000
+204 - comment 
+variable v1; assign a1;
+Select v1 such that Modifies(a1,v1) pattern a1(_,_)
+Romeo,Y1,b,c,i,oSCar,x,x1
+5000
+205 - comment 
+stmt s; assign a;
+Select s such that Follows(s,13) pattern a ("Romeo","Romeo+1")
+none
+5000
+206 - comment 
+variable v; assign a, a1;
+Select s such that Uses(a1,v) pattern a (v,_"Romeo+1"_)
+none
+5000
+207 - comment 
+assign a; variable v;
+Select a pattern a("y",_) such that Uses (a, v)
+none
+5000
+208 - comment 
+assign a; variable v;
+Select a pattern a(_,_"z"_) such that Uses (a, v)
+none
+5000
+209 - comment 
+assign a; variable v;
+Select a1 pattern a(_,_"z"_) such that Uses (15, v)
+none
+5000
+210 - comment 
+assign a;
+Select a pattern a("z",_"z"_) such that Uses (1, "i")
+none
+5000
+211 - comment 
+assign a;
+Select a pattern a(_,_"i"_) such that Uses (1, "i")
+none
+5000
+212 - comment 
+assign a;
+Select a pattern a(_,_"i"_) such that Uses (1, "y")
+none
+5000
+213 - comment 
+assign a;
+Select a pattern a(_,_"i"_) such that Uses (1, "x")
+none
+5000
+214 - comment 
+assign a; while w;
+Select w pattern a("y",_) such that Uses(w, "i")
+none
+5000
+215 - comment 
+assign a; while w;
+Select w pattern a ("n",_) such that Uses(w, "i")
+none
+5000
+216 - comment 
+assign a; while w;
+Select a pattern a("x",_) such that Uses(w, "i")
+none
+5000
+217 - comment 
+stmt s; assign a;
+Select s such that Follows(_,a) pattern a (_,_"x"_)
+1,10,11,12,13,14,15,16,17,18,19,2,20,21,22,23,24,25,26,27,28,29,3,30,31,32,33,34,35,36,37,38,39,4,40,5,6,7,8,9
+5000
+218 - comment 
+stmt s; assign a;
+Select v such that Follows*(12,s) pattern a (_,_)
+13, 14
+5000
+219 - comment 
+stmt s; assign a;
+Select v such that Follows*(12,s) pattern a ("y",_"x+1"_)
+none
+5000 
+220 - comment 
+stmt s; assign a;
+Select s such that Parents(_,s) pattern a (_,"c+1")
+16
+5000
+221 - comment 
+stmt s; variable v;
+Select s such that Parents(6,s) pattern a ("oscar",_)
+none  
+5000
+222 - comment  
+stmt s; assign a;
+Select s such that Parents*(3,s) pattern a ("c",_)
+13, 16
+5000
+223 - comment 
+stmt s; assign a;
+Select s such that Parents*(3,s) pattern a (_,_"x+1"_)
+none
+5000
+224 - comment 
+assign a; while w;
+Select w such that Parents*(w,a) pattern a ("Romeo",_)
+none
+5000
+225 - comment 
+assign a; while w;
+Select a such that Parent*(w,a) and Next*(23,n) pattern a("x",_) such that a.stmt#=n
+none
+5000
+226 - comment 
+assign a;
+Select a such that Uses(a,"x") and Modifies(a,"b") and Uses(a,"b") and Follows*(7,a) pattern a("b",_)
+none
+5000
+227 - comment
+while w1;
+Select w1 such that Uses(w1,"x") and Modifies(w1,"x")
+none
+5000
+228 - comment
+while w;
+Select w such that Uses(w,"x") and Modifies(w,"x") and Uses(w,"i") and Modifies(w,"i")
+none
+5000
+229 - comment 
+assign a; variable v;
+Select a such that Modifies(a,v) and Uses(a,v)
+none
+5000
+230 - comment
+assign a;
+Select a such that Modifies(a,"y") and Uses(a,"x") pattern a(_,_"z"_)
+18
+5000
+231 - comment
+while w;
+Select w such that Parent*(w,9) and Modifies(w,"beta")
+none
+5000
+232 - comment
+while w; variable v;
+Select v such that Parent*(w,51) and Modifies(w,v) and Uses(w,v)
+none
+5000

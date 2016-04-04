@@ -1,0 +1,147 @@
+procedure First {
+	if albert then{
+		raymond = peter + richard + 0 - 0;
+		jege = (12345)*richard + richard * raymond;
+	} else {
+		albert = albert * albert - raymond + peter;
+		richard = (((albert+1)+2)*albert) - peter;
+	}
+	cs3202 = cs3202 + 1;
+}
+
+procedure Second {
+	while i {
+		x = 2 + x +y +z;
+		i = 1 + i; 
+		while p {
+			q=r+s+t;
+			t=u+v;
+		}	
+	}
+	x = 0;
+	i = 5;
+	z = z + x + i;
+	y = 2 + z;
+}
+
+procedure Third {
+	while i {
+		x = 2 + x +y +z;
+		i = 1 + i; 
+		while p {
+			if x then {
+				if x then {
+					while x {
+						if p then {						
+							q=r*(s+t);
+							s=(r-s)*t;
+							while x {
+								if p then {						
+									q=r*(s+t);
+									s=(r-s)*t;
+									call Second;
+									v=(r-(s*t));
+									z=(r+(s*(a-b)));
+								} else {
+									while p {
+										if p then {
+											q=r*(s+t);
+											s=(r-s)*t;
+											v=(r-(s*t));
+											z=(r+(s*(a-b)));
+										} else {
+											a=b+(c-d);
+											e=f+g;
+										}
+									}
+									a=b+(c-d);
+									e=f+g;
+								}
+							}
+							v=(r-(s*t));
+							z=(r+(s*(a-b)));
+						} else {
+							while p {
+								if p then {
+									q=r*(s+t);
+									while x {
+										call Second;
+										if p then {						
+											q=r*(s+t);
+											s=(r-s)*t;
+											call Second;
+											v=(r-(s*t));
+											z=(r+(s*(a-b)));
+										} else {
+											while p {
+												call Second;
+												if p then {
+													q=r*(s+t);
+													s=(r-s)*t;
+													v=(r-(s*t));
+													z=(r+(s*(a-b)));
+												} else {
+													a=b+(c-d);
+													e=f+g;
+												}
+											}
+											a=b+(c-d);
+											e=f+g;
+										}
+									}
+									call Fourth;
+									z=(r+(s*(a-b)));
+								} else {
+									a=b+(c-d);
+									e=f+g;
+								}
+							}
+							a=b+(c-d);
+							e=f+g;
+						}
+					}
+				}
+				else {
+					while p {
+						if p then {
+							q=r*(s+t);
+							call Fourth;
+							s=(r-s)*t;
+							v=(r-(s*t));
+							z=(r+(s*(a-b)));
+						} else {
+							a=b+(c-d);
+							e=f+g;
+						}
+					}
+				}
+				q=r+s+t;
+				t=u+v;}
+			else {
+				q=r+s+t;}
+		}
+	}
+	x = 0;
+	i = 5;
+	z = z + x + i;
+	y = 2 + z;
+}
+
+procedure Fourth {	
+	x = 0;
+	i = 5;
+	z = z + x + i;
+	y = 2 + z;
+	call Second;
+	while p {
+		if p then {
+			q=r*(s+t);
+			s=(r-s)*t;
+			v=(r-(s*t));
+			z=(r+(s*(a-b)));
+		} else {
+			a=b+(c-d);
+			e=f+g;
+		}
+	}
+}
