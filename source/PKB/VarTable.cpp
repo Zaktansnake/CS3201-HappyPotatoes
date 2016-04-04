@@ -220,7 +220,7 @@ vector<string> VarTable::getModifiesVariable(string firstPerimeter) {
 	return ans;
 }
 
-vector<int> VarTable::getModifiesAssign(string secondPerimeter) {
+vector<int> VarTable::getModifiesAssignInt(string secondPerimeter) {
 	// secondPerimeter = variable
 	std::vector<int> ans = Modifies::getModifiesTable(secondPerimeter);
 	vector<int> finalResult = assignNum;
@@ -234,12 +234,26 @@ vector<int> VarTable::getModifiesAssign(string secondPerimeter) {
 	return v_intersection;
 }
 
-vector<int> VarTable::getModifiesStmt(string secondPerimeter) {
+vector<string> VarTable::getModifiesAssign(string secondPerimeter) {
 	// secondPerimeter = variable
-	return Modifies::getModifiesTable(secondPerimeter);
+	std::vector<int> ans = Modifies::getModifiesTable(secondPerimeter);
+	vector<int> finalResult = assignNum;
+
+	std::sort(ans.begin(), ans.end());
+	std::vector<int> v_intersection;
+	std::set_intersection(ans.begin(), ans.end(),
+		finalResult.begin(), finalResult.end(),
+		std::back_inserter(v_intersection));
+
+	return VarTable::convertIntToString(v_intersection);
 }
 
-vector<int> VarTable::getModifiesWhile(string secondPerimeter) {
+vector<string> VarTable::getModifiesStmt(string secondPerimeter) {
+	// secondPerimeter = variable
+	return VarTable::convertIntToString(Modifies::getModifiesTable(secondPerimeter));
+}
+
+vector<string> VarTable::getModifiesWhile(string secondPerimeter) {
 	// secondPerimeter = variable
 	vector<int> ans;
 	vector<int> tempAns = Modifies::getModifiesTable(secondPerimeter);
@@ -248,7 +262,7 @@ vector<int> VarTable::getModifiesWhile(string secondPerimeter) {
 	set<int> intersect;
 	set_intersection(tempAns.begin(), tempAns.end(), whileStmtNum.begin(), whileStmtNum.end(), back_inserter(ans));
 
-	return ans;
+	return VarTable::convertIntToString(ans);
 }
 
 bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
@@ -400,7 +414,7 @@ vector<string> VarTable::getUsesVariable(string firstPerimeter) {
 	return ans;
 }
 
-vector<int> VarTable::getUsesAssig(string secondPerimeter) {
+vector<int> VarTable::getUsesAssigInt(string secondPerimeter) {
 	// secondPerimeter = variable
 	std::vector<int> ans = Uses::getUsesTable(secondPerimeter);
 	vector<int> finalResult = assignNum;
@@ -413,12 +427,25 @@ vector<int> VarTable::getUsesAssig(string secondPerimeter) {
 	return v_intersection;
 }
 
-vector<int> VarTable::getUsesStmt(string stmt1) {
-	// stmt1 -> stmtLine
-	return Uses::getUsesTable(stmt1);
+vector<string> VarTable::getUsesAssig(string secondPerimeter) {
+	// secondPerimeter = variable
+	std::vector<int> ans = Uses::getUsesTable(secondPerimeter);
+	vector<int> finalResult = assignNum;
+	std::sort(ans.begin(), ans.end());
+	std::vector<int> v_intersection;
+	std::set_intersection(ans.begin(), ans.end(),
+		finalResult.begin(), finalResult.end(),
+		std::back_inserter(v_intersection));
+
+	return VarTable::convertIntToString(v_intersection);
 }
 
-vector<int> VarTable::getUsesWhile(string stmt1) {
+vector<string> VarTable::getUsesStmt(string stmt1) {
+	// stmt1 -> stmtLine
+	return VarTable::convertIntToString(Uses::getUsesTable(stmt1));
+}
+
+vector<string> VarTable::getUsesWhile(string stmt1) {
 	// stmt1 -> stmtLine
 	vector<int> ans;
 
@@ -428,7 +455,7 @@ vector<int> VarTable::getUsesWhile(string stmt1) {
 	else {
 		ans = whileTable.at(stmt1);
 	}
-	return ans;
+	return VarTable::convertIntToString(ans);
 }
 
 bool VarTable::isUsesAssign(string firstPerimeter, string secondPerimeter) {
@@ -524,6 +551,17 @@ void addToVarTable(int position, string varName, int stmtLine) {
 	else if (position == 2) {
 		varTableRight.push_back(make_pair(stmtLine, varName));
 	}
+}
+
+// Convert vector<int> to vector<string>
+vector<string> VarTable::convertIntToString(vector<int> temp) {
+	vector<string> result;
+	if (!temp.empty()) {
+		for(int i = 0; i < temp.size(); i++) {
+			result.push_back(to_string(temp.at(i)));
+		}
+	}
+	return result;
 }
 
 

@@ -19,7 +19,7 @@ namespace UnitTesting
 
 			string result, expectedResult = "";
 			bool resultBoolean;
-			vector<int> usesInt;
+			vector<string> patternString;
 
 			// test for isPattern
 			bool expected_result = true;
@@ -27,10 +27,10 @@ namespace UnitTesting
 			Assert::AreEqual(expected_result, ispattern);
 
 			// Select a pattern a("x",_)
-			usesInt = PatternTable::getPatternAssignNum("x", "_");
+			patternString = PatternTable::getPatternAssignNum("x", "_");
 			expectedResult = "13,23,37,";
-			for (std::vector<int>::iterator it = usesInt.begin(); it != usesInt.end(); ++it) {
-				result.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = patternString.begin(); it != patternString.end(); ++it) {
+				result.append(*it);
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);
@@ -38,10 +38,10 @@ namespace UnitTesting
 			result = "";
 			expectedResult = "";
 			// Select a pattern a(_,"c - 1")
-			usesInt = PatternTable::getPatternAssignNum("_", "c - 1");
+			patternString = PatternTable::getPatternAssignNum("_", "c - 1");
 			expectedResult = "22,36,";
-			for (std::vector<int>::iterator it = usesInt.begin(); it != usesInt.end(); ++it) {
-				result.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = patternString.begin(); it != patternString.end(); ++it) {
+				result.append(*it);
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);
@@ -49,10 +49,10 @@ namespace UnitTesting
 			result = "";
 			expectedResult = "";
 			// Select a pattern a("c",_"c"_)
-			usesInt = PatternTable::getPatternAssignNum("c", "_\"c\"_");
+			patternString = PatternTable::getPatternAssignNum("c", "_\"c\"_");
 			expectedResult = "22,36,";
-			for (std::vector<int>::iterator it = usesInt.begin(); it != usesInt.end(); ++it) {
-				result.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = patternString.begin(); it != patternString.end(); ++it) {
+				result.append(*it);
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);
@@ -60,13 +60,25 @@ namespace UnitTesting
 			result = "";
 			expectedResult = "";
 			// Select a pattern a("_","_")
-			usesInt = PatternTable::getPatternAssignNum("_", "_");
+			patternString = PatternTable::getPatternAssignNum("_", "_");
 			expectedResult = "1,2,3,6,8,10,11,13,17,18,19,22,23,27,31,32,33,36,37,40,";
-			for (std::vector<int>::iterator it = usesInt.begin(); it != usesInt.end(); ++it) {
-				result.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = patternString.begin(); it != patternString.end(); ++it) {
+				result.append(*it);
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);
+
+			result = "";
+			expectedResult = "";
+			// Select a pattern a("c",_"c -1"_)
+			patternString = PatternTable::getPatternAssignNum("c", "_\"c - 1\"_");
+			expectedResult = "22,36,";
+			for (std::vector<string>::iterator it = patternString.begin(); it != patternString.end(); ++it) {
+				result.append(*it);
+				result.append(",");
+			}
+			Assert::AreEqual(expectedResult, result);
+
 
 		}
 	};

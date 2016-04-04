@@ -17,7 +17,7 @@ namespace IntegrationTesting
 		TEST_METHOD(TestFollow)
 		{
 
-			int result;
+			string result;
 			bool expectedIsFollow;
 			bool resultIsFollow;
 			int expectFollowFan;
@@ -26,10 +26,10 @@ namespace IntegrationTesting
 			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
 
 			// test for getFollow
-			int expected_result01 = 0;
-			vector<int> getFollow = stmtTable::getFollow(28);
+			string expected_result01 = "0";
+			vector<string> getFollow = stmtTable::getFollow(28);
 			if (getFollow.size() == 0) {
-				result = 0;
+				result = "0";
 			}
 			else {
 				result = getFollow.front();
@@ -40,23 +40,16 @@ namespace IntegrationTesting
 
 		TEST_METHOD(TestParent) {
 
-			// test for getParent
-			int result;
-			bool isparent;
-			bool expectBool;
-			string expectedChildren;
-			string resultChildren;
-			std::vector<int> resultChild;
-			int expected_result01 = 0;
+			string result;
+			string expected_result01 = "26";
 			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
-			vector<int> getParent = stmtTable::getParent(1);
+			vector<string> getParent = stmtTable::getParent(28);
 			if (getParent.size() == 0) {
-				result = 0;
+				result = "0";
 			}
 			else {
 				result = getParent.front();
 			}
-
 			Assert::AreEqual(expected_result01, result);
 		}
 
@@ -67,7 +60,6 @@ namespace IntegrationTesting
 			string result, expectedResult = "";
 			bool resultBoolean;
 			vector<string> modifiesString;
-			vector<int> modifiesInt;
 
 			// Select v such that Modifies(13, v) => x
 			modifiesString = VarTable::getModifiesVariable("13");

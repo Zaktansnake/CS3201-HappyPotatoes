@@ -57,9 +57,10 @@ public:
 	static void addDataToModifies(string varName, int stmtLine); // add ModifiesTable
 
 	static vector<string> getModifiesVariable(string firstPerimeter);
-	static vector<int>  getModifiesAssign(string secondPerimeter);
-	static vector<int>	getModifiesWhile(string secondPerimeter);
-	static vector<int> getModifiesStmt(string firstPerimeter);
+	static vector<int> getModifiesAssignInt(string secondPerimeter);
+	static vector<string> getModifiesAssign(string secondPerimeter);
+	static vector<string> getModifiesWhile(string secondPerimeter);
+	static vector<string> getModifiesStmt(string firstPerimeter);
 	static bool isModifiesAssign(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesWhile(string firstPerimeter, string secondPerimeter);
@@ -69,9 +70,10 @@ public:
 	static void addDataToUses(string varName, int stmtLine);  // add UsesTable
 
 	static vector<string> getUsesVariable(string firstPerimeter);
-	static vector<int> getUsesAssig(string secondPerimeter);
-	static vector<int> getUsesStmt(string secondPerimeter);
-	static vector<int> getUsesWhile(string secondPerimeter);
+	static vector<int> getUsesAssigInt(string secondPerimeter);
+	static vector<string> getUsesAssig(string secondPerimeter);
+	static vector<string> getUsesStmt(string secondPerimeter);
+	static vector<string> getUsesWhile(string secondPerimeter);
 	static bool isUsesAssign(string firstPerimeter, string secondPerimeter);
 	static bool isUsesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isUsesWhile(string firstPerimeter, string secondPerimeter);
@@ -81,5 +83,7 @@ private:
 	VarTable();
 
 	static vector<int> setAssign();
+
+	static vector<string> convertIntToString(vector<int> temp);
 
 };

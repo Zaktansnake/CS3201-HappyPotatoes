@@ -25,7 +25,6 @@ namespace UnitTesting
 			string result, expectedResult = "";
 			bool resultBoolean;
 			vector<string> modifiesString;
-			vector<int> modifiesInt;
 
 			// Select v such that Modifies(13, v) => x
 			modifiesString = VarTable::getModifiesVariable("13");
@@ -66,20 +65,20 @@ namespace UnitTesting
 
 			result = "";
 			// Select w such that Modifies(w, "Romeo") => 12
-			modifiesInt = VarTable::getModifiesWhile("Romeo");
+			modifiesString = VarTable::getModifiesWhile("Romeo");
 			expectedResult = "12,";
-			for (std::vector<int>::iterator it = modifiesInt.begin(); it != modifiesInt.end(); ++it) {
-				result.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = modifiesString.begin(); it != modifiesString.end(); ++it) {
+				result.append(*it);
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);
 
 			result = "";
 			// Select a such that Modifies(a, "Romeo") => 17,31
-			modifiesInt = VarTable::getModifiesAssign("Romeo");
+			modifiesString = VarTable::getModifiesAssign("Romeo");
 			expectedResult = "17,31,";
-			for (std::vector<int>::iterator it = modifiesInt.begin(); it != modifiesInt.end(); ++it) {
-				result.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = modifiesString.begin(); it != modifiesString.end(); ++it) {
+				result.append(*it);
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);
@@ -102,10 +101,10 @@ namespace UnitTesting
 
 			result = "";
 			// Select s such that Modifies(s, "Romeo") => 12,14,15,16,17,26,28,30,31,4
-			modifiesInt = VarTable::getModifiesStmt("Romeo");
+			modifiesString = VarTable::getModifiesStmt("Romeo");
 			expectedResult = "4,12,14,15,16,17,26,28,30,31,";
-			for (std::vector<int>::iterator it = modifiesInt.begin(); it != modifiesInt.end(); ++it) {
-				result.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = modifiesString.begin(); it != modifiesString.end(); ++it) {
+				result.append(*it);
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);

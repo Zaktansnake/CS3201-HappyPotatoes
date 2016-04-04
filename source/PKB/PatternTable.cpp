@@ -35,12 +35,12 @@ void PatternTable::setAssignNum() {
 
 // get variable from MODIFIES
 std::vector<int> PatternTable::getModifiesVariable(string variable) {
-	return VarTable::getModifiesAssign(variable);
+	return VarTable::getModifiesAssignInt(variable);
 }
 
 // get variable from USES
 std::vector<int> PatternTable::getUsesVariable(string variable) {
-	return VarTable::getUsesAssig(variable);
+	return VarTable::getUsesAssigInt(variable);
 }
 
 string PatternTable::getStatementLine(int stmtNo) {
@@ -49,7 +49,7 @@ string PatternTable::getStatementLine(int stmtNo) {
 
 bool PatternTable::isPattern(string variable, string key) {
 
-	vector<int> ans = PatternTable::getPatternAssignNum(variable, key);
+	vector<string> ans = PatternTable::getPatternAssignNum(variable, key);
 
 	if (ans.size() > 0){
 		return true;
@@ -57,7 +57,7 @@ bool PatternTable::isPattern(string variable, string key) {
 	return false;
 }
 
-vector<int> PatternTable::getPatternAssignNum(string left, string right) {
+vector<string> PatternTable::getPatternAssignNum(string left, string right) {
 	vector<int> ans;
 	int condition = checkLocationUnderscore(left, right);
 	left = removeUnderScore(removeDoubleQuotePattern(left));
@@ -88,17 +88,17 @@ vector<int> PatternTable::getPatternAssignNum(string left, string right) {
 		ans = getPatternResult(left, right, false, true);
 	}
 
-	return ans;
+	return PatternTable::convertIntToString(ans);
 }
 
-vector<int> PatternTable::getPatternIfsNum(string left, string middle, string right) {
+vector<string> PatternTable::getPatternIfsNum(string left, string middle, string right) {
 	vector<int> ans;
-	return ans;
+	return PatternTable::convertIntToString(ans);
 }
 
-vector<int> PatternTable::getPatternWhileNum(string left, string right) {
+vector<string> PatternTable::getPatternWhileNum(string left, string right) {
 	vector<int> ans;
-	return ans;
+	return PatternTable::convertIntToString(ans);
 }
 
 vector<int> PatternTable::getPatternResult(string line1, string line2, bool left, bool right) {
@@ -269,4 +269,15 @@ std::vector<std::string> split(const std::string &s, char delim) {
 	std::vector<std::string> elems;
 	split(s, delim, elems);
 	return elems;
+}
+
+// Convert vector<int> to vector<string>
+vector<string> PatternTable::convertIntToString(vector<int> temp) {
+	vector<string> result;
+	if (!temp.empty()) {
+		for (int i = 0; i < temp.size(); i++) {
+			result.push_back(to_string(temp.at(i)));
+		}
+	}
+	return result;
 }

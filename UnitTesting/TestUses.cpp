@@ -24,7 +24,6 @@ namespace UnitTesting
 			string result, expectedResult = "";
 			bool resultBoolean;
 			vector<string> usesString;
-			vector<int> usesInt;
 
 			// Select v such that Uses(11, v) => b,beta,c,chArLie,i,tmp
 			usesString = VarTable::getUsesVariable("11");
@@ -63,18 +62,18 @@ namespace UnitTesting
 
 			result = "";
 			// Select a such that Uses(a, "Romeo") => 17,19,31,33
-			usesInt = VarTable::getUsesAssig("Romeo");
+			usesString = VarTable::getUsesAssig("Romeo");
 			expectedResult = "17,19,31,33,";
-			for (std::vector<int>::iterator it = usesInt.begin(); it != usesInt.end(); ++it) {
-				result.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = usesString.begin(); it != usesString.end(); ++it) {
+				result.append(*it);
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);
 
 			result = "";
 			// Select w such that Uses(w, "a") => none
-			usesInt = VarTable::getUsesWhile("a");
-			if (usesInt.empty()) {
+			usesString = VarTable::getUsesWhile("a");
+			if (usesString.empty()) {
 				result = "";
 			}
 			expectedResult = "";
@@ -98,10 +97,10 @@ namespace UnitTesting
 
 			result = "";
 			// Select s such that Uses(s, "width") => 4,12,14,15,16,19,26,28,30,33
-			usesInt = VarTable::getUsesStmt("width");
+			usesString = VarTable::getUsesStmt("width");
 			expectedResult = "4,12,14,15,16,19,26,28,30,33,";
-			for (std::vector<int>::iterator it = usesInt.begin(); it != usesInt.end(); ++it) {
-				result.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = usesString.begin(); it != usesString.end(); ++it) {
+				result.append(*it);
 				result.append(",");
 			}
 			Assert::AreEqual(expectedResult, result);
