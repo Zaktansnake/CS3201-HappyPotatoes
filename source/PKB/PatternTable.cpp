@@ -142,7 +142,7 @@ vector<int> PatternTable::getPatternResult(string line1, string line2, bool left
 				line2 = removeDoubleQuotePattern(line2);
 				std::size_t foundWord = splitX[1].find((line2));
 				if (splitX[1].size() > line2.size() && foundWord != std::string::npos) {
-					bool finalResult = Patterns::compareAssignments(splitX[1], line2);
+					bool finalResult = Patterns::compareAssignments(splitX[1], line2, leftAns[i]);
 					if (finalResult == true) {
 						ans.push_back(leftAns[i]);
 					}

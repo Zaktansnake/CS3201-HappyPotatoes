@@ -4,14 +4,18 @@
 #include <string>
 #include <vector>
 #include <sstream>
+#include<cstring>
+#include<stack>
+#include<map>
 
 #include "./Header/Patterns.h"
 
-	using namespace std;
+using namespace std;
 
-bool multiplicationDetermine(string statement, int marker);
-bool plusDetermine(string statement, int marker);
-bool minusDetermine(string statement, int marker);
+map<int, string> FinalPatternTable;
+
+int getWeight(string ch);
+string infix2postfix(vector<string> infix);
 
 Patterns::Patterns() {
 }
@@ -19,266 +23,137 @@ Patterns::Patterns() {
 Patterns::~Patterns() {
 }
 
-bool Patterns::compareAssignments(string assignment1, string assignment2) {
-	/*	string augmentAssignment1 = patternAssignment(assignment1);
-	string augmentAssignment2 = patternAssignment(assignment2);
-	//use find to use size_t for comparing
-	if (augmentAssignment1.size >= augmentAssignment2.size) {
-	size_t found = augmentAssignment1.find(augmentAssignment2);
+enum operator_code {
+	ePlus,
+	eMinus,
+	eTimes,
+	eNormal
+};
 
-	if (found != std::string::npos) {
-	return true;
+bool Patterns::compareAssignments(string assignment1, string assignment2, int stmtNum) {
+	// assignment1 -> original after "="; assignment2 -> user input
+	string s1, s2;
+	vector<string> assig1 = Patterns::getRidOfWhiteSpaces(assignment1);
+	vector<string> assig2 = Patterns::getRidOfWhiteSpaces(assignment2);
+
+	if (FinalPatternTable.count(stmtNum)) {
+		s1 = FinalPatternTable[stmtNum];
+		s2 = infix2postfix(assig2);
 	}
 	else {
-	return false;
+		s1 = infix2postfix(assig1);
+		FinalPatternTable.insert(pair<int, string>(stmtNum, s1));
+		s2 = infix2postfix(assig2);
 	}
+
+	if (s1.find(s2) != std::string::npos) {
+		return true;
+	}
+
+	return false;
+}
+
+// convert infix expression to postfix using a stack
+string infix2postfix(vector<string> infix) {
+	stack<string> s;
+	int weight;
+	int i = 0;
+	int k = 0;
+	string tempStr, finalString = "";
+	// iterate over the infix expression   
+	while (i < infix.size()) {
+		tempStr = infix[i];
+		if (tempStr.compare("(") == 0) {
+			// simply push the opening parenthesis
+			s.push(tempStr);
+			i++;
+			continue;
+		}
+		if (tempStr.compare(")") == 0) {
+			// if we see a closing parenthesis,
+			// pop of all the elements and append it to
+			// the postfix expression till we encounter
+			// a opening parenthesis
+			while (!s.empty() && s.top().compare("(") != 0) {
+				finalString.append(s.top());
+				s.pop();
+
+			}
+			// pop off the opening parenthesis also
+			if (!s.empty()) {
+				s.pop();
+			}
+			i++;
+			continue;
+		}
+		weight = getWeight(tempStr);
+		if (weight == 0) {
+			// we saw an operand
+			// simply append it to postfix expression
+			finalString.append(tempStr);
+
+		}
+		else {
+			// we saw an operator
+			if (s.empty()) {
+				// simply push the operator onto stack if
+				// stack is empty
+				s.push(tempStr);
+			}
+			else {
+				// pop of all the operators from the stack and
+				// append it to the postfix expression till we
+				// see an operator with a lower precedence that
+				// the current operator
+				while (!s.empty() && (s.top().compare("(") != 0) && weight <= getWeight(s.top())) {
+					finalString.append(s.top());
+					s.pop();
+				}
+				// push the current operator onto stack
+				s.push(tempStr);
+			}
+		}
+		i++;
+	}
+	// pop of the remaining operators present in the stack
+	// and append it to postfix expression 
+	while (!s.empty()) {
+		finalString.append(s.top());
+		s.pop();
+	}
+	return finalString;
+}
+
+operator_code hashit(std::string const& inString) {
+	if (inString == "+") return ePlus;
+	if (inString == "-") return eMinus;
+	if (inString == "*") {
+		return eTimes;
 	}
 	else {
-	size_t found = augmentAssignment2.find(augmentAssignment1);
-
-	if (found != std::string::npos) {
-	return true;
+		return eNormal;
 	}
-	else {
-	return false;
+}
+
+// get weight of operators as per precedence
+// higher weight given to operators with higher precedence
+// for non operators, return 0 
+int getWeight(string ch) {
+	switch (hashit(ch)) {
+	case eTimes: return 2;
+	case ePlus:
+	case eMinus: return 1;
+	default: return 0;
 	}
+}
+
+vector<string> Patterns::getRidOfWhiteSpaces(string line) {
+	vector<string> v;
+	istringstream buf(line);
+
+	for (string word; buf >> word;) {
+		v.push_back(word);
 	}
-	*/
-	return false;
-}
-/*
-string Patterns::patternAssignment(string assignment) {
-//In-order traversal is given by assignment statement
-//To understand the depth of each node, we can do a left to right reading and put a bracket around trees have a variable and or constant
-//For example, we get a string assignment, we need to read it left to right, once we encounter a higher order of operation we bracket the variables aroud it
-//Once completed, method will return the updated string to PKB for storage
-//Convert assignments to arrays using whitespace to determine the arrays.
-string assign = assignment;
-string statement[assign.size];
-string result;
-int i = 0;
-stringstream ssin(assign);
 
-while (ssin.good() && i < assign.size()) {
-ssin >> statement[i];
-++i;
+	return v;
 }
-if (sizeof(statement) / sizeof(statement[0]) <= 3) {
-string result = "";
-string temp[5];
-temp[0] = "(";
-
-for (int i = 0; i < sizeof(statement) / sizeof(statement[0]); ++i) {
-temp[i + 1] = statement[i];
-}
-
-temp[5] = ")";
-for (int j = 0; j < sizeof(temp) / sizeof(temp[0]); ++i) {
-result.append(temp[j]);
-}
-
-return result;
-}
-for (int i = 0; i < sizeof(statement) / sizeof(statement[0]); ++i) {
-string result = "";
-string c = statement[i];
-string temp[sizeof(statement) / sizeof(statement[0])];
-if (c.compare("*") == 0) {
-if (multiplicationDetermine(statement, i)) {
-if (i == 1) {
-temp.insert(0, "(");
-temp.insert(i + 3, ")");
-}
-else {
-temp.insert(i - 2, "(");
-temp.insert(i + 3, ")");
-}
-}
-}
-else if (c.compare("+") == 0) {
-if (plusDetermine(statement, i)) {
-if (i == 1) {
-temp.insert(0, "(");
-temp.insert(i + 3, ")");
-}
-else {
-temp.insert(i - 2, "(");
-temp.insert(i + 3, ")");
-}
-}
-}
-else if (c.compare("-") == 0) {
-if (minusDetermine(statement, i)) {
-if (i == 1) {
-temp.insert(0, "(");
-temp.insert(i + 3, ")");
-}
-else {
-temp.insert(i - 2, "(");
-temp.insert(i + 3, ")");
-}
-}
-}
-statement = temp;
-}
-for (int j = 0; j < sizeof(statement) / sizeof(statement[0]); ++i) {
-result.append(statement[j]);
-}
-return result;
-}
-bool Patterns::multiplicationDetermine(string statement, int marker) {
-string c1, c2;
-if (marker == 1) {
-c2 = statement.substr(marker + 2, 1);
-}
-else if (marker == 2) {
-return false;
-}
-else if (marker == statement.size() - 1) {
-return true;
-}
-else {
-c1 = statement.substr(marker - 3, 1);
-c2 = statement.substr(marker + 2, 1);
-}
-if (c2.compare("*") == 0) {
-if (c1.compare("+") == 0) {
-return false;
-}
-else if (c1.compare("-") == 0) {
-return false;
-}
-else if (c1.compare("*") == 0) {
-return false;
-}
-else {
-return true;
-}
-}
-else if (c2.compare("+") == 0) {
-if (c1.compare("+") == 0) {
-return false;
-}
-else if (c1.compare("-") == 0) {
-return false;
-}
-else if (c1.compare("*") == 0) {
-return false;
-}
-else {
-return true;
-}
-}
-else if (c2.compare("-") == 0) {
-if (c1.compare("+") == 0) {
-return false;
-}
-else if (c1.compare("-") == 0) {
-return false;
-}
-else if (c1.compare("*") == 0) {
-return false;
-}
-else {
-return true;
-}
-}
-else {
-return false;
-}
-}
-bool Patterns::plusDetermine(string statement, int marker) {
-string c1, c2;
-if (marker == 1) {
-c2 = statement.substr(marker + 2, 1);
-}
-else if (marker == 2) {
-return false;
-}
-else if (marker == statement.size() - 1) {
-return false;
-}
-else {
-c1 = statement.substr(marker - 3, 1);
-c2 = statement.substr(marker + 2, 1);
-}
-if (c2.compare("+") == 0) {
-if (c1.compare("+") == 0) {
-return false;
-}
-else if (c1.compare("-") == 0) {
-return false;
-}
-else if (c1.compare("*") == 0) {
-return false;
-}
-else {
-return true;
-}
-}
-else if (c2.compare("-") == 0) {
-if (c1.compare("+") == 0) {
-return false;
-}
-else if (c1.compare("-") == 0) {
-return false;
-}
-else if (c1.compare("*") == 0) {
-return false;
-}
-else {
-return true;
-}
-}
-else {
-return false;
-}
-}
-bool Patterns::minusDetermine(string statement, int marker) {
-string c1, c2;
-if (marker == 1) {
-c2 = statement.substr(marker + 2, 1);
-}
-else if (marker == 2) {
-return false;
-}
-else if (marker == statement.size() - 1) {
-return false;
-}
-else {
-c1 = statement.substr(marker - 3, 1);
-c2 = statement.substr(marker + 2, 1);
-}
-if (c2.compare("+") == 0) {
-if (c1.compare("+") == 0) {
-return false;
-}
-else if (c1.compare("-") == 0) {
-return false;
-}
-else if (c1.compare("*") == 0) {
-return false;
-}
-else {
-return true;
-}
-}
-else if (c2.compare("-") == 0) {
-if (c1.compare("+") == 0) {
-return false;
-}
-else if (c1.compare("-") == 0) {
-return false;
-}
-else if (c1.compare("*") == 0) {
-return false;
-}
-else {
-return true;
-}
-}
-else {
-return false;
-}
-}
-*/

@@ -15,13 +15,12 @@ public:
 	Patterns();
 	~Patterns();
 
-	static bool compareAssignments(string assignment1, string assignment2);
-	static string patternAssignment(string assignment);
+	static bool compareAssignments(string assignment1, string assignment2, int stmtNum);
 
 private:
-	static bool multiplicationDetermine(string statement, int marker);
-	static bool plusDetermine(string statement, int marker);
-	static bool minusDetermine(string statement, int marker);
+
+	static vector<string> getRidOfWhiteSpaces(string line);
+
 };
 
 #endif

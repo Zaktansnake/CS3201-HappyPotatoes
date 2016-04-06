@@ -15,6 +15,7 @@
 #include <functional> 
 #include <cctype>
 #include <locale>
+#include <exception>
 
 #include "./Header/PKB.h"
 #include "./Header/ProcTable.h"
@@ -65,9 +66,14 @@ void PKB::create(string fileName) {
 	myFile.open(fileName);
 	stmtLine = 0;
 
-	while (!myFile.eof()) {
-		getline(myFile, str);
-		getProgramLine(str);
+	try {
+		while (!myFile.eof()) {
+			getline(myFile, str);
+			getProgramLine(str);
+		}
+	}
+	catch (exception &e) {
+		cout << "Standard exception: " << e.what() << endl;
 	}
 
 	myFile.close();
@@ -480,54 +486,59 @@ bool PKB::is_number(const std::string& s)
 }
 
 void getProgramLine(string lineFromSource) {
-
-	if (lineFromSource.compare("") != 0) {
-		// found ";" "{" "}"
-		if (lineFromSource.find_last_of("{") != std::string::npos) {
-			if (lineFromSource.find("}") != std::string::npos) {
-				if (lineFromSource.find("else") != std::string::npos) {
+	try {
+		if (lineFromSource.compare("") != 0) {
+			// found ";" "{" "}"
+			if (lineFromSource.find_last_of("{") != std::string::npos) {
+				if (lineFromSource.find("}") != std::string::npos) {
+					if (lineFromSource.find("else") != std::string::npos) {
+						findMethod(lineFromSource);
+					}
+					else {
+						std::size_t found;
+						if (lineFromSource.find("while") != std::string::npos) {
+							found = lineFromSource.find("while");
+						}
+						else if (lineFromSource.find("if") != std::string::npos) {
+							found = lineFromSource.find("if");
+						}
+						string normalLine = lineFromSource.substr(found);
+						findMethod("}");
+						findMethod(normalLine);
+					}
+				}
+				else {
+					tempLine += lineFromSource;
+					findMethod(tempLine);
+					tempLine = "";
+				}
+			}
+			else if (lineFromSource.find("}") != std::string::npos) {
+				if (lineFromSource.find(";") != std::string::npos) {
+					std::size_t foundSemiColon = lineFromSource.find(";");
+					string normalLine = lineFromSource.substr(0, foundSemiColon + 1);
+					string bracket = lineFromSource.substr(foundSemiColon + 1);
+					findMethod(normalLine);
+					findMethod(bracket);
+				}
+				else if (lineFromSource.find("else") != std::string::npos) {
 					findMethod(lineFromSource);
 				}
 				else {
-					std::size_t found;
-					if (lineFromSource.find("while") != std::string::npos) {
-						found = lineFromSource.find("while");
-					}
-					else if (lineFromSource.find("if") != std::string::npos) {
-						found = lineFromSource.find("if");
-					}
-					string normalLine = lineFromSource.substr(found);
-					findMethod("}");
-					findMethod(normalLine);
+					findMethod(lineFromSource);
 				}
 			}
-			else {
-				tempLine += lineFromSource;
-				findMethod(tempLine);
-				tempLine = "";
-			}
-		}
-		else if (lineFromSource.find("}") != std::string::npos) {
-			if (lineFromSource.find(";") != std::string::npos) {
-				std::size_t foundSemiColon = lineFromSource.find(";");
-				string normalLine = lineFromSource.substr(0, foundSemiColon + 1);
-				string bracket = lineFromSource.substr(foundSemiColon + 1);
-				findMethod(normalLine);
-				findMethod(bracket);
-			}
-			else if (lineFromSource.find("else") != std::string::npos) {
+			else if (lineFromSource.find(";") != std::string::npos) {
+				// calls or normal assignment statement
 				findMethod(lineFromSource);
 			}
 			else {
-				findMethod(lineFromSource);
+				tempLine = lineFromSource + " ";
 			}
-		}
-		else if (lineFromSource.find(";") != std::string::npos) {
-			// calls or normal assignment statement
-			findMethod(lineFromSource);
-		}
-		else {
-			tempLine = lineFromSource + " ";
 		}
 	}
+	catch (exception &e) {
+		cout << "Standard exception: " << e.what() << endl;
+	}
+
 }
