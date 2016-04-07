@@ -92,12 +92,12 @@ vector<string> PatternTable::getPatternAssignNum(string left, string right) {
 }
 
 vector<string> PatternTable::getPatternIfsNum(string left, string middle, string right) {
-	vector<int> ans;
+	vector<int> ans = VarTable::getAssignFromIfsTable(left);
 	return PatternTable::convertIntToString(ans);
 }
 
 vector<string> PatternTable::getPatternWhileNum(string left, string right) {
-	vector<int> ans;
+	vector<int> ans = VarTable::getAssignFromWhileTable(left);
 	return PatternTable::convertIntToString(ans);
 }
 
