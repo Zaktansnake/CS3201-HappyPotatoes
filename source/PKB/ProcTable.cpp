@@ -8,6 +8,7 @@
 #include <iterator>
 #include <set>
 #include <unordered_set>
+#include <exception>
 
 #include "./Header/ProcTable.h"
 #include "./Header/Calls.h"
@@ -28,10 +29,12 @@ map<string, vector<string>> ProcWithUses; // string -> procedure, vector<string>
 map<string, vector<string>> ModifiesWithProc; // string -> variable, vector<string> -> procedure
 map<string, vector<string>> UsesWithProc; // string -> variable, vector<string> -> procedure
 std::vector<std::tuple<string, string, int>> tempCallsTable;  // string -> mainProcedure, string -> procedure, int -> stmtLine
-std::unordered_set< std::pair<string, string>> tempCallsSet; // string -> mainProcedure, string -> procedure
+std::unordered_set<std::pair<string, string>> tempCallsSet; // string -> mainProcedure, string -> procedure
+std::map<string, vector<string>> CallsMap;
+std::map<string, vector<string>> CallsReverseMap;
+std::map<string, vector<string>> CallsTransitiveMap;
+std::map<string, vector<string>> CallsReverseTransitiveMap;
 
-static void updateModifiesUsesTables();
-static void updateProcWithModAndUses();
 vector<string> findPositionProcModifies(string variable); // return a list of procedures based on variable
 vector<string> findPositionProcUses(string procName);
 
@@ -53,17 +56,21 @@ vector<string> ProcTable::getAllProcedures() {
 }
 
 void ProcTable::updateProcCallsTables() {
-	updateProcWithModAndUses();
+	ProcTable::updateProcWithModAndUses();
 	tempCallsTable = Calls::getCallsTable();
+	ProcTable::updateAllTransitiveTables();
 }
 
-static void updateProcWithModAndUses() {
+void ProcTable::updateProcWithModAndUses() {
 	tempCallsSet = Calls::getCallsSet();
 
 	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
 		pair<string, string> tempSet = *itr;
 		string procA = tempSet.first; // parent
 		string procB = tempSet.second; // child
+
+		CallsMap[procA].push_back(procB);
+		CallsReverseMap[procB].push_back(procA);
 
 		if (ProcTable::isContains(procB)) {
 			vector<string> tempMod = ProcTable::getProcModifiesVar(procB);
@@ -87,9 +94,6 @@ static void updateProcWithModAndUses() {
 			PKB::abort();
 		}
 	}
-
-	//Calls::printCallsTable();
-	//printTable();
 }
 
 std::vector<std::tuple<string, string, int>> ProcTable::getCallsTable() {
@@ -124,31 +128,14 @@ void ProcTable::setProcModifiesVar(string procedure, string variable) {
 
 // return a list of variable based on procName
 vector<string> ProcTable::getProcModifiesVar(string procName) {
-	vector<string> ans;
-	auto it = ProcWithModifies.find(procName);
-
-	if (it != ProcWithModifies.end())
-	{
-		auto& vIt = it->second;
-
-		for (auto elem : vIt)
-		{
-			ans.push_back(elem);
-		}
-	}
-
-	if (!ans.empty()) {
-		sort(ans.begin(), ans.end());
-		ans.erase(unique(ans.begin(), ans.end()), ans.end());
-	}
-
+	vector<string> ans = ProcWithModifies[procName];
 	return ans;
 }
 
 // return a list of procName based on variable
 vector<string> ProcTable::getModifiesProc(string secondPerimeter) {
 	// secondPerimeter = variable
-	vector<string> ans = findPositionProcModifies(secondPerimeter);
+	vector<string> ans = ModifiesWithProc[secondPerimeter];
 	if (!ans.empty()) {
 		sort(ans.begin(), ans.end());
 		ans.erase(unique(ans.begin(), ans.end()), ans.end());
@@ -158,7 +145,7 @@ vector<string> ProcTable::getModifiesProc(string secondPerimeter) {
 
 bool ProcTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
 	// firstPerimeter = procedure; secondPerimeter = variable
-	bool result;
+	bool result = false;
 	vector<string> tempVector = ProcTable::getProcModifiesVar(firstPerimeter);
 
 	if (tempVector.size() == 0) {
@@ -170,27 +157,10 @@ bool ProcTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
 				result = true;
 				break;
 			}
-			else {
-				result = false;
-			}
 		}
 	}
 	return result;
 }
-
-// private method : return a list of procedures
-vector<string> findPositionProcModifies(string variable) {
-	map<string, vector<string>>::iterator i = ModifiesWithProc.find(variable);
-
-	if (i == ModifiesWithProc.end()) {
-		vector<string> ans;
-		return ans;
-	}
-	else {
-		return i->second;
-	}
-}
-
 
 
 // add Uses variables based on procName
@@ -203,32 +173,14 @@ void ProcTable::setProcUsesVar(string procedure, string variable) {
 
 // return a list of variable based on procName
 vector<string> ProcTable::getProcUsesVar(string procName) {
-	vector<string> ans;
-	auto it = ProcWithUses.find(procName);
-
-	if (it != ProcWithUses.end())
-	{
-		auto& vIt = it->second;
-
-		for (auto elem : vIt)
-		{
-			ans.push_back(elem);
-		}
-	}
-
-	if (!ans.empty()) {
-		sort(ans.begin(), ans.end());
-		auto it = unique(ans.begin(), ans.end());
-		ans.erase(it, ans.end());
-	}
-
+	vector<string> ans = ProcWithUses[procName];
 	return ans;
 }
 
 // return a list of procName based on variable
 vector<string> ProcTable::getUsesProc(string secondPerimeter) {
 	// secondPerimeter = variable
-	vector<string> ans = findPositionProcUses(secondPerimeter);
+	vector<string> ans = UsesWithProc[secondPerimeter];
 	if (!ans.empty()) {
 		sort(ans.begin(), ans.end());
 		ans.erase(unique(ans.begin(), ans.end()), ans.end());
@@ -238,7 +190,7 @@ vector<string> ProcTable::getUsesProc(string secondPerimeter) {
 
 bool ProcTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
 	// firstPerimeter = procedure; secondPerimeter = variable
-	bool result;
+	bool result = false;
 	vector<string> tempVector = ProcTable::getProcUsesVar(firstPerimeter);
 
 	if (tempVector.size() == 0) {
@@ -250,42 +202,17 @@ bool ProcTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
 				result = true;
 				break;
 			}
-			else {
-				result = false;
-			}
 		}
 	}
 
 	return result;
 }
 
-// private method : return a list of procedures
-vector<string> findPositionProcUses(string procName) {
-	map<string, vector<string>>::iterator i = UsesWithProc.find(procName);
-
-	if (i == UsesWithProc.end()) {
-		vector<string> ans;
-		return ans;
-	}
-	else {
-		return i->second;
-	}
-}
-
 
 
 vector<string> ProcTable::getNextProcedure(string proc1) {
 	// (proc1, _)
-	vector<string> ans;
-	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
-		pair<string, string> tempSet = *itr;
-		string procA = tempSet.first; // parent
-		string procB = tempSet.second; // child
-		
-		if (procA.compare(proc1) == 0) {
-			ans.push_back(procB);
-		}
-	}
+	vector<string> ans = CallsMap[proc1];
 
 	if (!ans.empty()) {
 		sort(ans.begin(), ans.end());
@@ -295,38 +222,14 @@ vector<string> ProcTable::getNextProcedure(string proc1) {
 }
 
 vector<string> ProcTable::getNextProcedureTransitive(string proc1) {
-	vector<string> ans, temp;
-	vector<string> caller = getNextProcedure(proc1);
-	vector<string>::iterator itr, itrTemp;
-	for (itr = caller.begin(); itr != caller.end(); itr++) {
-		ans.push_back(*itr);
-		temp = getNextProcedureTransitive(*itr);
-		for (itrTemp = temp.begin(); itrTemp != temp.end(); itrTemp++) {
-			ans.push_back(*itrTemp);
-		}
-	}
-
-	if (!ans.empty()) {
-		sort(ans.begin(), ans.end());
-		ans.erase(unique(ans.begin(), ans.end()), ans.end());
-	}
-
+	vector<string> ans = CallsTransitiveMap[proc1];
 	return ans;
 }
 
 vector<string> ProcTable::getParentProcedure(string proc2) {
 	// (_, proc2)
-	vector<string> ans;
-	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
-		pair<string, string> tempSet = *itr;
-		string procA = tempSet.first; // parent
-		string procB = tempSet.second; // child
-
-		if (procB.compare(proc2) == 0) {
-			ans.push_back(procA);
-		}
-	}
-
+	vector<string> ans = CallsReverseMap[proc2];
+	
 	if (!ans.empty()) {
 		sort(ans.begin(), ans.end());
 	}
@@ -335,49 +238,47 @@ vector<string> ProcTable::getParentProcedure(string proc2) {
 }
 
 vector<string> ProcTable::getParentProcedureTransitive(string proc2) {
-	vector<string> ans, temp;
-	vector<string> caller = getParentProcedure(proc2);
-	vector<string>::iterator itr, itrTemp;
-	for (itr = caller.begin(); itr != caller.end(); itr++) {
-		ans.push_back(*itr);
-		temp = getParentProcedureTransitive(*itr);
-		for (itrTemp = temp.begin(); itrTemp != temp.end(); itrTemp++) {
-			ans.push_back(*itrTemp);
-		}
-	}
-
-	if (!ans.empty()) {
-		sort(ans.begin(), ans.end());
-		ans.erase(unique(ans.begin(), ans.end()), ans.end());
-	}
-
+	vector<string> ans = CallsReverseTransitiveMap[proc2];
 	return ans;
 }
 
 bool ProcTable::isProcToProc(string proc1, string proc2) {
 	bool result = false;
-	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
-		pair<string, string> tempSet = *itr;
-		string procA = tempSet.first; // parent
-		string procB = tempSet.second; // child
 
-		if (procA.compare(proc1) == 0 && procB.compare(proc2) == 0) {
-			result = true;
-			break;
+	vector<string> ans = ProcTable::getNextProcedure(proc1);
+
+	if (ans.size() > 0) {
+		for (auto itr = ans.begin(); itr != ans.end(); ++itr) {
+			string tempSet = *itr;
+
+			if (tempSet.compare(proc2) == 0) {
+				result = true;
+				break;
+			}
 		}
 	}
+
 	return result;
 }
 
 bool ProcTable::isProcToProcTransitive(string proc1, string proc2) {
-	vector<string> callee = getNextProcedureTransitive(proc1);
+
+	bool result = false;
 	vector<string>::iterator it;
-	for (it = callee.begin(); it != callee.end(); it++) {
-		if (proc2.compare(*it) == 0) { 
-			return true; 
+	vector<string> callee = getNextProcedureTransitive(proc1);
+
+	if (callee.size() > 0) {
+		for (it = callee.begin(); it != callee.end(); it++) {
+			string tempSet = *it;
+
+			if (tempSet.compare(proc2) == 0) {
+				result = true;
+				break;
+			}
 		}
 	}
-	return false;
+
+	return result;
 }
 
 
@@ -415,15 +316,59 @@ bool ProcTable::isContains(string name) {
 	}
 }
 
+void ProcTable::updateAllTransitiveTables() {
+	ProcTable::updateCallsTransitive();
+	ProcTable::updateParentProcTransitive();
+}
 
-void printTable(){
-
-	for (map<string, vector<string> >::const_iterator ptr = ProcWithModifies.begin();
-ptr != ProcWithModifies.end(); ptr++) {
-		cout << ptr->first << ": ";
-		for (vector<string>::const_iterator eptr = ptr->second.begin(); eptr != ptr->second.end(); eptr++)
-			cout << *eptr << " ";
-	cout << endl;
+void ProcTable::updateCallsTransitive() {
+	vector<string> ans1, ans2, ansAll;
+	vector<string>::reverse_iterator itrTemp;
+	try {
+		if (ProcIndex.size() > 0) {
+			for (itrTemp = ProcIndex.rbegin(); itrTemp != ProcIndex.rend(); itrTemp++) {
+				ans1 = ProcTable::getNextProcedure(*itrTemp);
+				for (vector<string>::iterator it = ans1.begin(); it != ans1.end(); ++it) {
+					ansAll.push_back(*it);
+					ans2 = ProcTable::getNextProcedure(*it);
+					ansAll.insert(ansAll.end(), ans2.begin(), ans2.end());
+					if (!ansAll.empty()) {
+						sort(ansAll.begin(), ansAll.end());
+						ansAll.erase(unique(ansAll.begin(), ansAll.end()), ansAll.end());
+					}
+					CallsTransitiveMap[*itrTemp] = ansAll;
+				}
+				ansAll.clear();
+			}
+		}
 	}
+	catch (exception &e) {
+		cout << "Standard exception: " << e.what() << endl;
+	}
+}
 
+void ProcTable::updateParentProcTransitive() {
+	vector<string> ans1, ans2, ansAll;
+	vector<string>::reverse_iterator itrTemp;
+	try {
+		if (ProcIndex.size() > 0) {
+			for (itrTemp = ProcIndex.rbegin(); itrTemp != ProcIndex.rend(); itrTemp++) {
+				ans1 = ProcTable::getParentProcedure(*itrTemp);
+				for (vector<string>::iterator it = ans1.begin(); it != ans1.end(); ++it) {
+					ansAll.push_back(*it);
+					ans2 = ProcTable::getParentProcedure(*it);
+					ansAll.insert(ansAll.end(), ans2.begin(), ans2.end());
+					if (!ansAll.empty()) {
+						sort(ansAll.begin(), ansAll.end());
+						ansAll.erase(unique(ansAll.begin(), ansAll.end()), ansAll.end());
+					}
+					CallsReverseTransitiveMap[*itrTemp] = ansAll;
+				}
+				ansAll.clear();
+			}
+		}
+	}
+	catch (exception &e) {
+		cout << "Standard exception: " << e.what() << endl;
+	}
 }

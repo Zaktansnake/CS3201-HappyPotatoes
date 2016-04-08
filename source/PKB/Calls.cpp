@@ -40,20 +40,3 @@ std::vector<std::tuple<string, string, int>> Calls::getCallsTable() {
 std::unordered_set< std::pair<string, string>> Calls::getCallsSet() {
 	return CallsSet;
 }
-
-bool Calls::isCalls(string proc1, string proc2) {
-    return true;
-}
-
-
-void Calls::printCallsTable() {
-	/*for (int i = 0; i < CallsTable.size(); i++) {
-		cout << "procA :: " << get<0>(CallsTable[i]) << "  procB :: " << get<1>(CallsTable[i]) << "  stmtLine :: " << get<2>(CallsTable[i]) << endl;
-	}
-
-	for (auto itr = CallsSet.begin(); itr != CallsSet.end(); ++itr) {
-		pair<string, string> tempVector = *itr;
-		cout << tempVector.first << "  , " << tempVector.second << endl;
-	}*/
-
-}

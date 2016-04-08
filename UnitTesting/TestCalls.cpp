@@ -24,7 +24,7 @@ namespace UnitTesting
 			vector<string> callsString;
 			vector<int> callsInt;
 
-			// Select p such that Calls*("ABC", p) => Init,Second
+			// Select p such that Calls("ABC", p) => Init,Second
 			callsString = ProcTable::getNextProcedure("ABC");
 			expectedResult = "Init,Second,";
 			for (std::vector<string>::iterator it = callsString.begin(); it != callsString.end(); ++it) {

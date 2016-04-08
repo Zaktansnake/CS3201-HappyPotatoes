@@ -33,18 +33,14 @@ public:
 
 	static vector<string> getProcModifiesVar(string procName);
 	static vector<string> getModifiesProc(string secondPerimeter);
-
 	static bool isModifiesProc(string firstPerimeter, string secondPerimeter);
-
 
 	// Uses
 	static void setProcUsesVar(string procName, string variable);
 
 	static vector<string> getProcUsesVar(string procName);
 	static vector<string> getUsesProc(string secondPerimeter);
-
 	static bool isUsesProc(string firstPerimeter, string secondPerimeter);
-
 
 	static int getProcTableSize();	// get the size of proctable
 
@@ -54,4 +50,10 @@ public:
 private:   
 	// constructor
 	ProcTable();
+
+	static void updateProcWithModAndUses();
+	static void updateAllTransitiveTables();
+	static void updateCallsTransitive();
+	static void updateParentProcTransitive();
+
 };
