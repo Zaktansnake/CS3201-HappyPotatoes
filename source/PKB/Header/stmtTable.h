@@ -31,6 +31,8 @@ public:
 	// get data from follow
 	static std::vector<string> stmtTable::getFollow(int stmtNo);
 	static std::vector<string> stmtTable::getFollowFan(int stmtNo);
+	static std::vector<string> stmtTable::getFollowFanStar(int stmtNo);
+	static std::vector<string> stmtTable::getFollowStar(int stmtNo);
 	static bool isFollow(int s1, int s2);
 
 	static std::vector<string> stmtTable::getFollowForWhile(int stmtNo);

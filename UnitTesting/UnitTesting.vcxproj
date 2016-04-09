@@ -175,6 +175,9 @@
     <ClCompile Include="TestCFG.cpp" />
     <ClCompile Include="TestModifies.cpp" />
     <ClCompile Include="TestParser.cpp" />
+    <ClCompile Include="TestPQLParser.cpp" />
+    <ClCompile Include="TestQueryEvaluator.cpp" />
+    <ClCompile Include="TestRegex.cpp" />
     <ClCompile Include="TestStmtTable.cpp" />
     <ClCompile Include="TestUses.cpp" />
   </ItemGroup>

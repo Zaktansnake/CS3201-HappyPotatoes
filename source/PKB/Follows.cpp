@@ -11,6 +11,7 @@ using namespace std;
 std::vector<std::vector<int> > levelList; //store stmtNo based on nesting level number from 1 to n
 std::vector<std::vector<int> > ansList; //store ans for stmtNo 1 to end
 std::vector<int> stmtRecord; // record all the nesting level in order
+std::vector<int> positionInLevelList;
 std::vector<int> stmtListTable;
 std::map<int,string> stmtString;
 std::stack<int> stackforCondition;
@@ -31,6 +32,16 @@ Follows::~Follows() {
 void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo, int conditions) {
 	if (stmtLine.size() != endLoopNo && conditions != 2) {
         stmtRecord.push_back(nestLvl);
+		
+			int si;
+			if (levelList.size() == nestLvl) {
+				si = levelList.size();
+			}
+			else {
+				si = levelList.at(nestLvl).size();
+		    }
+			positionInLevelList.push_back(si);
+		
 	}
 	
 	std::vector<int> temp;
@@ -57,18 +68,21 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 		if (levelList.empty()) {
 			temp.push_back(stmtNo);
 			levelList.push_back(temp);
+		//	positionInLevelList.push_back(0);
 			temp.clear();
 		}
 		else {  // if the level list is not empty
 			if (levelList.size() <= nestLvl) {    // if levellist size is smaller than nestlevel, means, this is new level
 				temp.push_back(stmtNo);
 				levelList.push_back(temp);
+		//		positionInLevelList.push_back(0);
 
 			}
 			else {
 				temp = levelList.at(nestLvl);
 				temp.push_back(stmtNo);
 				levelList.at(nestLvl) = temp;
+		//		positionInLevelList.push_back(levelList.at(nestLvl).size());
 			}
 		}
 		stmtListTable.push_back(stmtListNo);
@@ -120,7 +134,19 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 		PKB::abort();
 	}
 	std::vector<int> temp = levelList.at(level);
-	for (int i = 0; i < temp.size(); i++) {
+	int position = positionInLevelList.at(stmtNo-1) + 1; // get the position in the levellist
+	int postPos;
+	if (temp.size() > position) {
+       postPos = temp.at(position);
+	   if (isSameStmtList(stmtNo, postPos)) {
+		   if (stmtNo != postPos) {
+			   ans.push_back((postPos));
+		   }
+
+	   }
+	}
+	
+	/*for (int i = 0; i < temp.size(); i++) {
 		if (temp.at(i) == stmtNo) {
 			if (i == temp.size() - 1) {
 				return ans;
@@ -140,7 +166,7 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 			}
 			break;
 		}
-	}
+	}*/
 	return ans;
 }
 
@@ -156,25 +182,71 @@ std::vector<int> Follows::getFollowFan(int stmtNo) {
 		PKB::abort();
 	}
 	std::vector<int> temp = levelList.at(level);
-	for (int i = 0; i < temp.size(); i++) {
-		if (temp.at(i) == stmtNo) {
-			if (i - 1 < 0) {
-				return ans;
+	int position = positionInLevelList.at(stmtNo - 1) - 1; // get the position in the levellist
+	int postPos;
+	if (temp.size() > position) {
+		postPos = temp.at(position);
+		if (isSameStmtList(stmtNo, postPos)) {
+			if (stmtNo != postPos) {
+				ans.push_back((postPos));
 			}
-			else {
-				if (isSameStmtList(stmtNo, temp.at(i - 1))) {
-					if (stmtNo != temp.at(i - 1)) {
-                       ans.push_back(temp.at(i - 1));
-					}
-					
+
+		}
+	}
+	return ans;
+}
+
+std::vector<int> Follows::getFollowFanStar(int stmtNo) {
+	std::vector<int> ans;
+	ans.clear();
+	if (stmtNo >= stmtRecord.size()) {
+		return ans;
+	}
+	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
+	if (level > levelList.size()) {
+		cout << "Error. Wrong stmtRecord." << endl;
+		PKB::abort();
+	}
+	std::vector<int> temp = levelList.at(level);
+	int position = positionInLevelList.at(stmtNo - 1); // get the position in the levellist
+	int postPos;
+	if (temp.size() > position) {
+		for (int i = 0; i < position; i++) {
+		    postPos = temp.at(i);
+			if (isSameStmtList(stmtNo, postPos)) {
+				if (stmtNo != postPos) {
+                   ans.push_back(postPos);
 				}
-				else {
-					return ans;
+				
+			}
+		}
+	}
+	return ans;
+}
+
+std::vector<int> Follows::getFollowStar(int stmtNo) {
+	std::vector<int> ans;
+	ans.clear();
+	if (stmtNo >= stmtRecord.size()) {
+		return ans;
+	}
+	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
+	if (level > levelList.size()) {
+		cout << "Error. Wrong stmtRecord." << endl;
+		PKB::abort();
+	}
+	std::vector<int> temp = levelList.at(level);
+	int position = positionInLevelList.at(stmtNo - 1) + 1; // get the position in the levellist
+	int postPos;
+	if (temp.size() > position) {
+		for (int i = position; i < temp.size(); i++) {
+			postPos = temp.at(i);
+			if (isSameStmtList(stmtNo, postPos)) {
+				if (stmtNo != postPos) {
+					ans.push_back(postPos);
 				}
 
-				return ans;
 			}
-			break;
 		}
 	}
 	return ans;

@@ -165,6 +165,22 @@ std::vector<string> stmtTable::getFollowFan(int stmtNo) {
 	return result;
 }
 
+std::vector<string> stmtTable::getFollowFanStar(int stmtNo) {
+	std::vector<int> ans = follow.getFollowFanStar(stmtNo);
+	std::vector<string> result;
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
+}
+
+std::vector<string> stmtTable::getFollowStar(int stmtNo) {
+	std::vector<int> ans = follow.getFollowStar(stmtNo);
+	std::vector<string> result;
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
+}
+
+
+
 bool stmtTable::isFollow(int s1, int s2) {
 	if (follow.isFollows(s1, s2)) {
 		vector<int>temp;

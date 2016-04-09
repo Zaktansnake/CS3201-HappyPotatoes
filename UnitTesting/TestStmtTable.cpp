@@ -180,8 +180,8 @@ namespace UnitTesting
 			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
 
 			// test for getFollow
-			string expected_result01 = "0";
-			vector<string> getFollow = stmtTable::getFollow(28);
+			string expected_result01 = "16";
+			vector<string> getFollow = stmtTable::getFollow(15);
 			if (getFollow.size() == 0) {
 				result = "0";
 			}
@@ -205,6 +205,69 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expected_result01, result);
+			// test follow fan
+			result = "0";
+			getFollow.clear();
+			expected_result01 = "0";
+			getFollow = stmtTable::getFollowFan(29);
+
+			if (getFollow.size() == 0) {
+				result = "0";
+			}
+			else {
+				result = getFollow.front();
+			}
+
+			Assert::AreEqual(expected_result01, result);
+
+
+			//test FollowFanStar
+			result.clear();
+			getFollow.clear();
+			expected_result01 = "1718";
+			getFollow = stmtTable::getFollowFanStar(19);
+
+			if (getFollow.size() == 0) {
+				result = "0";
+			}
+			else {
+				for (int i = 0; i < getFollow.size(); i++) {
+					result.append(getFollow.at(i));
+				}
+			}
+			Assert::AreEqual(expected_result01, result);
+			//test getFollowStar
+			result.clear();
+			getFollow.clear();
+			expected_result01 = "3233";
+			getFollow = stmtTable::getFollowStar(31);
+
+			if (getFollow.size() == 0) {
+				result = "0";
+			}
+			else {
+				for (int i = 0; i < getFollow.size(); i++) {
+					result.append(getFollow.at(i));
+				}
+			}
+			Assert::AreEqual(expected_result01, result);
+
+			// test follow fan
+			result.clear();
+			getFollow.clear();
+			expected_result01 = "18";
+			getFollow = stmtTable::getFollowFan(19);
+
+			if (getFollow.size() == 0) {
+				result = "0";
+			}
+			else {
+				for (int i = 0; i < getFollow.size(); i++) {
+					result.append(getFollow.at(i));
+				}
+			}
+
+			Assert::AreEqual(expected_result01, result);
 
 			//test for getFollowForWhile
 			expected_result01 = "0";
@@ -219,7 +282,7 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expected_result01, result);
-			
+		/*		
 			expected_result01 = "7";
 			getFollowForWhile.clear();
 			getFollowForWhile = stmtTable::getFollowForWhile(6);
@@ -235,7 +298,7 @@ namespace UnitTesting
 			
 			
 			//Test for getFollowFor assign
-	/*		string expected_result02;
+		string expected_result02;
 			string resultString;
 			expected_result02 = "18";
 			getFollowForWhile.clear();
