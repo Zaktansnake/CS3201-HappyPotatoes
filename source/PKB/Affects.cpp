@@ -94,6 +94,7 @@ bool Affects::isAffectsTransitive(string aff1, string aff2) {
 	int a2 = std::stoi(aff2);
 
 	// TO BE COMPLETED
+	return false;
 }
 
 std::vector<string> Affects::convertIntToString(vector<int> temp) {

@@ -9,6 +9,8 @@ using namespace std;
 
 map<int, int> Parent::AnsMap;  //map<stmt#, index>
 map<int, vector<int>> Parent::AnsStarMap;
+map<int, vector<int>> Parent::ChildMap;
+map<int, vector<int>> Parent::ChildStarMap;
 std::vector<std::vector<int> > arrAns;
 std::stack<string> loopParent;
 std::stack<int> loopStmtNo;
@@ -18,6 +20,7 @@ static int conditions;
 bool firstCloseBracketOfIf = false;
 
 void setToParent(string stmtLine, int stmtNo);
+void storeChildStar (int stmtNo);
 void storeParentStar(int stmtNo);
 void deleteParent(int endloop);
 void deleteStmtNo(int endloop);
@@ -34,7 +37,7 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 	int parent;
 	conditions = condition;
 	std::vector<int> temp;
-	if (stmtLine.compare("}") != 0 || stmtLine.compare("\t}") != 0) {
+	if (stmtLine.compare("}") != 0 && conditions !=2) {
 		stmtstring.insert(pair<int, string>(stmtNo, stmtLine));
 		if (loopFlag && endLoop == 0) {   // when there is a condition stmt and it is not end stmt for loop
 										  // check whether ths stmt is a child of other stmt
@@ -47,7 +50,31 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			}
 			setToParent(stmtLine, stmtNo);  //set it become a parent
 			AnsMap.insert(pair<int, int>(stmtNo, parent));
+			if (parent != 0 && conditions!=2) {
+			vector <int> childtemp;
+			childtemp.clear();
+				map<int, vector<int>>::iterator itera;
+				itera = ChildMap.find(parent);
+				if (itera != ChildMap.end()) {
+					if (itera->first == parent) {
+                         childtemp = ChildMap.at(parent);
+					     childtemp.push_back(stmtNo);
+					     itera->second = childtemp;
+					}
+					else {
+						childtemp.push_back(stmtNo);
+						ChildMap.insert(pair<int, vector<int>>(parent, childtemp));
+					}
+					
+				}
+				else {
+				 childtemp.push_back(stmtNo);
+                 ChildMap.insert(pair<int,vector<int>>(parent,childtemp));
+				}
+				
+			}
 			storeParentStar(stmtNo);
+			storeChildStar(stmtNo);
 		}
 		else {
 			// if there is not a loop condition 
@@ -63,7 +90,31 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			}
 
 			AnsMap.insert(pair<int, int>(stmtNo, parent));
+			if (parent != 0) {
+				vector <int> childtemp;
+				childtemp.clear();
+				map<int, vector<int>>::iterator itera;
+				itera = ChildMap.find(parent);
+				if (itera != ChildMap.end()) {
+					if (itera->first == parent) {
+						childtemp = ChildMap.at(parent);
+						childtemp.push_back(stmtNo);
+						itera->second = childtemp;
+					}
+					else {
+						childtemp.push_back(stmtNo);
+						ChildMap.insert(pair<int, vector<int>>(parent, childtemp));
+					}
+
+				}
+				else {
+					childtemp.push_back(stmtNo);
+					ChildMap.insert(pair<int, vector<int>>(parent, childtemp));
+				}
+
+			}
 			storeParentStar(stmtNo);
+			storeChildStar(stmtNo);
 		}
 	}
 
@@ -71,6 +122,37 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 		deleteParent(endLoop);
 		deleteStmtNo(endLoop);
 	}
+}
+
+void storeChildStar(int stmtNo) {
+	stack<int> temp = loopStmtNo; // copy the parent stack into a temp stack
+	// for each stmtno, the stmt in the stack are its parent star
+	vector<int> childs;
+	int index;
+	while (temp.size() != 0) {
+	   childs.clear();
+	   index = temp.top();
+	   map<int, vector<int>>::iterator iterchilds;
+	   iterchilds = Parent::ChildStarMap.find(index);
+	   if (iterchilds != Parent::ChildStarMap.end() && index != stmtNo) { // find it
+		   if (iterchilds->first == index) {
+		      childs = iterchilds->second;
+			  if (stmtNo != childs.back()) {
+				  childs.push_back(stmtNo);
+				  iterchilds->second = childs;
+			  }
+		   }
+	   }
+	   else {
+		   if (index != stmtNo) {
+			   childs.push_back(stmtNo);
+			   Parent::ChildStarMap.insert(pair<int, vector<int>>(index, childs));
+		   }
+	       
+	   }
+	   temp.pop();
+	}
+	
 }
 
 void storeParentStar(int stmtNo) {
@@ -168,7 +250,14 @@ std::vector<int> Parent::getParent(int stmtNo) {
 
 std::vector<int> Parent::getChild(int stmtNo) {
     std::vector<int> result;
-	int index;
+	map<int, vector<int>>::iterator iter;
+	
+	iter = ChildMap.find(stmtNo);
+	if (iter != ChildMap.end()) {
+		result = iter->second;
+	}
+
+	/*int index;
 	if (stmtNo > AnsMap.size()) {
 		return result;
 	}
@@ -183,7 +272,7 @@ std::vector<int> Parent::getChild(int stmtNo) {
 			   result.push_back(iter->first);
 			}
 		}
-	}
+	}*/
 	return result;
 }
 
@@ -204,6 +293,23 @@ std::vector<string> Parent::getParentStar(int stmtNo) {
 	}
 	else {
 		return result;
+	}
+	return result;
+}
+
+std::vector<string> Parent::getChildStar(int stmtNo) {
+	map<int, vector<int>>::iterator iter;
+	std::vector<string> result;
+	std::vector<int> temp;
+
+	iter = ChildStarMap.find(stmtNo);
+	if (iter != ChildStarMap.end()) {  // find it 
+		if (iter->first == stmtNo) {
+			temp = iter->second;
+			for (int i = 0; i < temp.size(); i++) {
+				result.push_back(to_string(temp.at(i)));
+			}
+		}	
 	}
 	return result;
 }

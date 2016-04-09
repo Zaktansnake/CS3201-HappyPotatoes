@@ -16,6 +16,7 @@ public:
 	void setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag, int endLopp, int condition);
 	std::vector<int> getParent(int stmtNo);
 	std::vector<string> getParentStar(int stmtNo);  // to get all its parents
+	std::vector<string> getChildStar(int stmtNo);  // to get all its childs
 	std::vector<int> getChild(int stmtNo);
 
 	std::vector<string> Parent::getParentForWhile(int stmtNo);
@@ -29,6 +30,8 @@ public:
 
 	static std::map<int, int> AnsMap;
 	static std::map<int, vector<int>> AnsStarMap;
+	static map<int, vector<int>> ChildMap;
+	static std::map<int, vector<int>> ChildStarMap;
 
 
 

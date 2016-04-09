@@ -32,7 +32,7 @@ enum operator_code {
 
 bool Patterns::compareAssignments(string assignment1, string assignment2, int stmtNum) {
 	// assignment1 -> original after "="; assignment2 -> user input
-	string s1, s2;
+/*	string s1, s2;
 	vector<string> assig1 = Patterns::getRidOfWhiteSpaces(assignment1);
 	vector<string> assig2 = Patterns::getRidOfWhiteSpaces(assignment2);
 
@@ -49,7 +49,7 @@ bool Patterns::compareAssignments(string assignment1, string assignment2, int st
 	if (s1.find(s2) != std::string::npos) {
 		return true;
 	}
-
+*/
 	return false;
 }
 

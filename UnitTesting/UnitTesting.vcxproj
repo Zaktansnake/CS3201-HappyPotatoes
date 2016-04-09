@@ -168,20 +168,13 @@
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
       <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="TestAST.cpp" />
     <ClCompile Include="TestCalls.cpp">
       <SubType>
       </SubType>
     </ClCompile>
     <ClCompile Include="TestCFG.cpp" />
-    <ClCompile Include="TestGetPattern.cpp" />
     <ClCompile Include="TestModifies.cpp" />
     <ClCompile Include="TestParser.cpp" />
-    <ClCompile Include="TestParseResult.cpp" />
-    <ClCompile Include="TestPattern.cpp" />
-    <ClCompile Include="TestPQLParser.cpp" />
-    <ClCompile Include="TestQueryEvaluator.cpp" />
-    <ClCompile Include="TestRegex.cpp" />
     <ClCompile Include="TestStmtTable.cpp" />
     <ClCompile Include="TestUses.cpp" />
   </ItemGroup>

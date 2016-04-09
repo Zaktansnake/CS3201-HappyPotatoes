@@ -15,7 +15,7 @@
 #include "Header\Patterns.h"
 
 using namespace std;
-
+/*
 map<int, string> AllAssignsTable;
 vector<int> AllAssignLineNum;
 
@@ -281,3 +281,4 @@ vector<string> PatternTable::convertIntToString(vector<int> temp) {
 	}
 	return result;
 }
+*/

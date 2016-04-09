@@ -24,10 +24,10 @@ namespace UnitTesting
 			bool expectBool;
 			string expectedChildren;
 			string resultChildren;
-			std::vector<int> resultChild;
-			string expected_result01 = "26";
+			std::vector<string> resultChild;
+			string expected_result01 = "14";
 			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
-			vector<string> getParent = stmtTable::getParent(28);
+			vector<string> getParent = stmtTable::getParent(24);
 			if (getParent.size() == 0) {
 				result = "0";
 			}
@@ -65,9 +65,21 @@ namespace UnitTesting
 			Assert::AreEqual(expected_result01, result);
 
 
-			string expected_star = "754";
-			getParent = stmtTable::getParentStar(8);
+			string expected_star = "9754";
+			getParent = stmtTable::getParentStar(11);
 			string actualResult;
+
+			for (std::vector<string>::iterator it = getParent.begin(); it != getParent.end(); ++it) {
+				actualResult.append(*it);
+			}
+
+			Assert::AreEqual(expected_star, actualResult);
+
+
+			// test get Child star
+			expected_star = "5678910111213141516171819202122232425";
+			getParent = stmtTable::getChildStar(4);
+			actualResult.clear();
 
 			for (std::vector<string>::iterator it = getParent.begin(); it != getParent.end(); ++it) {
 				actualResult.append(*it);
@@ -115,21 +127,22 @@ namespace UnitTesting
 			isparent = stmtTable::isParent(3, 4);
 
 			Assert::AreEqual(expectBool, isparent);
-			
+	*/		
 			//test for getChild
-			expectedChildren = "56";
+			expectedChildren = "51225";
 			resultChild = stmtTable::getChild(4);
+			resultChildren.clear();
 		//	resultChildren = std::to_string(resultChild.size());
 
-			for (std::vector<int>::iterator it = resultChild.begin(); it != resultChild.end(); ++it) {
-				resultChildren.append(std::to_string(*it));
+			for (std::vector<string>::iterator it = resultChild.begin(); it != resultChild.end(); ++it) {
+				resultChildren.append(*it);
 				//result.append(", ");
 			}
 
 			Assert::AreEqual(expectedChildren, resultChildren);
 			
 	   // test for get child for while and assign
-	       
+	 /*      
 			expectedChildren = "56";
 			resultChild = stmtTable::getChildForAssign(4);
 			resultChildren.clear();

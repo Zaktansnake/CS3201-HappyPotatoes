@@ -330,7 +330,7 @@ void PKB::updateTables() {
 	VarTable::updateModifiesUsesTables();
 	ProcTable::updateProcCallsTables();
 	PKB::updateAllTables();
-	PatternTable::updatePatternTable();
+	// PatternTable::updatePatternTable();
 
 	//VarTable::printTables();
 }

@@ -44,6 +44,7 @@ public:
 	static std::vector<string> stmtTable::getParent(int stmtNo);
 	static std::vector<string> stmtTable::getChild(int stmtNo);
 	static std::vector<string> stmtTable::getParentStar(int stmtNo);
+	static std::vector<string> stmtTable::getChildStar(int stmtNo);
 	static bool isParent(int s1, int s2);
 
 	static std::vector<string> stmtTable::getParentForWhile(int stmtNo);
