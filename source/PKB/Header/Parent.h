@@ -17,6 +17,8 @@ public:
 	std::vector<int> getParent(int stmtNo);
 	std::vector<string> getParentStar(int stmtNo);  // to get all its parents
 	std::vector<string> getChildStar(int stmtNo);  // to get all its childs
+	std::vector<int> getParentStarInt(int stmtNo);  // to get all its parents
+	std::vector<int> getChildStarInt(int stmtNo);  // to get all its childs
 	std::vector<int> getChild(int stmtNo);
 
 	std::vector<string> Parent::getParentForWhile(int stmtNo);
@@ -25,6 +27,13 @@ public:
 	std::vector<string> Parent::getChildForAssign(int stmtNo);
 	std::vector<string> Parent::getParentForIf(int stmtNo);
 	std::vector<string> Parent::getChildForIf(int stmtNo);
+
+	std::vector<string> Parent::getParentStarForWhile(int stmtNo);
+	std::vector<string> Parent::getChildStarForWhile(int stmtNo);
+	std::vector<string> Parent::getParentStarForAssign(int stmtNo);
+	std::vector<string> Parent::getChildStarForAssign(int stmtNo);
+	std::vector<string> Parent::getParentStarForIf(int stmtNo);
+	std::vector<string> Parent::getChildStarForIf(int stmtNo);
 
 	bool isParent(int stmt1, int stmt2);
 

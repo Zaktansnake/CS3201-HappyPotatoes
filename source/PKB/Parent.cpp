@@ -315,6 +315,45 @@ std::vector<string> Parent::getChildStar(int stmtNo) {
 }
 
 
+std::vector<int> Parent::getParentStarInt(int stmtNo) {
+	map<int, vector<int>>::iterator iter;
+	std::vector<int> result;
+	std::vector<int> temp;
+
+	if (stmtNo > AnsStarMap.size()) {
+		return result;
+	}
+	iter = AnsStarMap.find(stmtNo);
+	if (iter != AnsStarMap.end()) {
+		temp = (iter->second);
+		for (int i = 0; i < temp.size(); i++) {
+			result.push_back(temp.at(i));
+		}
+	}
+	else {
+		return result;
+	}
+	return result;
+}
+
+std::vector<int> Parent::getChildStarInt(int stmtNo) {
+	map<int, vector<int>>::iterator iter;
+	std::vector<int> result;
+	std::vector<int> temp;
+
+	iter = ChildStarMap.find(stmtNo);
+	if (iter != ChildStarMap.end()) {  // find it 
+		if (iter->first == stmtNo) {
+			temp = iter->second;
+			for (int i = 0; i < temp.size(); i++) {
+				result.push_back(temp.at(i));
+			}
+		}
+	}
+	return result;
+}
+
+
 std::vector<string> Parent::getParentForWhile(int stmtNo) {
 	std::vector<int> temp = getParent(stmtNo);
 	std::vector<string> ans;
@@ -441,6 +480,137 @@ std::vector<string> Parent::getChildForIf(int stmtNo) {
 	return ans;
 
 }
+
+
+
+//-------------------------for star-------------------------------------------------------------
+std::vector<string> Parent::getParentStarForWhile(int stmtNo) {
+	std::vector<int> temp = getParentStarInt(stmtNo);
+	std::vector<string> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("while") != std::string::npos || line.find("While") != std::string::npos) {
+				ans.push_back(to_string(temp.at(i)));
+			}
+		}
+	}
+	return ans;
+
+}
+std::vector<string> Parent::getChildStarForWhile(int stmtNo) {
+	std::vector<int> temp = getChildStarInt(stmtNo);
+	std::vector<string> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("while") != std::string::npos || line.find("While") != std::string::npos) {
+				ans.push_back(to_string(temp.at(i)));
+			}
+		}
+	}
+	return ans;
+
+}
+std::vector<string> Parent::getParentStarForAssign(int stmtNo) {
+
+	std::vector<int> temp = getParentStarInt(stmtNo);
+	std::vector<string> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("=") != std::string::npos) {
+				ans.push_back(to_string(temp.at(i)));
+			}
+		}
+	}
+	return ans;
+}
+std::vector<string> Parent::getChildStarForAssign(int stmtNo) {
+	std::vector<int> temp = getChildStarInt(stmtNo);
+	std::vector<string> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("=") != std::string::npos) {
+				ans.push_back(to_string(temp.at(i)));
+			}
+		}
+	}
+	return ans;
+}
+
+std::vector<string> Parent::getParentStarForIf(int stmtNo) {
+	std::vector<int> temp = getParentStarInt(stmtNo);
+	std::vector<string> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("If ") != std::string::npos || line.find("if ") != std::string::npos) {
+				ans.push_back(to_string(temp.at(i)));
+			}
+		}
+	}
+	return ans;
+
+}
+std::vector<string> Parent::getChildStarForIf(int stmtNo) {
+	std::vector<int> temp = getChildStarInt(stmtNo);
+	std::vector<string> ans;
+	if (stmtNo > AnsMap.size()) {
+		return ans;
+	}
+	for (int i = 0; i< temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtstring.find(index);
+		string line;
+		if (iter != stmtstring.end()) {
+			line = iter->second;
+			if (line.find("if ") != std::string::npos || line.find("If ") != std::string::npos) {
+				ans.push_back(to_string(temp.at(i)));
+			}
+		}
+	}
+	return ans;
+
+}
+
 /*
 void Parent::PrintProcTable() {
 	for (map<int, int>::iterator it = AnsMap.begin(); it != AnsMap.end(); ++it) {
