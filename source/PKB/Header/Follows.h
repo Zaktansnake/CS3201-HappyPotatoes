@@ -29,5 +29,12 @@ public:
 	std::vector<int> Follows::getFollowForIf(int stmtNo);
 	std::vector<int> Follows::getFollowFanForIf(int stmtNo);
 
+	std::vector<int> Follows::getFollowStarForWhile(int stmtNo);
+	std::vector<int> Follows::getFollowFanStarForWhile(int stmtNo);
+	std::vector<int> Follows::getFollowStarForAssign(int stmtNo);
+	std::vector<int> Follows::getFollowFanStarForAssign(int stmtNo);
+	std::vector<int> Follows::getFollowStarForIf(int stmtNo);
+	std::vector<int> Follows::getFollowFanStarForIf(int stmtNo);
+
 	void Follows::PrintProcTable();
 };

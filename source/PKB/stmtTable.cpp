@@ -128,6 +128,78 @@ void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
 	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, conditionStmtTable);
 }
 //-------------------------------------get answer of follow
+
+std::vector<string> stmtTable::getFollowWithType(string type, string stmtNo) {
+	int stmt = atoi(stmtNo.c_str());
+	vector<string> results;
+	if (type.compare("ASSIGN") == 0) {
+	   results = stmtTable::getFollowForAssign(stmt);
+	}
+	else if (type.compare("WHILE") == 0) {
+	   results = stmtTable::getFollowForWhile(stmt);
+	}
+	else if (type.compare("IF") == 0) {
+	   results = stmtTable::getFollowForIf(stmt);
+	}
+	else {
+	   results = stmtTable::getFollow(stmt);
+	}
+	return results;
+}
+std::vector<string> stmtTable::getFollowFanWithType(string type, string stmtNo) {
+	int stmt = atoi(stmtNo.c_str());
+	vector<string> results;
+	if (type.compare("ASSIGN") == 0) {
+		results = stmtTable::getFollowFanForAssign(stmt);
+	}
+	else if (type.compare("WHILE") == 0) {
+		results = stmtTable::getFollowFanForWhile(stmt);
+	}
+	else if (type.compare("IF") == 0) {
+		results = stmtTable::getFollowFanForIf(stmt);
+	}
+	else {
+		results = stmtTable::getFollowFan(stmt);
+	}
+	return results;
+}
+std::vector<string> stmtTable::getFollowFanStarWithType(string type, string stmtNo) {
+	int stmt = atoi(stmtNo.c_str());
+	vector<string> results;
+	if (type.compare("ASSIGN") == 0) {
+		results = stmtTable::getFollowFanStarForAssign(stmt);
+	}
+	else if (type.compare("WHILE") == 0) {
+		results = stmtTable::getFollowFanStarForWhile(stmt);
+	}
+	else if (type.compare("IF") == 0) {
+		results = stmtTable::getFollowFanStarForIf(stmt);
+	}
+	else {
+		results = stmtTable::getFollowFanStar(stmt);
+	}
+	return results;
+}
+std::vector<string> stmtTable::getFollowStarWithType(string type, string stmtNo) {
+	int stmt = atoi(stmtNo.c_str());
+	vector<string> results;
+	if (type.compare("ASSIGN") == 0) {
+		results = stmtTable::getFollowStarForAssign(stmt);
+	}
+	else if (type.compare("WHILE") == 0) {
+		results = stmtTable::getFollowStarForWhile(stmt);
+	}
+	else if (type.compare("IF") == 0) {
+		results = stmtTable::getFollowStarForIf(stmt);
+	}
+	else {
+		results = stmtTable::getFollowStar(stmt);
+	}
+	return results;
+}
+
+
+
 std::vector<string> checkWithProcedure(int stmtNo, vector<int> ans) {
 	std::vector<string>result;
 	int start;
@@ -149,7 +221,6 @@ std::vector<string> checkWithProcedure(int stmtNo, vector<int> ans) {
 	}
 	return result;
 }
-
 
 std::vector<string> stmtTable::getFollow(int stmtNo) {
     std::vector<int> ans = follow.getFollow(stmtNo);
@@ -232,9 +303,119 @@ std::vector<string> stmtTable::getFollowFanForIf(int stmtNo) {
 	return result;
 }
 
+std::vector<string> stmtTable::getFollowStarForWhile(int stmtNo) {
+	std::vector<string> result;
+	std::vector<int> ans = follow.getFollowStarForWhile(stmtNo);
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
+}
+std::vector<string> stmtTable::getFollowFanStarForWhile(int stmtNo) {
+	std::vector<string> result;
+	std::vector<int> ans = follow.getFollowFanStarForWhile(stmtNo);
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
+}
+std::vector<string> stmtTable::getFollowStarForAssign(int stmtNo) {
+	std::vector<string> result;
+	std::vector<int> ans = follow.getFollowStarForAssign(stmtNo);
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
+}
+std::vector<string> stmtTable::getFollowFanStarForAssign(int stmtNo) {
+	std::vector<string> result;
+	std::vector<int> ans = follow.getFollowFanStarForAssign(stmtNo);
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
+}
+std::vector<string> stmtTable::getFollowStarForIf(int stmtNo) {
+	std::vector<string> result;
+	std::vector<int> ans = follow.getFollowStarForIf(stmtNo);
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
+}
+std::vector<string> stmtTable::getFollowFanStarForIf(int stmtNo) {
+	std::vector<string> result;
+	std::vector<int> ans = follow.getFollowFanStarForIf(stmtNo);
+	result = checkWithProcedure(stmtNo, ans);
+	return result;
+}
+
 
 
 // get data from parent
+
+std::vector<string> stmtTable::getParentWithType(string type, string stmtNo) {
+	int stmt = atoi(stmtNo.c_str());
+	vector<string> results;
+	if (type.compare("ASSIGN") == 0) {
+		results = stmtTable::getParentForAssign(stmt);
+	}
+	else if (type.compare("WHILE") == 0) {
+		results = stmtTable::getParentForWhile(stmt);
+	}
+	else if (type.compare("IF") == 0) {
+		results = stmtTable::getParentForIf(stmt);
+	}
+	else {
+		results = stmtTable::getParent(stmt);
+	}
+	return results;
+}
+std::vector<string> stmtTable::getChildWithType(string type, string stmtNo) {
+	int stmt = atoi(stmtNo.c_str());
+	vector<string> results;
+	if (type.compare("ASSIGN") == 0) {
+		results = stmtTable::getChildForAssign(stmt);
+	}
+	else if (type.compare("WHILE") == 0) {
+		results = stmtTable::getChildForWhile(stmt);
+	}
+	else if (type.compare("IF") == 0) {
+		results = stmtTable::getChildForIf(stmt);
+	}
+	else {
+		results = stmtTable::getChild(stmt);
+	}
+	return results;
+}
+std::vector<string> stmtTable::getChildStarWithType(string type, string stmtNo) {
+	int stmt = atoi(stmtNo.c_str());
+	vector<string> results;
+	if (type.compare("ASSIGN") == 0) {
+		results = stmtTable::getChildStarForAssign(stmt);
+	}
+	else if (type.compare("WHILE") == 0) {
+		results = stmtTable::getChildStarForWhile(stmt);
+	}
+	else if (type.compare("IF") == 0) {
+		results = stmtTable::getChildStarForIf(stmt);
+	}
+	else {
+		results = stmtTable::getChildStar(stmt);
+	}
+	return results;
+}
+std::vector<string> stmtTable::getParentStarWithType(string type, string stmtNo) {
+	int stmt = atoi(stmtNo.c_str());
+	vector<string> results;
+	if (type.compare("ASSIGN") == 0) {
+		results = stmtTable::getParentStarForAssign(stmt);
+	}
+	else if (type.compare("WHILE") == 0) {
+		results = stmtTable::getParentStarForWhile(stmt);
+	}
+	else if (type.compare("IF") == 0) {
+		results = stmtTable::getParentStarForIf(stmt);
+	}
+	else {
+		results = stmtTable::getParentStar(stmt);
+	}
+	return results;
+}
+
+
+
+
 std::vector<string> stmtTable::getParent(int stmtNo) {
     vector<string> result;
 	std::vector<int> ans = parent.getParent(stmtNo);
@@ -291,6 +472,34 @@ std::vector<string> stmtTable::getParentForIf(int stmtNo) {
 
 std::vector<string> stmtTable::getChildForIf(int stmtNo) {
 	std::vector<string> ans = parent.getChildForAssign(stmtNo);
+	return ans;
+}
+
+std::vector<string> stmtTable::getParentStarForWhile(int stmtNo) {
+	std::vector<string> ans = parent.getParentStarForWhile(stmtNo);
+	return ans;
+}
+std::vector<string> stmtTable::getChildStarForWhile(int stmtNo) {
+	std::vector<string> ans = parent.getChildStarForWhile(stmtNo);
+	return ans;
+}
+std::vector<string> stmtTable::getParentStarForAssign(int stmtNo) {
+	std::vector<string> ans = parent.getParentStarForAssign(stmtNo);
+	return ans;
+}
+
+std::vector<string> stmtTable::getChildStarForAssign(int stmtNo) {
+	std::vector<string> ans = parent.getChildStarForAssign(stmtNo);
+	return ans;
+}
+
+std::vector<string> stmtTable::getParentStarForIf(int stmtNo) {
+	std::vector<string> ans = parent.getParentStarForAssign(stmtNo);
+	return ans;
+}
+
+std::vector<string> stmtTable::getChildStarForIf(int stmtNo) {
+	std::vector<string> ans = parent.getChildStarForAssign(stmtNo);
 	return ans;
 }
 

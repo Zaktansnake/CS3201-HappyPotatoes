@@ -35,7 +35,7 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 		
 			int si;
 			if (levelList.size() == nestLvl) {
-				si = levelList.size();
+				si = 0;
 			}
 			else {
 				si = levelList.at(nestLvl).size();
@@ -134,7 +134,7 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 		PKB::abort();
 	}
 	std::vector<int> temp = levelList.at(level);
-	int position = positionInLevelList.at(stmtNo-1) + 1; // get the position in the levellist
+	int position = positionInLevelList.at(stmtNo-1)+1; // get the position in the levellist
 	int postPos;
 	if (temp.size() > position) {
        postPos = temp.at(position);
@@ -387,6 +387,128 @@ std::vector<int> Follows::getFollowFanForIf(int stmtNo) {
 	return ans;
 }
 
+std::vector<int> Follows::getFollowStarForWhile(int stmtNo) {
+	std::vector<int> temp = getFollowStar(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i < temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("while") != std::string::npos || line.find("While") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+std::vector<int> Follows::getFollowFanStarForWhile(int stmtNo) {
+	std::vector<int> temp = getFollowFanStar(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i < temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("while") != std::string::npos || line.find("While") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+
+std::vector<int> Follows::getFollowStarForAssign(int stmtNo) {
+	std::vector<int> temp = getFollowStar(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i < temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find(" = ") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+std::vector<int> Follows::getFollowFanStarForAssign(int stmtNo) {
+	std::vector<int> temp = getFollowFanStar(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i < temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("=") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+
+std::vector<int> Follows::getFollowStarForIf(int stmtNo) {
+	std::vector<int> temp = getFollowStar(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i < temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("if ") != std::string::npos || line.find("If") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
+std::vector<int> Follows::getFollowFanStarForIf(int stmtNo) {
+	std::vector<int> temp = getFollowFanStar(stmtNo);
+	std::vector<int> ans;
+	for (int i = 0; i < temp.size(); i++) {
+		int index = temp.at(i);
+		map<int, string>::iterator iter;
+		iter = stmtString.find(index);
+		string line;
+		if (iter != stmtString.end()) {
+			line = iter->second;
+			if (line.find("if ") != std::string::npos || line.find("If ") != std::string::npos) {
+				ans.push_back(temp.at(i));
+			}
+		}
+		else {
+		}
+
+	}
+	return ans;
+}
 
 
 
