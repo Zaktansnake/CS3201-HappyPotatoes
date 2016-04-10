@@ -25,6 +25,7 @@ QueriesAnswerStorage QAS;
 vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
 	clear();
+	cout << "Hello World!" << endl;
 	bool HasResults;
 	try {
 		 HasResults = assessParseResult(mustPr);
