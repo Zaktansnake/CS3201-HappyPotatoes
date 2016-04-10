@@ -16,9 +16,17 @@ CFG::~CFG() {
 static int dummy = -1;
 
 static int currentPro = 0;
+static int currentP = 0;
+std::vector<int> proRecord;  // record the procedure for each stmt
 std::vector<std::vector<std::vector<int> >> CFGTable;
 std::vector<std::vector<int>> CFGstmt;
 std::vector<int> CFGline;
+
+static int numOfStatement = 0;
+
+std::vector<std::vector<int>> revCFGstmt;
+std::vector<int> revCFGline;
+
 std::map <string, int> procedureMap;
 map<int, int> startEndOfProcedure;
 int conditionstmt;
@@ -29,6 +37,7 @@ stack<int> proStack;
 stack <int> closingStack;
 stack <int> clostingCondition;
 stack <int> ifRecord;
+stack <int> starRecord;
 
 bool flagNextLevelStart = false;
 bool flagForElseStart = false;;
@@ -61,6 +70,7 @@ void CFG::addRoot(string procedure, int stmtNo) {
 			proStack.push(stmtNo + 1);
 		}
 		else {
+		    currentP ++;
 			startEndOfProcedure.insert(pair<int, int>(stmtNo + 1, -1));
 			int index = proStack.top();
 			proStack.pop();
@@ -77,10 +87,14 @@ void CFG::addRoot(string procedure, int stmtNo) {
 }
 
 void CFG::addNextNode(int stmtNo, string stmt) {
+    numOfStatement =stmtNo;
 	CFGline.clear();
 	stmt = trimString(stmt);
 	conditionstmt = setConditions(stmt);
 	CFGline.clear();
+	if (stmt.compare("}") != 0 && stmt.find("else ") == string::npos) {
+	   proRecord.push_back(currentP);
+	}
 	endloop = std::count(stmt.begin(), stmt.end(), '}');
 	if (flagForClose && stmt.size() != endloop) {
 		if (conditionstmt == 3) {
@@ -316,6 +330,32 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 	}
 }
 
+void CFG::reverCFG() {
+	// CFGTable, revCFGTable
+
+	vector<vector<int>> temp = CFGTable.at(currentPro);
+	vector<vector<int>> arr(numOfStatement + 2);
+	vector<int> prevRecord;
+	vector<int> ::iterator ite;
+	for (int i = 0; i < temp.size(); i++) {
+		for (ite = temp.at(i).begin(); ite != temp.at(i).end(); ite++) {
+			if (*ite == -1) {  // if it is the end node
+			   prevRecord = arr[numOfStatement+1]; // store at the back
+			   prevRecord.push_back(i);
+			   arr[numOfStatement+1] = prevRecord;
+			   
+			}
+			else {
+				prevRecord = arr[*ite];
+				prevRecord.push_back(i);
+				arr[*ite] = prevRecord;
+			}
+			
+		}
+	}
+	revCFGstmt = arr;
+}
+
 int setConditions(string stmtLine) {
 	if (stmtLine.find("if") != std::string::npos) {
 		conditionstmt = 1;
@@ -348,7 +388,7 @@ string trimString(string stmt) {
 	return stmt;
 }
 
-
+/*
 bool checkProcedure(int s1, int s2) {
 	
 	int start = 0;
@@ -379,16 +419,19 @@ bool checkProcedure(int s1, int s2) {
 	}
 	
 }
-
+*/
 vector<int> CFG::getNext(int stmtNo) {
 
 	vector<int> result;
 	vector<int> temp;
 	temp = CFGTable.at(currentPro).at(stmtNo);
 	for (int i = 0; i < temp.size(); i++) {
-		if (checkProcedure(stmtNo, temp.at(i))) {
-			result.push_back(temp.at(i));
+//		if (checkProcedure(stmtNo, temp.at(i))) {
+		if (temp.at(i)==-1) {
+		   return result;
 		}
+		result.push_back(temp.at(i));
+//		}
 	}
 	return result;
 
@@ -397,7 +440,14 @@ vector<int> CFG::getNext(int stmtNo) {
 //.....................................................................
 // this method can be optimized ........................................
 vector<int> CFG::getPrev(int stmtNo) {
-	vector<int> result;
+     
+	 vector<int>result;
+	 vector<int>temp = revCFGstmt.at(stmtNo);
+	 result = temp;
+	 return result;
+
+
+/*	vector<int> result;
 	vector<int> temp;
 	vector<int> temp2;
 	vector<vector<int>> records;
@@ -422,6 +472,7 @@ vector<int> CFG::getPrev(int stmtNo) {
 		}
 	}
 	return result;
+*/
 }
 
 
@@ -441,64 +492,80 @@ bool CFG::isNext(int stmtNo1, int stmtNo2) {
 
 
 bool CFG::isNextStar(int s1, int s2) {
-      
-	  vector<int> temp = CFGTable.at(currentPro).at(s1);
-	  int start = 0;
-	  int end = 0;
-	  // get the start and end procedure
-	  if (isNext(s1, s2)) {
-		  return true;
-	  }
-	  for (map<int, int>::iterator it = startEndOfProcedure.begin(); it != startEndOfProcedure.end(); ++it) {
-		  if (it->first <= s1 && it->second >= s1) {
-			  if (it->first <= s2 && it->second >= s2) {
-				  start = it->first;
-				  end = it->second;
-				  break;
-			  }
-		  }
-		  else if (it->first <= s1 && it->second == -1) {
-			  if (it->first <= s2) {
-				  start = it->first;
-				  end = CFGTable.at(currentPro).size() - 1 ;
-				  break;
-			  }  
-		  }
-	  }
+
+	bool* visited = new bool[CFGTable.at(currentPro).size()]();
+	stack <int> stack;
+	bool ans = false;
+	stack.push(s1);
+	vector<int> ::iterator it;
+
+	while (!stack.empty()) {
+		int top = stack.top();
+		stack.pop();
+		visited[top] = true;
+		for (it = CFGTable.at(currentPro).at(top).begin(); it != CFGTable.at(currentPro).at(top).end(); it++) {
+			if (!visited[*it]) {
+				stack.push(*it);
+				if (*it == s2) {
+					ans = true;
+					return ans;
+				}
+			}
+		}
+	}
+	return ans;
+	  
+
 
 	  //need to complete
 }
 
 vector<int> CFG::getNextStar(int stmtNo) {
-	if (getNext(stmtNo).size() == 0) {
-		if (getEndProcNo(stmtNo) != stmtNo) { // not the end of 
+	bool* visited = new bool [CFGTable.at(currentPro).size()]();
+	stack <int> stack;
+	vector<int> ans;
+	stack.push(stmtNo);
+	vector<int> ::iterator it;
 
-		}
-		return resultStar;
-	}
-	else {
-		vector<int> temp = getNext(stmtNo);
-		for (int i = 0; i < temp.size(); i++) {
-			itStar = resultStarMap.find(temp.at(i));
-			if (itStar != resultStarMap.end()) {
-				i++;
-				if (i >= temp.size()) {
-				return getNextStar(temp.at(i-1));
-				}
-				else {
-					resultStar.push_back(temp.at(i));
-					resultStarMap.insert(pair<int, int>(temp.at(i), -1));
-					return getNextStar(temp.at(i));
-				}
+	while (!stack.empty()) {
+		int top = stack.top();
+		stack.pop();
+		visited[top] = true;
+		for (it = CFGTable.at(currentPro).at(top).begin(); it != CFGTable.at(currentPro).at(top).end(); it++) {
+			if (!visited[*it]) {
+				stack.push(*it);
+				ans.push_back(*it);
 			}
-			resultStar.push_back(temp.at(i));
-			resultStarMap.insert(pair<int,int>(temp.at(i), -1));
-			return getNextStar(temp.at(i));
 		}
 	}
+	return ans;
 }
 
+vector<int> CFG::getPrevStar(int stmtNo) {
+	bool* visited = new bool[CFGTable.at(currentPro).size()]();
+	stack <int> stack;
+	vector<int> ans;
+	stack.push(stmtNo);
+	vector<int> ::iterator it;
 
+	while (!stack.empty()) {
+		int top = stack.top();
+		stack.pop();
+		visited[top] = true;
+		for (it = revCFGstmt.at(top).begin(); it != revCFGstmt.at(top).end(); it++) {
+			if (!visited[*it]) {
+				stack.push(*it);
+				if (*it != 0) {
+                    ans.push_back(*it);
+				}
+				
+			}
+		}
+	}
+	return ans;
+}
+
+/*
 int getEndProcNo(int s1) {
     int start = 0;
 	int end = 0;
@@ -513,6 +580,114 @@ int getEndProcNo(int s1) {
 		}
 	}
 	return end;
+}
+*/
+
+
+
+
+
+// for return vector<string> ------------------------------------------------------------------
+
+vector<string> CFG::getNextString(int stmtNo) {
+
+	vector<string> result;
+	vector<int> temp;
+	temp = CFGTable.at(currentPro).at(stmtNo);
+	for (int i = 0; i < temp.size(); i++) {
+		//		if (checkProcedure(stmtNo, temp.at(i))) {
+		if (temp.at(i) == -1) {
+			return result;
+		}
+		result.push_back(to_string(temp.at(i)));
+		//		}
+	}
+	return result;
+
+}
+
+
+vector<string> CFG::getPrevString(int stmtNo) {
+
+	vector<string>result;
+	vector<int>temp = revCFGstmt.at(stmtNo);
+	for (int i = 0; i < temp.size(); i++) {
+		result.push_back(to_string(temp.at(i)));
+	}
+	return result;
+	/*	vector<int> result;
+	vector<int> temp;
+	vector<int> temp2;
+	vector<vector<int>> records;
+	bool isPrv = false;
+	records = CFGTable.at(currentPro);
+	for (int i = 0; i < records.size(); i++) {
+	temp2 = records.at(i);
+	for (int j = 0; j < temp2.size(); j++) {
+	if (temp2.at(j) == stmtNo) {
+	isPrv = true;
+	break;
+	}
+	}
+	if (isPrv) {
+	temp.push_back(i);
+	isPrv = false;
+	}
+	}
+	for (int i = 0; i < temp.size(); i++) {
+	if (checkProcedure(temp.at(i), stmtNo)) {
+	result.push_back(temp.at(i));
+	}
+	}
+	return result;
+	*/
+}
+
+
+vector<string> CFG::getNextStarString(int stmtNo) {
+	bool* visited = new bool[CFGTable.at(currentPro).size()]();
+	stack <int> stack;
+	vector<string> ans;
+	stack.push(stmtNo);
+	vector<int> ::iterator it;
+
+	while (!stack.empty()) {
+		int top = stack.top();
+		stack.pop();
+		visited[top] = true;
+		for (it = CFGTable.at(currentPro).at(top).begin(); it != CFGTable.at(currentPro).at(top).end(); it++) {
+			if (!visited[*it]) {
+				stack.push(*it);
+				ans.push_back(to_string(*it));
+			}
+		}
+	}
+	return ans;
+}
+
+
+vector<string> CFG::getPrevStarString(int stmtNo) {
+	bool* visited = new bool[CFGTable.at(currentPro).size()]();
+	stack <int> stack;
+	vector<string> ans;
+	stack.push(stmtNo);
+	vector<int> ::iterator it;
+
+	while (!stack.empty()) {
+		int top = stack.top();
+		stack.pop();
+		visited[top] = true;
+		for (it = revCFGstmt.at(top).begin(); it != revCFGstmt.at(top).end(); it++) {
+			if (!visited[*it]) {
+				stack.push(*it);
+				if (*it != 0) {
+					ans.push_back(to_string(*it));
+				}
+
+			}
+		}
+	}
+	return ans;
 }
 
 

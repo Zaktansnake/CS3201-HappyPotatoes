@@ -336,7 +336,7 @@ void PKB::updateTables() {
 }
 
 void PKB::updateAllTables() {
-
+    CFG::reverCFG();
 	std::vector<std::tuple<string, string, int>> AllCallsStmt = ProcTable::getCallsTable();
 	int allCallsStmtSize = AllCallsStmt.size() - 1;
 	for (int i = allCallsStmtSize; i >= 0 ; i--) {
