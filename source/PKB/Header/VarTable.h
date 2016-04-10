@@ -59,6 +59,7 @@ public:
 	static vector<string> getModifiesWhile(string secondPerimeter);
 	static vector<string> getModifiesStmt(string secondPerimeter);
 	static vector<string> getModifiesIfs(string secondPerimeter);
+	static bool isModifiesProcedure(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesAssign(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesWhile(string firstPerimeter, string secondPerimeter);
@@ -74,6 +75,7 @@ public:
 	static vector<string> getUsesStmt(string secondPerimeter);
 	static vector<string> getUsesWhile(string secondPerimeter);
 	static vector<string> getUsesIfs(string secondPerimeter);
+	static bool isUsesProcedure(string firstPerimeter, string secondPerimeter);
 	static bool isUsesAssign(string firstPerimeter, string secondPerimeter);
 	static bool isUsesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isUsesWhile(string firstPerimeter, string secondPerimeter);

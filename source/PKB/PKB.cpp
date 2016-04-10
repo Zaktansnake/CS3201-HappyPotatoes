@@ -124,6 +124,7 @@ void findMethod(string lineFromSample) {
 		stmtLst();
 		stmtTable::addStmtTable(str, stmtLine);
 		CFG::addNextNode(stmtLine,str);
+		ProcTable::setProcStmtNum(procname, stmtLine);
 	}
 	else if (word.compare("}") == 0 || str.find("}") != std::string::npos) {
 		vector<string> ans;
@@ -151,6 +152,7 @@ void findMethod(string lineFromSample) {
 		assign();
 		stmtTable::addStmtTable(str, stmtLine);
 		CFG::addNextNode(stmtLine, str);
+		ProcTable::setProcStmtNum(procname, stmtLine);
 	}
 
 	stmtLine++;
@@ -331,8 +333,6 @@ void PKB::updateTables() {
 	ProcTable::updateProcCallsTables();
 	PKB::updateAllTables();
 	PatternTable::updatePatternTable();
-
-	//VarTable::printTables();
 }
 
 void PKB::updateAllTables() {

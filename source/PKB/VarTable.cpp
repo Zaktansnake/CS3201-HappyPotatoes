@@ -361,6 +361,11 @@ vector<string>  VarTable::getModifiesIfs(string secondPerimeter) {
 	return emptyVector;
 }
 
+
+bool VarTable::isModifiesProcedure(string firstPerimeter, string secondPerimeter) {
+	return ProcTable::isModifiesProc(firstPerimeter, secondPerimeter);
+}
+
 bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
 	// firstPerimeter = statementNumber; secondPerimeter = variable
 	bool result;
@@ -533,6 +538,11 @@ vector<string> VarTable::getUsesIfs(string secondPerimeter) {
 	// secondPerimeter -> variable
 	vector<int> ans = ifsTable[secondPerimeter];
 	return VarTable::convertIntToString(ans);
+}
+
+
+bool VarTable::isUsesProcedure(string firstPerimeter, string secondPerimeter) {
+	return ProcTable::isUsesProc(firstPerimeter, secondPerimeter);
 }
 
 bool VarTable::isUsesAssign(string firstPerimeter, string secondPerimeter) {
