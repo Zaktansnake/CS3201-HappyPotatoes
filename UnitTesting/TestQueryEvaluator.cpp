@@ -19,32 +19,25 @@ namespace UnitTesting
 	{
 	public:
 		TEST_METHOD(TestQE) {
-
-			string declaration = "procedure p,p1,p2,p3,p4; while w1,w2,w3,w4; assign a,a1,a2,a3,a4; stmt s,s#,s1,s2,s3,s4; variable v1,v2,v3,v4; prog_line n1,n2,n3,n4; constant c1,c2,c3,c4; call ca1,ca2,ca3,ca4; if i1,i2,i3,i4; stmtLst stmtLst1,stmtLst2; plus add; times times; minus minus;";
-
+			std::vector<string> result;
+			
 			try {
-				Parser::parse("..\Release\Sample-Source02.txt");
+				Parser::parse("..\Test Cases\Sample-Source03.txt");
 			}
 			catch (exception& e) {
 				cout << "PKBParser: " << e.what() << endl;
 			}
-
-			cout << "testBoolFollows: ";
-
-			/* Test BOOL 1 */
-
-			string query = declaration + "Select BOOLEAN such that Follows(1, s1) pattern a1(_,_)";
-			ParseResult::parse(query);
+			
+			/* Test 1 */
+			string declaration = "procedure p,p1,p2,p3,p4; while w1,w2,w3,w4; assign a,a1,a2,a3,a4; stmt s,s#,s1,s2,s3,s4; variable v1,v2,v3,v4; prog_line n1,n2,n3,n4; constant c1,c2,c3,c4; call ca1,ca2,ca3,ca4; if i1,i2,i3,i4; stmtLst stmtLst1,stmtLst2; plus add; times times; minus minus;";
+			string query = "Select BOOLEAN such that Follows(1, s1) pattern a1(_,_)";
 			result.push_back("true");
+			
+			ParseResult parser = ParseResult();
+			ParseResult generatedParseResult = parser.generateParseResult(declaration, query);
+			QueryEvaluator evaluator;
+			std::vector<std::string> results = evaluator.startEvaluator(generatedParseResult);
 
-			try {
-				ans = QueryEvaluator::evaluate();
-			}
-			catch (exception&e) {
-				cout << e.what() << endl;
-				cout << "Test 1" << endl;
-			}
-
-			CPPUNIT_ASSERT(ans == result);
+			Assert::AreEqual(results, result);
 			result.clear();
 		}
