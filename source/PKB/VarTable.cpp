@@ -124,6 +124,26 @@ vector<string> VarTable::getUsedWithType(string type, string value) {
 	return finalResult;
 }
 
+vector<string> VarTable::getAllWithType(string type, string value) {
+	vector<string> finalResult;
+	if (type.compare("PROC") == 0) {
+		finalResult = ProcTable::getAllProcedures();
+	}
+	else if (type.compare("STMT") == 0) {
+		finalResult = VarTable::getAllStmtString();
+	}
+	else if (type.compare("ASSIGN") == 0) {
+		finalResult = VarTable::getAllAssignString();
+	}
+	else if (type.compare("WHILE") == 0) {
+		finalResult = VarTable::getAllWhileString();
+	}
+	else if (type.compare("IF") == 0) {
+		finalResult = VarTable::getAllIfsString();
+	}
+	return finalResult;
+}
+
 
 int VarTable::varTableLeftInPairSize() {
 	return varTableLeftInPair.size();
@@ -176,6 +196,22 @@ vector<int> VarTable::getAllIfs() {
 	return ifStmtNum;
 }
 
+vector<string> VarTable::getAllStmtString() {
+	return VarTable::convertIntToString(allStmtNum);
+}
+
+vector<string> VarTable::getAllWhileString() {
+	return VarTable::convertIntToString(whileStmtNum);
+}
+
+vector<string> VarTable::getAllAssignString() {
+	return VarTable::convertIntToString(assignNum);
+}
+
+vector<string> VarTable::getAllIfsString() {
+	return VarTable::convertIntToString(ifStmtNum);
+}
+
 void VarTable::setAllVariables(string variable) {
 	allVariables.push_back(variable);
 }
@@ -184,6 +220,8 @@ vector<string> VarTable::getAllVariables() {
 	return allVariables;
 }
 
+
+
 vector<pair<int, string>> VarTable::getModifiesInPair() {
 	return varTableLeftInPair;
 }
@@ -191,6 +229,8 @@ vector<pair<int, string>> VarTable::getModifiesInPair() {
 vector<pair<int, string>> VarTable::getUsesInPair() {
 	return varTableRightInPair;
 }
+
+
 
 // add stmtLine into stmtNum
 void addDataToStmt() {
