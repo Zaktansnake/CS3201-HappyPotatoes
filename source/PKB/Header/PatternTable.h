@@ -17,10 +17,11 @@ public:
 	static void setAssignNum();
 
 	static vector<string> getPatternAssignNum(string left, string right);
-	static vector<string> getPatternIfsNum(string left, string middle, string right);
-	static vector<string> getPatternWhileNum(string left, string right);
+	static vector<string> getPatternIfsNum(string left);
+	static vector<string> getPatternWhileNum(string left);
 	static bool isPattern(string variable, string key);
 
+	static vector<string> getPatternWithType(string type, string left, string right);
 
 	static void updatePatternTable();
 

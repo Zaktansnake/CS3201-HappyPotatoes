@@ -93,6 +93,8 @@ const string relCond = "(?:" + relRef + space + "(?:and" + space + relRef + spac
 const string NAME = "(?:[[:alpha:]](?:[[:alpha:]]|\\d)*)";
 const string expr = "(?:\\(?(?:" + NAME + "|" + INTEGER + ")" + space + "(?:(?:\\+|\\*)" + space + "\\(?(?:" + NAME + "|" + INTEGER + ")\\)?" + space + ")*)";
 const string expressionSpec = "(?:\"" + space + expr + space + "\"|_\"" + space + expr + space + "\"_)";
+// this regex string is used to cater to assign pattern parsing on top of normal word parsing
+const string patternEntRef = "(?:" + IDENT + "|_|\\(|\\)|\"|\\+|-|\\*|" + "\"" + IDENT + "\"|" + INTEGER + ")";
 
 const string IF = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "," + space + "_" + space + "\\))";
 const string WHILE = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "\\))";
@@ -107,6 +109,7 @@ const string patternCl = "(?:pattern" + space + patternCond + ")";
 const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
 const string selectOnly = space + "Select" + space + resultCl + space;
 const string suchthatOnly = space + suchthatCl + space;
+const string patternOnly = space + patternCl + space;
 const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
 const regex declarationChecking(declar);
@@ -116,9 +119,11 @@ const regex declarationWordParsing(IDENT);
 const regex queryChecking(selectClause);
 const regex queryParseSelect(selectOnly);
 const regex queryParseNormalClauses(suchthatOnly);
+const regex queryParsePattern(patternOnly);
+
 const regex queryWordParsingSelect(IDENT);
 const regex queryWordParsingNormalClause(entRefWithStar);
-const regex queryPatternParsing(expressionSpec);
+const regex queryWordParsingPattern(patternEntRef);
 
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
 	unordered_map<string, string> declarationTable;
@@ -242,15 +247,15 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 	}
 
 	vector<string> word;
-	vector<string>::iterator it;
+	vector<string>::iterator it1;
 	ClauseSet normalClauses;
 	ClauseSet zeroSynonyms;
 	ClauseSet oneSynonym;
 	ClauseSet twoSynonyms;
 
-	for (it = normalClausePhrase.begin(); it != normalClausePhrase.end(); ++it) {
-		string current = *it;
-		next = sregex_iterator(current.begin(), current.end(), queryWordParsingNormalClause);
+	for (it1 = normalClausePhrase.begin(); it1 != normalClausePhrase.end(); ++it1) {
+		string temp = *it1;
+		next = sregex_iterator(temp.begin(), temp.end(), queryWordParsingNormalClause);
 		while (next != end) {
 			smatch match = *next;
 			if (match.str(0) == "such" || match.str(0) == "that") continue;
@@ -264,6 +269,7 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 		string current;
 		string firstPType;
 		string secondPType;
+		vector<string>::iterator it;
 		int counter = 0;
 
 		for (it = word.begin(); it != word.end(); it++) {
@@ -275,7 +281,7 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 				counter++;
 			}
 			// current iterator points to a variable
-			else if (current.front == '"' && current.back() == '"') {
+			else if (current.front() == '"' && current.back() == '"') {
 				// the variable is the first parameter
 				if (*prev(it) == "Modifies" || *prev(it) == "Uses" || *prev(it) == "Calls" || *prev(it) == "Calls*" || *prev(it) == "Parent" ||
 					*prev(it) == "Parent*" || *prev(it) == "Follows" || *prev(it) == "Follows*" || *prev(it) == "Next" || *prev(it) == "Next*" ||
@@ -502,6 +508,132 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 			}
 		}
 	}
+
+	// concat all ClauseSets into one ClauseSet
+	normalClauses.reserve(zeroSynonyms.size() + oneSynonym.size() + twoSynonyms.size());
+	normalClauses.insert(normalClauses.end(), zeroSynonyms.begin(), zeroSynonyms.end());
+	normalClauses.insert(normalClauses.end(), oneSynonym.begin(), oneSynonym.end());
+	normalClauses.insert(normalClauses.end(), twoSynonyms.begin(), twoSynonyms.end());
+	return normalClauses;
+}
+
+PatternSet ParseResult::parsePattern(string query, unordered_map<string, string>& declarationTable) {
+	vector<string> patternClausePhrase;
+	sregex_iterator next(query.begin(), query.end(), queryParsePattern);
+	sregex_iterator end;
+	while (next != end) {
+		smatch match = *next;
+		patternClausePhrase.push_back(match.str(0));
+		next++;
+	}
+
+	vector<string> word;
+	vector<string>::iterator it1;
+	PatternSet patterns;
+	PatternSet ifAndWhilePattern;
+	PatternSet assignPattern;
+
+	for (it1 = patternClausePhrase.begin(); it1 != patternClausePhrase.end(); ++it1) {
+		string currentPhrase = *it1;
+		next = sregex_iterator(currentPhrase.begin(), currentPhrase.end(), queryWordParsingPattern);
+		while (next != end) {
+			smatch match = *next;
+			word.push_back(match.str(0));
+			next++;
+		}
+
+		string patternType;
+		string firstParam;
+		string secondParam;
+		string thirdParam;
+		string current;
+		string patternTypeTemp;
+		vector<string>::iterator it;
+		// due to the special pattern clause syntax, this bool is used to make sure that hashmap is used only when needed
+		bool needCheckType = false;
+
+		for (it = word.begin(); it != word.end(); ++it) {
+			current = *it;
+			if (current == "pattern") {
+				needCheckType = true;
+				continue;
+			}
+			if (needCheckType) {
+				string underCheck = declarationTable[current];
+				if (underCheck != "assign" && underCheck != "while" && underCheck != "if") {
+					// synonym type is wrong according to PQL grammar
+					PatternSet p;
+					p.push_back(Pattern("dummy", "dummy", "dummy"));
+					return p;
+				}
+				else {
+					patternType = current + "," + underCheck;
+					patternTypeTemp = underCheck;
+					needCheckType = false;
+					continue;
+				}
+			}
+			else {	// current string is inside bracket
+				if (patternTypeTemp == "if") {
+					firstParam = current;
+					// the first parameter is a synonym
+					if (firstParam.front() != '"' && firstParam.back() != '"') {
+						// the synonym is not declared
+						if (declarationTable[firstParam] == "") {
+							PatternSet p;
+							p.push_back(Pattern("dummy", "dummy", "dummy"));
+							return p;
+						}
+					}
+					secondParam = "_";
+					thirdParam = "_";
+					ifAndWhilePattern.push_back(Pattern(patternType, firstParam, secondParam, thirdParam));
+					++it; ++it;	// advance the iterator to the next pattern clause
+				}
+				else if (patternTypeTemp == "while") {
+					firstParam = current;
+					// the first parameter is a synonym
+					if (firstParam.front() != '"' && firstParam.back() != '"') {
+						// the synonym is not declared
+						if (declarationTable[firstParam] == "") {
+							PatternSet p;
+							p.push_back(Pattern("dummy", "dummy", "dummy"));
+							return p;
+						}
+					}
+					secondParam = "_";
+					ifAndWhilePattern.push_back(Pattern(patternType, firstParam, secondParam));
+					++it;	// advance the iterator to the next pattern clause
+				}
+				else { // the pattern is of type assign
+					firstParam = current;
+					// the first parameter is a synonym
+					if (firstParam.front() != '"' && firstParam.back() != '"') {
+						// the synonym is not declared
+						if (declarationTable[firstParam] == "") {
+							PatternSet p;
+							p.push_back(Pattern("dummy", "dummy", "dummy"));
+							return p;
+						}
+					}
+					++it;
+					secondParam.clear();
+					while (*it != "pattern") {
+						current = *it;
+						secondParam += current;
+						++it;
+					}
+					--it;	// reverse one time so that the for loop that uses it will not be affected
+					assignPattern.push_back(Pattern(patternType, firstParam, secondParam));
+				}
+			}
+		}
+	}
+	// concat all PatternSets into one PatternSet
+	patterns.reserve(ifAndWhilePattern.size() + assignPattern.size());
+	patterns.insert(patterns.end(), ifAndWhilePattern.begin(), ifAndWhilePattern.end());
+	patterns.insert(patterns.end(), assignPattern.begin(), assignPattern.end());
+	return patterns;
 }
 
 bool ParseResult::checkWholeQuery(string query) {

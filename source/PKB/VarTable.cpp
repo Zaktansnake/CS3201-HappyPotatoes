@@ -27,6 +27,7 @@ map<string, vector<int>> ifsTable;
 // (Assign) int -> stmtLine, string -> line
 map<int, string> assignTable;
 
+vector<string> allVariables;
 vector<int> allStmtNum;
 vector<int> assignNum;
 vector<int> whileStmtNum;
@@ -123,6 +124,26 @@ vector<string> VarTable::getUsedWithType(string type, string value) {
 	return finalResult;
 }
 
+vector<string> VarTable::getAllWithType(string type, string value) {
+	vector<string> finalResult;
+	if (type.compare("PROC") == 0) {
+		finalResult = ProcTable::getAllProcedures();
+	}
+	else if (type.compare("STMT") == 0) {
+		finalResult = VarTable::getAllStmtString();
+	}
+	else if (type.compare("ASSIGN") == 0) {
+		finalResult = VarTable::getAllAssignString();
+	}
+	else if (type.compare("WHILE") == 0) {
+		finalResult = VarTable::getAllWhileString();
+	}
+	else if (type.compare("IF") == 0) {
+		finalResult = VarTable::getAllIfsString();
+	}
+	return finalResult;
+}
+
 
 int VarTable::varTableLeftInPairSize() {
 	return varTableLeftInPair.size();
@@ -149,6 +170,9 @@ void VarTable::updateModifiesUsesTables() {
 
 	std::sort(assignNum.begin(), assignNum.end());
 	std::sort(whileStmtNum.begin(), whileStmtNum.end());
+
+	sort(allVariables.begin(), allVariables.end());
+	allVariables.erase(unique(allVariables.begin(), allVariables.end()), allVariables.end());
 }
 
 void VarTable::sortVarLeftAndRight() {
@@ -172,6 +196,32 @@ vector<int> VarTable::getAllIfs() {
 	return ifStmtNum;
 }
 
+vector<string> VarTable::getAllStmtString() {
+	return VarTable::convertIntToString(allStmtNum);
+}
+
+vector<string> VarTable::getAllWhileString() {
+	return VarTable::convertIntToString(whileStmtNum);
+}
+
+vector<string> VarTable::getAllAssignString() {
+	return VarTable::convertIntToString(assignNum);
+}
+
+vector<string> VarTable::getAllIfsString() {
+	return VarTable::convertIntToString(ifStmtNum);
+}
+
+void VarTable::setAllVariables(string variable) {
+	allVariables.push_back(variable);
+}
+
+vector<string> VarTable::getAllVariables() {
+	return allVariables;
+}
+
+
+
 vector<pair<int, string>> VarTable::getModifiesInPair() {
 	return varTableLeftInPair;
 }
@@ -179,6 +229,8 @@ vector<pair<int, string>> VarTable::getModifiesInPair() {
 vector<pair<int, string>> VarTable::getUsesInPair() {
 	return varTableRightInPair;
 }
+
+
 
 // add stmtLine into stmtNum
 void addDataToStmt() {
@@ -257,6 +309,7 @@ vector<int> VarTable::getAllAssign() {
 void VarTable::addDataToModifies(string varName, int stmtLine) {
 	addToVarTable(1, varName, stmtLine);
 	Modifies::addModifiesTable(varName, stmtLine);
+	VarTable::setAllVariables(varName);
 }
 
 vector<string> VarTable::findVariableLeft(int stmtLine1, int stmtLine2) {
@@ -465,6 +518,13 @@ bool VarTable::isModifiesIfs(string firstPerimeter, string secondPerimeter) {
 
 
 //-------------------------------Uses---------------------------
+
+void VarTable::addDataToUses(string varName, int stmtLine) {
+	addToVarTable(2, varName, stmtLine);
+	Uses::addUsesTable(varName, stmtLine);
+	VarTable::setAllVariables(varName);
+}
+
 vector<string> VarTable::findVariableRight(int stmtLine1, int stmtLine2) {
 	// stmtLine1 = parent; stmtLine2 = the position of bracket end
 	vector<string> ans;
@@ -639,10 +699,6 @@ vector<int> VarTable::getUsesTable(string varName) {
 	return Uses::getUsesTable(varName);
 }
 
-void VarTable::addDataToUses(string varName, int stmtLine) {
-	addToVarTable(2, varName, stmtLine);
-	Uses::addUsesTable(varName, stmtLine);
-}
 
 // add the var to varTableLeftInPair or varTableRightInPair
 void addToVarTable(int position, string varName, int stmtLine) {

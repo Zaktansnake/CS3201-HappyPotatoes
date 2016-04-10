@@ -1,6 +1,7 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "./PQL/Header/ParseResult.h"
+
+#include "../source/PQL/Header/ParseResult.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 /*
