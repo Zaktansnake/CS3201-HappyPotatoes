@@ -27,11 +27,12 @@ void TestWrapper::parse(std::string filename) {
 // method to evaluating a query
 void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	// call your evaluator to evaluate the query here
-	int pos = query.find_last_of(";", query.size());
+	int pos = query.find_first_of(";", query.size());
 	string declarationSentence, querySentence;
 	declarationSentence = query.substr(0, pos + 1);
 	pos += 2;
 	querySentence = query.substr(pos, query.size() - pos);
+
 	ParseResult parser = ParseResult();
 	ParseResult generatedParseResult = parser.generateParseResult(declarationSentence, querySentence);
 	QueryEvaluator evaluator;
