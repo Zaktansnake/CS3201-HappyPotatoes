@@ -30,6 +30,7 @@ public:
 	static vector<int> getAllAssign();
 	static vector<int> getAllWhile();
 	static vector<int> getAllIfs();
+	static vector<string> getAllVariables();
 	static vector<pair<int, string>> getModifiesInPair();
 	static vector<pair<int, string>> getUsesInPair();
 
@@ -93,6 +94,7 @@ private:
 	VarTable();
 
 	static vector<int> setAssign();
+	static void setAllVariables(string variable);
 
 	static vector<string> convertIntToString(vector<int> temp);
 

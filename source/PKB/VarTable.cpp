@@ -27,6 +27,7 @@ map<string, vector<int>> ifsTable;
 // (Assign) int -> stmtLine, string -> line
 map<int, string> assignTable;
 
+vector<string> allVariables;
 vector<int> allStmtNum;
 vector<int> assignNum;
 vector<int> whileStmtNum;
@@ -149,6 +150,9 @@ void VarTable::updateModifiesUsesTables() {
 
 	std::sort(assignNum.begin(), assignNum.end());
 	std::sort(whileStmtNum.begin(), whileStmtNum.end());
+
+	sort(allVariables.begin(), allVariables.end());
+	allVariables.erase(unique(allVariables.begin(), allVariables.end()), allVariables.end());
 }
 
 void VarTable::sortVarLeftAndRight() {
@@ -170,6 +174,14 @@ vector<int> VarTable::getAllWhile() {
 
 vector<int> VarTable::getAllIfs() {
 	return ifStmtNum;
+}
+
+void VarTable::setAllVariables(string variable) {
+	allVariables.push_back(variable);
+}
+
+vector<string> VarTable::getAllVariables() {
+	return allVariables;
 }
 
 vector<pair<int, string>> VarTable::getModifiesInPair() {
@@ -257,6 +269,7 @@ vector<int> VarTable::getAllAssign() {
 void VarTable::addDataToModifies(string varName, int stmtLine) {
 	addToVarTable(1, varName, stmtLine);
 	Modifies::addModifiesTable(varName, stmtLine);
+	VarTable::setAllVariables(varName);
 }
 
 vector<string> VarTable::findVariableLeft(int stmtLine1, int stmtLine2) {
@@ -465,6 +478,13 @@ bool VarTable::isModifiesIfs(string firstPerimeter, string secondPerimeter) {
 
 
 //-------------------------------Uses---------------------------
+
+void VarTable::addDataToUses(string varName, int stmtLine) {
+	addToVarTable(2, varName, stmtLine);
+	Uses::addUsesTable(varName, stmtLine);
+	VarTable::setAllVariables(varName);
+}
+
 vector<string> VarTable::findVariableRight(int stmtLine1, int stmtLine2) {
 	// stmtLine1 = parent; stmtLine2 = the position of bracket end
 	vector<string> ans;
@@ -639,10 +659,6 @@ vector<int> VarTable::getUsesTable(string varName) {
 	return Uses::getUsesTable(varName);
 }
 
-void VarTable::addDataToUses(string varName, int stmtLine) {
-	addToVarTable(2, varName, stmtLine);
-	Uses::addUsesTable(varName, stmtLine);
-}
 
 // add the var to varTableLeftInPair or varTableRightInPair
 void addToVarTable(int position, string varName, int stmtLine) {
