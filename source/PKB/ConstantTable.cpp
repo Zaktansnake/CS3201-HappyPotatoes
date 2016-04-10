@@ -23,8 +23,8 @@ ConstantTable::~ConstantTable()
 {
 }
 
-vector<int> ConstantTable::getAllConstantValues() {
-	return ConstantList;
+vector<string> ConstantTable::getAllConstantValues() {
+	return ConstantTable::convertIntToString(ConstantList);
 }
 
 // refStmtLine -> when update Modifies Table
@@ -100,23 +100,13 @@ int insertToConstantMap(string constantValue) {
 	return index;
 }
 
-
-
-void ConstantTable::printMap03() {
-	cout << "Table for ConstantMap" << endl;
-	for (std::map<int, int>::iterator i = ConstantMap.begin(); i != ConstantMap.end(); i++)
-	{
-		cout << i->first << ", " << i->second << "\n";
-	}
-
-	cout << "Table for ConstantTables" << endl;
-	for (map<int, vector<int>>::iterator ii = ConstantTables.begin(); ii != ConstantTables.end(); ++ii) {
-		cout << (*ii).first << ": ";
-		vector <int> inVect = (*ii).second;
-		for (unsigned j = 0; j<inVect.size(); j++) {
-			cout << inVect[j] << " ";
+// Convert vector<int> to vector<string>
+vector<string> ConstantTable::convertIntToString(vector<int> temp) {
+	vector<string> result;
+	if (!temp.empty()) {
+		for (int i = 0; i < temp.size(); i++) {
+			result.push_back(to_string(temp.at(i)));
 		}
-		cout << endl;
 	}
-	cout << endl;
+	return result;
 }

@@ -15,15 +15,14 @@ public:
 	// add item to ConstantTable
 	static void setConstantValue(string constantValue, int stmtLine);
 	static vector<int> getConstantValue(string stmtNum);
-	static vector<int> getAllConstantValues();
-
-	static void printMap03();
+	static vector<string> getAllConstantValues();
 
 private:
 
 	static bool isContains(int constantValue);
 	static int findPosition(int constantValue);
 
+	static vector<string> convertIntToString(vector<int> temp);
 
 };
 

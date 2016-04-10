@@ -11,6 +11,7 @@
 #include "./Header/PKB.h"
 #include "./Header/VarTable.h"
 #include "./Header/ProcTable.h"
+#include "./Header/ConstantTable.h"
 #include "./Header/Modifies.h"
 #include "./Header/Uses.h"
 
@@ -141,8 +142,11 @@ vector<string> VarTable::getAllWithType(string type, string value) {
 	else if (type.compare("IF") == 0) {
 		finalResult = VarTable::getAllIfsString();
 	}
-	else if (type.compare("CONSTANT") == 0 || type.compare("VAR") == 0) {
+	else if (type.compare("VAR") == 0) {
 		finalResult = VarTable::getAllVariables();
+	}
+	else if (type.compare("CONSTANT") == 0) {
+		finalResult = ConstantTable::getAllConstantValues();
 	}
 	return finalResult;
 }
