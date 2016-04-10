@@ -141,6 +141,9 @@ vector<string> VarTable::getAllWithType(string type, string value) {
 	else if (type.compare("IF") == 0) {
 		finalResult = VarTable::getAllIfsString();
 	}
+	else if (type.compare("CONSTANT") == 0 || type.compare("VAR") == 0) {
+		finalResult = VarTable::getAllVariables();
+	}
 	return finalResult;
 }
 
