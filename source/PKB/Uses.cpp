@@ -13,6 +13,8 @@ using namespace std;
 map<string, int> UsesMap; // variable name
 map<int, vector<int>> UsesTable;
 
+map<int, vector<string>> varTableRight;
+
 int insertToUsesMap(string varName);
 
 Uses::Uses() {
@@ -38,7 +40,32 @@ void Uses::addUsesTable(string varName, int stmtLine) {
 	UsesTable[index].push_back(stmtLine);
 	sort(UsesTable[index].begin(), UsesTable[index].end());
 	UsesTable[index].erase(unique(UsesTable[index].begin(), UsesTable[index].end()), UsesTable[index].end());
+
+	varTableRight[stmtLine].push_back(varName);
+	sort(varTableRight[stmtLine].begin(), varTableRight[stmtLine].end());
+	varTableRight[stmtLine].erase(unique(varTableRight[stmtLine].begin(), varTableRight[stmtLine].end()), varTableRight[stmtLine].end());
 }
+
+
+std::vector<int> Uses::getUsesTable(string varName) {
+	int index = findPosition(varName);
+
+	if (index == -1) {
+		vector<int> ans;
+		return ans;
+	}
+	else {
+		return UsesTable[index];
+	}
+}
+
+vector<string> Uses::getUseVariables(string stmtLine) {
+	int temp = atoi(stmtLine.c_str());
+	vector<string> ans = varTableRight[temp];
+	return ans;
+}
+
+
 
 // return the index of the varName in the map
 int Uses::findPosition(string varName) {
@@ -67,40 +94,9 @@ bool Uses::isContains(string varName) {
 	}
 }
 
-std::vector<int> Uses::getUsesTable(string varName) {
-	int index = findPosition(varName);
-
-	if (index == -1) {
-		vector<int> ans;
-		return ans;
-	} else {
-		return UsesTable[index];
-	}
-}
-
 int insertToUsesMap(string varName) {
 	int index = UsesMap.size();   // set the index be the size of vertor
 	UsesMap.insert(pair<string, int>(varName, index));
 	return index;
 }
 
-
-
-void Uses::printMap02() {
-	cout << "Table for UsesMap" << endl;
-	for (std::map<string, int>::iterator i = UsesMap.begin(); i != UsesMap.end(); i++)
-	{
-		cout << i->first << ", " << i->second << "\n";
-	}
-
-	cout << "Table for UsesTable" << endl;
-	for (map<int, vector<int>>::iterator ii = UsesTable.begin(); ii != UsesTable.end(); ++ii) {
-		cout << (*ii).first << ": ";
-		vector <int> inVect = (*ii).second;
-		for (unsigned j = 0; j<inVect.size(); j++) {
-			cout << inVect[j] << " ";
-		}
-		cout << endl;
-	}
-
-}

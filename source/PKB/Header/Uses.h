@@ -11,13 +11,12 @@ class Uses
 {
 public:
 
-	// get UsesTable
-	static std::vector<int> getUsesTable(string varName);
-
 	// add item to UsesTable
 	static void addUsesTable(string varName, int stmtLine);
 
-	static void printMap02();
+	// get UsesTable
+	static std::vector<int> getUsesTable(string varName);
+	static vector<string> getUseVariables(string stmtLine);
 
 private:
 
