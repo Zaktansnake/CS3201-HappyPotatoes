@@ -18,6 +18,7 @@ public:
 	static void updateProcCallsTables();
 
 	static void addTableData(string procName);
+	static void setProcStmtNum(string procName, int stmtNum);
 	static void setCallsTable(string proc1, string proc2, int stmtLine);
 	static std::vector<std::tuple<string, string, int>> getCallsTable();
 
@@ -47,6 +48,12 @@ public:
 	int findPosition(string ProcName);
 	static bool isContains (string procName);  // check if the table contains proceduce
 
+
+	static vector<string> getProcWithType(string type, string value);
+	static vector<string> getParentProcWithType(string type, string value);
+	static vector<string> getProcTransitiveWithType(string type, string value);
+	static vector<string> getParentProcTransitiveWithType(string type, string value);
+
 private:   
 	// constructor
 	ProcTable();
@@ -55,5 +62,7 @@ private:
 	static void updateAllTransitiveTables();
 	static void updateCallsTransitive();
 	static void updateParentProcTransitive();
+
+	static vector<string> convertIntToString(vector<int> temp);
 
 };

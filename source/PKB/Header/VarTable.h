@@ -15,17 +15,14 @@ public:
 	// constructor
 	~VarTable();
 
-	// printTable
-	static void printTables();
-
 	static void sortVarLeftAndRight();
 
 	// Update the Tables after parser is done
 	static void updateModifiesUsesTables();
 
 	// getSize
-	static int varTableLeftSize();
-	static int varTableRightSize();
+	static int varTableLeftInPairSize();
+	static int varTableRightInPairSize();
 	static int whileTableSize();
 	static int assignTableSize();
 
@@ -53,30 +50,43 @@ public:
 	static map<int, string> getAssignTable();
 
 	//----------------------- Modifies -------------------------------
-	static std::vector<int> getModifiesTable(string varName); // get ModifiesTable
 	static void addDataToModifies(string varName, int stmtLine); // add ModifiesTable
 
-	static vector<string> getModifiesVariable(string firstPerimeter);
+	static std::vector<int> getModifiesTable(string varName); // get ModifiesTable
 	static vector<int> getModifiesAssignInt(string secondPerimeter);
+	static vector<string> getModifiesVariable(string firstPerimeter);
 	static vector<string> getModifiesAssign(string secondPerimeter);
 	static vector<string> getModifiesWhile(string secondPerimeter);
-	static vector<string> getModifiesStmt(string firstPerimeter);
+	static vector<string> getModifiesStmt(string secondPerimeter);
+	static vector<string> getModifiesIfs(string secondPerimeter);
+	static bool isModifiesProcedure(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesAssign(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isModifiesWhile(string firstPerimeter, string secondPerimeter);
+	static bool isModifiesIfs(string firstPerimeter, string secondPerimeter);
 
 	// Uses
-	static std::vector<int> getUsesTable(string varName);  // get UsesTable
 	static void addDataToUses(string varName, int stmtLine);  // add UsesTable
 
-	static vector<string> getUsesVariable(string firstPerimeter);
+	static std::vector<int> getUsesTable(string varName);  // get UsesTable
 	static vector<int> getUsesAssigInt(string secondPerimeter);
+	static vector<string> getUsesVariable(string firstPerimeter);
 	static vector<string> getUsesAssig(string secondPerimeter);
 	static vector<string> getUsesStmt(string secondPerimeter);
 	static vector<string> getUsesWhile(string secondPerimeter);
+	static vector<string> getUsesIfs(string secondPerimeter);
+	static bool isUsesProcedure(string firstPerimeter, string secondPerimeter);
 	static bool isUsesAssign(string firstPerimeter, string secondPerimeter);
 	static bool isUsesStmt(string firstPerimeter, string secondPerimeter);
 	static bool isUsesWhile(string firstPerimeter, string secondPerimeter);
+	static bool isUsesIfs(string firstPerimeter, string secondPerimeter);
+
+
+	static vector<string> getModifiesWithType(string type, string value);
+	static vector<string> getModifiedWithType(string type, string value);
+	static vector<string> getUsesWithType(string type, string value);
+	static vector<string> getUsedWithType(string type, string value);
+
 
 private:
 	// constructor

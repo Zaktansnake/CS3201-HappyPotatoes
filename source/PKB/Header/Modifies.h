@@ -11,13 +11,13 @@ using namespace std;
 class Modifies
 {
 public:
-	// get ModifiesTable
-	static std::vector<int> getModifiesTable(string varName);
 
 	// add item to ModifiesTable
 	static void addModifiesTable(string varName, int stmtLine);
 
-	static void printMap01();
+	// get ModifiesTable
+	static std::vector<int> getModifiesTable(string varName);
+	static vector<string> getModVariables(string stmtLine);
 
 private:
 	int index;

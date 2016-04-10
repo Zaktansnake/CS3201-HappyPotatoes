@@ -13,6 +13,8 @@ using namespace std;
 map<string, int> ModifiesMap;
 map<int, vector<int>> ModifiesTable;
 
+map<int, vector<string>> varTableLeft;
+
 int insertToMap(string varName);
 
 Modifies::Modifies() {
@@ -37,6 +39,28 @@ void Modifies::addModifiesTable(string varName, int stmtLine) {
 	ModifiesTable[index].push_back(stmtLine);
 	sort(ModifiesTable[index].begin(), ModifiesTable[index].end());
 	ModifiesTable[index].erase(unique(ModifiesTable[index].begin(), ModifiesTable[index].end()), ModifiesTable[index].end());
+
+	varTableLeft[stmtLine].push_back(varName);
+	sort(varTableLeft[stmtLine].begin(), varTableLeft[stmtLine].end());
+	varTableLeft[stmtLine].erase(unique(varTableLeft[stmtLine].begin(), varTableLeft[stmtLine].end()), varTableLeft[stmtLine].end());
+}
+
+std::vector<int> Modifies::getModifiesTable(string varName) {
+	int index = findPosition(varName);
+
+	if (index == -1) {
+		vector<int> ans;
+		return ans;
+	}
+	else {
+		return ModifiesTable[index];
+	}
+}
+
+vector<string> Modifies::getModVariables(string stmtLine) {
+	int temp = atoi(stmtLine.c_str());
+	vector<string> ans = varTableLeft[temp];
+	return ans;
 }
 
 // return the index of the varName in the map
@@ -67,41 +91,8 @@ bool Modifies::isContains(string varName) {
 	}
 }
 
-std::vector<int> Modifies::getModifiesTable(string varName) {
-	int index = findPosition(varName);
-
-	if (index == -1) {
-		vector<int> ans;
-		return ans;
-	} else {
-		return ModifiesTable[index];
-	}
-}
-
 int insertToMap(string varName) {
 	int index = ModifiesMap.size();   // set the index be the size of vertor
 	ModifiesMap.insert(pair<string, int>(varName, index));
 	return index;
-}
-
-
-
-
-void Modifies::printMap01() {
-	cout << "Table for ModifiesMap" << endl;
-	for (std::map<string, int>::iterator i = ModifiesMap.begin(); i != ModifiesMap.end(); i++)
-	{
-		cout << i->first << ", " << i->second << "\n";
-	}
-
-	cout << "Table for ModifiesTable" << endl;
-	for (map<int, vector<int>>::iterator ii = ModifiesTable.begin(); ii != ModifiesTable.end(); ++ii) {
-		cout << (*ii).first << ": ";
-		vector <int> inVect = (*ii).second;
-		for (unsigned j = 0; j<inVect.size(); j++) {
-			cout << inVect[j] << " ";
-		}
-		cout << endl;
-	}
-	cout << endl;
 }

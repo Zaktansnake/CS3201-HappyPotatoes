@@ -48,15 +48,20 @@ ParseResult::ParseResult(ParameterSet selectParameter, ClauseSet condClauses, Pa
 	withClauses_ = withClauses;
 }
 
-// constants for project iteration 1
 const string IDENT = "(?:[[:alpha:]](?:[[:alpha:]]|\\d|#)*)";
+// IDENTWithStar is used to parse normal clauses because of Calls*, Parent*, Follows*, etc.
+const string IDENTWithStar = "(?:[[:alpha:]](?:[[:alpha:]]|\\d|#|\\*)*)";
 const string INTEGER = "(?:\\d+)";
+// VAR is used during clause object construction
+const string VAR = "\"" + IDENT + "\"";
 const string space = "\\s*";
 const string attrName = "(?:procName|varName|value|stmt#)";
 const string attrRef = "(?:" + IDENT + "\\." + attrName + ")";
 const string elem = "(?:" + IDENT + "|" + attrRef + ")";
 const string TUPLE = "(?:" + elem + "|<" + space + elem + space + "(?:," + space + elem + space + ")*>)";
 const string entRef = "(?:" + IDENT + "|_|" + "\"" + IDENT + "\"|" + INTEGER + ")";
+// entRefWithStar is used to parse normal clauses because of Calls*, Parent*, Follows*, etc.
+const string entRefWithStar = "(?:" + IDENTWithStar + "|_|" + "\"" + IDENT + "\"|" + INTEGER + ")";
 const string stmtRef = "(?:" + IDENT + "|_|" + INTEGER + ")";
 const string lineRef = stmtRef;
 const string designEntity = "(?:procedure|stmt|assign|call|while|if|variable|constant|prog_line)";
@@ -101,6 +106,7 @@ const string patternCl = "(?:pattern" + space + patternCond + ")";
 
 const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
 const string selectOnly = space + "Select" + space + resultCl + space;
+const string suchthatOnly = space + suchthatCl + space;
 const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
 const regex declarationChecking(declar);
@@ -109,7 +115,9 @@ const regex declarationWordParsing(IDENT);
 
 const regex queryChecking(selectClause);
 const regex queryParseSelect(selectOnly);
-const regex queryWordParsing(entRef);
+const regex queryParseNormalClauses(suchthatOnly);
+const regex queryWordParsingSelect(IDENT);
+const regex queryWordParsingNormalClause(entRefWithStar);
 const regex queryPatternParsing(expressionSpec);
 
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
@@ -187,7 +195,7 @@ ParameterSet ParseResult::parseSelect(string query, unordered_map<string, string
 	selectPhrase = match.str(0);
 
 	vector<string> word;
-	next = sregex_iterator(selectPhrase.begin(), selectPhrase.end(), queryWordParsing);
+	next = sregex_iterator(selectPhrase.begin(), selectPhrase.end(), queryWordParsingSelect);
 	while (next != end) {
 		smatch match = *next;
 		next++;
@@ -221,6 +229,279 @@ ParameterSet ParseResult::parseSelect(string query, unordered_map<string, string
 	}
 
 	return selectParameter;
+}
+
+ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, string>& declarationTable) {
+	vector<string> normalClausePhrase;
+	sregex_iterator next(query.begin(), query.end(), queryParseNormalClauses);
+	sregex_iterator end;
+	while (next != end) {
+		smatch match = *next;
+		normalClausePhrase.push_back(match.str(0));
+		next++;
+	}
+
+	vector<string> word;
+	vector<string>::iterator it;
+	ClauseSet normalClauses;
+	ClauseSet zeroSynonyms;
+	ClauseSet oneSynonym;
+	ClauseSet twoSynonyms;
+
+	for (it = normalClausePhrase.begin(); it != normalClausePhrase.end(); ++it) {
+		string current = *it;
+		next = sregex_iterator(current.begin(), current.end(), queryWordParsingNormalClause);
+		while (next != end) {
+			smatch match = *next;
+			if (match.str(0) == "such" || match.str(0) == "that") continue;
+			word.push_back(match.str(0));
+			next++;
+		}
+
+		string clauseType;
+		string firstParam;
+		string secondParam;
+		string current;
+		string firstPType;
+		string secondPType;
+		int counter = 0;
+
+		for (it = word.begin(); it != word.end(); it++) {
+			current = *it;
+			if (*it == "Modifies" || *it == "Uses" || *it == "Calls" || *it == "Calls*" || *it == "Parent" ||
+				*it == "Parent*" || *it == "Follows" || *it == "Follows*" || *it == "Next" || *it == "Next*" ||
+				*it == "Affects" || *it == "Affects*") {
+				clauseType = current;
+				counter++;
+			}
+			// current iterator points to a variable
+			else if (current.front == '"' && current.back() == '"') {
+				// the variable is the first parameter
+				if (*prev(it) == "Modifies" || *prev(it) == "Uses" || *prev(it) == "Calls" || *prev(it) == "Calls*" || *prev(it) == "Parent" ||
+					*prev(it) == "Parent*" || *prev(it) == "Follows" || *prev(it) == "Follows*" || *prev(it) == "Next" || *prev(it) == "Next*" ||
+					*prev(it) == "Affects" || *prev(it) == "Affects*") {
+					firstParam = current;
+					string type = *prev(it);
+					if (type == "Modifies" || type == "Uses" || type == "Calls" || type == "Calls*") {
+						firstPType = "p";
+						counter++;
+					}
+					else {	//grammar error as Parent|Follows|Next|Affects cannot have variable
+						ClauseSet c;
+						c.push_back(Clause("dummy", "dummy", "dummy"));
+						return c;
+					}
+				}
+				else {	// the variable is the second parameter
+					secondParam = current;
+					string type = *prev(prev(it));
+					if (type == "Modifies" || type == "Uses") {
+						secondPType = "v";
+						counter++;
+					}
+					else if (type == "Calls" || type == "Calls*") {
+						secondPType = "p";
+						counter++;
+					}
+					else {	//grammar error
+						ClauseSet c;
+						c.push_back(Clause("dummy", "dummy", "dummy"));
+						return c;
+					}
+				}
+			}
+			// current iterator points to a non-variable
+			else {
+				// the non-variable is a constant
+				if (regex_match(current, regex(INTEGER))) {
+					// the constant is the first parameter
+					if (*prev(it) == "Modifies" || *prev(it) == "Uses" || *prev(it) == "Calls" || *prev(it) == "Calls*" || *prev(it) == "Parent" ||
+						*prev(it) == "Parent*" || *prev(it) == "Follows" || *prev(it) == "Follows*" || *prev(it) == "Next" || *prev(it) == "Next*" ||
+						*prev(it) == "Affects" || *prev(it) == "Affects*") {
+						firstParam = current;
+						string type = *prev(it);
+						if (type == "Modifies" || type == "Uses" || type == "Parent" || type == "Parent*" || type == "Follows" ||
+							type == "Follows*" || type == "Next" || type == "Next*" || type == "Affects" || type == "Affects*") {
+							firstPType = "s";
+							counter++;
+						}
+						else {	// grammar error as Calls cannot have integer as parameter
+							ClauseSet c;
+							c.push_back(Clause("dummy", "dummy", "dummy"));
+							return c;
+						}
+					}
+					else {	// the digit is the second parameter
+						secondParam = current;
+						string type = *prev(prev(it));
+						if (type == "Modifies" || type == "Uses" || type == "Calls" || type == "Calls*") {
+							// grammar error as Modifies|Uses|Calls cannot have second parameter as integer
+							ClauseSet c;
+							c.push_back(Clause("dummy", "dummy", "dummy"));
+							return c;
+						}
+						else {
+							secondPType = "s";
+							counter++;
+						}
+					}
+				}
+				// the non-variable is a underscore
+				else if (current == "_") {
+					if (*prev(it) == "Modifies" || *prev(it) == "Uses" || *prev(it) == "Calls" || *prev(it) == "Calls*" || *prev(it) == "Parent" ||
+						*prev(it) == "Parent*" || *prev(it) == "Follows" || *prev(it) == "Follows*" || *prev(it) == "Next" || *prev(it) == "Next*" ||
+						*prev(it) == "Affects" || *prev(it) == "Affects*") {
+						// the underscore is the first parameter
+						firstParam = current;
+						string type = *prev(it);
+						if (type == "Calls" || type == "Calls*") {
+							firstPType = "p";
+							counter++;
+						}
+						else if (type == "Parent" || type == "Parent*" || type == "Follows" || type == "Follows*" || type == "Next" ||
+							type == "Next*" || type == "Affects" || type == "Affects*") {
+							firstPType = "s";
+							counter++;
+						}
+						else {	// grammar error due to ambiguity
+							ClauseSet c;
+							c.push_back(Clause("dummy", "dummy", "dummy"));
+							return c;
+						}
+					}
+					else {	// the underscore is the second parameter
+						secondParam = current;
+						string type = *prev(prev(it));
+						if (type == "Modifies" || type == "Uses") {
+							secondPType = "v";
+							counter++;
+						}
+						else if (type == "Calls" || type == "Calls*") {
+							secondPType = "p";
+							counter++;
+						}
+						else {
+							secondPType = "s";
+							counter++;
+						}
+					}
+				}
+				// the non-variable is a synonym
+				else {
+					// the synonym was not declared
+					if (declarationTable[current] == "") {
+						ClauseSet c;
+						c.push_back(Clause("dummy", "dummy", "dummy"));
+						return c;
+					}
+					else {	// the synonym was declared
+						if (*prev(it) == "Modifies" || *prev(it) == "Uses" || *prev(it) == "Calls" || *prev(it) == "Calls*" || *prev(it) == "Parent" ||
+							*prev(it) == "Parent*" || *prev(it) == "Follows" || *prev(it) == "Follows*" || *prev(it) == "Next" || *prev(it) == "Next*" ||
+							*prev(it) == "Affects" || *prev(it) == "Affects*") {
+							// the synonym is the first parameter
+							firstParam = current;
+							firstPType = declarationTable[current];
+							string type = *prev(it);
+							if (type == "Modifies" || type == "Uses") {
+								// type error because first parameter of Modifies|Uses cannot be a variable type
+								if (firstPType == "variable") {
+									ClauseSet c;
+									c.push_back(Clause("dummy", "dummy", "dummy"));
+									return c;
+								}
+							}
+							else if (type == "Calls" || type == "Calls*") {
+								// type error because first parameter of Calls can only be a procedure
+								if (firstPType != "procedure") {
+									ClauseSet c;
+									c.push_back(Clause("dummy", "dummy", "dummy"));
+									return c;
+								}
+							}
+							else {
+								// type error because for relationships between statements synonym type cannot be procedure or variable
+								if (firstPType == "procedure" || firstPType == "variable") {
+									ClauseSet c;
+									c.push_back(Clause("dummy", "dummy", "dummy"));
+									return c;
+								}
+							}
+							counter++;
+							// shortening firstPType for abbr
+							if (firstPType == "prog_line") {
+								firstPType = "l";
+							}
+							else {
+								firstPType = firstPType.substr(0, 1);
+							}
+						}
+						else {
+							// the synonym is the second parameter
+							secondParam = current;
+							secondPType = declarationTable[current];
+							string type = *prev(prev(it));
+							if (type == "Modifies" || type == "Uses") {
+								// type error because second parameter of Modifies|Uses can only be a variable type
+								if (secondPType != "variable") {
+									ClauseSet c;
+									c.push_back(Clause("dummy", "dummy", "dummy"));
+									return c;
+								}
+							}
+							else if (type == "Calls" || type == "Calls*") {
+								// type error because second parameter of Calls can only be a procedure
+								if (secondPType != "procedure") {
+									ClauseSet c;
+									c.push_back(Clause("dummy", "dummy", "dummy"));
+									return c;
+								}
+							}
+							else {
+								// type error because for relationships between statements, synonym type cannot be procedure or variable
+								if (secondPType == "procedure" || secondPType == "variable") {
+									ClauseSet c;
+									c.push_back(Clause("dummy", "dummy", "dummy"));
+									return c;
+								}
+							}
+							counter++;
+							// shortening secondPType for abbr
+							if (secondPType == "prog_line") {
+								secondPType = "l";
+							}
+							else {
+								secondPType = secondPType.substr(0, 1);
+							}
+						}
+					}
+				}
+			}
+
+			// a clause object is ready to be constructed
+			if (counter == 3) {
+				// append abbr to clauseType
+				clauseType += firstPType + secondPType;
+				if (regex_match(firstParam, regex(INTEGER)) || regex_match(firstParam, regex(VAR))) {
+					// both the first and second parameter are non-synonyms
+					if (regex_match(secondParam, regex(INTEGER)) || regex_match(secondParam, regex(VAR))) {
+						zeroSynonyms.push_back(Clause(clauseType, firstParam, secondParam));
+					}
+					else {	// only the first parameter is not a synonym
+						oneSynonym.push_back(Clause(clauseType, firstParam, secondParam));
+					}
+				}
+				else {
+					// only the second parameter is not a synonym
+					if (regex_match(secondParam, regex(INTEGER)) || regex_match(secondParam, regex(VAR))) {
+						oneSynonym.push_back(Clause(clauseType, firstParam, secondParam));
+					}
+					else {	// both parameters are synonyms
+						twoSynonyms.push_back(Clause(clauseType, firstParam, secondParam));
+					}
+				}
+			}
+		}
+	}
 }
 
 bool ParseResult::checkWholeQuery(string query) {

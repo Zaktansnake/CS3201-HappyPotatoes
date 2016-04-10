@@ -15,8 +15,12 @@ public:
 
 
 private:
-
-	
+	bool CheckWith(With with);
+	bool GetAnswerForRightWith(string left, string right);
+	bool GetAnswerForLeftWith(string left, string right);
+	bool GetAnswerForBothWith(string left, string right);
+	vector<string> QueryEvaluator::CheckWithClauseVector(vector<string> v, vector<string> w);
+	bool CheckIfMatchWithClause(string, vector<string>);
 	vector<string> GetAllRightSideOfWithClause(string);
 	string WithTableKey(string, char);
 	string MatchWithClause(string,char);
@@ -42,5 +46,9 @@ private:
 	bool CheckIsResultsFromPkb(string P1, string P2, char P1Type, char P2Type, string clausesType);
 	bool CheckTempResultSize(vector<string> v);
 	bool GetResultsForNoClause(vector<pair<string,string>>);
+	vector<string> GetP2Blank(string ClauseType);
+	vector<string> GetP1Blank(string clausesType);
+	bool DoNormalClause(vector<Clause> ClausesVector);
+	bool DoWithClause(vector<With> W);
 };
 

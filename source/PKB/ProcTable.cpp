@@ -11,6 +11,7 @@
 #include <exception>
 
 #include "./Header/ProcTable.h"
+#include "./Header/VarTable.h"
 #include "./Header/Calls.h"
 
 using namespace std;
@@ -24,6 +25,7 @@ template <> struct hash<std::pair<string, string>> {
 
 map<string, int> ProcMap;  // procName, index of the procName in the map
 vector<string> ProcIndex;  // store the procedures
+map<string, vector<int>> ProcStmtLineNum;
 map<string, vector<string>> ProcWithModifies; // string -> procedure, vector<string> -> list of variables
 map<string, vector<string>> ProcWithUses; // string -> procedure, vector<string> -> list of variables
 map<string, vector<string>> ModifiesWithProc; // string -> variable, vector<string> -> procedure
@@ -38,10 +40,6 @@ std::map<string, vector<string>> CallsReverseTransitiveMap;
 vector<string> findPositionProcModifies(string variable); // return a list of procedures based on variable
 vector<string> findPositionProcUses(string procName);
 
-void printTable();
-
-Calls call;
-
 
 ProcTable::ProcTable() {
   
@@ -50,6 +48,189 @@ ProcTable::ProcTable() {
 ProcTable::~ProcTable() {
 
 }
+
+
+vector<string> ProcTable::getProcWithType(string type, string value) {
+	// calls (proc1, _)
+	vector<string> finalResult = ProcTable::getNextProcedure(value);
+	vector<int> ans, ansAll, tempAns;
+	std::vector<int> v_intersection;
+
+	if (type.compare("PROC") == 0) {
+		return finalResult;
+	}
+	else {
+
+		for (vector<string>::iterator it = finalResult.begin(); it != finalResult.end(); ++it) {
+			ans = ProcStmtLineNum[*it];
+			ansAll.insert(ansAll.end(), ans.begin(), ans.end());
+		}
+
+		if (type.compare("STMT") == 0) {
+			return ProcTable::convertIntToString(ansAll);
+		}
+		else if (type.compare("ASSIGN") == 0) {
+			tempAns = VarTable::getAllAssign();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+			return ProcTable::convertIntToString(v_intersection);
+		}
+		else if (type.compare("WHILE") == 0) {
+			tempAns = VarTable::getAllWhile();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+
+			return ProcTable::convertIntToString(v_intersection);
+		}
+		else if (type.compare("IF") == 0) {
+			tempAns = VarTable::getAllIfs();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+
+			return ProcTable::convertIntToString(v_intersection);
+		}
+	}
+}
+
+vector<string> ProcTable::getParentProcWithType(string type, string value) {
+	// calls (_, proc2)
+	vector<string> finalResult = ProcTable::getParentProcedure(value);
+	vector<int> ans, ansAll, tempAns;
+	std::vector<int> v_intersection;
+
+	if (type.compare("PROC") == 0) {
+		return finalResult;
+	}
+	else {
+
+		for (vector<string>::iterator it = finalResult.begin(); it != finalResult.end(); ++it) {
+			ans = ProcStmtLineNum[*it];
+			ansAll.insert(ansAll.end(), ans.begin(), ans.end());
+		}
+
+		if (type.compare("STMT") == 0) {
+			return ProcTable::convertIntToString(ansAll);
+		}
+		else if (type.compare("ASSIGN") == 0) {
+			tempAns = VarTable::getAllAssign();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+			return ProcTable::convertIntToString(v_intersection);
+		}
+		else if (type.compare("WHILE") == 0) {
+			tempAns = VarTable::getAllWhile();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+
+			return ProcTable::convertIntToString(v_intersection);
+		}
+		else if (type.compare("IF") == 0) {
+			tempAns = VarTable::getAllIfs();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+
+			return ProcTable::convertIntToString(v_intersection);
+		}
+	}
+}
+
+vector<string> ProcTable::getProcTransitiveWithType(string type, string value) {
+	// calls* (proc1, _)
+	vector<string> finalResult = ProcTable::getNextProcedureTransitive(value);
+	vector<int> ans, ansAll, tempAns;
+	std::vector<int> v_intersection;
+
+	if (type.compare("PROC") == 0) {
+		return finalResult;
+	}
+	else {
+
+		for (vector<string>::iterator it = finalResult.begin(); it != finalResult.end(); ++it) {
+			ans = ProcStmtLineNum[*it];
+			ansAll.insert(ansAll.end(), ans.begin(), ans.end());
+		}
+
+		if (type.compare("STMT") == 0) {
+			return ProcTable::convertIntToString(ansAll);
+		}
+		else if (type.compare("ASSIGN") == 0) {
+			tempAns = VarTable::getAllAssign();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+			return ProcTable::convertIntToString(v_intersection);
+		}
+		else if (type.compare("WHILE") == 0) {
+			tempAns = VarTable::getAllWhile();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+
+			return ProcTable::convertIntToString(v_intersection);
+		}
+		else if (type.compare("IF") == 0) {
+			tempAns = VarTable::getAllIfs();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+
+			return ProcTable::convertIntToString(v_intersection);
+		}
+	}
+}
+
+vector<string> ProcTable::getParentProcTransitiveWithType(string type, string value) {
+	// calls (_, proc2)
+	vector<string> finalResult = ProcTable::getParentProcedureTransitive(value);
+	vector<int> ans, ansAll, tempAns;
+	std::vector<int> v_intersection;
+
+	if (type.compare("PROC") == 0) {
+		return finalResult;
+	}
+	else {
+
+		for (vector<string>::iterator it = finalResult.begin(); it != finalResult.end(); ++it) {
+			ans = ProcStmtLineNum[*it];
+			ansAll.insert(ansAll.end(), ans.begin(), ans.end());
+		}
+
+		if (type.compare("STMT") == 0) {
+			return ProcTable::convertIntToString(ansAll);
+		}
+		else if (type.compare("ASSIGN") == 0) {
+			tempAns = VarTable::getAllAssign();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+			return ProcTable::convertIntToString(v_intersection);
+		}
+		else if (type.compare("WHILE") == 0) {
+			tempAns = VarTable::getAllWhile();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+
+			return ProcTable::convertIntToString(v_intersection);
+		}
+		else if (type.compare("IF") == 0) {
+			tempAns = VarTable::getAllIfs();
+			std::set_intersection(ansAll.begin(), ansAll.end(),
+				tempAns.begin(), tempAns.end(),
+				std::back_inserter(v_intersection));
+
+			return ProcTable::convertIntToString(v_intersection);
+		}
+	}
+}
+
+
 
 vector<string> ProcTable::getAllProcedures() {
 	return ProcIndex;
@@ -110,6 +291,10 @@ void ProcTable::addTableData(string procName) {
 	   ProcMap.insert(pair<string, int>(procName, index)); 
 	   ProcIndex.push_back(procName);
    }
+}
+
+void ProcTable::setProcStmtNum(string procName, int stmtNum) {
+	ProcStmtLineNum[procName].push_back(stmtNum);
 }
 
 void ProcTable::setCallsTable(string proc1, string proc2, int stmtLine) {
@@ -371,4 +556,16 @@ void ProcTable::updateParentProcTransitive() {
 	catch (exception &e) {
 		cout << "Standard exception: " << e.what() << endl;
 	}
+}
+
+
+// Convert vector<int> to vector<string>
+vector<string> ProcTable::convertIntToString(vector<int> temp) {
+	vector<string> result;
+	if (!temp.empty()) {
+		for (int i = 0; i < temp.size(); i++) {
+			result.push_back(to_string(temp.at(i)));
+		}
+	}
+	return result;
 }
