@@ -254,8 +254,8 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 	ClauseSet twoSynonyms;
 
 	for (it1 = normalClausePhrase.begin(); it1 != normalClausePhrase.end(); ++it1) {
-		string current = *it1;
-		next = sregex_iterator(current.begin(), current.end(), queryWordParsingNormalClause);
+		string temp = *it1;
+		next = sregex_iterator(temp.begin(), temp.end(), queryWordParsingNormalClause);
 		while (next != end) {
 			smatch match = *next;
 			if (match.str(0) == "such" || match.str(0) == "that") continue;
