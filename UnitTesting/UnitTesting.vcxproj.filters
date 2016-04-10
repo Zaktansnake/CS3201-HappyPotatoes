@@ -47,6 +47,9 @@
     <ClCompile Include="TestGetPattern.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="TestGetPattern.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="TestParseResult.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -60,12 +63,6 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestRegex.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestParseResult.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="TestGetPattern.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

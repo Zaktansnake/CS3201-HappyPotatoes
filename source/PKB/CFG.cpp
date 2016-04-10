@@ -37,7 +37,7 @@ stack<int> proStack;
 stack <int> closingStack;
 stack <int> clostingCondition;
 stack <int> ifRecord;
-stack <int> starRecord;
+//stack <int> starRecord;
 
 bool flagNextLevelStart = false;
 bool flagForElseStart = false;;
@@ -46,21 +46,21 @@ bool flag = false;
 bool flagForCorrectElseIf = false;
 bool flagForNewProc = false;
 
-int lastWhile=0;
-int lastIf = 0; 
+int lastWhile = 0;
+int lastIf = 0;
 int lastElse = 0;
 
 int endloop;
 
 vector<int> resultStar;
-map<int,int> resultStarMap;
-map<int,int>::iterator itStar;
+map<int, int> resultStarMap;
+map<int, int>::iterator itStar;
 
 
 int setConditions(string stmtLine);
 string trimString(string stmt);
 bool checkProcedure(int s1, int s2);
-int getEndProcNo (int s1);
+int getEndProcNo(int s1);
 
 
 void CFG::addRoot(string procedure, int stmtNo) {
@@ -70,7 +70,7 @@ void CFG::addRoot(string procedure, int stmtNo) {
 			proStack.push(stmtNo + 1);
 		}
 		else {
-		    currentP ++;
+			currentP++;
 			startEndOfProcedure.insert(pair<int, int>(stmtNo + 1, -1));
 			int index = proStack.top();
 			proStack.pop();
@@ -80,43 +80,70 @@ void CFG::addRoot(string procedure, int stmtNo) {
 		}
 		CFGline.clear();
 		if (CFGstmt.size() == 0) {
-            CFGstmt.clear();
+			CFGstmt.clear();
 			CFGTable.push_back(CFGstmt);
 		}
 	}
+
+	flagNextLevelStart = false;
+	flagForElseStart = false;;
+	flagForClose = false;
+	flag = false;
+	flagForCorrectElseIf = false;
+	while (conditionStack.size() != 0) {
+		conditionStack.pop();
+	}
+	
 }
 
 void CFG::addNextNode(int stmtNo, string stmt) {
-    numOfStatement =stmtNo;
+	numOfStatement = stmtNo;
 	CFGline.clear();
+	int parentForElseIf;
 	stmt = trimString(stmt);
 	conditionstmt = setConditions(stmt);
 	CFGline.clear();
 	if (stmt.compare("}") != 0 && stmt.find("else ") == string::npos) {
-	   proRecord.push_back(currentP);
+		proRecord.push_back(currentP);
 	}
 	endloop = std::count(stmt.begin(), stmt.end(), '}');
 	if (flagForClose && stmt.size() != endloop) {
 		if (conditionstmt == 3) {
+			parentForElseIf = parentStack.top();
 			parentStack.push(stmtNo);
 			conditionStack.push(conditionstmt);
 			if (closingStack.size() != 0) {
-              int prev = closingStack.top();
-			  closingStack.pop();
-			  int prevCon = clostingCondition.top();
-			  clostingCondition.pop();
-			  if (prevCon == 3) {  // follow fan is a while loop
-			     CFGline = CFGTable.at(currentPro).at(prev);
-				 CFGline.push_back(stmtNo);
-				 CFGstmt.at(prev) = CFGline;
-				 CFGTable.at(currentPro) = CFGstmt;
-			  }
-			  else {
-				  CFGline.push_back(dummy);
-				  CFGstmt.push_back(CFGline);
-				  CFGTable.at(currentPro) = CFGstmt;
-			  }
-			  // need to complete.......................................
+				int prev = closingStack.top();
+				closingStack.pop();
+				int prevCon = clostingCondition.top();
+				clostingCondition.pop();
+				if (prevCon == 3) {  // follow fan is a while loop
+					CFGline = CFGTable.at(currentPro).at(prev);
+					CFGline.push_back(stmtNo);
+					CFGstmt.at(prev) = CFGline;
+					CFGTable.at(currentPro) = CFGstmt;
+				}
+				else {
+				//	CFGline.push_back(dummy);
+				//	CFGstmt.push_back(CFGline);
+				//	CFGTable.at(currentPro) = CFGstmt;
+
+					if (prevCon == 2) {
+						CFGline.push_back(dummy);
+						CFGstmt.push_back(CFGline);
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+					else {
+						CFGline = CFGTable.at(currentPro).at(parentForElseIf);
+						CFGline.push_back(stmtNo);
+						CFGstmt.at(parentForElseIf) = CFGline;
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+
+				}
+
+
+				// need to complete.......................................
 			}
 		}
 		else if (conditionstmt == 2) { // prev is end else
@@ -135,6 +162,7 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 					CFGTable.at(currentPro) = CFGstmt;
 				}
 				else {
+
 					// need to complete.....................................
 
 				}
@@ -144,15 +172,23 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 				int parent = ifRecord.top();
 				ifRecord.pop();
 				parentStack.push(parent);
-				conditionStack.push(1);
+			//	if (conditionstmt == 2) {
+		//			conditionStack.push(1);
+	//				flagForCorrectElseIf = false;
+	//			}
+	//			else {
+                    conditionStack.push(1);
+					flagForCorrectElseIf = true;
+		//		}
+				
 				flag = true;
-				flagForCorrectElseIf = true;
+				
 			}
-			
+
 
 		}
 		else if (conditionstmt == 1) {
-
+			parentForElseIf = parentStack.top();
 			parentStack.push(stmtNo);
 			conditionStack.push(conditionstmt);
 			if (closingStack.size() != 0) {
@@ -166,11 +202,23 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 					CFGstmt.at(prev) = CFGline;
 					CFGTable.at(currentPro) = CFGstmt;
 				}
+				if (prevCon == 2) {
+					CFGline.push_back(dummy);
+					CFGstmt.push_back(CFGline);
+					CFGTable.at(currentPro) = CFGstmt;
+				}
+				else {
+					CFGline = CFGTable.at(currentPro).at(parentForElseIf);
+					CFGline.push_back(stmtNo);
+					CFGstmt.at(parentForElseIf) = CFGline;
+					CFGTable.at(currentPro) = CFGstmt;
+				}
+
 				// need to complete.......................................
 			}
 
 		}
-		else if (conditionstmt == 0 && stmt.size() != endloop){
+		else if (conditionstmt == 0 && stmt.size() != endloop) {
 			int prev = closingStack.top();
 			closingStack.pop();
 			int con = clostingCondition.top();
@@ -184,23 +232,23 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 			else {
 				// need to complete.......................................
 				if (!flagForCorrectElseIf) {
-                     CFGline.push_back(dummy);
-				     CFGstmt.push_back(CFGline);
-				     CFGTable.at(currentPro) = CFGstmt;
+					CFGline.push_back(dummy);
+					CFGstmt.push_back(CFGline);
+					CFGTable.at(currentPro) = CFGstmt;
 				}
 
-				
+
 			}
-		    
+
 		}
 		if (!flag) {
-              flagForClose = false;
+			flagForClose = false;
 		}
 		else {
 			flagForClose = true;
 			flag = false;
 		}
-	  
+
 	}
 	else {
 		if (conditionstmt == 0 && stmt.size() != endloop && flagForNewProc == false) {  // normal statement
@@ -221,7 +269,7 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 				parentStack.push(stmtNo);
 				conditionStack.push(conditionstmt);
 			}
-			
+
 
 		}
 		else if (conditionstmt == 2) {
@@ -241,12 +289,12 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 				parentStack.push(stmtNo);
 				conditionStack.push(conditionstmt);
 			}
-			
+
 		}
 	}
 	flagForNewProc = false;
 	if (endloop > 0) {
-	    int currentNo;
+		int currentNo;
 		flagForClose = true;
 		for (int i = 0; i < endloop; i++) {
 			if (parentStack.size() == 0) {
@@ -270,7 +318,7 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 			int index = CFGstmt.size();
 			if (con == 3) { // end while, set the current node back to its parent
 				if (closingStack.size() == 0) { // current node it the stmtNo
-				   currentNo = stmtNo;
+					currentNo = stmtNo;
 				}
 				else if (clostingCondition.top() != 3) {
 					currentNo = stmtNo;
@@ -296,34 +344,41 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 					CFGTable.at(currentPro) = CFGstmt;
 				}
 			}
-			else if (con == 2) {
-			   
-			   closingStack.push(stmtNo);
-			   clostingCondition.push(con);
-			   CFGline = CFGTable.at(currentPro).at(parent);
-			   CFGline.push_back(stmtNo+1);
-			   CFGstmt.at(parent) = CFGline;
-			   CFGTable.at(currentPro) = CFGstmt;
+			else if (con == 2) {  
+				
+					closingStack.push(stmtNo);
+					clostingCondition.push(con);
+					CFGline = CFGTable.at(currentPro).at(parent);
+					CFGline.push_back(stmtNo + 1);
+					CFGstmt.at(parent) = CFGline;
+					CFGTable.at(currentPro) = CFGstmt;
+			
 
 			}
 			else if (con == 1) {
 				if (!flagForCorrectElseIf) {
-                    CFGline.push_back(dummy);
-				    CFGstmt.push_back(CFGline);
-				    CFGTable.at(currentPro) = CFGstmt;
-				    ifRecord.push(parent);
+					CFGline.push_back(dummy);
+					CFGstmt.push_back(CFGline);
+					CFGTable.at(currentPro) = CFGstmt;
+					ifRecord.push(parent);
 				}
 				else {
-                    CFGline = CFGTable.at(currentPro).at(parent);
-			        CFGline.push_back(stmtNo);
-			        CFGstmt.at(parent) = CFGline;
-		         	CFGTable.at(currentPro) = CFGstmt;
-					flagForCorrectElseIf = false;
+					CFGline = CFGTable.at(currentPro).at(parent);
+					if (CFGline.size() == 2 && (CFGline.at(0) != -1 && CFGline.at(1) != -1)) {
+					      flagForCorrectElseIf = false;
+					}
+					else {
+                         CFGline.push_back(stmtNo);
+					     CFGstmt.at(parent) = CFGline;
+					     CFGTable.at(currentPro) = CFGstmt;
+					     flagForCorrectElseIf = false;
+					}
+					
 				}
-			
+
 				closingStack.push(stmtNo);
 				clostingCondition.push(con);
-				
+
 
 			}
 		}
@@ -340,17 +395,17 @@ void CFG::reverCFG() {
 	for (int i = 0; i < temp.size(); i++) {
 		for (ite = temp.at(i).begin(); ite != temp.at(i).end(); ite++) {
 			if (*ite == -1) {  // if it is the end node
-			   prevRecord = arr[numOfStatement+1]; // store at the back
-			   prevRecord.push_back(i);
-			   arr[numOfStatement+1] = prevRecord;
-			   
+				prevRecord = arr[numOfStatement + 1]; // store at the back
+				prevRecord.push_back(i);
+				arr[numOfStatement + 1] = prevRecord;
+
 			}
 			else {
 				prevRecord = arr[*ite];
 				prevRecord.push_back(i);
 				arr[*ite] = prevRecord;
 			}
-			
+
 		}
 	}
 	revCFGstmt = arr;
@@ -390,48 +445,51 @@ string trimString(string stmt) {
 
 /*
 bool checkProcedure(int s1, int s2) {
-	
-	int start = 0;
-	int end = 0;
-	if (s1 == s2) {
-		return false;
-	}
-	for (map<int, int>::iterator it = startEndOfProcedure.begin(); it != startEndOfProcedure.end(); ++it) {
-		if (it->first <= s1 && it->second >= s1) {
-			start = it->first;
-			end = it->second;
-			break;
-		}
-		else if (it->first <= s1 && it->second == -1) {
-			start = it->first;
-			end = it->second;
-			break;
-		}
-	}
-	if (start <= s2 && end >= s2) {
-		return true;
-	}
-	else if (start <= s2 && end == -1) {
-		return true;
-	}
-	else {
-		return false;
-	}
-	
+
+int start = 0;
+int end = 0;
+if (s1 == s2) {
+return false;
+}
+for (map<int, int>::iterator it = startEndOfProcedure.begin(); it != startEndOfProcedure.end(); ++it) {
+if (it->first <= s1 && it->second >= s1) {
+start = it->first;
+end = it->second;
+break;
+}
+else if (it->first <= s1 && it->second == -1) {
+start = it->first;
+end = it->second;
+break;
+}
+}
+if (start <= s2 && end >= s2) {
+return true;
+}
+else if (start <= s2 && end == -1) {
+return true;
+}
+else {
+return false;
+}
+
 }
 */
 vector<int> CFG::getNext(int stmtNo) {
-
+	
 	vector<int> result;
+	if (stmtNo > numOfStatement) {
+	   return result;
+	}
 	vector<int> temp;
 	temp = CFGTable.at(currentPro).at(stmtNo);
 	for (int i = 0; i < temp.size(); i++) {
-//		if (checkProcedure(stmtNo, temp.at(i))) {
-		if (temp.at(i)==-1) {
-		   return result;
+		//		if (checkProcedure(stmtNo, temp.at(i))) {
+		if (temp.at(i) == -1) {
+			return result;
 		}
 		result.push_back(temp.at(i));
-//		}
+		//		}
 	}
 	return result;
 
@@ -440,45 +498,50 @@ vector<int> CFG::getNext(int stmtNo) {
 //.....................................................................
 // this method can be optimized ........................................
 vector<int> CFG::getPrev(int stmtNo) {
-     
-	 vector<int>result;
-	 vector<int>temp = revCFGstmt.at(stmtNo);
-	 result = temp;
-	 return result;
+	
+	vector<int>result;
+	if (stmtNo > numOfStatement) {
+		return result;
+	}
+	vector<int>temp = revCFGstmt.at(stmtNo);
+	result = temp;
+	return result;
 
 
-/*	vector<int> result;
+	/*	vector<int> result;
 	vector<int> temp;
 	vector<int> temp2;
 	vector<vector<int>> records;
 	bool isPrv = false;
 	records = CFGTable.at(currentPro);
 	for (int i = 0; i < records.size(); i++) {
-		temp2 = records.at(i);
-		for (int j = 0; j < temp2.size(); j++) {
-			if (temp2.at(j) == stmtNo) {
-			    isPrv = true;
-				break;
-			}
-		}
-		if (isPrv) {
-			temp.push_back(i);
-			isPrv = false;
-		}
+	temp2 = records.at(i);
+	for (int j = 0; j < temp2.size(); j++) {
+	if (temp2.at(j) == stmtNo) {
+	isPrv = true;
+	break;
+	}
+	}
+	if (isPrv) {
+	temp.push_back(i);
+	isPrv = false;
+	}
 	}
 	for (int i = 0; i < temp.size(); i++) {
-		if (checkProcedure(temp.at(i), stmtNo)) {
-			result.push_back(temp.at(i));
-		}
+	if (checkProcedure(temp.at(i), stmtNo)) {
+	result.push_back(temp.at(i));
+	}
 	}
 	return result;
-*/
+	*/
 }
 
 
 // check is Next
 bool CFG::isNext(int stmtNo1, int stmtNo2) {
-
+     if (stmtNo1 > numOfStatement|| stmtNo2 > numOfStatement) {
+		return false;
+	}
 	vector<int> temp;
 	temp = CFGTable.at(currentPro).at(stmtNo1);
 	for (int i = 0; i < temp.size(); i++) {
@@ -487,12 +550,14 @@ bool CFG::isNext(int stmtNo1, int stmtNo2) {
 		}
 	}
 	return false;
-	
+
 }
 
 
 bool CFG::isNextStar(int s1, int s2) {
-
+	if (s1 > numOfStatement || s2 > numOfStatement) {
+		return false;
+	}
 	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
 	bool ans = false;
@@ -514,16 +579,20 @@ bool CFG::isNextStar(int s1, int s2) {
 		}
 	}
 	return ans;
-	  
 
 
-	  //need to complete
+
+	//need to complete
 }
 
 vector<int> CFG::getNextStar(int stmtNo) {
-	bool* visited = new bool [CFGTable.at(currentPro).size()]();
+	
+	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
 	vector<int> ans;
+	if (stmtNo > numOfStatement) {
+		return ans;
+	}
 	stack.push(stmtNo);
 	vector<int> ::iterator it;
 
@@ -545,6 +614,9 @@ vector<int> CFG::getPrevStar(int stmtNo) {
 	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
 	vector<int> ans;
+	if (stmtNo > numOfStatement) {
+		return ans;
+	}
 	stack.push(stmtNo);
 	vector<int> ::iterator it;
 
@@ -556,9 +628,9 @@ vector<int> CFG::getPrevStar(int stmtNo) {
 			if (!visited[*it]) {
 				stack.push(*it);
 				if (*it != 0) {
-                    ans.push_back(*it);
+					ans.push_back(*it);
 				}
-				
+
 			}
 		}
 	}
@@ -567,19 +639,19 @@ vector<int> CFG::getPrevStar(int stmtNo) {
 
 /*
 int getEndProcNo(int s1) {
-    int start = 0;
-	int end = 0;
-	for (map<int, int>::iterator it = startEndOfProcedure.begin(); it != startEndOfProcedure.end(); ++it) {
-		if (it->first <= s1 && it->second >= s1) {
-		    start = it->first;
-			end = it->second;
-		}
-		else if (it->first <= s1 && it->second == -1) {
-			start = it->first;
-			end = CFGTable.at(currentPro).size()-1;
-		}
-	}
-	return end;
+int start = 0;
+int end = 0;
+for (map<int, int>::iterator it = startEndOfProcedure.begin(); it != startEndOfProcedure.end(); ++it) {
+if (it->first <= s1 && it->second >= s1) {
+start = it->first;
+end = it->second;
+}
+else if (it->first <= s1 && it->second == -1) {
+start = it->first;
+end = CFGTable.at(currentPro).size()-1;
+}
+}
+return end;
 }
 */
 
@@ -592,6 +664,9 @@ int getEndProcNo(int s1) {
 vector<string> CFG::getNextString(int stmtNo) {
 
 	vector<string> result;
+	if (stmtNo > numOfStatement) {
+		return result;
+	}
 	vector<int> temp;
 	temp = CFGTable.at(currentPro).at(stmtNo);
 	for (int i = 0; i < temp.size(); i++) {
@@ -610,6 +685,9 @@ vector<string> CFG::getNextString(int stmtNo) {
 vector<string> CFG::getPrevString(int stmtNo) {
 
 	vector<string>result;
+	if (stmtNo > numOfStatement) {
+		return result;
+	}
 	vector<int>temp = revCFGstmt.at(stmtNo);
 	for (int i = 0; i < temp.size(); i++) {
 		result.push_back(to_string(temp.at(i)));
@@ -648,6 +726,9 @@ vector<string> CFG::getNextStarString(int stmtNo) {
 	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
 	vector<string> ans;
+	if (stmtNo > numOfStatement) {
+		return ans;
+	}
 	stack.push(stmtNo);
 	vector<int> ::iterator it;
 
@@ -670,6 +751,9 @@ vector<string> CFG::getPrevStarString(int stmtNo) {
 	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
 	vector<string> ans;
+	if (stmtNo > numOfStatement) {
+		return ans;
+	}
 	stack.push(stmtNo);
 	vector<int> ::iterator it;
 
@@ -689,6 +773,7 @@ vector<string> CFG::getPrevStarString(int stmtNo) {
 	}
 	return ans;
 }
+
 
 
 

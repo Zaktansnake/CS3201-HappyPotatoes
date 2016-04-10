@@ -27,8 +27,8 @@ namespace UnitTesting
 			bool resultBoo;
 			int resultB;
 
-			expectedResult = "";
-			actual = CFG::getNext(19);
+			expectedResult = "1318";
+			actual = CFG::getNext(12);
 			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
 				result.append(std::to_string(*it));
 			}
@@ -91,6 +91,6 @@ namespace UnitTesting
 			}
 			Assert::AreEqual(expectBoo, resultB);
 
-		}
+		}   
 	};
 }
