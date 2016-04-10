@@ -15,7 +15,7 @@
 #include "Header\Patterns.h"
 
 using namespace std;
-/*
+
 map<int, string> AllAssignsTable;
 vector<int> AllAssignLineNum;
 
@@ -108,8 +108,8 @@ vector<int> PatternTable::getPatternResult(string line1, string line2, bool left
 	vector<int> leftAns = setLeftAns(line1, left);
 
 	for (int i = 0; i < leftAns.size(); i++) {
-		tempLine = AllAssignsTable[leftAns[i]];
 
+		tempLine = AllAssignsTable[leftAns[i]];
 		std::vector<std::string> splitX = split(tempLine, '=');
 		splitX[1] = splitX[1].erase(0, 1);
 		splitX[1] = splitX[1].erase(splitX[1].size() - 2);
@@ -281,4 +281,3 @@ vector<string> PatternTable::convertIntToString(vector<int> temp) {
 	}
 	return result;
 }
-*/
