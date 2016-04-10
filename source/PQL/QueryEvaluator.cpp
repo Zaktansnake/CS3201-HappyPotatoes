@@ -84,6 +84,7 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 		vector<string> NoClauseVector = QAS.GetNoClause();
 		if (NoClauseVector.size()==0) {
 			ResultsExist.push_back(false);
+			cout << "1" << endl;
 		}
 		else {
 			ResultsExist.push_back(true);
@@ -92,28 +93,35 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 	else if((ClausesVector.size()==0)&&((WithClauses.size()!=0)&&(PS.size()!=0))){
 		ResultsExist.push_back(DoPatterns(PS));
 		ResultsExist.push_back(DoWithClause(WithClauses));
+		cout << "Case 2" << endl;
 	}
 	else if ((PS.size() == 0) && ((WithClauses.size() != 0) && (ClausesVector.size() != 0))) {
 		ResultsExist.push_back(DoWithClause(WithClauses));
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
+		cout << "Case 3" << endl;
 	}
 	else if ((WithClauses.size() == 0) && ((ClausesVector.size() != 0) && (PS.size() != 0))) {
 		ResultsExist.push_back(DoPatterns(PS));
 		ResultsExist.push_back(DoWithClause(WithClauses));
+		cout << "Case 4" << endl;
 	}
 	else if ((ClausesVector.size() != 0) && ((WithClauses.size() == 0) && (PS.size() == 0))) {
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
+		cout << "Case 5" << endl;
 	}
 	else if ((PS.size() != 0) && ((WithClauses.size() == 0) && (ClausesVector.size() == 0))) {
 		ResultsExist.push_back(DoPatterns(PS));
+		cout << "Case 6" << endl;
 	}
 	else if ((WithClauses.size() != 0) && ((PS.size() == 0) && (ClausesVector.size() == 0))) {
 		ResultsExist.push_back(DoWithClause(WithClauses));
+		cout << "Case 7" << endl;
 	}
 	else{
 		ResultsExist.push_back(DoPatterns(PS));
 		ResultsExist.push_back(DoWithClause(WithClauses));
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
+		cout << "Case 8" << endl;
 	}
 	return ReturnResultsExist(ResultsExist);
 }
@@ -173,13 +181,13 @@ vector<string> QueryEvaluator::CheckPattern(string type, string name, string P1,
 
 	vector<string> results;
 	if (type == "while") {
-		results = PatternTable::getPatternWhileNum(P1,P2);
+		results = PatternTable::getPatternWhileNum(P1);
 	}
 	else if (type == "assign") {
 		results = PatternTable::getPatternAssignNum(P1,P2);
 	}
 	else{
-		results = PatternTable::getPatternIfsNum(P1,P2,P3);
+		results = PatternTable::getPatternIfsNum(P1);
 	}
 	return results;
 }
@@ -885,7 +893,7 @@ vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, 
 		results = stmtTable::getFollowWithType(GetStringType(P2Type),P1);
 	}
 	else if (clausesType == "Follows*") {
-		results = stmtTable::getFollowFanStarWithType(GetStringType(P2Type), P1);
+		results = stmtTable::getFollowStarWithType(GetStringType(P2Type), P1);
 	}
 	else if (clausesType == "Uses") {
 		return results;
