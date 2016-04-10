@@ -25,6 +25,24 @@ string removeUnderScore(string s);
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
 std::vector<std::string> split(const std::string &s, char delim);
 
+
+vector<string> PatternTable::getPatternWithType(string type, string left, string right) {
+	vector<string> finalResult;
+
+	if (type.compare("ASSIGN") == 0) {
+		finalResult = PatternTable::getPatternAssignNum(left, right);
+	}
+	else if (type.compare("IF") == 0) {
+		finalResult = PatternTable::getPatternIfsNum(left);
+	}
+	else if (type.compare("WHILE") == 0) {
+		finalResult = PatternTable::getPatternWhileNum(left);
+	}
+
+	return finalResult;
+}
+
+
 void PatternTable::setAssignTable() {
 	AllAssignsTable = VarTable::getAssignTable();
 }
@@ -91,12 +109,12 @@ vector<string> PatternTable::getPatternAssignNum(string left, string right) {
 	return PatternTable::convertIntToString(ans);
 }
 
-vector<string> PatternTable::getPatternIfsNum(string left, string middle, string right) {
+vector<string> PatternTable::getPatternIfsNum(string left) {
 	vector<int> ans = VarTable::getAssignFromIfsTable(left);
 	return PatternTable::convertIntToString(ans);
 }
 
-vector<string> PatternTable::getPatternWhileNum(string left, string right) {
+vector<string> PatternTable::getPatternWhileNum(string left) {
 	vector<int> ans = VarTable::getAssignFromWhileTable(left);
 	return PatternTable::convertIntToString(ans);
 }
