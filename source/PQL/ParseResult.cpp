@@ -281,7 +281,7 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 				counter++;
 			}
 			// current iterator points to a variable
-			else if (current.front == '"' && current.back() == '"') {
+			else if (current.front() == '"' && current.back() == '"') {
 				// the variable is the first parameter
 				if (*prev(it) == "Modifies" || *prev(it) == "Uses" || *prev(it) == "Calls" || *prev(it) == "Calls*" || *prev(it) == "Parent" ||
 					*prev(it) == "Parent*" || *prev(it) == "Follows" || *prev(it) == "Follows*" || *prev(it) == "Next" || *prev(it) == "Next*" ||
