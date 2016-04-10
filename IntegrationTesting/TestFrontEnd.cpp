@@ -1,10 +1,9 @@
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "PKB\Header\Parser.h"
-#include "PKB\Header\ProcTable.h"
-#include "PKB\Header\stmtTable.h"
-#include "PKB/Header\VarTable.h"
-
+#include "..\source\PKB\Header\Parser.h"
+#include "..\source\PKB\Header\ProcTable.h"
+#include "..\source\PKB\Header\stmtTable.h"
+#include "..\source\PKB\Header\VarTable.h"
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
