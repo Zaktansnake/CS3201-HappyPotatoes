@@ -5,9 +5,15 @@ using namespace std;
 
 class QueriesAnswerStorage {
 public:
+	void SetResultTable(vector<vector<string>>);
+	int GetResultTablePos(string);
+	vector<vector<string>> GetResultsTable();
 	void SetSelect(vector<string>);
 	void SetTable(string);
 	bool HasKey(string);
+	void UpdatePairBothNotStore(vector<pair<string,string>>,string,string);
+	void UpdatePairOneStore(vector<string> ,unordered_map<string,vector<string>>,string,string);
+	void UpdatePair(vector<pair<string,string>>,string,string);
 	void update(string, vector<string>);
 	vector<string> MergeResults();
 	vector<string> GetColFromResultsTable(string);
@@ -20,6 +26,7 @@ public:
 	string GetSelectType(string);
 	void SetWithMap(string,string);
 	bool HasKeyInWithMap(string);
+	void RemoveWithTable (string);
 	QueriesAnswerStorage();
 	~QueriesAnswerStorage();
 protected:
