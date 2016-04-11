@@ -36,6 +36,7 @@ public:
 	static vector<string> getAllWhileString();
 	static vector<string> getAllAssignString();
 	static vector<string> getAllIfsString();
+
 	static vector<pair<int, string>> getModifiesInPair();
 	static vector<pair<int, string>> getUsesInPair();
 
@@ -93,7 +94,8 @@ public:
 	static vector<string> getUsesWithType(string type, string value);
 	static vector<string> getUsedWithType(string type, string value);
 	static vector<string> getAllWithType(string type, string value);
-
+	static bool getModifiesBooleanWithType(string type, string firstPerimeter, string secondPerimeter);
+	static bool getUsesBooleanWithType(string type, string firstPerimeter, string secondPerimeter);
 
 private:
 	// constructor
