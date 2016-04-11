@@ -4,6 +4,8 @@
 #include "..\source\PKB\Header\ProcTable.h"
 #include "..\source\PKB\Header\stmtTable.h"
 #include "..\source\PKB\Header\VarTable.h"
+#include "PKB\Header\CFG.h"
+
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -67,6 +69,118 @@ namespace IntegrationTesting
 				result.append(*it);
 			}
 			Assert::AreEqual(expectedResult, result);
+		}
+
+		TEST_METHOD(TestUses)
+		{
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
+
+			string result, expectedResult = "";
+			bool resultBoolean;
+			vector<string> usesString;
+
+			// Select v such that Uses(11, v) => b,beta,c,chArLie,i,tmp
+			usesString = VarTable::getUsesVariable("11");
+			expectedResult = "b,beta,c,chArLie,i,tmp,";
+			for (std::vector<string>::iterator it = usesString.begin(); it != usesString.end(); ++it) {
+				result.append(*it);
+				result.append(",");
+			}
+			Assert::AreEqual(expectedResult, result);
+
+			result = "";
+			// Select v such that Uses("ABC", v) => I,Romeo,a,b,beta,c,chArLie,chArlie,delta,i,j1k,k,l,left,oSCar,right,tmp,width,x
+			usesString = ProcTable::getProcUsesVar("ABC");
+			expectedResult = "I,Romeo,a,b,beta,c,chArLie,chArlie,delta,i,j1k,k,l,left,oSCar,right,tmp,width,x,";
+			for (std::vector<string>::iterator it = usesString.begin(); it != usesString.end(); ++it) {
+				result.append(*it);
+				result.append(",");
+			}
+			Assert::AreEqual(expectedResult, result);
+
+			result = "";
+			// Select v such that Uses("X1x1", v) => none
+			usesString = ProcTable::getProcUsesVar("X1x1");
+			expectedResult = "";
+			Assert::AreEqual(expectedResult, result);
+		}
+
+
+		TEST_METHOD(CFG)
+		{
+			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+
+			string result;
+			string expectedResult;
+			vector<int> actual;
+			int expectBoo;
+			bool resultBoo;
+			int resultB;
+
+			expectedResult = "1318";
+			actual = CFG::getNext(12);
+			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
+				result.append(std::to_string(*it));
+			}
+
+			Assert::AreEqual(expectedResult, result);
+
+			//test getPrev
+			result.clear();
+			expectedResult = "69";
+			actual = CFG::getPrev(7);
+			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
+				result.append(std::to_string(*it));
+			}
+
+			Assert::AreEqual(expectedResult, result);
+			// test isNext
+			expectBoo = 1;
+			resultBoo = CFG::isNext(20, 21);
+			if (resultBoo) {
+				resultB = 1;
+			}
+			else {
+				resultB = 0;
+			}
+			Assert::AreEqual(expectBoo, resultB);
+
+			//test get next*
+
+			result.clear();
+			expectedResult = "6121318141715167891011";
+			actual = CFG::getNextStar(5);
+			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
+				result.append(std::to_string(*it));
+
+			}
+
+			Assert::AreEqual(expectedResult, result);
+
+
+			//test get prev*
+
+			result.clear();
+			expectedResult = "20";
+			actual = CFG::getPrevStar(21);
+			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
+				result.append(std::to_string(*it));
+
+			}
+
+			Assert::AreEqual(expectedResult, result);
+
+			// test isNextStar
+			expectBoo = 0;
+			resultBoo = CFG::isNextStar(5, 21);
+			if (resultBoo) {
+				resultB = 1;
+			}
+			else {
+				resultB = 0;
+			}
+			Assert::AreEqual(expectBoo, resultB);
+
 		}
 
 	};
