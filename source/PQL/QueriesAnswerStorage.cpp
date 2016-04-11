@@ -30,7 +30,7 @@ void QueriesAnswerStorage::SetSelect(vector<string> sv)
 			string substr;
 			getline(ss, substr, ',');
 			result.push_back(substr);
-		}
+		} //the first is a name, second is a type
 		pair<string, string> apair;
 		apair.first = result.at(0);
 		apair.second = result.at(1);
@@ -97,14 +97,14 @@ vector<string> QueriesAnswerStorage::MergeResults()
 	//find the col that has the answer for the select
 	for (int index = 0; index < SelectParameter.size(); index++) {
 		pair<string, string> pair = SelectParameter.at(index);
-		std::unordered_map<std::string, int>::const_iterator got = ClausesParameterPositionInTable.find(pair.second);
+		std::unordered_map<std::string, int>::const_iterator got = ClausesParameterPositionInTable.find(pair.first);
 
 		if (got == ClausesParameterPositionInTable.end()) {
 			continue;
 		}
 		else 
 		{
-			Position.push_back(ClausesParameterPositionInTable[pair.second]);
+			Position.push_back(ClausesParameterPositionInTable[pair.first]);
 		}
 
 	}
