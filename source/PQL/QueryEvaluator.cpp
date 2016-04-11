@@ -203,9 +203,11 @@ bool QueryEvaluator::DoWithClause(vector<With> W) {
 	
 	for (int i = 0; i < W.size(); i++) {
 		if (CheckWith(W.at(i))) {
+			cout << "have with results" << endl;
 			continue;
 		}
 		else {
+			cout << "have no with results" << endl;
 			return false;
 		}
 	}
@@ -484,20 +486,24 @@ bool QueryEvaluator::DoNormalClause(vector<Clause> ClausesVector) {
 
 bool QueryEvaluator::CheckSynonym(string firstParameter,string secondParameter,
 	char firstParameterType,char secondParameterType,string clauseType) {
-	bool HasResults;
+	bool HasResults = false;
 	if ((IsSynonym(firstParameter[0])) && (IsSynonym(secondParameter[0]))) {
+		cout << "normal clause when both is synonym" << endl;
 		HasResults = GetResultsForBothSynonym(firstParameter, secondParameter,
 			firstParameterType, secondParameterType, clauseType);
 	}
 	else if (IsSynonym(firstParameter[0])) {
+		cout << "normal clause when only one is synonym" << endl;
 		HasResults = GetResultsForFirstSynonym(firstParameter, secondParameter,
 			firstParameterType, secondParameterType, clauseType);
 	}
 	else if (IsSynonym(secondParameter[0])) {
+		cout << "normal clause when only the second is snynonym" << endl;
 		HasResults = GetResultsForSecondSynonym(firstParameter, secondParameter,
 			firstParameterType, secondParameterType, clauseType);
 	}
 	else {
+		cout << "normal clause when both is snynonym" << endl;
 		HasResults = CheckTrueOrFalse(firstParameter, secondParameter,
 			firstParameterType, secondParameterType, clauseType);
 	}
@@ -856,7 +862,7 @@ bool QueryEvaluator::GetResultsForSecondSynonym(string P1, string P2, char P1Typ
 bool QueryEvaluator::CheckTrueOrFalse(string P1, string P2, char P1Type
 	, char P2Type, string ClauseType) {
 	return CheckIsResultsFromPkb(P1,P2,P1Type,P2Type,ClauseType);
-}
+} 
 
 vector<string> QueryEvaluator::GetAll(char Type) {
 	vector<string> Results;
@@ -867,37 +873,35 @@ vector<string> QueryEvaluator::GetAll(char Type) {
 	}
 	else if (Type == 'V') {
 		cout << "get all variable"<<endl;
-		return Results;
+		return VarTable::getAllWithType(GetStringType(Type),"");
 		
 	}
 	else if (Type == 'S') {
 		cout << "get all stmt" << endl;
-		return Results;
-		//return VarTable::getAllStmt();
+		return VarTable::getAllWithType(GetStringType(Type),"");
 	}
 	else if (Type == 'I') {
 		cout << "get all if" << endl;
-		return Results;
-		//return VarTable::getAllIfs();
+		return VarTable::getAllWithType(GetStringType(Type),"");
 	}
 	else if (Type == 'W') {
 		cout << "get all while" << endl;
-		return Results;
+		return VarTable::getAllWithType(GetStringType(Type), "");
 		//return VarTable::getAllWhile();
 	}
 	else if (Type == 'A') {
 		cout << "get all assign" << endl;
-		return Results;
+		return VarTable::getAllWithType(GetStringType(Type), "");
 		//return VarTable::getAllAssign();
 	}
 	else if (Type == 'C') {
 		cout << "get all constant" << endl;
-		return Results;
+		return ConstantTable::getAllConstantValues();
 		//return ConstantTable::getAllConstantValues();
 	}
 	else if (Type == 'L') {
 		cout << "get all progline" << endl;
-		return Results;
+		return VarTable::getAllWithType(GetStringType(Type),"");
 		//return VarTable::getAllStmt();
 	}
 	else {
@@ -915,25 +919,25 @@ vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, 
 		results = stmtTable::getFollowStarWithType(GetStringType(P2Type), P1);
 	}
 	else if (clausesType == "Uses") {
-		return results;
+		results = VarTable::getUsesWithType(GetStringType(P2Type), P1);
 	}
 	else if (clausesType == "Calls") {
-		return results;
+		results = ProcTable::getProcWithType("PROC",P1);
 	}
 	else if (clausesType == "Modifies") {
-		return results;
+		results = VarTable::getModifiesWithType(GetStringType(P2Type),P1);
 	}
 	else if (clausesType == "Parent") {
-		return results;
+		results = stmtTable::getChildWithType(GetStringType(P2Type),P1);
 	}
 	else if (clausesType == "Parent*") {
-		return results;
+		results = stmtTable::getChildStarWithType(GetStringType(P2Type),P1);
 	}
 	else if (clausesType == "Next") {
-		return results;
+		results = CFG::getNextString(ChangeStringToInt(P1));
 	}
 	else if (clausesType == "Next*") {
-		return results;
+		results = CFG::getNextStarString(ChangeStringToInt(P1));
 	}
 	else if (clausesType == "Affects") {
 		return results;
@@ -957,25 +961,25 @@ vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, c
 		return results;
 	}
 	else if (clausesType == "Uses") {
-		return results;
+		results =  VarTable::getUsedWithType(GetStringType(P1Type),P2);
 	}
 	else if (clausesType == "Calls") {
-		return results;
+		results = ProcTable::getParentProcWithType(GetStringType(P1Type),P2);
 	}
 	else if (clausesType == "Modifies") {
-		return results;
+		results = VarTable::getModifiedWithType(GetStringType(P1Type),P2);
 	}
 	else if (clausesType == "Parent") {
-		return results;
+		results = stmtTable::getParentWithType(GetStringType(P1Type),P2);
 	}
 	else if (clausesType == "Parent*") {
-		return results;
+		results = stmtTable::getParentStarWithType(GetStringType(P1Type),P2);
 	}
 	else if (clausesType == "Next") {
-		return results;
+		results = CFG::getNextString(ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Next*") {
-		return results;
+		results = CFG::getNextStarString(ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Affects") {
 		return results;
@@ -993,7 +997,7 @@ bool QueryEvaluator::CheckIsResultsFromPkb(string P1,string P2,char P1Type,
 
 	bool results;
 	if (clausesType == "Follows") {
-		return results;
+		results = stmtTable::isFollow(ChangeStringToInt(P1),ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Follows*") {
 		return results;
@@ -1002,22 +1006,22 @@ bool QueryEvaluator::CheckIsResultsFromPkb(string P1,string P2,char P1Type,
 		return results;
 	}
 	else if (clausesType == "Calls") {
-		return results;
+		results = ProcTable::isProcToProc(P1,P2);
 	}
 	else if (clausesType == "Modifies") {
 		return results;
 	}
 	else if (clausesType == "Parent") {
-		return results;
+		results = stmtTable::isParent(ChangeStringToInt(P1),ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Parent*") {
 		return results;
 	}
 	else if (clausesType == "Next") {
-		return results;
+		results = CFG::isNext(ChangeStringToInt(P1),ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Next*") {
-		return results;
+		results = CFG::isNext(ChangeStringToInt(P1),ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Affects") {
 		return results;
@@ -1036,13 +1040,13 @@ string QueryEvaluator::GetStringType(char c) {
 		return "CONSTANT";
 	}
 	else if (c == 'V') {
-		return "VARAIABLE";
+		return "VAR";
 	}
 	else if (c == 'A') {
 		return "ASSIGN";
 	}
 	else if (c == 'P') {
-		return "PROCEDURE";
+		return "PROC";
 	}
 	else if (c == 'I') {
 		return "IF";
