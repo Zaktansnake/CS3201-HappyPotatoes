@@ -25,6 +25,7 @@
 #include "./Header/PatternTable.h"
 #include "./Header/ConstantTable.h"
 #include "./Header/CFG.h"
+#include "./Header/Affects.h"
 
 using namespace std;
 
@@ -333,6 +334,7 @@ void PKB::updateTables() {
 	ProcTable::updateProcCallsTables();
 	PKB::updateAllTables();
 	PatternTable::updatePatternTable();
+	Affects::updateAffectsTable();
 }
 
 void PKB::updateAllTables() {
