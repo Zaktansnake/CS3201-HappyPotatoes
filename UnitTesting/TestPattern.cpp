@@ -13,7 +13,7 @@ namespace UnitTesting
 	{
 	public:
 		TEST_METHOD(TestPatterns) {
-			Patterns p;
+		//	Patterns p;
 
 		}
 	};

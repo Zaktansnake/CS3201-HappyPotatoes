@@ -99,7 +99,7 @@ void CFG::addRoot(string procedure, int stmtNo) {
 void CFG::addNextNode(int stmtNo, string stmt) {
 	numOfStatement = stmtNo;
 	CFGline.clear();
-	int parentForElseIf;
+	int parentForElseIf = -1;
 	stmt = trimString(stmt);
 	conditionstmt = setConditions(stmt);
 	CFGline.clear();
@@ -109,7 +109,9 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 	endloop = std::count(stmt.begin(), stmt.end(), '}');
 	if (flagForClose && stmt.size() != endloop) {
 		if (conditionstmt == 3) {
-			parentForElseIf = parentStack.top();
+			if (parentStack.size() != 0) {
+				parentForElseIf = parentStack.top();
+			}
 			parentStack.push(stmtNo);
 			conditionStack.push(conditionstmt);
 			if (closingStack.size() != 0) {
@@ -134,10 +136,18 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 						CFGTable.at(currentPro) = CFGstmt;
 					}
 					else {
-						CFGline = CFGTable.at(currentPro).at(parentForElseIf);
-						CFGline.push_back(stmtNo);
-						CFGstmt.at(parentForElseIf) = CFGline;
-						CFGTable.at(currentPro) = CFGstmt;
+						if (parentForElseIf != -1) {
+							CFGline = CFGTable.at(currentPro).at(parentForElseIf);
+							CFGline.push_back(stmtNo);
+							CFGstmt.at(parentForElseIf) = CFGline;
+							CFGTable.at(currentPro) = CFGstmt;
+						}
+						else {
+							CFGline.push_back(dummy);
+							CFGstmt.push_back(CFGline);
+							CFGTable.at(currentPro) = CFGstmt;
+						}
+						
 					}
 
 				}
@@ -188,7 +198,12 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 
 		}
 		else if (conditionstmt == 1) {
-			parentForElseIf = parentStack.top();
+			if (parentStack.size() != 0) {
+				parentForElseIf = parentStack.top();
+			}
+			else {
+				parentForElseIf = -1;
+			}
 			parentStack.push(stmtNo);
 			conditionStack.push(conditionstmt);
 			if (closingStack.size() != 0) {
@@ -208,10 +223,18 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 					CFGTable.at(currentPro) = CFGstmt;
 				}
 				else {
-					CFGline = CFGTable.at(currentPro).at(parentForElseIf);
-					CFGline.push_back(stmtNo);
-					CFGstmt.at(parentForElseIf) = CFGline;
-					CFGTable.at(currentPro) = CFGstmt;
+					if (parentForElseIf != -1) {
+						CFGline = CFGTable.at(currentPro).at(parentForElseIf);
+						CFGline.push_back(stmtNo);
+						CFGstmt.at(parentForElseIf) = CFGline;
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+					else {
+						CFGline.push_back(dummy);
+						CFGstmt.push_back(CFGline);
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+					
 				}
 
 				// need to complete.......................................
@@ -654,10 +677,6 @@ end = CFGTable.at(currentPro).size()-1;
 return end;
 }
 */
-
-
-
-
 
 // for return vector<string> ------------------------------------------------------------------
 
