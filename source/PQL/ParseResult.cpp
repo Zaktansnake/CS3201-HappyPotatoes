@@ -656,6 +656,28 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 
 	selectParameter = ParseResult::parseSelect(query, declarationTable);
 	if (selectParameter.empty()) return ParseResult();
+
+	clauses = ParseResult::parseNormalClauses(query, declarationTable);
+	// if normal clauses contain grammar error, return empty ParseResult
+	if (clauses.front().getClauseOperation() == "dummy") {
+		signalErrorAndStop();
+		return ParseResult();
+	}
+
+	patterns = ParseResult::parsePattern(query, declarationTable);
+	if (patterns.front().getPatternOperation() == "dummy") {
+		signalErrorAndStop();
+		return ParseResult();
+	}
+
+	/* withClauses = ParseResult::parseWith(query, declarationTable);
+	if (withClauses.front().getLeftOfEqualSign == "dummy") {
+		signalErrorAndStop();
+		return ParseResult();
+	} */
+
+	// if every component in ParseResult object is syntactically and grammatically correct
+	return ParseResult(selectParameter, clauses, patterns, withClauses);
 }
 
 void ParseResult::signalErrorAndStop() {
