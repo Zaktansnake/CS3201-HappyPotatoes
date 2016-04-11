@@ -19,6 +19,7 @@ public:
 
 	static void addTableData(string procName);
 	static void setProcStmtNum(string procName, int stmtNum);
+	static map<string, vector<int>> getProcStmtLineNum();
 	static void setCallsTable(string proc1, string proc2, int stmtLine);
 	static std::vector<std::tuple<string, string, int>> getCallsTable();
 
