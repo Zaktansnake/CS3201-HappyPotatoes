@@ -25,20 +25,24 @@ QueriesAnswerStorage QAS;
 vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
 	clear();
-	cout << "Hello World!" << endl;
-	bool HasResults;
+	cout << "Hello World! start to evaluate" << endl;
+	bool HasResults = false;
 	try {
+		
 		 HasResults = assessParseResult(mustPr);
 	}
 	catch(exception&e){
 		cout << e.what() <<endl;
 	}
 	if (SelectBool == true) {
+		cout << "asking for boolean" << endl;
 		vector<string> BooleanResults;
 		if (HasResults == true) {
+			cout << "has a result for boolean" << endl;
 			BooleanResults.push_back("True");
 		}
 		else {
+			cout << "has no result for boolean" << endl;
 			BooleanResults.push_back("False");
 		}
 	}
@@ -85,7 +89,7 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 		vector<string> NoClauseVector = QAS.GetNoClause();
 		if (NoClauseVector.size()==0) {
 			ResultsExist.push_back(false);
-			cout << "1" << endl;
+			cout << "no clause 1" << endl;
 		}
 		else {
 			ResultsExist.push_back(true);
@@ -94,39 +98,38 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 	else if((ClausesVector.size()==0)&&((WithClauses.size()!=0)&&(PS.size()!=0))){
 		ResultsExist.push_back(DoPatterns(PS));
 		ResultsExist.push_back(DoWithClause(WithClauses));
-		cout << "Case 2" << endl;
+		cout << "no normal clause Case 2" << endl;
 	}
 	else if ((PS.size() == 0) && ((WithClauses.size() != 0) && (ClausesVector.size() != 0))) {
 		ResultsExist.push_back(DoWithClause(WithClauses));
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
-		cout << "Case 3" << endl;
+		cout << "no pattern clause Case 3" << endl;
 	}
 	else if ((WithClauses.size() == 0) && ((ClausesVector.size() != 0) && (PS.size() != 0))) {
 		ResultsExist.push_back(DoPatterns(PS));
 		ResultsExist.push_back(DoWithClause(WithClauses));
-		cout << "Case 4" << endl;
+		cout << "no with clause Case 4" << endl;
 	}
 	else if ((ClausesVector.size() != 0) && ((WithClauses.size() == 0) && (PS.size() == 0))) {
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
-		cout << "Case 5" << endl;
+		cout << "no with clause and pattern clause Case 5" << endl;
 	}
 	else if ((PS.size() != 0) && ((WithClauses.size() == 0) && (ClausesVector.size() == 0))) {
 		ResultsExist.push_back(DoPatterns(PS));
-		cout << "Case 6" << endl;
+		cout << "no with clause and normal clause Case 6" << endl;
 	}
 	else if ((WithClauses.size() != 0) && ((PS.size() == 0) && (ClausesVector.size() == 0))) {
 		ResultsExist.push_back(DoWithClause(WithClauses));
-		cout << "Case 7" << endl;
+		cout << "no pattern clause and normal clause Case 7" << endl;
 	}
 	else{
 		ResultsExist.push_back(DoPatterns(PS));
 		ResultsExist.push_back(DoWithClause(WithClauses));
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
-		cout << "Case 8" << endl;
+		cout << " have every thing Case 8" << endl;
 	}
 	return ReturnResultsExist(ResultsExist);
 }
-
 
 bool QueryEvaluator::ReturnResultsExist(vector<bool> RE) {
 	for (int i = 0; i < RE.size(); i++) {
@@ -182,12 +185,15 @@ vector<string> QueryEvaluator::CheckPattern(string type, string name, string P1,
 
 	vector<string> results;
 	if (type == "while") {
+		cout << "get pattern for while" << endl;
 		results = PatternTable::getPatternWhileNum(P1);
 	}
 	else if (type == "assign") {
+		cout << "get pattern for assign" << endl;
 		results = PatternTable::getPatternAssignNum(P1,P2);
 	}
 	else{
+		cout << "get pattern for if" << endl;
 		results = PatternTable::getPatternIfsNum(P1);
 	}
 	return results;
@@ -206,22 +212,24 @@ bool QueryEvaluator::DoWithClause(vector<With> W) {
 	return true;
 }
 
-
-
 bool QueryEvaluator::CheckWith(With with) {
 	
 	string left = with.getLeftOfEqualSign();
 	string right = with.getRightOfEqualSign();
 	if ((IsSynonym(left[0]) && (IsSynonym(right[0])))) {
+		cout << "both is synonym for with";
 		return GetAnswerForBothWith(with.getLeftOfEqualSign(), with.getRightOfEqualSign());
 	}
 	else if (IsSynonym(right[0])) {
+		cout << "only the right is a synonym for with" <<endl;
 		return GetAnswerForRightWith(with.getLeftOfEqualSign(), with.getRightOfEqualSign());
 	}
 	else if (IsSynonym(left[0])) {
+		cout << "only the left is a synonym for with" << endl;
 		return GetAnswerForLeftWith(with.getLeftOfEqualSign(), with.getRightOfEqualSign());
 	}
 	else {
+		cout << "both is not a synonym for with" << endl;
 		if (with.getLeftOfEqualSign() == with.getRightOfEqualSign()) {
 			return true;
 		}
@@ -230,6 +238,7 @@ bool QueryEvaluator::CheckWith(With with) {
 		}
 	}
 }
+
 //this is the case for e.g v.varname = "x"
 bool QueryEvaluator::GetAnswerForLeftWith(string left, string right) {
 	vector<vector<string>> ResultsTable = QAS.GetResultsTable();
@@ -444,6 +453,7 @@ bool QueryEvaluator::GetAnswerForBothWith(string left,string right) {
 	}
 	return HasResults;
 }
+
 bool QueryEvaluator::DoNormalClause(vector<Clause> ClausesVector) {
 	for (int i = 0; i < ClausesVector.size(); i++) {
 
@@ -852,33 +862,41 @@ vector<string> QueryEvaluator::GetAll(char Type) {
 	vector<string> Results;
 	
 	if (Type == 'P') {
+		cout << "get all procedure"<<endl;
 		return ProcTable::getAllProcedures();
 	}
 	else if (Type == 'V') {
+		cout << "get all variable"<<endl;
 		return Results;
 		
 	}
 	else if (Type == 'S') {
+		cout << "get all stmt" << endl;
 		return Results;
 		//return VarTable::getAllStmt();
 	}
 	else if (Type == 'I') {
+		cout << "get all if" << endl;
 		return Results;
 		//return VarTable::getAllIfs();
 	}
 	else if (Type == 'W') {
+		cout << "get all while" << endl;
 		return Results;
 		//return VarTable::getAllWhile();
 	}
 	else if (Type == 'A') {
+		cout << "get all assign" << endl;
 		return Results;
 		//return VarTable::getAllAssign();
 	}
 	else if (Type == 'C') {
+		cout << "get all constant" << endl;
 		return Results;
 		//return ConstantTable::getAllConstantValues();
 	}
 	else if (Type == 'L') {
+		cout << "get all progline" << endl;
 		return Results;
 		//return VarTable::getAllStmt();
 	}

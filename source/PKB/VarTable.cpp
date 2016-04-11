@@ -125,6 +125,47 @@ vector<string> VarTable::getUsedWithType(string type, string value) {
 	return finalResult;
 }
 
+bool VarTable::getModifiesBooleanWithType(string type, string firstPerimeter, string secondPerimeter) {
+	bool finalResult;
+	if (type.compare("PROC") == 0) {
+		finalResult = VarTable::isModifiesProcedure(firstPerimeter, secondPerimeter);
+	}
+	else if (type.compare("STMT") == 0) {
+		finalResult = VarTable::isModifiesStmt(firstPerimeter, secondPerimeter);
+	}
+	else if (type.compare("ASSIGN") == 0) {
+		finalResult = VarTable::isModifiesAssign(firstPerimeter, secondPerimeter);
+	}
+	else if (type.compare("WHILE") == 0) {
+		finalResult = VarTable::isModifiesWhile(firstPerimeter, secondPerimeter);
+	}
+	else if (type.compare("IF") == 0) {
+		finalResult = VarTable::isModifiesIfs(firstPerimeter, secondPerimeter);
+	}
+	return finalResult;
+}
+
+bool VarTable::getUsesBooleanWithType(string type, string firstPerimeter, string secondPerimeter) {
+	bool finalResult;
+	if (type.compare("PROC") == 0) {
+		finalResult = VarTable::isUsesProcedure(firstPerimeter, secondPerimeter);
+	}
+	else if (type.compare("STMT") == 0) {
+		finalResult = VarTable::isUsesStmt(firstPerimeter, secondPerimeter);
+	}
+	else if (type.compare("ASSIGN") == 0) {
+		finalResult = VarTable::isUsesAssign(firstPerimeter, secondPerimeter);
+	}
+	else if (type.compare("WHILE") == 0) {
+		finalResult = VarTable::isUsesWhile(firstPerimeter, secondPerimeter);
+	}
+	else if (type.compare("IF") == 0) {
+		finalResult = VarTable::isUsesIfs(firstPerimeter, secondPerimeter);
+	}
+	return finalResult;
+}
+
+
 vector<string> VarTable::getAllWithType(string type, string value) {
 	vector<string> finalResult;
 	if (type.compare("PROC") == 0) {

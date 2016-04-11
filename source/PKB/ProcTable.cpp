@@ -293,9 +293,17 @@ void ProcTable::addTableData(string procName) {
    }
 }
 
+
+
 void ProcTable::setProcStmtNum(string procName, int stmtNum) {
 	ProcStmtLineNum[procName].push_back(stmtNum);
 }
+
+map<string, vector<int>> ProcTable::getProcStmtLineNum() {
+	return ProcStmtLineNum;
+}
+
+
 
 void ProcTable::setCallsTable(string proc1, string proc2, int stmtLine) {
 	Calls::setCallProcedure(proc1, proc2, stmtLine);
