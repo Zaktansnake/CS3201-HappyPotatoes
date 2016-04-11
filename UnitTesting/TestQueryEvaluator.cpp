@@ -5,11 +5,7 @@
 
 #include "stdafx.h"
 #include "CppUnitTest.h"
-#include "../source/PKB/Header/Parser.h"
-#include "../source/PQL/Header/ParseResult.h"
 #include "../source/PQL/Header/QueryEvaluator.h"
-#include "../source/PQL/Header/QueriesAnswerStorage.h"
-
 
 using namespace Microsoft::VisualStudio::CppUnitTestFramework;
 
@@ -18,28 +14,151 @@ namespace UnitTesting
 	TEST_CLASS(TestQueryEvaluator)
 	{
 	public:
-		TEST_METHOD(TestQE) {
-			std::vector<string> result;
+		TEST_METHOD(TestReturnResultsExist) {
+			QueryEvaluator QE;
+			bool result;
+			vector<bool> re;
+			re.push_back(true);
+			result = QE.ReturnResultsExist(re);
+			Assert::AreEqual(result, true);
 
-			try {
-				Parser::parse("../tests01/Sample-Source02.txt");
-			}
-			catch (exception& e) {
-				cout << "PKBParser: " << e.what() << endl;
-			}
+			re.clear();
+			re.push_back(false);
+			result = QE.ReturnResultsExist(re);
+			Assert::AreEqual(result, false);
+		}
 
-			/* Test 1 */
-			string declaration = "procedure p,p1,p2,p3,p4; while w1,w2,w3,w4; assign a,a1,a2,a3,a4; stmt s,s#,s1,s2,s3,s4; variable v1,v2,v3,v4; prog_line n1,n2,n3,n4; constant c1,c2,c3,c4; call ca1,ca2,ca3,ca4; if i1,i2,i3,i4; stmtLst stmtLst1,stmtLst2; plus add; times times; minus minus;";
-			string query = "Select s such that Follows(1, s)";
-			result.push_back("2");
+		TEST_METHOD(TestGetStringType) {
+			QueryEvaluator QE;
+			string result;
+			string answer = "CONSTANT";
+			char c = 'C';
+			result = QE.GetStringType(c);
+			Assert::AreEqual(result, answer);
 
-			ParseResult parser = ParseResult();
-			ParseResult generatedParseResult = parser.generateParseResult(declaration, query);
-			QueryEvaluator evaluator;
-			std::vector<std::string> results = evaluator.startEvaluator(generatedParseResult);
-
-			//Assert::AreEqual(results, result);
 			result.clear();
+			answer = "VAR";
+			c = 'V';
+			result = QE.GetStringType(c);
+			Assert::AreEqual(result, answer);
+
+			result.clear();
+			answer = "ASSIGN";
+			c = 'A';
+			result = QE.GetStringType(c);
+			Assert::AreEqual(result, answer);
+
+			result.clear();
+			answer = "PROC";
+			c = 'P';
+			result = QE.GetStringType(c);
+			Assert::AreEqual(result, answer);
+
+			result.clear();
+			answer = "IF";
+			c = 'I';
+			result = QE.GetStringType(c);
+			Assert::AreEqual(result, answer);
+
+			result.clear();
+			answer = "WHILE";
+			c = 'W';
+			result = QE.GetStringType(c);
+			Assert::AreEqual(result, answer);
+
+			result.clear();
+			answer = "STMT";
+			c = 'L';
+			result = QE.GetStringType(c);
+			Assert::AreEqual(result, answer);
+
+			result.clear();
+			answer = "";
+			c = 'M';
+			result = QE.GetStringType(c);
+			Assert::AreEqual(result, answer);
+		}
+
+		TEST_METHOD(TestCheckTempResultSize) {
+			QueryEvaluator QE;
+			bool result;
+			vector<string> v;
+			result = QE.CheckTempResultSize(v);
+			Assert::AreEqual(result, false);
+
+			v.push_back("1");
+			result = QE.CheckTempResultSize(v);
+			Assert::AreEqual(result, true);
+		}
+
+		TEST_METHOD(TestIsSynonym) {
+			QueryEvaluator QE;
+			char c = '0';
+			bool result = QE.IsSynonym(c);
+			Assert::AreEqual(result, false);
+
+			c = 'c';
+			result = QE.IsSynonym(c);
+			Assert::AreEqual(result, true);
+		}
+
+		TEST_METHOD(TestChangeStringToInt) {
+			QueryEvaluator QE;
+			string test = "1";
+			int answer = 1;
+			int result = QE.ChangeStringToInt(test);
+			Assert::AreEqual(result, answer);
+
+			test = "11";
+			answer = 11;
+			result = QE.ChangeStringToInt(test);
+			Assert::AreEqual(result, answer);
+		}
+
+		TEST_METHOD(TestChangeIntToString) {
+			QueryEvaluator QE;
+			int test = 1;
+			string answer = "1";
+			string result = QE.ChangeIntToString(test);
+			Assert::AreEqual(result, answer);
+
+			test = 11;
+			answer = "11";
+			result = QE.ChangeIntToString(test);
+			Assert::AreEqual(result, answer);
+		}
+
+		TEST_METHOD(TestHaveQuotation) {
+			QueryEvaluator QE;
+			string test = "This string has a \"quotation\"";
+			bool result = QE.HaveQuotation(test);
+			Assert::AreEqual(result, true);
+
+			test = "This string does not have a quotation";
+			result = QE.HaveQuotation(test);
+			Assert::AreEqual(result, false);
+		}
+
+		TEST_METHOD(TestIsNumber) {
+			QueryEvaluator QE;
+			string test = "0";
+			bool result = QE.IsNumber(test);
+			Assert::AreEqual(result, true);
+
+			test = 'c';
+			result = QE.IsNumber(test);
+			Assert::AreEqual(result, false);
+		}
+
+		TEST_METHOD(TestSplitString) {
+			QueryEvaluator QE;
+			string test = "Hi.There";
+			pair<string, string> answer;
+			answer.first = "Hi";
+			answer.second = "There";
+			pair<string, string> result = QE.SplitString(test);
+			Assert::AreEqual(result.first, answer.first);
+			Assert::AreEqual(result.second, answer.second);
 		}
 	};
 }
