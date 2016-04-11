@@ -224,7 +224,16 @@ bool Parent::isParent(int stmt1, int stmt2) {
 	return false;
 
 }
+bool Parent::isParentStar(int stmt1, int stmt2) {
+	std::vector<int> temp;
+	temp = getParentStarInt(stmt2);
 
+	if (std::find(temp.begin(), temp.end(), stmt1) != temp.end()) {
+		return true;
+	}
+	return false;
+
+}
 
 std::vector<int> Parent::getParent(int stmtNo) {
     int index = 0;

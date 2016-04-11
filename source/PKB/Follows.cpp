@@ -264,6 +264,21 @@ bool Follows::isFollows(int s1, int s2) {
 	}
 }
 
+bool Follows::isFollowsStar(int s1, int s2) {
+	vector<int> temp = getFollowStar(s1);
+	if (temp.size()==1 && temp.front() == 0) {
+		return false;
+	}
+	else {
+		for (int i = 0; i < temp.size(); i++) {
+			if (temp.at(i) == s2) {
+				return true;
+			}
+		}
+	}
+	return false;
+	
+}
 
 std::vector<int> Follows::getFollowForWhile(int stmtNo) {
 	std::vector<int> temp = getFollow(stmtNo);
