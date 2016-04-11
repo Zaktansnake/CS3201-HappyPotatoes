@@ -242,26 +242,29 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 
 		}
 		else if (conditionstmt == 0 && stmt.size() != endloop) {
-			int prev = closingStack.top();
-			closingStack.pop();
-			int con = clostingCondition.top();
-			clostingCondition.pop();
-			if (con == 3) {
-				CFGline = CFGTable.at(currentPro).at(prev);
-				CFGline.push_back(stmtNo);
-				CFGstmt.at(prev) = CFGline;
-				CFGTable.at(currentPro) = CFGstmt;
-			}
-			else {
-				// need to complete.......................................
-				if (!flagForCorrectElseIf) {
-					CFGline.push_back(dummy);
-					CFGstmt.push_back(CFGline);
+			if (closingStack.size() != 0) {
+				int prev = closingStack.top();
+				closingStack.pop();
+				int con = clostingCondition.top();
+				clostingCondition.pop();
+				if (con == 3) {
+					CFGline = CFGTable.at(currentPro).at(prev);
+					CFGline.push_back(stmtNo);
+					CFGstmt.at(prev) = CFGline;
 					CFGTable.at(currentPro) = CFGstmt;
 				}
+				else {
+					// need to complete.......................................
+					if (!flagForCorrectElseIf) {
+						CFGline.push_back(dummy);
+						CFGstmt.push_back(CFGline);
+						CFGTable.at(currentPro) = CFGstmt;
+					}
 
 
+				}
 			}
+			
 
 		}
 		if (!flag) {
