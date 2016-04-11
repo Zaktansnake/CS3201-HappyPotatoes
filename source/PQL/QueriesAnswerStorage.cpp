@@ -14,7 +14,7 @@ using namespace std;
 std::unordered_map<std::string, int> QueriesAnswerStorage::ClausesParameterPositionInTable;
 vector<vector<string>> QueriesAnswerStorage::ResultsTable;
 vector<pair<std::string,std::string>> QueriesAnswerStorage::SelectParameter;
-
+vector<string> QueriesAnswerStorage::NoClause;
 
 
 
@@ -68,13 +68,6 @@ vector<pair<std::string, std::string>> QueriesAnswerStorage::GetSelectParameter(
 	return SelectParameter;
 }
 
-string QueriesAnswerStorage::GetWithTableElement(string s)
-{
-	if (WithTable.find(s) == WithTable.end()) {
-		return "none";
-	}
-	return WithTable[s];
-}
 
 void QueriesAnswerStorage::SetTable(string s)
 {
@@ -82,7 +75,6 @@ void QueriesAnswerStorage::SetTable(string s)
 		ClausesParameterPositionInTable[s] = ClausesParameterPositionInTable.size() - 1;
 	}
 	else {
-
 		return;
 	}
 }
