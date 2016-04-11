@@ -18,7 +18,7 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(CFG)
 		{
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source06.txt");
 
 			string result;
 			string expectedResult;
@@ -58,7 +58,7 @@ namespace UnitTesting
 			//test get next*
 
 			result.clear();
-			expectedResult = "6121318141715167891011";
+			expectedResult = "61213181417151678591011";
 			actual = CFG::getNextStar(5);
 			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
 				result.append(std::to_string(*it));
@@ -71,7 +71,7 @@ namespace UnitTesting
 			//test get prev*
 
 			result.clear();
-			expectedResult = "20";
+			expectedResult = "2021";
 			actual = CFG::getPrevStar(21);
 			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
 				result.append(std::to_string(*it));
@@ -81,8 +81,8 @@ namespace UnitTesting
 			Assert::AreEqual(expectedResult, result);
 
 			// test isNextStar
-			expectBoo = 0;
-			resultBoo = CFG::isNextStar(5, 21);
+			expectBoo = 1;
+			resultBoo = CFG::isNextStar(10, 10);
 			if (resultBoo) {
 				resultB = 1;
 			}

@@ -595,6 +595,7 @@ bool CFG::isNextStar(int s1, int s2) {
 	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
 	bool ans = false;
+	bool goBackItSelf = false;
 	stack.push(s1);
 	vector<int> ::iterator it;
 
@@ -603,6 +604,13 @@ bool CFG::isNextStar(int s1, int s2) {
 		stack.pop();
 		visited[top] = true;
 		for (it = CFGTable.at(currentPro).at(top).begin(); it != CFGTable.at(currentPro).at(top).end(); it++) {
+			
+			if (*it == s2) {
+				if (goBackItSelf == false) {
+					goBackItSelf = true;
+					return true;
+				}
+			}
 			if (!visited[*it]) {
 				stack.push(*it);
 				if (*it == s2) {
@@ -623,6 +631,7 @@ vector<int> CFG::getNextStar(int stmtNo) {
 	
 	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
+	bool goBackItSelf = false;
 	vector<int> ans;
 	if (stmtNo > numOfStatement) {
 		return ans;
@@ -635,6 +644,12 @@ vector<int> CFG::getNextStar(int stmtNo) {
 		stack.pop();
 		visited[top] = true;
 		for (it = CFGTable.at(currentPro).at(top).begin(); it != CFGTable.at(currentPro).at(top).end(); it++) {
+			if (*it == stmtNo) {
+				if (goBackItSelf == false) {
+					ans.push_back(*it);
+					goBackItSelf = true;
+				}
+			}
 			if (!visited[*it]) {
 				stack.push(*it);
 				ans.push_back(*it);
@@ -648,6 +663,7 @@ vector<int> CFG::getPrevStar(int stmtNo) {
 	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
 	vector<int> ans;
+	bool goBackItSelf = false;
 	if (stmtNo > numOfStatement) {
 		return ans;
 	}
@@ -659,6 +675,12 @@ vector<int> CFG::getPrevStar(int stmtNo) {
 		stack.pop();
 		visited[top] = true;
 		for (it = revCFGstmt.at(top).begin(); it != revCFGstmt.at(top).end(); it++) {
+			if (*it == stmtNo) {
+				if (goBackItSelf == false) {
+					ans.push_back(*it);
+					goBackItSelf = true;
+				}
+			}
 			if (!visited[*it]) {
 				stack.push(*it);
 				if (*it != 0) {
@@ -755,6 +777,7 @@ vector<string> CFG::getPrevString(int stmtNo) {
 vector<string> CFG::getNextStarString(int stmtNo) {
 	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
+	bool goBackItSelf = false;
 	vector<string> ans;
 	if (stmtNo > numOfStatement) {
 		return ans;
@@ -767,6 +790,12 @@ vector<string> CFG::getNextStarString(int stmtNo) {
 		stack.pop();
 		visited[top] = true;
 		for (it = CFGTable.at(currentPro).at(top).begin(); it != CFGTable.at(currentPro).at(top).end(); it++) {
+			if (*it == stmtNo) {
+				if (goBackItSelf == false) {
+					ans.push_back(to_string(*it));
+					goBackItSelf = true;
+				}
+			}
 			if (!visited[*it]) {
 				stack.push(*it);
 				ans.push_back(to_string(*it));
@@ -780,6 +809,7 @@ vector<string> CFG::getNextStarString(int stmtNo) {
 vector<string> CFG::getPrevStarString(int stmtNo) {
 	bool* visited = new bool[CFGTable.at(currentPro).size()]();
 	stack <int> stack;
+	bool goBackItSelf = false;
 	vector<string> ans;
 	if (stmtNo > numOfStatement) {
 		return ans;
@@ -792,6 +822,13 @@ vector<string> CFG::getPrevStarString(int stmtNo) {
 		stack.pop();
 		visited[top] = true;
 		for (it = revCFGstmt.at(top).begin(); it != revCFGstmt.at(top).end(); it++) {
+			if (*it == stmtNo) {
+				if (goBackItSelf == false) {
+					ans.push_back(to_string(*it));
+					goBackItSelf = true;
+				}
+			}
+			
 			if (!visited[*it]) {
 				stack.push(*it);
 				if (*it != 0) {
