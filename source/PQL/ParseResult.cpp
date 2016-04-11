@@ -85,7 +85,7 @@ const string FollowsT = "(?:Follows\\*" + space + "\\(" + space + stmtRef + spac
 const string Next = "(?:Next" + space + "\\(" + space + lineRef + space + "," + space + lineRef + space + "\\))";
 const string NextT = "(?:Next\\*" + space + "\\(" + space + lineRef + space + "," + space + lineRef + space + "\\))";
 const string Affects = "(?:Affects" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
-const string AffectsT = "(?:Affects*" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
+const string AffectsT = "(?:Affects\\*" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
 const string relRef = "(?:" + Modifies + "|" + Uses + "|" + Calls + "|" + CallsT + "|" + Affects + "|" + AffectsT + "|"
 						+ Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
 const string relCond = "(?:" + relRef + space + "(?:and" + space + relRef + space + ")*)";
@@ -108,7 +108,7 @@ const string patternCl = "(?:pattern" + space + patternCond + ")";
 
 const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
 const string selectOnly = space + "Select" + space + resultCl + space;
-const string suchthatOnly = space + suchthatCl + space;
+const string suchthatOnly = space + relRef + space;
 const string patternOnly = space + patternCl + space;
 const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
@@ -254,11 +254,10 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 	ClauseSet twoSynonyms;
 
 	for (it1 = normalClausePhrase.begin(); it1 != normalClausePhrase.end(); ++it1) {
-		string temp = *it1;
-		next = sregex_iterator(temp.begin(), temp.end(), queryWordParsingNormalClause);
+		string currentPhrase = *it1;
+		next = sregex_iterator(currentPhrase.begin(), currentPhrase.end(), queryWordParsingNormalClause);
 		while (next != end) {
 			smatch match = *next;
-			if (match.str(0) == "such" || match.str(0) == "that") continue;
 			word.push_back(match.str(0));
 			next++;
 		}
@@ -507,6 +506,7 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 				}
 			}
 		}
+		word.clear();
 	}
 
 	// concat all ClauseSets into one ClauseSet
