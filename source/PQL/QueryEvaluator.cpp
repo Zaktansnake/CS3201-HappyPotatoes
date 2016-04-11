@@ -29,7 +29,7 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 	bool HasResults = false;
 	try {
 		
-		 HasResults = assessParseResult(mustPr);
+		 HasResults = assessParseResult(mustPr); //add a storage check
 	}
 	catch(exception&e){
 		cout << e.what() <<endl;
@@ -43,7 +43,7 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 		}
 		else {
 			cout << "has no result for boolean" << endl;
-			BooleanResults.push_back("False");
+			BooleanResults.push_back("");
 		}
 	}
 	else {
@@ -75,7 +75,7 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 	PatternSet PS, vector<With> WithClauses) {
 
 
-	string CheckBool = SelectParameterVector.at(0);
+	string CheckBool = SelectParameterVector.at(0); //ask Zhao Han about Boolean spelling in ParseResult.cpp
 	if (CheckBool == "Boolean") {
 		SelectBool = true;
 	}
@@ -98,35 +98,35 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 	else if((ClausesVector.size()==0)&&((WithClauses.size()!=0)&&(PS.size()!=0))){
 		ResultsExist.push_back(DoPatterns(PS));
 		ResultsExist.push_back(DoWithClause(WithClauses));
-		cout << "no normal clause Case 2" << endl;
+		cout << "no normal clause Case 2" << endl; // patterns and with clause
 	}
 	else if ((PS.size() == 0) && ((WithClauses.size() != 0) && (ClausesVector.size() != 0))) {
 		ResultsExist.push_back(DoWithClause(WithClauses));
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
-		cout << "no pattern clause Case 3" << endl;
+		cout << "no pattern clause Case 3" << endl; // with clause and normal
 	}
 	else if ((WithClauses.size() == 0) && ((ClausesVector.size() != 0) && (PS.size() != 0))) {
 		ResultsExist.push_back(DoPatterns(PS));
-		ResultsExist.push_back(DoWithClause(WithClauses));
-		cout << "no with clause Case 4" << endl;
+		ResultsExist.push_back(DoNormalClause(ClausesVector));
+		cout << "no with clause Case 4" << endl; // pattern and normal clause
 	}
 	else if ((ClausesVector.size() != 0) && ((WithClauses.size() == 0) && (PS.size() == 0))) {
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
-		cout << "no with clause and pattern clause Case 5" << endl;
+		cout << "no with clause and pattern clause Case 5" << endl; // normal
 	}
 	else if ((PS.size() != 0) && ((WithClauses.size() == 0) && (ClausesVector.size() == 0))) {
 		ResultsExist.push_back(DoPatterns(PS));
-		cout << "no with clause and normal clause Case 6" << endl;
+		cout << "no with clause and normal clause Case 6" << endl; // pattern
 	}
 	else if ((WithClauses.size() != 0) && ((PS.size() == 0) && (ClausesVector.size() == 0))) {
 		ResultsExist.push_back(DoWithClause(WithClauses));
-		cout << "no pattern clause and normal clause Case 7" << endl;
+		cout << "no pattern clause and normal clause Case 7" << endl; // with
 	}
 	else{
 		ResultsExist.push_back(DoPatterns(PS));
 		ResultsExist.push_back(DoWithClause(WithClauses));
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
-		cout << " have every thing Case 8" << endl;
+		cout << " have every thing Case 8" << endl; // everything else
 	}
 	return ReturnResultsExist(ResultsExist);
 }
@@ -147,7 +147,7 @@ bool QueryEvaluator::DoPatterns(PatternSet PS)
 	for (int i = 0; i < PS.size(); i++) {
 		Pattern P = PS.at(i);
 		string NamePlusType = P.getPatternOperation();
-		string type = SplitString(NamePlusType).first;
+		string type = SplitString(NamePlusType).first; // reminder to check with Zhao han if type then name or name then type
 		string Name = SplitString(NamePlusType).second;
 		string P1 = P.getFirstParameter();
 		string P2 = P.getSecondParameter();
@@ -256,7 +256,7 @@ bool QueryEvaluator::GetAnswerForLeftWith(string left, string right) {
 		//if fits, take the row where the colelement is at and store them in the new storage
 		for (int i = 0; i < ResultsTable.size(); i++) {
 			vector<string> Row = ResultsTable.at(i);
-			if (Row.at(Pos) == right) {
+			if (Row.at(Pos) == right) { //check whether right has quotation marks, if have then remove, and don't have return the same
 				NewResultsTable.push_back(Row);
 				HasResults = true;
 			}
@@ -269,7 +269,7 @@ bool QueryEvaluator::GetAnswerForLeftWith(string left, string right) {
 		//if resultstable has nothing inside just store the whole column
 		if (ResultsTable.size() == 0) {
 			for (int i = 0; i < leftResults.size(); i++) {
-				if (leftResults.at(i) == right) {
+				if (leftResults.at(i) == right) { //check whether right has quotation marks, if have then remove, and don't have return the same
 					vector<string> s;
 					s.push_back(leftResults.at(i));
 					NewResultsTable.push_back(s);
@@ -282,7 +282,7 @@ bool QueryEvaluator::GetAnswerForLeftWith(string left, string right) {
 			for (int i = 0; i < ResultsTable.size(); i++) {
 				vector<string> Row = ResultsTable.at(i);
 				for (int j = 0; j < leftResults.size(); j++) {
-					if (leftResults.at(j) == right) {
+					if (leftResults.at(j) == right) { //check whether right has quotation marks, if have then remove, and don't have return the same
 						vector<string> copy = Row;
 						copy.push_back(leftResults.at(j));
 						NewResultsTable.push_back(copy);
@@ -308,7 +308,7 @@ bool QueryEvaluator::GetAnswerForRightWith(string left, string right) {
 		int Pos = QAS.GetResultTablePos(RightName);
 		for (int i = 0; i < ResultsTable.size(); i++) {
 			vector<string> Row = ResultsTable.at(i);
-			if (Row.at(Pos) == left) {
+			if (Row.at(Pos) == left) { //check whether left has quotation marks, if have then remove, and don't have return the same
 				NewResultsTable.push_back(Row);
 				HasResults = true;
 			}
@@ -319,7 +319,7 @@ bool QueryEvaluator::GetAnswerForRightWith(string left, string right) {
 		vector<string> RightResults = GetAllOfWithClause(RightType);
 		if (ResultsTable.size() == 0) {
 			for (int i = 0; i < RightResults.size(); i++) {
-				if (RightResults.at(i) == right) {
+				if (RightResults.at(i) == right) { //check whether left has quotation marks, if have then remove, and don't have return the same
 					vector<string> s;
 					s.push_back(RightResults.at(i));
 					NewResultsTable.push_back(s);
@@ -331,7 +331,7 @@ bool QueryEvaluator::GetAnswerForRightWith(string left, string right) {
 			for (int i = 0; i < ResultsTable.size(); i++) {
 				vector<string> Row = ResultsTable.at(i);
 				for (int j = 0; j < RightResults.size(); j++) {
-					if (RightResults.at(j) == right) {
+					if (RightResults.at(j) == right) { //check whether left has quotation marks, if have then remove, and don't have return the same
 						vector<string> copy = Row;
 						copy.push_back(RightResults.at(j));
 						NewResultsTable.push_back(copy);
@@ -503,7 +503,7 @@ bool QueryEvaluator::CheckSynonym(string firstParameter,string secondParameter,
 			firstParameterType, secondParameterType, clauseType);
 	}
 	else {
-		cout << "normal clause when both is snynonym" << endl;
+		cout << "normal clause when both is not a snynonym" << endl;
 		HasResults = CheckTrueOrFalse(firstParameter, secondParameter,
 			firstParameterType, secondParameterType, clauseType);
 	}
@@ -910,7 +910,7 @@ vector<string> QueryEvaluator::GetAll(char Type) {
 }
 
 vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, char P1Type,
-	char P2Type, string clausesType) {
+	char P2Type, string clausesType) { // check if there is a quotation mark, if there is will need to remove
 	vector<string> results;
 	if (clausesType == "Follows") {
 		results = stmtTable::getFollowWithType(GetStringType(P2Type),P1);
@@ -951,7 +951,7 @@ vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, 
 }
 
 vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, char P1Type,
-	char P2Type, string clausesType) {
+	char P2Type, string clausesType) { // check if there is a quotation mark, if there is will need to remove
 
 	vector<string> results;
 	if (clausesType == "Follows") {
@@ -993,7 +993,7 @@ vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, c
 }
 
 bool QueryEvaluator::CheckIsResultsFromPkb(string P1,string P2,char P1Type,
-	char P2Type,string clausesType) {
+	char P2Type,string clausesType) { // check if there is a quotation mark, if there is will need to remove
 
 	bool results;
 	if (clausesType == "Follows") {
