@@ -150,7 +150,7 @@ void findMethod(string lineFromSample) {
 					detectRightBracket();
 					bracstack.pop();
 					stmtTable::addStmtTable(letter, stmtLine);
-					CFG::addNextNode(stmtLine, str);
+					CFG::addNextNode(stmtLine, letter);
 				}
 			}
 		}
@@ -526,6 +526,7 @@ void getProgramLine(string lineFromSource) {
 					std::size_t foundSemiColon = lineFromSource.find(";");
 					string normalLine = lineFromSource.substr(0, foundSemiColon + 1);
 					string bracket = lineFromSource.substr(foundSemiColon + 1);
+					bracket.erase(std::remove(bracket.begin(), bracket.end(), ' '), bracket.end());
 					findMethod(normalLine);
 					findMethod(bracket);
 				}

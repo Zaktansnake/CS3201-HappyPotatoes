@@ -18,7 +18,7 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(CFG)
 		{
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source07.txt");
+			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
 
 			string result;
 			string expectedResult;
@@ -26,7 +26,7 @@ namespace UnitTesting
 			int expectBoo;
 			bool resultBoo;
 			int resultB;
-			/*
+			
 			expectedResult = "1318";
 			actual = CFG::getNext(12);
 			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
@@ -82,7 +82,7 @@ namespace UnitTesting
 
 			// test isNextStar
 			expectBoo = 0;
-			resultBoo = CFG::isNextStar(5, 6);
+			resultBoo = CFG::isNextStar(5, 21);
 			if (resultBoo) {
 				resultB = 1;
 			}
@@ -90,7 +90,7 @@ namespace UnitTesting
 				resultB = 0;
 			}
 			Assert::AreEqual(expectBoo, resultB);
-			*/
+			
 		}   
 	};
 }

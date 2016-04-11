@@ -312,6 +312,7 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 			else {
 				parentStack.push(stmtNo);
 				conditionStack.push(conditionstmt);
+				
 			}
 
 		}
