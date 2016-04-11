@@ -53,9 +53,6 @@
     <ClCompile Include="TestParseResult.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="TestPattern.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TestPQLParser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>

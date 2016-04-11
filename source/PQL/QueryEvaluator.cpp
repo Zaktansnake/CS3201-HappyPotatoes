@@ -26,7 +26,7 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
 	clear();
 	cout << "Hello World! start to evaluate" << endl;
-	bool HasResults;
+	bool HasResults = false;
 	try {
 		
 		 HasResults = assessParseResult(mustPr);
@@ -131,7 +131,6 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 	return ReturnResultsExist(ResultsExist);
 }
 
-
 bool QueryEvaluator::ReturnResultsExist(vector<bool> RE) {
 	for (int i = 0; i < RE.size(); i++) {
 		if (RE.at(i)==false) {
@@ -213,8 +212,6 @@ bool QueryEvaluator::DoWithClause(vector<With> W) {
 	return true;
 }
 
-
-
 bool QueryEvaluator::CheckWith(With with) {
 	
 	string left = with.getLeftOfEqualSign();
@@ -241,6 +238,7 @@ bool QueryEvaluator::CheckWith(With with) {
 		}
 	}
 }
+
 //this is the case for e.g v.varname = "x"
 bool QueryEvaluator::GetAnswerForLeftWith(string left, string right) {
 	vector<vector<string>> ResultsTable = QAS.GetResultsTable();
@@ -455,6 +453,7 @@ bool QueryEvaluator::GetAnswerForBothWith(string left,string right) {
 	}
 	return HasResults;
 }
+
 bool QueryEvaluator::DoNormalClause(vector<Clause> ClausesVector) {
 	for (int i = 0; i < ClausesVector.size(); i++) {
 
