@@ -41,6 +41,7 @@ public:
 	static std::vector<string> stmtTable::getFollowFanStar(int stmtNo);
 	static std::vector<string> stmtTable::getFollowStar(int stmtNo);
 	static bool isFollow(int s1, int s2);
+	static bool isFollowStar(int s1, int s2);
 
 	static std::vector<string> stmtTable::getFollowForWhile(int stmtNo);
 	static std::vector<string> stmtTable::getFollowFanForWhile (int stmtNo);
@@ -68,6 +69,7 @@ public:
 	static std::vector<string> stmtTable::getParentStar(int stmtNo);
 	static std::vector<string> stmtTable::getChildStar(int stmtNo);
 	static bool isParent(int s1, int s2);
+	static bool isParentStar(int s1, int s2);
 
 	static std::vector<string> stmtTable::getParentForWhile(int stmtNo);
 	static std::vector<string> stmtTable::getChildForWhile(int stmtNo);

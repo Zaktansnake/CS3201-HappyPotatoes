@@ -20,7 +20,7 @@ public:
 	std::vector<int> Follows::getFollowStar(int stmtNo);
 	std::vector<int> Follows::getFollowFanStar(int stmtNo);
 	bool isFollows(int s1, int s2);
-
+	bool isFollowsStar(int s1, int s2);
 
 	std::vector<int> Follows::getFollowForWhile(int stmtNo);
 	std::vector<int> Follows::getFollowFanForWhile(int stmtNo);

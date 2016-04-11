@@ -165,6 +165,11 @@ namespace UnitTesting
 			}
 
 			Assert::AreEqual(expectedChildren, resultChildren);
+			
+			//test isParentStar
+			isparent = true;
+			expectBool = stmtTable::isParentStar(4,10);
+			Assert::AreEqual(expectBool, isparent);
 		
 		}
 
@@ -338,6 +343,12 @@ namespace UnitTesting
 			//test for isFollow
 			expectedIsFollow = true;
 			resultIsFollow = stmtTable::isFollow(3, 4);
+
+			Assert::AreEqual(expectedIsFollow, resultIsFollow);
+
+
+			expectedIsFollow = true;
+			resultIsFollow = stmtTable::isFollowStar(17, 19);
 
 			Assert::AreEqual(expectedIsFollow, resultIsFollow);
 			

@@ -266,6 +266,21 @@ bool stmtTable::isFollow(int s1, int s2) {
 	}
 	return false;
 }
+bool stmtTable::isFollowStar(int s1, int s2) {
+	if (follow.isFollowsStar(s1, s2)) {
+		vector<int>temp;
+		temp.push_back(s2);
+		vector<string> ans = checkWithProcedure(s1, temp);
+		if (ans.size() == 0) {
+			return false;
+		}
+		else {
+			return true;
+		}
+	}
+	return false;
+}
+
 std::vector<string> stmtTable::getFollowForWhile(int stmtNo) {
 	std::vector<string> result;
 	std::vector<int> ans = follow.getFollowForWhile(stmtNo);
@@ -445,6 +460,10 @@ std::vector<string> stmtTable::getChildStar(int stmtNo) {
 
 bool stmtTable::isParent(int s1, int s2) {
 	return parent.isParent(s1,s2);
+}
+
+bool stmtTable::isParentStar(int s1, int s2) {
+	return parent.isParentStar(s1, s2);
 }
 
 std::vector<string> stmtTable::getParentForWhile(int stmtNo) {

@@ -36,6 +36,7 @@ public:
 	std::vector<string> Parent::getChildStarForIf(int stmtNo);
 
 	bool isParent(int stmt1, int stmt2);
+	bool isParentStar(int stmt1, int stmt2);
 
 	static std::map<int, int> AnsMap;
 	static std::map<int, vector<int>> AnsStarMap;
