@@ -260,8 +260,6 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 						CFGstmt.push_back(CFGline);
 						CFGTable.at(currentPro) = CFGstmt;
 					}
-
-
 				}
 			}
 			
@@ -330,6 +328,15 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 				}
 				while (ifRecord.size() != 0) {
 					ifRecord.pop();
+				}
+				if (CFGTable.at(currentPro).size() == numOfStatement + 1) {
+
+				}
+				else {
+					CFGline.clear();
+					CFGline.push_back(dummy);
+					CFGstmt.push_back(CFGline);
+					CFGTable.at(currentPro) = CFGstmt;
 				}
 				flagForClose = false;
 				flagForCorrectElseIf = false;
