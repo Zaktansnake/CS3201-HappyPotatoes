@@ -74,11 +74,17 @@ void PKB::create(string fileName) {
 		}
 	}
 	catch (exception &e) {
-		cout << "Standard exception: " << e.what() << endl;
+		cout << "Standard exception (for create): " << e.what() << endl;
 	}
 
 	myFile.close();
-	PKB::updateTables();
+
+	try {
+		PKB::updateTables();
+	}
+	catch (exception &e) {
+		cout << "Standard exception (for update tables): " << e.what() << endl;
+	}
 	
 }
 
@@ -334,7 +340,7 @@ void PKB::updateTables() {
 	ProcTable::updateProcCallsTables();
 	PKB::updateAllTables();
 	PatternTable::updatePatternTable();
-	Affects::updateAffectsTable();
+	//Affects::updateAffectsTable();
 }
 
 void PKB::updateAllTables() {
@@ -540,7 +546,7 @@ void getProgramLine(string lineFromSource) {
 		}
 	}
 	catch (exception &e) {
-		cout << "Standard exception: " << e.what() << endl;
+		cout << "Standard exception (for getProgramLine): " << e.what() << endl;
 	}
 
 }
