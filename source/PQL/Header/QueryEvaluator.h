@@ -16,10 +16,10 @@ public:
 	bool GetAnswerForBothWith(string left, string right);
 	vector<string> GetAllOfWithClause(string);
 	void clear();
+	string RemoveQuotations(string s);
 	int ChangeStringToInt(string);
 	string ChangeIntToString(int);
 	bool HaveQuotation(string);
-	bool IsNumber(string);
 	pair<string, string> SplitString(string s);
 	bool assessClauses(std::vector<Clause> ClausesVector, std::vector<std::string> SelectParameterVector,
 		PatternSet PS, vector<With> WithClauses);

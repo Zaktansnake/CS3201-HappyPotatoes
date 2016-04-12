@@ -7,7 +7,7 @@ class QueriesAnswerStorage {
 public:
 	void SetResultTable(vector<vector<string>>);
 	int GetResultTablePos(string);
-	vector<vector<string>> GetResultsTable();
+	vector<vector<string > > GetResultsTable();
 	void SetSelect(vector<string>);
 	void SetTable(string);
 	bool HasKey(string);
@@ -22,7 +22,7 @@ public:
 protected:
 
 	static std::unordered_map<std::string, int> ClausesParameterPositionInTable;
-	static vector<vector<string>> ResultsTable;
-	static vector<pair<std::string,std::string>> SelectParameter;
+	static vector<vector<string > > ResultsTable;
+	static vector<pair<std::string,std::string > > SelectParameter;
 	static vector<string> NoClause;
 };
