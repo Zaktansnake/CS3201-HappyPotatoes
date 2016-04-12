@@ -919,13 +919,13 @@ vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, 
 		results = stmtTable::getFollowStarWithType(GetStringType(P2Type), P1);
 	}
 	else if (clausesType == "Uses") {
-		results = VarTable::getUsesWithType(GetStringType(P2Type), P1);
+		results = VarTable::getUsesWithType(GetStringType(P2Type), RemoveQuotations(P1));
 	}
 	else if (clausesType == "Calls") {
-		results = ProcTable::getProcWithType("PROC",P1);
+		results = ProcTable::getProcWithType("PROC", RemoveQuotations(P1));
 	}
 	else if (clausesType == "Modifies") {
-		results = VarTable::getModifiesWithType(GetStringType(P2Type),P1);
+		results = VarTable::getModifiesWithType(GetStringType(P2Type), RemoveQuotations(P1));
 	}
 	else if (clausesType == "Parent") {
 		results = stmtTable::getChildWithType(GetStringType(P2Type),P1);
@@ -955,19 +955,19 @@ vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, c
 
 	vector<string> results;
 	if (clausesType == "Follows") {
-		return results;
+		results = stmtTable::getFollowFanWithType(GetStringType(P1Type), P2);
 	}
 	else if (clausesType == "Follows*") {
-		return results;
+		results = stmtTable::getFollowFanStarWithType(GetStringType(P1Type), P2);
 	}
 	else if (clausesType == "Uses") {
-		results =  VarTable::getUsedWithType(GetStringType(P1Type),P2);
+		results =  VarTable::getUsedWithType(GetStringType(P1Type), RemoveQuotations(P2));
 	}
 	else if (clausesType == "Calls") {
-		results = ProcTable::getParentProcWithType(GetStringType(P1Type),P2);
+		results = ProcTable::getParentProcWithType(GetStringType(P1Type), RemoveQuotations(P2));
 	}
 	else if (clausesType == "Modifies") {
-		results = VarTable::getModifiedWithType(GetStringType(P1Type),P2);
+		results = VarTable::getModifiedWithType(GetStringType(P1Type), RemoveQuotations(P2));
 	}
 	else if (clausesType == "Parent") {
 		results = stmtTable::getParentWithType(GetStringType(P1Type),P2);
@@ -1000,7 +1000,7 @@ bool QueryEvaluator::CheckIsResultsFromPkb(string P1,string P2,char P1Type,
 		results = stmtTable::isFollow(ChangeStringToInt(P1),ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Follows*") {
-		return results;
+		results = stmtTable::isFollowStar(ChangeStringToInt(P1), ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Uses") {
 		return results;
@@ -1130,39 +1130,39 @@ bool QueryEvaluator::IsSynonym(char c) {
 vector<string> QueryEvaluator::GetP2Blank(string clausesType) {
 	vector<string> results;
 	if (clausesType == "Follows") {
-		return results;
+		return VarTable::getAllWithType("STMT","");
 		//return allstmt
 	}
 	else if (clausesType == "Follows*") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return allstmt
 	}
 	else if (clausesType == "Uses") {
-		return results;
+		return VarTable::getAllWithType("VAR","");
 		//return variable
 	}
 	else if (clausesType == "Calls") {
-		return results;
+		return ProcTable::getAllProcedures();
 		//return all procedure
 	}
 	else if (clausesType == "Modifies") {
-		return results;
+		return VarTable::getAllWithType("VAR", "");
 		//return all procedure
 	}
 	else if (clausesType == "Parent") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return all stmt
 	}
 	else if (clausesType == "Parent*") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return all stmt
 	}
 	else if (clausesType == "Next") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return all prog_line
 	}
 	else if (clausesType == "Next*") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return all prog_line
 	}
 	else if (clausesType == "Affects") {
@@ -1182,39 +1182,39 @@ vector<string> QueryEvaluator::GetP2Blank(string clausesType) {
 vector<string> QueryEvaluator::GetP1Blank(string clausesType) {
 	vector<string> results;
 	if (clausesType == "Follows") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return allstmt
 	}
 	else if (clausesType == "Follows*") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return allstmt
 	}
 	else if (clausesType == "Uses") {
-		return results;
+		return VarTable::getAllWithType("VAR", "");
 		//return variable
 	}
 	else if (clausesType == "Calls") {
-		return results;
+		return ProcTable::getAllProcedures();
 		//return all procedure
 	}
 	else if (clausesType == "Modifies") {
-		return results;
+		return VarTable::getAllWithType("VAR", "");
 		//return all procedure
 	}
 	else if (clausesType == "Parent") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return all stmt
 	}
 	else if (clausesType == "Parent*") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return all stmt
 	}
 	else if (clausesType == "Next") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return all prog_line
 	}
 	else if (clausesType == "Next*") {
-		return results;
+		return VarTable::getAllWithType("STMT", "");
 		//return all prog_line
 	}
 	else if (clausesType == "Affects") {
@@ -1234,41 +1234,46 @@ vector<string> QueryEvaluator::GetAllOfWithClause(string s) {
 		
 		vector<string> results;
 		string type = QAS.GetSelectType(s);
-		if (type == "stmt") {
-			return results;
-			//return all stmt
+		if (type == "procName") {
+			cout << "get all procedure" << endl;
+			return ProcTable::getAllProcedures();
 		}
-		else if (type == "assignment") {
-			return results;
-			//return all assignment
+		else if (type == "varName") {
+			cout << "get all variable" << endl;
+			return VarTable::getAllWithType("VAR", "");
+
 		}
-		else if (type == "procedure") {
-			return results;
-			//return all procedure
+		else if (type == "stmt#") {
+			cout << "get all stmt" << endl;
+			return VarTable::getAllWithType("STMT", "");
 		}
-		else if (type == "while") {
-			return results;
-			//return all while
-		}
-		else if (type == "assign") {
-			return results;
-			//return all assign
-		}
-		else if (type == "constant") {
-			return results;
-			//return all constant
+		else if (type == "value") {
+			cout << "get all constant" << endl;
+			return ConstantTable::getAllConstantValues();
+			//return ConstantTable::getAllConstantValues();
 		}
 		else {
 			return results;
-			//return empty
 		}
-	
 }
 
 void QueryEvaluator::clear()
 {
 	NoClause = false;
 	SelectBool = false;
+}
+
+string RemoveQuotations(string s) {
+
+	size_t found = s.find("\"");
+	if (found == string::npos) {
+		return s;
+	}
+	else {
+		s.erase(remove(s.begin(), s.end(), '\"'),s.end());
+		return s;
+	}
+	return s;
 }
 
 int QueryEvaluator::ChangeStringToInt(string s)
