@@ -101,5 +101,26 @@ namespace UnitTesting
 			Assert::AreEqual(firstParam, string("s1"));
 			Assert::AreEqual(secondParam, string("v2"));
 		}
+
+		TEST_METHOD(testParsingWith) {
+			unordered_map<string, string> declarationTable{ { "RoMeo###","prog_line" },{ "Ju1i3t#","procedure" },{ "v2","variable" } };
+			string querySentence = "Select BOOLEAN such that Uses (5, \"y\") with RoMeo### = 2 and with \"Apple\" =Ju1i3t#.procName  and with v2.varName = \"xii\"";
+			WithSet withClauses = ParseResult::parseWith(querySentence, declarationTable);
+			With resultClause = withClauses[0];
+			string leftSide = resultClause.getLeftOfEqualSign();
+			string rightSide = resultClause.getRightOfEqualSign();
+			Assert::AreEqual(string("RoMeo###"), leftSide);
+			Assert::AreEqual(string("2"), rightSide);
+			resultClause = withClauses[1];
+			leftSide = resultClause.getLeftOfEqualSign();
+			rightSide = resultClause.getRightOfEqualSign();
+			Assert::AreEqual(string("\"Apple\""), leftSide);
+			Assert::AreEqual(string("Ju1i3t#.procName"), rightSide);
+			resultClause = withClauses[2];
+			leftSide = resultClause.getLeftOfEqualSign();
+			rightSide = resultClause.getRightOfEqualSign();
+			Assert::AreEqual(string("v2.varName"), leftSide);
+			Assert::AreEqual(string("\"xii\""), rightSide);
+		}
 	};
 }

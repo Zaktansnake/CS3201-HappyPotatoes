@@ -36,7 +36,7 @@ public:
 	static ParameterSet parseSelect(string, unordered_map<string, string>&);
 	static ClauseSet parseNormalClauses(string, unordered_map<string, string>&);
 	static PatternSet parsePattern(string, unordered_map<string, string>&);
-	// static WithSet parseWith(string, unordered_map<string, string>&);
+	static WithSet parseWith(string, unordered_map<string, string>&);
 
 	// constructs the parsing result for query evaluator
 	static ParseResult generateParseResult(string, string);

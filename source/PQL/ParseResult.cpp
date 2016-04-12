@@ -64,7 +64,7 @@ const string entRef = "(?:" + IDENT + "|_|" + "\"" + IDENT + "\"|" + INTEGER + "
 const string entRefWithStar = "(?:" + IDENTWithStar + "|_|" + "\"" + IDENT + "\"|" + INTEGER + ")";
 const string stmtRef = "(?:" + IDENT + "|_|" + INTEGER + ")";
 const string lineRef = stmtRef;
-const string designEntity = "(?:procedure|stmt|assign|call|while|if|variable|constant|prog_line)";
+const string designEntity = "(?:procedure|stmt|assign|while|if|variable|constant|prog_line)";
 const string declar = "(?:" + space + designEntity + space + IDENT + space + "(?:," + space + IDENT + space + ")*" + ";)*";
 // the next single regex string is for faster parsing of declaration
 const string declarPar = "(?:" + space + designEntity + space + IDENT + space + "(?:," + space + IDENT + space + ")*" + ";)";
@@ -87,7 +87,7 @@ const string NextT = "(?:Next\\*" + space + "\\(" + space + lineRef + space + ",
 const string Affects = "(?:Affects" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
 const string AffectsT = "(?:Affects\\*" + space + "\\(" + space + stmtRef + space + "," + space + stmtRef + space + "\\))";
 const string relRef = "(?:" + Modifies + "|" + Uses + "|" + Calls + "|" + CallsT + "|" + Affects + "|" + AffectsT + "|"
-						+ Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
++ Parent + "|" + ParentT + "|" + Follows + "|" + FollowsT + "|" + Next + "|" + NextT + ")";
 const string relCond = "(?:" + relRef + space + "(?:and" + space + relRef + space + ")*)";
 
 const string NAME = "(?:[[:alpha:]](?:[[:alpha:]]|\\d)*)";
@@ -109,21 +109,24 @@ const string patternCl = "(?:pattern" + space + patternCond + ")";
 const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
 const string selectOnly = space + "Select" + space + resultCl + space;
 const string suchthatOnly = space + relRef + space;
-const string patternOnly = space + patternCl + space;
+const string patternOnly = space + pattern + space;
+const string withOnly = space + attrCompare + space;
 const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
 const regex declarationChecking(declar);
 const regex declarationParsing(declarPar);
 const regex declarationWordParsing(IDENT);
-
+// the following regexes are for extracting different kinds of clauses from a query
 const regex queryChecking(selectClause);
 const regex queryParseSelect(selectOnly);
 const regex queryParseNormalClauses(suchthatOnly);
 const regex queryParsePattern(patternOnly);
-
+const regex queryParseWith(withOnly);
+// the following regexes are for extracting important words from each kind of clause
 const regex queryWordParsingSelect(IDENT);
 const regex queryWordParsingNormalClause(entRefWithStar);
 const regex queryWordParsingPattern(patternEntRef);
+const regex queryWordParsingWith(REF);
 
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
 	unordered_map<string, string> declarationTable;
@@ -637,6 +640,269 @@ PatternSet ParseResult::parsePattern(string query, unordered_map<string, string>
 	return patterns;
 }
 
+WithSet ParseResult::parseWith(string query, unordered_map<string, string>& declarationTable) {
+	vector<string> withPhrase;
+	sregex_iterator next(query.begin(), query.end(), queryParseWith);
+	sregex_iterator end;
+	while (next != end) {
+		smatch match = *next;
+		withPhrase.push_back(match.str(0));
+		next++;
+	}
+
+	vector<string> word;
+	vector<string>::iterator it1;
+	WithSet withClause;
+	WithSet zeroAttrRefs;
+	WithSet oneAttrRef;
+	WithSet twoAttrRefs;
+
+	for (it1 = withPhrase.begin(); it1 != withPhrase.end(); ++it1) {
+		string currentPhrase = *it1;
+		next = sregex_iterator(currentPhrase.begin(), currentPhrase.end(), queryWordParsingWith);
+		while (next != end) {
+			smatch match = *next;
+			word.push_back(match.str(0));
+			next++;
+		}
+
+		// left and right are positions relative to the equal sign
+		string left;
+		string right;
+		string current;
+		vector<string>::iterator it;
+		// due to the special with clause syntax, this bool is used to check which side of the equal sign is being manipulated
+		bool onTheLeft = true;
+		int attrRefCount = 0;
+		bool leftIsInt;
+
+		for (it = word.begin(); it != word.end(); ++it) {
+			current = *it;
+			if (onTheLeft) {
+				left = current;
+				// the left part is a string
+				if (left.front() == '"' && left.back() == '"') {
+					leftIsInt = false;
+				}
+				// the left part is an integer
+				else if (regex_match(left, regex(INTEGER))) {
+					leftIsInt = true;
+				}
+				// the left part is a synonym
+				else if (regex_match(left, regex(IDENT))) {
+					if (declarationTable[left] == "" || declarationTable[left] != "prog_line") {
+						// synonym type is wrong according to PQL grammar or the synonym is not declared
+						WithSet w;
+						w.push_back(With("dummy", "dummy"));
+						return w;
+					}
+					leftIsInt = true;
+				}
+				else {	// the left part is an attrRef
+					int dotPos = left.find(".");
+					string synonym = left.substr(0, dotPos);
+					string attribute = left.substr(dotPos + 1, left.size() - dotPos);
+					if (declarationTable[synonym] == "") {
+						// the synonym is not declared
+						WithSet w;
+						w.push_back(With("dummy", "dummy"));
+						return w;
+					}
+					else if (declarationTable[synonym] == "procedure") {
+						if (attribute != "procName") {
+							// synonym and attribute do not match
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+						leftIsInt = false;
+						attrRefCount++;
+					}
+					else if (declarationTable[synonym] == "variable") {
+						if (attribute != "varName") {
+							// synonym and attribute do not match
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+						leftIsInt = false;
+						attrRefCount++;
+					}
+					else if (declarationTable[synonym] == "constant") {
+						if (attribute != "value") {
+							// synonym and attribute do not match
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+						leftIsInt = true;
+						attrRefCount++;
+					}
+					else { // synonym of type stmt|assign|while|if|prog_line
+						if (attribute != "stmt#") {
+							// synonym and attribute do not match
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+						leftIsInt = true;
+						attrRefCount++;
+					}
+				}
+				onTheLeft = false;
+			}
+			else {	// on the right side of the equal sign
+				right = current;
+				// if the left part is an integer type then the right part must also be an integer
+				if (leftIsInt) {
+					// the right part is a string
+					if (right.front() == '"' && right.back() == '"') {
+						WithSet w;
+						w.push_back(With("dummy", "dummy"));
+						return w;
+					}
+					// the right part is an integer
+					else if (regex_match(right, regex(INTEGER))) {}
+					// the right part is a synonym
+					else if (regex_match(right, regex(IDENT))) {
+						if (declarationTable[right] == "" || declarationTable[right] != "prog_line") {
+							// synonym type is wrong according to PQL grammar or the synonym is not declared
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+					}
+					else {	// the right part is an attrRef
+						int dotPos = right.find(".");
+						string synonym = right.substr(0, dotPos);
+						string attribute = right.substr(dotPos + 1, left.size() - dotPos);
+						if (declarationTable[synonym] == "") {
+							// the synonym is not declared
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+						else if (declarationTable[synonym] == "procedure") {
+							// the right part cannot be a string
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+						else if (declarationTable[synonym] == "variable") {
+							// the right part cannot be a string
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+						else if (declarationTable[synonym] == "constant") {
+							if (attribute != "value") {
+								// synonym and attribute do not match
+								WithSet w;
+								w.push_back(With("dummy", "dummy"));
+								return w;
+							}
+							else {
+								attrRefCount++;
+							}
+						}
+						else { // synonym of type stmt|assign|while|if|prog_line
+							if (attribute != "stmt#") {
+								// synonym and attribute do not match
+								WithSet w;
+								w.push_back(With("dummy", "dummy"));
+								return w;
+							}
+							else {
+								attrRefCount++;
+							}
+						}
+					}
+				}
+				// if the left part is a string then the right part must also be a string
+				else {
+					if (regex_match(right, regex(IDENT))) {
+						// the right part is of a synonym of prog_line
+						WithSet w;
+						w.push_back(With("dummy", "dummy"));
+						return w;
+					}
+					else if (regex_match(right, regex(INTEGER))) {
+						// the right part is an integer
+						WithSet w;
+						w.push_back(With("dummy", "dummy"));
+						return w;
+					}
+					// the right part is a string
+					else if (right.front() == '"' && right.back() == '"') {}
+					else {
+						// the right part is an attrRef
+						int dotPos = right.find(".");
+						string synonym = right.substr(0, dotPos);
+						string attribute = right.substr(dotPos + 1, right.size() - dotPos);
+						if (declarationTable[synonym] == "") {
+							// the synonym is not declared
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						} //  declarationTable[synonym] == "variable"
+						else if (declarationTable[synonym] == "procedure") {
+							if (attribute != "procName") {
+								// synonym and attribute do not match
+								WithSet w;
+								w.push_back(With("dummy", "dummy"));
+								return w;
+							}
+							else {
+								attrRefCount++;
+							}
+						}
+						else if (declarationTable[synonym] == "variable") {
+							if (attribute != "varName") {
+								// synonym and attribute do not match
+								WithSet w;
+								w.push_back(With("dummy", "dummy"));
+								return w;
+							}
+							else {
+								attrRefCount++;
+							}
+						}
+						else if (declarationTable[synonym] == "constant") {
+							// right side is an integer
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+						else { // synonym of type stmt|assign|while|if|prog_line
+							   // the right part is an integer
+							WithSet w;
+							w.push_back(With("dummy", "dummy"));
+							return w;
+						}
+					}
+				}
+				onTheLeft = true;
+			}
+		}
+		if (attrRefCount == 0) {
+			zeroAttrRefs.push_back(With(left, right));
+		}
+		else if (attrRefCount == 1) {
+			oneAttrRef.push_back(With(left, right));
+		}
+		else {
+			twoAttrRefs.push_back(With(left, right));
+		}
+		word.clear();
+	}
+	// concat all WithSets into one WithSet
+	withClause.reserve(zeroAttrRefs.size() + oneAttrRef.size() + twoAttrRefs.size());
+	withClause.insert(withClause.end(), zeroAttrRefs.begin(), zeroAttrRefs.end());
+	withClause.insert(withClause.end(), oneAttrRef.begin(), oneAttrRef.end());
+	withClause.insert(withClause.end(), twoAttrRefs.begin(), twoAttrRefs.end());
+	return withClause;
+}
+
 bool ParseResult::checkWholeQuery(string query) {
 	// query with syntax error
 	if (!regex_match(query, queryChecking)) return false;
@@ -671,11 +937,12 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 
 
 
-	/* withClauses = ParseResult::parseWith(query, declarationTable);
+	withClauses = ParseResult::parseWith(query, declarationTable);
 	if (withClauses.front().getLeftOfEqualSign == "dummy") {
 		signalErrorAndStop();
 		return ParseResult();
-	} */
+	}
+
 	cout << "I am here 3" << endl;
 	// if every component in ParseResult object is syntactically and grammatically correct
 	return ParseResult(selectParameter, clauses, patterns, withClauses);
