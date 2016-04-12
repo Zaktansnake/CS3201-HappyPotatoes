@@ -145,6 +145,7 @@ ParseResult ParseResult::generateParseResult(string declarationSentence, string 
 bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<string, string>& declarationTable) {
 	declarationTable.clear();
 	if (!regex_match(declaration, declarationChecking)) {
+		cout << "148" << endl;
 		signalErrorAndStop();
 		return false;	// declaration with syntax error
 	}
@@ -177,6 +178,7 @@ bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<str
 					typeSelected = true;
 				}
 				else {
+					cout << "181" << endl;
 					signalErrorAndStop();
 					return false;
 				}
@@ -184,6 +186,7 @@ bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<str
 			// the word being checked is not a keyword
 			else {
 				if (declarationTable[word] != "") {	// the synonym has already been used
+					cout << "189" << endl;
 					signalErrorAndStop();
 					return false;
 				}
@@ -222,6 +225,7 @@ ParameterSet ParseResult::parseSelect(string query, unordered_map<string, string
 		else {
 			// the synonym is not declared
 			if (declarationTable[*it] == "") {
+				cout << "228" << endl;
 				signalErrorAndStop();
 				return ParameterSet();
 			}
@@ -925,8 +929,10 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 	PatternSet patterns;
 	WithSet withClauses;
 
+	cout << "928" << endl;
 	bool correct = ParseResult::checkWholeQuery(query);
 	if (!correct) {
+		cout << "931" << endl;
 		signalErrorAndStop();
 		cout << "signal" << endl;
 
@@ -941,6 +947,7 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 	// if normal clauses contain grammar error, return empty ParseResult
 	if (clauses.size() != 0) {
 		if (clauses.front().getClauseOperation() == "dummy") {
+			cout << "950" << endl;
 			signalErrorAndStop();
 			cout << "signal2" << endl;
 			return ParseResult();

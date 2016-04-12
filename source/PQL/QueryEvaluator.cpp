@@ -68,13 +68,13 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 			}
 		}
 		else {
-			return NoResults;
+return NoResults;
 		}
 	}
 }
 
 vector<string> QueryEvaluator::GetAllOfTheNotStored() {
-	
+
 	vector<string> ReturnResult;
 	vector<pair<string, string>> sv = QAS.GetSelectParameter();
 	for (int i = 0; i < sv.size(); i++) {
@@ -140,7 +140,7 @@ bool QueryEvaluator::SelectNotStored() {
 	vector<pair<string, string>> sv = QAS.GetSelectParameter();
 	for (int i = 0; i < sv.size(); i++) {
 		string name = sv.at(i).first;
-		unordered_map<string,int> m = QAS.GetTable();
+		unordered_map<string, int> m = QAS.GetTable();
 		cout << m.size() << endl;
 		cout << "selectnotstored name" << endl;
 		cout << QAS.HasKey(name) << endl;
@@ -166,9 +166,11 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 
 	cout << "I am assesssing clause" << endl;
 
-	cout << "ClauseVector"+ClausesVector.size() << endl;
+	cout << "ClauseVector" + ClausesVector.size() << endl;
 	QAS.SetSelect(SelectParameterVector);
-
+	if (SelectParameterVector.at(0) == "BOOLEAN"){
+		SelectBool = true;
+	}
 	vector<bool> ResultsExist;
 	//if there is no clause and no with clause at allw
 	if ((ClausesVector.size() == 0) && ((WithClauses.size() == 0) && (PS.size() == 0))) {
