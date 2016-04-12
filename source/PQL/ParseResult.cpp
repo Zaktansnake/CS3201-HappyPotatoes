@@ -94,7 +94,7 @@ const string NAME = "(?:[[:alpha:]](?:[[:alpha:]]|\\d)*)";
 const string expr = "(?:\\(?(?:" + NAME + "|" + INTEGER + ")" + space + "(?:(?:\\+|\\*)" + space + "\\(?(?:" + NAME + "|" + INTEGER + ")\\)?" + space + ")*)";
 const string expressionSpec = "(?:\"" + space + expr + space + "\"|_\"" + space + expr + space + "\"_)";
 // this regex string is used to cater to assign pattern parsing on top of normal word parsing
-const string patternEntRef = "(?:" + IDENT + "|_|\\(|\\)|\"|\\+|-|\\*|" + "\"" + IDENT + "\"|" + INTEGER + ")";
+const string patternEntRef = "(?:" + IDENT + "|\"" + IDENT + "\"|" + INTEGER + "|_|\\(|\\)|\"|\\+|-|\\*)";
 
 const string IF = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "," + space + "_" + space + "\\))";
 const string WHILE = "(?:" + IDENT + space + "\\(" + space + varRef + space + "," + space + "_" + space + "\\))";
@@ -105,11 +105,13 @@ const string patternCond = "(?:" + pattern + space + "(?:and" + space + pattern 
 const string withCl = "(?:with" + space + attrCond + ")";
 const string suchthatCl = "(?:such that" + space + relCond + ")";
 const string patternCl = "(?:pattern" + space + patternCond + ")";
+// the following regex is for parsing of pattern clauses
+const string patternClAnother = "(?:pattern" + space + pattern + ")";
 
 const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
 const string selectOnly = space + "Select" + space + resultCl + space;
 const string suchthatOnly = space + relRef + space;
-const string patternOnly = space + pattern + space;
+const string patternOnly = space + patternClAnother + space;
 const string withOnly = space + attrCompare + space;
 const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
 
@@ -546,6 +548,10 @@ PatternSet ParseResult::parsePattern(string query, unordered_map<string, string>
 			next++;
 		}
 
+		// remove the two keyword brackets
+		word.erase(word.begin() + 2);
+		word.erase(prev(word.end()));
+
 		string patternType;
 		string firstParam;
 		string secondParam;
@@ -622,16 +628,17 @@ PatternSet ParseResult::parsePattern(string query, unordered_map<string, string>
 					}
 					++it;
 					secondParam.clear();
-					while (*it != "pattern") {
+					while (it != word.end()) {
 						current = *it;
 						secondParam += current;
 						++it;
 					}
-					--it;	// reverse one time so that the for loop that uses it will not be affected
+					--it;	// reverse iterator to correct position
 					assignPattern.push_back(Pattern(patternType, firstParam, secondParam));
 				}
 			}
 		}
+		word.clear();
 	}
 	// concat all PatternSets into one PatternSet
 	patterns.reserve(ifAndWhilePattern.size() + assignPattern.size());

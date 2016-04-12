@@ -102,6 +102,26 @@ namespace UnitTesting
 			Assert::AreEqual(secondParam, string("v2"));
 		}
 
+		TEST_METHOD(testParsingPattern) {
+			unordered_map<string, string> declarationTable{ { "RoMeo###","assign" },{ "Ju1i3t#","assign" },{ "v2","variable" } };
+			string querySentence = "Select BOOLEAN such that Uses (5, \"y\") pattern RoMeo### (v2,_\"x+y\"_) with Ju1i3t#.stmt# = 20 pattern Ju1i3t#(\"z\" , _)";
+			PatternSet patternClauses = ParseResult::parsePattern(querySentence, declarationTable);
+			Pattern resultClause = patternClauses[0];
+			string patternType = resultClause.getPatternOperation();
+			string firstParam = resultClause.getFirstParameter();
+			string secondParam = resultClause.getSecondParameter();
+			Assert::AreEqual(patternType, string("RoMeo###,assign"));
+			Assert::AreEqual(firstParam, string("v2"));
+			Assert::AreEqual(secondParam, string("_\"x+y\"_"));
+			resultClause = patternClauses[1];
+			patternType = resultClause.getPatternOperation();
+			firstParam = resultClause.getFirstParameter();
+			secondParam = resultClause.getSecondParameter();
+			Assert::AreEqual(patternType, string("Ju1i3t#,assign"));
+			Assert::AreEqual(firstParam, string("\"z\""));
+			Assert::AreEqual(secondParam, string("_"));
+		}
+
 		TEST_METHOD(testParsingWith) {
 			unordered_map<string, string> declarationTable{ { "RoMeo###","prog_line" },{ "Ju1i3t#","procedure" },{ "v2","variable" } };
 			string querySentence = "Select BOOLEAN such that Uses (5, \"y\") with RoMeo### = 2 and with \"Apple\" =Ju1i3t#.procName  and with v2.varName = \"xii\"";
