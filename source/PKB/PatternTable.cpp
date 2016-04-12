@@ -1,12 +1,21 @@
 #pragma once
 
+#include <stdio.h>
+#include <stdlib.h>
+#include <ctype.h>
 #include <iostream>
-#include <string>
 #include <algorithm>
-#include <sstream>
-#include <map>
+#include <locale>  
 #include <string>
 #include <vector>
+#include <fstream>
+#include <sstream>
+#include <stack>
+#include <utility>
+#include <functional> 
+#include <cctype>
+#include <locale>
+#include <exception>
 #include <iterator>
 #include <set>
 
@@ -25,6 +34,9 @@ string removeUnderScore(string s);
 std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems);
 std::vector<std::string> split(const std::string &s, char delim);
 
+static inline std::string &trim(std::string &s);
+static inline std::string &rtrim(std::string &s);
+static inline std::string &ltrim(std::string &s);
 
 vector<string> PatternTable::getPatternWithType(string type, string left, string right) {
 	vector<string> finalResult;
@@ -125,6 +137,11 @@ vector<int> PatternTable::getPatternResult(string line1, string line2, bool left
 	vector<int> ans;
 	vector<int> leftAns = setLeftAns(line1, left);
 
+	if (line2.find("+") != std::string::npos || line2.find("-") != std::string::npos || line2.find("*") != std::string::npos) {
+		line2 = PatternTable::addSpacesIntoString(line2);
+		trim(line2);
+	}
+
 	for (int i = 0; i < leftAns.size(); i++) {
 
 		tempLine = AllAssignsTable[leftAns[i]];
@@ -136,7 +153,7 @@ vector<int> PatternTable::getPatternResult(string line1, string line2, bool left
 		if (line2.find("+") == std::string::npos && line2.find("-") == std::string::npos && line2.find("*") == std::string::npos) {
 			// underscore at both sides
 			if (right) {
-				vector<int> rightAns = setRightAns(line1, left);
+				vector<int> rightAns = setRightAns(line2, right);
 				if (leftAns.size() > 0 && rightAns.size() > 0) {
 					std::vector<int> v_intersection;
 					std::set_intersection(leftAns.begin(), leftAns.end(),
@@ -169,7 +186,6 @@ vector<int> PatternTable::getPatternResult(string line1, string line2, bool left
 		}
 	}
 
-	
 	return ans;
 }
 
@@ -218,11 +234,14 @@ vector<int> PatternTable::setRightAns(string line2, bool right) {
 	string tempLine = removeDoubleQuotePattern(removeUnderScore(line2));
 	vector<int> rightAns;
 	if (right == true) {
-		if (line2.compare("_") == 0) {
+		if (tempLine.compare("_") == 0) {
 			rightAns = AllAssignLineNum;
 		}
+		else {
+			rightAns = PatternTable::getUsesVariable(tempLine);
+		}
 	} else {
-		rightAns = PatternTable::getUsesVariable(line2);
+		rightAns = PatternTable::getUsesVariable(tempLine);
 	}
 	return rightAns;
 }
@@ -298,4 +317,53 @@ vector<string> PatternTable::convertIntToString(vector<int> temp) {
 		}
 	}
 	return result;
+}
+
+string PatternTable::addSpacesIntoString(string line) {
+	vector<string> v;
+	string lineWithVar = line;
+	string tempLine, result;
+	int ln = line.length() - 1;
+
+	for (int n = 0; n <= ln; n++) {
+		string letter(1, lineWithVar[n]);
+
+		if (letter.compare(" ") != 0) {
+			if (letter.compare("+") == 0 || letter.compare("-") == 0 || letter.compare("*") == 0 || letter.compare("(") == 0
+				|| letter.compare(")") == 0 ) {
+				tempLine = trim(tempLine);
+				v.push_back(tempLine);
+				v.push_back(letter);
+				tempLine = "";
+			}
+			else {
+				tempLine += letter;
+			}
+		}
+	}
+
+	v.push_back(tempLine);
+
+	for (auto const& s : v) {
+		result = result  + " " + s;
+	}
+
+	return result;
+}
+
+// trim from start
+static inline std::string &ltrim(std::string &s) {
+	s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
+	return s;
+}
+
+// trim from end
+static inline std::string &rtrim(std::string &s) {
+	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
+	return s;
+}
+
+// trim from both ends
+static inline std::string &trim(std::string &s) {
+	return ltrim(rtrim(s));
 }
