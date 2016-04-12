@@ -51,13 +51,10 @@ void QueriesAnswerStorage::SetNoClause(vector<string> v)
 	for (int i = 0; i < v.size(); i++) {
 		string s = v.at(i);
 		if (std::find(NoClause.begin(), NoClause.end(), s) == NoClause.end()) {
-			return;
-		}
-		else
-		{
 			NoClause.push_back(s);
 		}
 	}
+	return;
 }
 
 vector<string> QueriesAnswerStorage::GetNoClause()
@@ -74,7 +71,13 @@ vector<pair<std::string, std::string>> QueriesAnswerStorage::GetSelectParameter(
 void QueriesAnswerStorage::SetTable(string s)
 {
 	if (HasKey(s) != true) {
-		ClausesParameterPositionInTable[s] = ClausesParameterPositionInTable.size() - 1;
+		cout << "there is no key" << endl;
+		if (ClausesParameterPositionInTable.size() == 0) {
+			ClausesParameterPositionInTable[s] = ClausesParameterPositionInTable.size();
+		}
+		else {
+			ClausesParameterPositionInTable[s] = ClausesParameterPositionInTable.size();
+		}
 	}
 	else {
 		return;
@@ -82,13 +85,16 @@ void QueriesAnswerStorage::SetTable(string s)
 }
 
 bool QueriesAnswerStorage::HasKey(string s)
-{
-	
-	if (ClausesParameterPositionInTable.find(s)== ClausesParameterPositionInTable.end()) {
-		return false;
+{	
+	cout << "the key" << endl;
+	cout << s << endl;
+	if (ClausesParameterPositionInTable.count(s)) {
+		cout << "there is a key in clause parametner" << endl;
+		return true;
 	}
 	else {
-		true;
+		cout << "there is no key in clause parametner" << endl;
+		return false;
 	}
 }
 //Merge The result table. Result, remove duplicate 
@@ -99,28 +105,23 @@ vector<string> QueriesAnswerStorage::MergeResults()
 	//find the col that has the answer for the select
 	for (int index = 0; index < SelectParameter.size(); index++) {
 		pair<string, string> pair = SelectParameter.at(index);
-		std::unordered_map<std::string, int>::const_iterator got = ClausesParameterPositionInTable.find(pair.first);
-
-		if (got == ClausesParameterPositionInTable.end()) {
-			continue;
-		}
-		else 
-		{
-			Position.push_back(ClausesParameterPositionInTable[pair.first]);
-		}
-
+		cout << "ClauseParameterPositionInTable" << endl;
+		cout << ClausesParameterPositionInTable[pair.first] << endl;
+		Position.push_back(ClausesParameterPositionInTable[pair.first]);
 	}
 	for (int index = 0; index < Position.size(); index++) {
 		int Col = Position.at(index);
+		cout << "Pos" << endl;
+		cout << Col << endl;
 		for (int j = 0; j < ResultsTable.size(); j++) {
 			vector<string> Row = ResultsTable.at(j);
 			string Ans = Row.at(Col);
 			if (std::find(MergeResults.begin(), MergeResults.end(), Ans) == MergeResults.end()) {
-				continue;
+				MergeResults.push_back(Ans);
 			}
 			else
 			{
-				MergeResults.push_back(Ans);
+				continue;
 			}
 		}
 	}
