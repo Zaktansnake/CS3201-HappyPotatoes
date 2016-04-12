@@ -210,12 +210,20 @@ std::vector<string> checkWithProcedure(int stmtNo, vector<int> ans) {
 		   end = it->second;
 		   break;
 		}
+		else if (it->first <= stmtNo && it->second == -1) {
+			start = it->first;
+			end = it->second;
+			break;
+		}
 	}
 		    
 	for (int i = 0; i < ans.size(); i++) {
 		int num = ans.at(i);
 		if (start <= num && end >= num) {
 
+			result.push_back(to_string(num));
+		}
+		else if (start <= num && end == -1) {
 			result.push_back(to_string(num));
 		}
 	}
