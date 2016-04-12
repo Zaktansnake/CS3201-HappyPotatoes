@@ -3,16 +3,16 @@
 ========================================================================
 
 HOW TO COMPILE:
-1. Open EmptyGeneralTesting >EmptyGeneralTesting.sln
+1. Open CS3201-HappyPotatoes > EmptyGeneralTesting.sln
 2. Right click Solutiion 'EmptyGeneralTesting' > Build Solution
-3. Locate the the AutoTestInUse.exe in the Release folder
-4. Double click AutoTestInUse.exe
-5. AutoTester Sample-Source01.txt Sample-Queries.txt out.xml
+3. Open command prompt and go to the location of AutoTester.exe which located in Release folder
+4. Type the command by following this format: AutoTester source-file.txt sample-queries.txt output.xml.
+   For example: "AutoTester Sample-Source01.txt Sample-Queries.txt out.xml"
 
 Visual Studio version : 2015
 Configuration: Release Mode
 
-Happy Potatoes has created this StudentUnitTest_VS2015 library project for you.
+Happy Potatoes has created this SPA library for you.
 
 SPA.vcxproj
     This is the main project file for VC++ projects generated using an Application Wizard.
