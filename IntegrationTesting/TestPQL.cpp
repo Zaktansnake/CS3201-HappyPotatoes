@@ -4,7 +4,7 @@
 #include "..\source\PKB\Header\ProcTable.h"
 #include "..\source\PKB\Header\stmtTable.h"
 #include "..\source\PKB\Header\VarTable.h"
-#include "PKB\Header\CFG.h"
+#include "..\source\PKB\Header\CFG.h"
 #include "..\source\PQL\Header\ParseResult.h"
 #include "..\source\PQL\Header\QueryEvaluator.h"
 
@@ -16,7 +16,7 @@ namespace IntegrationTesting
 	TEST_CLASS(UnitTest1)
 	{
 	public:
-
+		
 		TEST_METHOD(TestQE1) {
 			std::vector<string> result;
 

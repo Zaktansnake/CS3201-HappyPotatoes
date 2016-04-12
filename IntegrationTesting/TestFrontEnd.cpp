@@ -4,7 +4,7 @@
 #include "..\source\PKB\Header\ProcTable.h"
 #include "..\source\PKB\Header\stmtTable.h"
 #include "..\source\PKB\Header\VarTable.h"
-#include "PKB\Header\CFG.h"
+#include "..\source\PKB\Header\CFG.h"
 #include "..\source\PQL\Header\ParseResult.h"
 #include "..\source\PQL\Header\QueryEvaluator.h"
 
@@ -110,7 +110,7 @@ namespace IntegrationTesting
 
 		TEST_METHOD(CFG)
 		{
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
 
 			string result;
 			string expectedResult;
@@ -150,7 +150,7 @@ namespace IntegrationTesting
 			//test get next*
 
 			result.clear();
-			expectedResult = "6121318141715167891011";
+			expectedResult = "61213181417151678591011";
 			actual = CFG::getNextStar(5);
 			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
 				result.append(std::to_string(*it));
