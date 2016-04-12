@@ -94,8 +94,8 @@ public:
 	static vector<string> getUsesWithType(string type, string value);
 	static vector<string> getUsedWithType(string type, string value);
 	static vector<string> getAllWithType(string type, string value);
-	static bool getModifiesBooleanWithType(string type, string firstPerimeter, string secondPerimeter);
-	static bool getUsesBooleanWithType(string type, string firstPerimeter, string secondPerimeter);
+	static bool getModifiesBooleanWithType(string firstPerimeter, string secondPerimeter);
+	static bool getUsesBooleanWithType(string firstPerimeter, string secondPerimeter);
 
 private:
 	// constructor
@@ -105,5 +105,7 @@ private:
 	static void setAllVariables(string variable);
 
 	static vector<string> convertIntToString(vector<int> temp);
+
+	static bool is_number(const std::string& s);
 
 };
