@@ -139,17 +139,6 @@ namespace UnitTesting
 			Assert::AreEqual(result, false);
 		}
 
-		TEST_METHOD(TestIsNumber) {
-			QueryEvaluator QE;
-			string test = "0";
-			bool result = QE.IsNumber(test);
-			Assert::AreEqual(result, true);
-
-			test = 'c';
-			result = QE.IsNumber(test);
-			Assert::AreEqual(result, false);
-		}
-
 		TEST_METHOD(TestSplitString) {
 			QueryEvaluator QE;
 			string test = "Hi.There";
