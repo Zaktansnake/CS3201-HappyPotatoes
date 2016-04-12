@@ -588,8 +588,9 @@ PatternSet ParseResult::parsePattern(string query, unordered_map<string, string>
 					firstParam = current;
 					// the first parameter is a synonym
 					if (firstParam.front() != '"' && firstParam.back() != '"') {
+						if (firstParam == "_") {}
 						// the synonym is not declared
-						if (declarationTable[firstParam] == "") {
+						else if (declarationTable[firstParam] == "") {
 							PatternSet p;
 							p.push_back(Pattern("dummy", "dummy", "dummy"));
 							return p;
@@ -604,8 +605,9 @@ PatternSet ParseResult::parsePattern(string query, unordered_map<string, string>
 					firstParam = current;
 					// the first parameter is a synonym
 					if (firstParam.front() != '"' && firstParam.back() != '"') {
+						if (firstParam == "_") {}
 						// the synonym is not declared
-						if (declarationTable[firstParam] == "") {
+						else if (declarationTable[firstParam] == "") {
 							PatternSet p;
 							p.push_back(Pattern("dummy", "dummy", "dummy"));
 							return p;
@@ -619,8 +621,9 @@ PatternSet ParseResult::parsePattern(string query, unordered_map<string, string>
 					firstParam = current;
 					// the first parameter is a synonym
 					if (firstParam.front() != '"' && firstParam.back() != '"') {
+						if (firstParam == "_") {}
 						// the synonym is not declared
-						if (declarationTable[firstParam] == "") {
+						else if (declarationTable[firstParam] == "") {
 							PatternSet p;
 							p.push_back(Pattern("dummy", "dummy", "dummy"));
 							return p;
@@ -929,26 +932,41 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 
 		return ParseResult();
 	}
-
+	
 	selectParameter = ParseResult::parseSelect(query, declarationTable);
 	if (selectParameter.empty()) return ParseResult();
-	cout << "line662" << endl;
+	cout << "line938" << endl;
 	clauses = ParseResult::parseNormalClauses(query, declarationTable);
-	cout << "line664" << endl;
+	cout << "line940" << endl;
 	// if normal clauses contain grammar error, return empty ParseResult
-	if (clauses.front().getClauseOperation() == "dummy") {
-		signalErrorAndStop();
-		cout << "signal2" << endl;
-		return ParseResult();
+	if (clauses.size() != 0) {
+		if (clauses.front().getClauseOperation() == "dummy") {
+			signalErrorAndStop();
+			cout << "signal2" << endl;
+			return ParseResult();
+		}
+	}
+	
+	patterns = ParseResult::parsePattern(query, declarationTable);
+
+	// using size() function to check if the object is empty before accessing the front of object
+	// to ensure that no illegal front() will happen
+	if (patterns.size() != 0) {
+		if (patterns.front().getPatternOperation() == "dummy") {
+			signalErrorAndStop();
+			return ParseResult();
+		}
 	}
 
-
-
-	withClauses = ParseResult::parseWith(query, declarationTable);
-	if (withClauses.front().getLeftOfEqualSign == "dummy") {
-		signalErrorAndStop();
-		return ParseResult();
+	if (withClauses.size() != 0) {
+		withClauses = ParseResult::parseWith(query, declarationTable);
+		if (withClauses.front().getLeftOfEqualSign() == "dummy") {
+			signalErrorAndStop();
+			return ParseResult();
+		}
 	}
+	// if every component in ParseResult object is syntactically and grammatically correct
+	return ParseResult(selectParameter, clauses, patterns, withClauses);
 
 	cout << "I am here 3" << endl;
 	// if every component in ParseResult object is syntactically and grammatically correct
