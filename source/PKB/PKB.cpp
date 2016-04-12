@@ -340,7 +340,7 @@ void PKB::updateTables() {
 	ProcTable::updateProcCallsTables();
 	PKB::updateAllTables();
 	PatternTable::updatePatternTable();
-	//Affects::updateAffectsTable();
+	Affects::updateAffectsTable();
 }
 
 void PKB::updateAllTables() {
