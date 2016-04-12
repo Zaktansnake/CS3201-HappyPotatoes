@@ -54,7 +54,9 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 				cout << "has no clause ans" << endl;
 				return QAS.GetNoClause();
 			}
-		
+			else if (SelectNotStored()) {
+				return GetAllOfTheNotStored();
+			}
 			else {
 				cout << "merge result" << endl;
 				unordered_map<string, int> m = QAS.GetTable();
@@ -138,11 +140,16 @@ bool QueryEvaluator::SelectNotStored() {
 	vector<pair<string, string>> sv = QAS.GetSelectParameter();
 	for (int i = 0; i < sv.size(); i++) {
 		string name = sv.at(i).first;
-		if (!QAS.HasKey(name)) {
-			return true;
+		unordered_map<string,int> m = QAS.GetTable();
+		cout << m.size() << endl;
+		cout << "selectnotstored name" << endl;
+		cout << QAS.HasKey(name) << endl;
+		if (QAS.HasKey(name) == 1) {
+			return false;
 		}
 	}
 }
+
 bool QueryEvaluator::assessParseResult(ParseResult pr) {
 
 
@@ -604,10 +611,16 @@ bool QueryEvaluator::GetResultsForBothSynonym(string P1, string P2, char P1Type
 	, char P2Type, string ClauseType)
 {
 	bool HasResults = false;
+	bool correctClause = false;
 	vector<vector<string > > NewResultsTable;
 	vector<vector<string > > ResultsTable = QAS.GetResultsTable();
 	if (P1 == P2) {
-
+		if ((ClauseType == "Affects") || (ClauseType == "Affects*") || (ClauseType == "Next") || (ClauseType == "Next*")) {
+			correctClause = true;
+		}
+		else {
+			return false;
+		}
 	}
 	if (QAS.HasKey(P1) && QAS.HasKey(P2)) {
 		int Pos1 = QAS.GetResultTablePos(P1);
@@ -824,10 +837,6 @@ bool QueryEvaluator::GetResultsForFirstSynonym(string P1, string P2, char P1Type
 				cout << "no results" << endl;
 				return false;
 			}
-			cout << "haskey" << endl;
-			cout << QAS.HasKey(P1);
-			cout << "size" << endl;
-			cout << Results.size() << endl;
 			if (ResultsTable.size() == 0) {
 				for (int i = 0; i < Results.size(); i++) {
 					vector<string> row;

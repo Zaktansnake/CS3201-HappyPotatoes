@@ -75,7 +75,8 @@ vector<pair<std::string, std::string>> QueriesAnswerStorage::GetSelectParameter(
 
 
 void QueriesAnswerStorage::SetTable(string s)
-{
+{	
+	cout << "setting table" << endl;
 	if (HasKey(s) != true) {
 		cout << "there is no key" << endl;
 		if (ClausesParameterPositionInTable.size() == 0) {
@@ -84,6 +85,8 @@ void QueriesAnswerStorage::SetTable(string s)
 		else {
 			ClausesParameterPositionInTable[s] = ClausesParameterPositionInTable.size();
 		}
+		cout << "set tabled" << endl;
+		cout << s << endl;
 	}
 	else {
 		return;
@@ -99,7 +102,7 @@ bool QueriesAnswerStorage::HasKey(string s)
 	it = ClausesParameterPositionInTable.find(s);
 	cout << it->first << endl;
 	if (it != ClausesParameterPositionInTable.end()) {
-		
+		cout << "there is key in clause parametner" << endl;
 		return true;
 	}
 	else {
