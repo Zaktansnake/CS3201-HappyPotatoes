@@ -28,8 +28,10 @@ public:
 	static vector<string> getPrevString(int stmtNo);
 	static vector<string> getNextStarString(int stmtNo);
 	static vector<string> getPrevStarString(int stmtNo);
-
+	
 private : 
     bool checkConditions (string stmt);
 	void countCloseLoop (string stmt);
+	
+
 };

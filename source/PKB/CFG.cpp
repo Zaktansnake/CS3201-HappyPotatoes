@@ -115,10 +115,18 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 			parentStack.push(stmtNo);
 			conditionStack.push(conditionstmt);
 			if (closingStack.size() != 0) {
-				int prev = closingStack.top();
-				closingStack.pop();
-				int prevCon = clostingCondition.top();
-				clostingCondition.pop();
+			    int prev = 0, prevCon = 0;
+				if (clostingCondition.top() == 3) {
+					prev = closingStack.top();
+					closingStack.pop();
+					prevCon = clostingCondition.top();
+					clostingCondition.pop();
+				}
+				else {
+					prev = closingStack.top();
+					prevCon = clostingCondition.top();
+				}
+				
 				if (prevCon == 3) {  // follow fan is a while loop
 					CFGline = CFGTable.at(currentPro).at(prev);
 					CFGline.push_back(stmtNo);
@@ -129,7 +137,7 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 				//	CFGline.push_back(dummy);
 				//	CFGstmt.push_back(CFGline);
 				//	CFGTable.at(currentPro) = CFGstmt;
-
+				//------------------------------------------------------------------------------------
 					if (prevCon == 2) {
 						CFGline.push_back(dummy);
 						CFGstmt.push_back(CFGline);
@@ -151,9 +159,6 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 					}
 
 				}
-
-
-				// need to complete.......................................
 			}
 		}
 		else if (conditionstmt == 2) { // prev is end else
@@ -161,10 +166,18 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 				int parent = parentStack.top();
 				parentStack.push(parent);
 				conditionStack.push(conditionstmt);
-				int prev = closingStack.top();
-				closingStack.pop();
-				int con = clostingCondition.top();
-				clostingCondition.pop();
+				int prev = 0, con = 0;
+				if (clostingCondition.top() == 3) {
+					prev = closingStack.top();
+					closingStack.pop();
+					con = clostingCondition.top();
+					clostingCondition.pop();
+				}
+				else {
+					prev = closingStack.top();
+					con = clostingCondition.top();
+				}
+				
 				if (con == 3) {
 					CFGline = CFGTable.at(currentPro).at(prev);
 					CFGline.push_back(stmtNo);
@@ -207,10 +220,18 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 			parentStack.push(stmtNo);
 			conditionStack.push(conditionstmt);
 			if (closingStack.size() != 0) {
-				int prev = closingStack.top();
-				closingStack.pop();
-				int prevCon = clostingCondition.top();
-				clostingCondition.pop();
+			    int prev = 0, prevCon = 0;
+				if (clostingCondition.top() == 3) {
+					prev = closingStack.top();
+					closingStack.pop();
+					prevCon = clostingCondition.top();
+					clostingCondition.pop();
+				}
+				else {
+					prev = closingStack.top();
+					prevCon = clostingCondition.top();
+				}
+				
 				if (prevCon == 3) {  // follow fan is a while loop
 					CFGline = CFGTable.at(currentPro).at(prev);
 					CFGline.push_back(stmtNo);
@@ -230,9 +251,9 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 						CFGTable.at(currentPro) = CFGstmt;
 					}
 					else {
-						CFGline.push_back(dummy);
-						CFGstmt.push_back(CFGline);
-						CFGTable.at(currentPro) = CFGstmt;
+				//		CFGline.push_back(dummy);
+				//		CFGstmt.push_back(CFGline);
+				//		CFGTable.at(currentPro) = CFGstmt;
 					}
 					
 				}
@@ -240,13 +261,21 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 				// need to complete.......................................
 			}
 
-		}
+		}//0------------------------------------------0
 		else if (conditionstmt == 0 && stmt.size() != endloop) {
 			if (closingStack.size() != 0) {
-				int prev = closingStack.top();
-				closingStack.pop();
-				int con = clostingCondition.top();
-				clostingCondition.pop();
+			    int prev = 0, con = 0;
+				if (clostingCondition.top() == 3) {
+					prev = closingStack.top();
+					closingStack.pop();
+					con = clostingCondition.top();
+					clostingCondition.pop();
+				}
+				else {
+					prev = closingStack.top();
+					con = clostingCondition.top();
+				}
+				
 				if (con == 3) {
 					CFGline = CFGTable.at(currentPro).at(prev);
 					CFGline.push_back(stmtNo);
@@ -319,6 +348,7 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 	}
 	flagForNewProc = false;
 	if (endloop > 0) {
+	    vector<int>curNo;
 		int currentNo;
 		flagForClose = true;
 		for (int i = 0; i < endloop; i++) {
@@ -334,10 +364,10 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 
 				}
 				else {
-					CFGline.clear();
-					CFGline.push_back(dummy);
-					CFGstmt.push_back(CFGline);
-					CFGTable.at(currentPro) = CFGstmt;
+				//	CFGline.clear();
+				//	CFGline.push_back(dummy);
+				//	CFGstmt.push_back(CFGline);
+				//	CFGTable.at(currentPro) = CFGstmt;
 				}
 				flagForClose = false;
 				flagForCorrectElseIf = false;
@@ -353,16 +383,30 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 			if (con == 3) { // end while, set the current node back to its parent
 				if (closingStack.size() == 0) { // current node it the stmtNo
 					currentNo = stmtNo;
+					curNo.push_back(currentNo);
 				}
 				else if (clostingCondition.top() != 3) {
-					currentNo = stmtNo;
-					closingStack.pop();
-					clostingCondition.pop();
+					
+					while (!closingStack.empty()) {
+						curNo.push_back(closingStack.top());
+					//	closingStack.pop();
+					//	clostingCondition.pop();
+					}
+				//	closingStack.pop();
+				//	clostingCondition.pop();
 				}
 				else {
-					currentNo = closingStack.top();
-					closingStack.pop();
-					clostingCondition.pop();
+				//	currentNo = stmtNo;
+			//		curNo.push_back(currentNo);
+					while (!closingStack.empty()) {
+						curNo.push_back(closingStack.top());
+						closingStack.pop();
+						clostingCondition.pop();
+						}
+					
+			//		currentNo = closingStack.top();
+			//		closingStack.pop();
+			//		clostingCondition.pop();
 				}
 				closingStack.push(parent);
 				clostingCondition.push(con);
@@ -372,10 +416,19 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 					CFGTable.at(currentPro) = CFGstmt;
 				}
 				else {
-					CFGline = CFGstmt.at(currentNo);
-					CFGline.push_back(parent);
-					CFGstmt.at(currentNo) = CFGline;
-					CFGTable.at(currentPro) = CFGstmt;
+					for (int i = 0; i < curNo.size(); i++) {
+						CFGline = CFGstmt.at(curNo.at(i));
+						if (CFGline.size() == 1 && CFGline.at(0) == -1) {
+							CFGline.at(0)=parent;
+						}
+						else {
+                           CFGline.push_back(parent);
+						}
+						
+						CFGstmt.at(curNo.at(i)) = CFGline;
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+					
 				}
 			}
 			else if (con == 2) {  
@@ -409,11 +462,8 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 					}
 					
 				}
-
 				closingStack.push(stmtNo);
 				clostingCondition.push(con);
-
-
 			}
 		}
 	}
@@ -840,6 +890,7 @@ vector<string> CFG::getPrevStarString(int stmtNo) {
 	}
 	return ans;
 }
+
 
 
 
