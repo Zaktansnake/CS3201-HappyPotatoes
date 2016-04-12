@@ -239,30 +239,6 @@ std::vector<string> Affects::getAffectsTransitiveLeft(string aff2) {
 		}
 	}
 
-
-	cout << "Table for AffectsTransitiveTable" << endl;
-	for (map<int, vector<int>>::iterator ii = AffectsTransitiveTable.begin(); ii != AffectsTransitiveTable.end(); ++ii) {
-		cout << (*ii).first << ": ";
-		vector <int> inVect = (*ii).second;
-		for (unsigned j = 0; j<inVect.size(); j++) {
-			cout << inVect[j] << " ";
-		}
-		cout << endl;
-	}
-
-
-	cout << "Table for AffectsTransitiveReverseTable" << endl;
-	for (map<int, vector<int>>::iterator ii = AffectsTransitiveReverseTable.begin(); ii != AffectsTransitiveReverseTable.end(); ++ii) {
-		cout << (*ii).first << ": ";
-		vector <int> inVect = (*ii).second;
-		for (unsigned j = 0; j<inVect.size(); j++) {
-			cout << inVect[j] << " ";
-		}
-		cout << endl;
-	}
-
-
-
 	return Affects::convertIntToString(finalResult);
 }
 
