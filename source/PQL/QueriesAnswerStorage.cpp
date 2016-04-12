@@ -12,14 +12,15 @@ using namespace std;
 
 
 std::unordered_map<std::string, int> QueriesAnswerStorage::ClausesParameterPositionInTable;
-vector<vector<string>> QueriesAnswerStorage::ResultsTable;
-vector<pair<std::string,std::string>> QueriesAnswerStorage::SelectParameter;
+vector<vector<string > > QueriesAnswerStorage::ResultsTable;
+vector<pair<std::string,std::string > > QueriesAnswerStorage::SelectParameter;
 vector<string> QueriesAnswerStorage::NoClause;
 
 
 
 void QueriesAnswerStorage::SetSelect(vector<string> sv)
 {
+	cout << "I am setting select" << endl;
 	for (int index = 0; index < sv.size(); index++) {
 		string s = sv.at(index);
 		stringstream ss(s);
@@ -35,6 +36,7 @@ void QueriesAnswerStorage::SetSelect(vector<string> sv)
 		apair.first = result.at(0);
 		apair.second = result.at(1);
 		SelectParameter.push_back(apair);
+		cout << "i finish setting select" << endl;
 	}
 }
 
@@ -133,7 +135,7 @@ string QueriesAnswerStorage::GetSelectType(string s) {
 	}
 }
 
-void QueriesAnswerStorage::SetResultTable(vector<vector<string>> v)
+void QueriesAnswerStorage::SetResultTable(vector<vector<string > > v)
 {
 	ResultsTable = v;
 }
@@ -143,7 +145,7 @@ int QueriesAnswerStorage::GetResultTablePos(string s)
 	return ClausesParameterPositionInTable[s];
 }
 
-vector<vector<string>> QueriesAnswerStorage::GetResultsTable() {
+vector<vector<string > > QueriesAnswerStorage::GetResultsTable() {
 	return ResultsTable;
 }
 

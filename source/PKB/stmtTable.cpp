@@ -202,8 +202,8 @@ std::vector<string> stmtTable::getFollowStarWithType(string type, string stmtNo)
 
 std::vector<string> checkWithProcedure(int stmtNo, vector<int> ans) {
 	std::vector<string>result;
-	int start;
-	int end;
+	int start = 0;
+	int end = 0;
 	for (map<int, int>::iterator it = startAndEndOfProcedure.begin(); it != startAndEndOfProcedure.end(); ++it) {
 		if (it->first <= stmtNo && it->second >= stmtNo) {
 		   start = it->first;

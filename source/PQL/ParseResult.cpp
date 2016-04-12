@@ -128,11 +128,12 @@ const regex queryWordParsingPattern(patternEntRef);
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
 	unordered_map<string, string> declarationTable;
 	bool correct = ParseResult::checkAndParseDeclaration(declarationSentence, declarationTable);
-
+	cout << "I am here" << endl;
 	if (!correct) {
+		cout << "I am here 1" << endl;
 		return ParseResult();
 	}
-
+	cout << "I am here 2" << endl;
 	return ParseResult::checkAndParseQuery(querySentence, declarationTable);
 }
 
@@ -651,31 +652,31 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 	bool correct = ParseResult::checkWholeQuery(query);
 	if (!correct) {
 		signalErrorAndStop();
+		cout << "signal" << endl;
+
 		return ParseResult();
 	}
 
 	selectParameter = ParseResult::parseSelect(query, declarationTable);
 	if (selectParameter.empty()) return ParseResult();
-
+	cout << "line662" << endl;
 	clauses = ParseResult::parseNormalClauses(query, declarationTable);
+	cout << "line664" << endl;
 	// if normal clauses contain grammar error, return empty ParseResult
 	if (clauses.front().getClauseOperation() == "dummy") {
 		signalErrorAndStop();
+		cout << "signal2" << endl;
 		return ParseResult();
 	}
 
-	patterns = ParseResult::parsePattern(query, declarationTable);
-	if (patterns.front().getPatternOperation() == "dummy") {
-		signalErrorAndStop();
-		return ParseResult();
-	}
+
 
 	/* withClauses = ParseResult::parseWith(query, declarationTable);
 	if (withClauses.front().getLeftOfEqualSign == "dummy") {
 		signalErrorAndStop();
 		return ParseResult();
 	} */
-
+	cout << "I am here 3" << endl;
 	// if every component in ParseResult object is syntactically and grammatically correct
 	return ParseResult(selectParameter, clauses, patterns, withClauses);
 }
