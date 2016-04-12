@@ -6,6 +6,12 @@
 #include "..\PKB\Header\VarTable.h"
 #include <iostream>
 #include <sstream>
+#include "../PKB/Header/VarTable.h"
+#include "../PKB/Header/StmtTable.h"
+#include "../PKB/Header/CFG.h"
+#include "../PKB/Header/PatternTable.h"
+#include "../PKB//Header/ProcTable.h"
+#include "../PKB/Header/ConstantTable.h"
 using namespace std;
 
 
@@ -83,13 +89,17 @@ void QueriesAnswerStorage::SetTable(string s)
 		return;
 	}
 }
-
+unordered_map <string,int> QueriesAnswerStorage::GetTable() {
+	return ClausesParameterPositionInTable;
+}
 bool QueriesAnswerStorage::HasKey(string s)
 {	
-	cout << "the key" << endl;
-	cout << s << endl;
-	if (ClausesParameterPositionInTable.count(s)) {
-		cout << "there is a key in clause parametner" << endl;
+
+	unordered_map<string, int>::iterator it;
+	it = ClausesParameterPositionInTable.find(s);
+	cout << it->first << endl;
+	if (it != ClausesParameterPositionInTable.end()) {
+		
 		return true;
 	}
 	else {
@@ -99,15 +109,25 @@ bool QueriesAnswerStorage::HasKey(string s)
 }
 //Merge The result table. Result, remove duplicate 
 vector<string> QueriesAnswerStorage::MergeResults()
-{
+{	
+	for (auto it = ClausesParameterPositionInTable.begin(); it != ClausesParameterPositionInTable.end(); ++it) {
+		cout << "all key 4" << endl;
+		std::cout << " " << it->first << ":" << it->second<<endl;
+	}
 	vector<string> MergeResults;
 	vector<int> Position;
 	//find the col that has the answer for the select
 	for (int index = 0; index < SelectParameter.size(); index++) {
 		pair<string, string> pair = SelectParameter.at(index);
-		cout << "ClauseParameterPositionInTable" << endl;
-		cout << ClausesParameterPositionInTable[pair.first] << endl;
-		Position.push_back(ClausesParameterPositionInTable[pair.first]);
+		for (auto it = ClausesParameterPositionInTable.begin(); it != ClausesParameterPositionInTable.end(); ++it) {
+			cout << "all key 5" << endl;
+			std::cout << " " << it->first << ":" << it->second<<endl;
+		}
+		if (HasKey(pair.first) == true) {
+			cout << "select match with pos" << endl;
+			cout << ClausesParameterPositionInTable[pair.first] << endl;
+			Position.push_back(ClausesParameterPositionInTable[pair.first]);
+		}
 	}
 	for (int index = 0; index < Position.size(); index++) {
 		int Col = Position.at(index);

@@ -5,11 +5,11 @@
 class QueryEvaluator
 {
 public:
-
+	vector<string> GetAllOfTheNotStored();
 	vector<string> startEvaluator(ParseResult mustPr);
 	bool SelectBool = false;
 	bool NoClause = false;
-
+	bool SelectNotStored();
 	bool CheckWith(With with);
 	bool GetAnswerForRightWith(string left, string right);
 	bool GetAnswerForLeftWith(string left, string right);

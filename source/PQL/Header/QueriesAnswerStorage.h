@@ -5,11 +5,13 @@ using namespace std;
 
 class QueriesAnswerStorage {
 public:
+
 	void SetResultTable(vector<vector<string>>);
 	int GetResultTablePos(string);
 	vector<vector<string > > GetResultsTable();
 	void SetSelect(vector<string>);
 	void SetTable(string);
+	unordered_map<string, int> GetTable();
 	bool HasKey(string);
 	vector<string> MergeResults();
 	void clear();
@@ -20,6 +22,8 @@ public:
 	QueriesAnswerStorage();
 	~QueriesAnswerStorage();
 protected:
+
+
 
 	static std::unordered_map<std::string, int> ClausesParameterPositionInTable;
 	static vector<vector<string > > ResultsTable;
