@@ -43,7 +43,6 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 										  // check whether ths stmt is a child of other stmt
 			if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
 				parent = 0;
-				//   index = arrAns.size();
 			}
 			else {
 				parent = loopStmtNo.top();
@@ -83,7 +82,6 @@ void Parent::setParent(string stmtLine, int stmtNo, int nestLevel, bool loopFlag
 			// else, let parent be none
 			if (loopStmtNo.empty()) {   // it do not have any parent. set the default parent to 0 into ansMap
 				parent = 0;
-				//   index = arrAns.size();
 			}
 			else {
 				parent = loopStmtNo.top();
@@ -168,8 +166,17 @@ void storeParentStar(int stmtNo) {
 			}
 		}
 		if (!flag) {
-			ans.push_back(loopStmtNo.top());
-			loopStmtNo.pop();
+			if (loopStmtNo.size() > 0) {
+				if (loopStmtNo.top() != stmtNo) {
+					ans.push_back(loopStmtNo.top());
+					loopStmtNo.pop();
+				}
+				else {
+					loopStmtNo.pop();
+				}
+			}
+			
+			
 		}
 		flag = false;
 		
@@ -490,8 +497,6 @@ std::vector<string> Parent::getChildForIf(int stmtNo) {
 
 }
 
-
-
 //-------------------------for star-------------------------------------------------------------
 std::vector<string> Parent::getParentStarForWhile(int stmtNo) {
 	std::vector<int> temp = getParentStarInt(stmtNo);
@@ -617,17 +622,4 @@ std::vector<string> Parent::getChildStarForIf(int stmtNo) {
 		}
 	}
 	return ans;
-
 }
-
-/*
-void Parent::PrintProcTable() {
-	for (map<int, int>::iterator it = AnsMap.begin(); it != AnsMap.end(); ++it) {
-		cout << it->first <<" " << it->second << endl ;
-	}
-	for (map<int, string>::iterator it = stmtstring.begin(); it != stmtstring.end(); ++it) {
-		cout << it->first << " " << it->second << endl;
-	}
-
-}
-*/

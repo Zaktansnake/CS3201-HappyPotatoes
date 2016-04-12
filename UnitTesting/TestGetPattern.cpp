@@ -26,6 +26,10 @@ namespace UnitTesting
 			bool ispattern = PatternTable::isPattern("c", " c - 1 ");
 			Assert::AreEqual(expected_result, ispattern);
 
+			expected_result = true;
+			ispattern = PatternTable::isPattern("c", "c-1");
+			Assert::AreEqual(expected_result, ispattern);
+
 			// Select a pattern a("x",_)
 			patternString = PatternTable::getPatternAssignNum("x", "_");
 			expectedResult = "13,23,37,";
@@ -79,6 +83,45 @@ namespace UnitTesting
 			}
 			Assert::AreEqual(expectedResult, result);
 
+			result = "";
+			expectedResult = "";
+			patternString = PatternTable::getPatternAssignNum("c", "_\"c-1\"_");
+			expectedResult = "22,36,";
+			for (std::vector<string>::iterator it = patternString.begin(); it != patternString.end(); ++it) {
+				result.append(*it);
+				result.append(",");
+			}
+			Assert::AreEqual(expectedResult, result);
+
+			result = "";
+			expectedResult = "";
+			patternString = PatternTable::getPatternAssignNum("_", "_\"chArLie\"_");
+			expectedResult = "11,";
+			for (std::vector<string>::iterator it = patternString.begin(); it != patternString.end(); ++it) {
+				result.append(*it);
+				result.append(",");
+			}
+			Assert::AreEqual(expectedResult, result);
+
+			result = "";
+			expectedResult = "";
+			patternString = PatternTable::getPatternAssignNum("_", "_\"tmp + chArLie\"_");
+			expectedResult = "11,";
+			for (std::vector<string>::iterator it = patternString.begin(); it != patternString.end(); ++it) {
+				result.append(*it);
+				result.append(",");
+			}
+			Assert::AreEqual(expectedResult, result);
+
+			result = "";
+			expectedResult = "";
+			patternString = PatternTable::getPatternAssignNum("_", "_\"tmp+chArLie\"_");
+			expectedResult = "11,";
+			for (std::vector<string>::iterator it = patternString.begin(); it != patternString.end(); ++it) {
+				result.append(*it);
+				result.append(",");
+			}
+			Assert::AreEqual(expectedResult, result);
 
 		}
 	};

@@ -24,6 +24,7 @@ QueriesAnswerStorage QAS;
 
 vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
+	QAS.clear();
 	cout << "Hello World! start to evaluate" << endl;
 	clear();
 	bool HasResults = false;
@@ -47,13 +48,20 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 		}
 	}
 	else {
+		
 		if (HasResults == true) {
 			if (NoClause) {
 				cout << "has no clause ans" << endl;
 				return QAS.GetNoClause();
 			}
+		
 			else {
 				cout << "merge result" << endl;
+				unordered_map<string, int> m = QAS.GetTable();
+				for (auto it = m.begin(); it != m.end(); ++it) {
+					cout << "all key 2" << endl;
+					std::cout << " " << it->first << ":" << it->second << endl;;
+				}
 				return QAS.MergeResults();
 			}
 		}
@@ -63,6 +71,78 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 	}
 }
 
+vector<string> QueryEvaluator::GetAllOfTheNotStored() {
+	
+	vector<string> ReturnResult;
+	vector<pair<string, string>> sv = QAS.GetSelectParameter();
+	for (int i = 0; i < sv.size(); i++) {
+		pair<string, string> pair = sv.at(i);
+		string type = pair.second;
+		cout << "type" << endl;
+		vector<string> Result;
+		if (type == "stmt") {
+			cout << "is stmt" << endl;
+			Result = GetAll('s');
+		}
+		else if (type == "while") {
+			cout << "is while" << endl;
+			Result = GetAll('w');
+		}
+		else if (type == "assign") {
+			cout << "is assign" << endl;
+			Result = GetAll('a');
+		}
+		else if (type == "if") {
+			cout << "is if" << endl;
+			Result = GetAll('i');
+		}
+		else if (type == "variable") {
+			cout << "if variable" << endl;
+			Result = GetAll('v');
+		}
+		else if (type == "constant") {
+			cout << "constant" << endl;
+			Result = GetAll('c');
+		}
+		else if (type == "procedure") {
+			cout << "procedure" << endl;
+			Result = GetAll('p');
+		}
+		else if (type == "prog_line") {
+			cout << "prog_line" << endl;
+			Result = GetAll('s');
+		}
+		else {
+			cout << "nothing" << endl;
+			Result = Result;
+		}
+		cout << Result.size() << endl;
+		for (int k = 0; k < Result.size(); k++) {
+			string ToBeMatch = Result.at(k);
+			if (ReturnResult.size() == 0) {
+				ReturnResult.push_back(ToBeMatch);
+			}
+			else {
+				if (std::find(ReturnResult.begin(), ReturnResult.end(), ToBeMatch) == ReturnResult.end()) {
+					ReturnResult.push_back(ToBeMatch);
+				}
+			}
+		}
+	}
+	cout << "here haahahahahaha" << endl;
+	cout << ReturnResult.size() << endl;
+	return ReturnResult;
+}
+
+bool QueryEvaluator::SelectNotStored() {
+	vector<pair<string, string>> sv = QAS.GetSelectParameter();
+	for (int i = 0; i < sv.size(); i++) {
+		string name = sv.at(i).first;
+		if (!QAS.HasKey(name)) {
+			return true;
+		}
+	}
+}
 bool QueryEvaluator::assessParseResult(ParseResult pr) {
 
 
@@ -133,6 +213,11 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 	}
 	cout << "check has results" << endl;
 	cout << ReturnResultsExist(ResultsExist) << endl;
+	unordered_map<string, int> m = QAS.GetTable();
+	for (auto it = m.begin(); it != m.end(); ++it) {
+		cout << "all key 1" << endl;
+		std::cout << " " << it->first << ":" << it->second<<endl;
+	}
 	return ReturnResultsExist(ResultsExist);
 }
 
@@ -521,6 +606,9 @@ bool QueryEvaluator::GetResultsForBothSynonym(string P1, string P2, char P1Type
 	bool HasResults = false;
 	vector<vector<string > > NewResultsTable;
 	vector<vector<string > > ResultsTable = QAS.GetResultsTable();
+	if (P1 == P2) {
+
+	}
 	if (QAS.HasKey(P1) && QAS.HasKey(P2)) {
 		int Pos1 = QAS.GetResultTablePos(P1);
 		int Pos2 = QAS.GetResultTablePos(P2);
@@ -642,6 +730,8 @@ bool QueryEvaluator::GetResultsForFirstSynonym(string P1, string P2, char P1Type
 		//check if the each of the colelement of p1 and the each of the results for 
 		//"_" matches
 		if (QAS.HasKey(P1)) {
+			cout << "haskey but p2 is blank" << endl;
+			cout << Everything.size() << endl;
 			int Pos1 = QAS.GetResultTablePos(P1);
 			for (int i = 0; i < ResultsTable.size(); i++) {
 				vector<string> Row = ResultsTable.at(i);
@@ -649,10 +739,15 @@ bool QueryEvaluator::GetResultsForFirstSynonym(string P1, string P2, char P1Type
 				for (int j = 0; j < Everything.size(); j++) {
 					string ToMatch = Everything.at(j);
 					if (CheckIsResultsFromPkb(ColElement, ToMatch, P1Type, P2Type, ClauseType)) {
+						cout << "ResultsTable.size()" << endl;
+						cout << ResultsTable.size() << endl;
+						cout << "string to match for p1" << endl;
+						cout << ToMatch << endl;
+						cout << "colelement" << endl;
+						cout << ColElement << endl;
 						HasResults = true;
 						NewResultsTable.push_back(Row);
 					}
-					break;
 				}
 			}
 			QAS.SetResultTable(NewResultsTable);
@@ -780,8 +875,10 @@ bool QueryEvaluator::GetResultsForSecondSynonym(string P1, string P2, char P1Typ
 	vector<vector<string > > ResultsTable = QAS.GetResultsTable();
 	vector<string> Results;
 	if (P1 == "_") {
+		cout << "if p1 is a blank" << endl;
 		vector<string> Everything = GetP1Blank(ClauseType);
-		if (QAS.HasKey(P1)) {
+		if (QAS.HasKey(P2)) {
+			cout << "if p1 is stored" << endl;
 			int Pos2 = QAS.GetResultTablePos(P1);
 			for (int i = 0; i < ResultsTable.size(); i++) {
 				vector<string> Row = ResultsTable.at(i);
@@ -791,19 +888,20 @@ bool QueryEvaluator::GetResultsForSecondSynonym(string P1, string P2, char P1Typ
 					if (CheckIsResultsFromPkb(ColElement, ToMatch, P1Type, P2Type, ClauseType)) {
 						HasResults = true;
 						NewResultsTable.push_back(Row);
+						break;
 					}
-					break;
 				}
 			}
 			QAS.SetResultTable(NewResultsTable);
 			return HasResults;
 		}
 		else {
+			cout << "if p1 has no key" << endl;
 			vector<string> Results;
 			for (int i = 0; i < Everything.size(); i++) {
 				string Blank = Everything.at(i);
 				vector<string> ToBeAppend = GetAllSecondSynonymFromPKB(Blank, P2, P1Type, P2Type, ClauseType);
-				for (int j = 0; j < ToBeAppend.size(); i++) {
+				for (int j = 0; j < ToBeAppend.size(); j++) {
 					if ((std::find(Results.begin(), Results.end(), ToBeAppend.at(j)) == Results.end())) {
 						Results.push_back(ToBeAppend.at(j));
 					}
@@ -1047,27 +1145,38 @@ bool QueryEvaluator::CheckIsResultsFromPkb(string P1, string P2, char P1Type,
 
 	bool results;
 	if (clausesType == "Follows") {
+		cout << "check is results for follows" << endl;
 		results = stmtTable::isFollow(ChangeStringToInt(P1), ChangeStringToInt(P2));
+		//cout << "results for follows" << endl;
+		//cout << results << endl;
+	
 	}
 	else if (clausesType == "Follows*") {
+		cout << "check is results for follows*" << endl;
 		results = stmtTable::isFollowStar(ChangeStringToInt(P1), ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Uses") {
+		cout << "check is results for Uses" << endl;
 		results = VarTable::getUsesBooleanWithType(P1, P2);
 	}
 	else if (clausesType == "Calls") {
+		cout << "check is results for Calls" << endl;
 		results = ProcTable::isProcToProc(P1, P2);
 	}
 	else if (clausesType == "Modifies") {
+		cout << "check is results for Modifies" << endl;
 		results = VarTable::getModifiesBooleanWithType(P1, P2);
 	}
 	else if (clausesType == "Parent") {
+		cout << "check is results for Parents" << endl;
 		results = stmtTable::isParent(ChangeStringToInt(P1), ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Parent*") {
+		cout << "check is results for Parents*" << endl;
 		results = stmtTable::isParentStar(ChangeStringToInt(P1), ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Next") {
+		cout << "check is results for next" << endl;
 		results = CFG::isNext(ChangeStringToInt(P1), ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Next*") {
@@ -1207,6 +1316,7 @@ vector<string> QueryEvaluator::GetP2Blank(string clausesType) {
 		//return allstmt
 	}
 	else if (clausesType == "Follows*") {
+		
 		return VarTable::getAllWithType("STMT", "");
 		//return allstmt
 	}

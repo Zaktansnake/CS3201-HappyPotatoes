@@ -32,5 +32,6 @@ private:
 	static vector<int> setLeftAns(string line1, bool left);
 	static vector<int> setRightAns(string line2, bool right);
 	static vector<string> convertIntToString(vector<int> temp);
+	static string PatternTable::addSpacesIntoString(string line);
 
 };
