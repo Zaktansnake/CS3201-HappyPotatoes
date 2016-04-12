@@ -26,7 +26,7 @@ namespace UnitTesting
 			string resultChildren;
 			std::vector<string> resultChild;
 			string expected_result01 = "14";
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
 			vector<string> getParent = stmtTable::getParent(24);
 			if (getParent.size() == 0) {
 				result = "0";
@@ -182,7 +182,7 @@ namespace UnitTesting
 			int expectFollowFan;
 			int resultFollowFan;
 			std::vector<int>followFan;
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
 
 			// test for getFollow
 			string expected_result01 = "16";

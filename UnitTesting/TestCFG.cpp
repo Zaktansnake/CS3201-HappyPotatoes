@@ -18,7 +18,7 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(CFG)
 		{
-			Parser::parse("C:\\Users\\feifei\\Source\\Repos\\CS3201-HappyPotatoes\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
 
 			string result;
 			string expectedResult;
@@ -28,7 +28,7 @@ namespace UnitTesting
 			int resultB;
 			
 			expectedResult = "1318";
-			actual = CFG::getNext(19);
+			actual = CFG::getNext(12);
 			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
 				result.append(std::to_string(*it));
 			}

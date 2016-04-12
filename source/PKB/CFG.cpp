@@ -97,39 +97,132 @@ void CFG::addRoot(string procedure, int stmtNo) {
 }
 
 void CFG::addNextNode(int stmtNo, string stmt) {
-	numOfStatement = stmtNo;
-	CFGline.clear();
-	int parentForElseIf = -1;
-	stmt = trimString(stmt);
-	conditionstmt = setConditions(stmt);
-	CFGline.clear();
-	if (stmt.compare("}") != 0 && stmt.find("else ") == string::npos) {
-		proRecord.push_back(currentP);
-	}
-	endloop = std::count(stmt.begin(), stmt.end(), '}');
-	if (flagForClose && stmt.size() != endloop) {
-		if (conditionstmt == 3) {
-			if (parentStack.size() != 0) {
-				parentForElseIf = parentStack.top();
+	try {
+
+		numOfStatement = stmtNo;
+		CFGline.clear();
+		int parentForElseIf = -1;
+		stmt = trimString(stmt);
+		conditionstmt = setConditions(stmt);
+		CFGline.clear();
+		if (stmt.compare("}") != 0 && stmt.find("else ") == string::npos) {
+			proRecord.push_back(currentP);
+		}
+		endloop = std::count(stmt.begin(), stmt.end(), '}');
+		if (flagForClose && stmt.size() != endloop) {
+			if (conditionstmt == 3) {
+				if (parentStack.size() != 0) {
+					parentForElseIf = parentStack.top();
+				}
+				parentStack.push(stmtNo);
+				conditionStack.push(conditionstmt);
+				if (closingStack.size() != 0) {
+					int prev = closingStack.top();
+					closingStack.pop();
+					int prevCon = clostingCondition.top();
+					clostingCondition.pop();
+					if (prevCon == 3) {  // follow fan is a while loop
+						CFGline = CFGTable.at(currentPro).at(prev);
+						CFGline.push_back(stmtNo);
+						CFGstmt.at(prev) = CFGline;
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+					else {
+						//	CFGline.push_back(dummy);
+						//	CFGstmt.push_back(CFGline);
+						//	CFGTable.at(currentPro) = CFGstmt;
+
+						if (prevCon == 2) {
+							CFGline.push_back(dummy);
+							CFGstmt.push_back(CFGline);
+							CFGTable.at(currentPro) = CFGstmt;
+						}
+						else {
+							if (parentForElseIf != -1) {
+								CFGline = CFGTable.at(currentPro).at(parentForElseIf);
+								CFGline.push_back(stmtNo);
+								CFGstmt.at(parentForElseIf) = CFGline;
+								CFGTable.at(currentPro) = CFGstmt;
+							}
+							else {
+								CFGline.push_back(dummy);
+								CFGstmt.push_back(CFGline);
+								CFGTable.at(currentPro) = CFGstmt;
+							}
+
+						}
+
+					}
+
+
+					// need to complete.......................................
+				}
 			}
-			parentStack.push(stmtNo);
-			conditionStack.push(conditionstmt);
-			if (closingStack.size() != 0) {
-				int prev = closingStack.top();
-				closingStack.pop();
-				int prevCon = clostingCondition.top();
-				clostingCondition.pop();
-				if (prevCon == 3) {  // follow fan is a while loop
-					CFGline = CFGTable.at(currentPro).at(prev);
-					CFGline.push_back(stmtNo);
-					CFGstmt.at(prev) = CFGline;
-					CFGTable.at(currentPro) = CFGstmt;
+			else if (conditionstmt == 2) { // prev is end else
+				if (endloop > 0) {
+					int parent = parentStack.top();
+					parentStack.push(parent);
+					conditionStack.push(conditionstmt);
+					int prev = closingStack.top();
+					closingStack.pop();
+					int con = clostingCondition.top();
+					clostingCondition.pop();
+					if (con == 3) {
+						CFGline = CFGTable.at(currentPro).at(prev);
+						CFGline.push_back(stmtNo);
+						CFGstmt.at(prev) = CFGline;
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+					else {
+
+						// need to complete.....................................
+
+					}
+					// need to complete......................................
 				}
 				else {
-					//	CFGline.push_back(dummy);
-					//	CFGstmt.push_back(CFGline);
-					//	CFGTable.at(currentPro) = CFGstmt;
+					int parent = 0;
+					if (ifRecord.size() > 0) {
+						parent = ifRecord.top();
+						ifRecord.pop();
+						parentStack.push(parent);
+					}
 
+					//	if (conditionstmt == 2) {
+					//			conditionStack.push(1);
+					//				flagForCorrectElseIf = false;
+					//			}
+					//			else {
+					conditionStack.push(1);
+					flagForCorrectElseIf = true;
+					//		}
+
+					flag = true;
+
+				}
+
+
+			}
+			else if (conditionstmt == 1) {
+				if (parentStack.size() != 0) {
+					parentForElseIf = parentStack.top();
+				}
+				else {
+					parentForElseIf = -1;
+				}
+				parentStack.push(stmtNo);
+				conditionStack.push(conditionstmt);
+				if (closingStack.size() != 0) {
+					int prev = closingStack.top();
+					closingStack.pop();
+					int prevCon = clostingCondition.top();
+					clostingCondition.pop();
+					if (prevCon == 3) {  // follow fan is a while loop
+						CFGline = CFGTable.at(currentPro).at(prev);
+						CFGline.push_back(stmtNo);
+						CFGstmt.at(prev) = CFGline;
+						CFGTable.at(currentPro) = CFGstmt;
+					}
 					if (prevCon == 2) {
 						CFGline.push_back(dummy);
 						CFGstmt.push_back(CFGline);
@@ -150,272 +243,189 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 
 					}
 
+					// need to complete.......................................
 				}
 
-
-				// need to complete.......................................
 			}
-		}
-		else if (conditionstmt == 2) { // prev is end else
-			if (endloop > 0) {
-				int parent = parentStack.top();
-				parentStack.push(parent);
-				conditionStack.push(conditionstmt);
-				int prev = closingStack.top();
-				closingStack.pop();
-				int con = clostingCondition.top();
-				clostingCondition.pop();
-				if (con == 3) {
-					CFGline = CFGTable.at(currentPro).at(prev);
-					CFGline.push_back(stmtNo);
-					CFGstmt.at(prev) = CFGline;
-					CFGTable.at(currentPro) = CFGstmt;
+			else if (conditionstmt == 0 && stmt.size() != endloop) {
+				if (closingStack.size() != 0) {
+					int prev = closingStack.top();
+					closingStack.pop();
+					int con = clostingCondition.top();
+					clostingCondition.pop();
+					if (con == 3) {
+						CFGline = CFGTable.at(currentPro).at(prev);
+						CFGline.push_back(stmtNo);
+						CFGstmt.at(prev) = CFGline;
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+					else {
+						// need to complete.......................................
+						if (!flagForCorrectElseIf) {
+							CFGline.push_back(dummy);
+							CFGstmt.push_back(CFGline);
+							CFGTable.at(currentPro) = CFGstmt;
+						}
+					}
 				}
-				else {
 
-					// need to complete.....................................
 
-				}
-				// need to complete......................................
+			}
+			if (!flag) {
+				flagForClose = false;
 			}
 			else {
-				int parent = ifRecord.top();
-				ifRecord.pop();
-				parentStack.push(parent);
-				//	if (conditionstmt == 2) {
-				//			conditionStack.push(1);
-				//				flagForCorrectElseIf = false;
-				//			}
-				//			else {
-				conditionStack.push(1);
-				flagForCorrectElseIf = true;
-				//		}
-
-				flag = true;
-
+				flagForClose = true;
+				flag = false;
 			}
-
 
 		}
-		else if (conditionstmt == 1) {
-			if (parentStack.size() != 0) {
-				parentForElseIf = parentStack.top();
+		else {
+			if (conditionstmt == 0 && stmt.size() != endloop && flagForNewProc == false) {  // normal statement
+				CFGline.push_back(stmtNo);
+				CFGstmt.push_back(CFGline);
+				CFGTable.at(currentPro) = CFGstmt;
+
 			}
-			else {
-				parentForElseIf = -1;
-			}
-			parentStack.push(stmtNo);
-			conditionStack.push(conditionstmt);
-			if (closingStack.size() != 0) {
-				int prev = closingStack.top();
-				closingStack.pop();
-				int prevCon = clostingCondition.top();
-				clostingCondition.pop();
-				if (prevCon == 3) {  // follow fan is a while loop
-					CFGline = CFGTable.at(currentPro).at(prev);
+			else if (conditionstmt == 1) {
+				if (!flagForNewProc) {
+					parentStack.push(stmtNo);
+					conditionStack.push(conditionstmt);
 					CFGline.push_back(stmtNo);
-					CFGstmt.at(prev) = CFGline;
-					CFGTable.at(currentPro) = CFGstmt;
-				}
-				if (prevCon == 2) {
-					CFGline.push_back(dummy);
 					CFGstmt.push_back(CFGline);
 					CFGTable.at(currentPro) = CFGstmt;
 				}
 				else {
-					if (parentForElseIf != -1) {
-						CFGline = CFGTable.at(currentPro).at(parentForElseIf);
-						CFGline.push_back(stmtNo);
-						CFGstmt.at(parentForElseIf) = CFGline;
-						CFGTable.at(currentPro) = CFGstmt;
-					}
-					else {
-						CFGline.push_back(dummy);
-						CFGstmt.push_back(CFGline);
-						CFGTable.at(currentPro) = CFGstmt;
-					}
-
+					parentStack.push(stmtNo);
+					conditionStack.push(conditionstmt);
 				}
 
-				// need to complete.......................................
-			}
 
-		}
-		else if (conditionstmt == 0 && stmt.size() != endloop) {
-			if (closingStack.size() != 0) {
-				int prev = closingStack.top();
-				closingStack.pop();
-				int con = clostingCondition.top();
-				clostingCondition.pop();
-				if (con == 3) {
-					CFGline = CFGTable.at(currentPro).at(prev);
+			}
+			else if (conditionstmt == 2) {
+				int parent = parentStack.top();
+				parentStack.push(parent);
+				conditionStack.push(conditionstmt);
+			}
+			else if (conditionstmt == 3) {
+				if (!flagForNewProc) {
+					parentStack.push(stmtNo);
+					conditionStack.push(conditionstmt);
 					CFGline.push_back(stmtNo);
-					CFGstmt.at(prev) = CFGline;
+					CFGstmt.push_back(CFGline);
 					CFGTable.at(currentPro) = CFGstmt;
 				}
 				else {
-					// need to complete.......................................
+					parentStack.push(stmtNo);
+					conditionStack.push(conditionstmt);
+
+				}
+
+			}
+		}
+		flagForNewProc = false;
+		if (endloop > 0) {
+			int currentNo;
+			flagForClose = true;
+			for (int i = 0; i < endloop; i++) {
+				if (parentStack.size() == 0) {
+					while (closingStack.size() != 0) {
+						closingStack.pop();
+						clostingCondition.pop();
+					}
+					while (ifRecord.size() != 0) {
+						ifRecord.pop();
+					}
+				//	if (CFGTable.at(currentPro).size() == numOfStatement + 1) {
+
+				//	}
+				//	else {
+				//		CFGline.clear();
+				//		CFGline.push_back(dummy);
+					//	CFGstmt.push_back(CFGline);
+				//		CFGTable.at(currentPro) = CFGstmt;
+				//	}
+					flagForClose = false;
+					flagForCorrectElseIf = false;
+					flag = false;
+					flagNextLevelStart = false;
+					break;
+				}
+				int parent = parentStack.top();
+				parentStack.pop();
+				int con = conditionStack.top();
+				conditionStack.pop();
+				int index = CFGstmt.size();
+				if (con == 3) { // end while, set the current node back to its parent
+					if (closingStack.size() == 0) { // current node it the stmtNo
+						currentNo = stmtNo;
+					}
+					else if (clostingCondition.top() != 3) {
+						currentNo = stmtNo;
+						closingStack.pop();
+						clostingCondition.pop();
+					}
+					else {
+						currentNo = closingStack.top();
+						closingStack.pop();
+						clostingCondition.pop();
+					}
+					closingStack.push(parent);
+					clostingCondition.push(con);
+					if (index == stmtNo) {
+						CFGline.push_back(parent);
+						CFGstmt.push_back(CFGline);
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+					else {
+						CFGline = CFGstmt.at(currentNo);
+						CFGline.push_back(parent);
+						CFGstmt.at(currentNo) = CFGline;
+						CFGTable.at(currentPro) = CFGstmt;
+					}
+				}
+				else if (con == 2) {
+
+					closingStack.push(stmtNo);
+					clostingCondition.push(con);
+					CFGline = CFGTable.at(currentPro).at(parent);
+					CFGline.push_back(stmtNo + 1);
+					CFGstmt.at(parent) = CFGline;
+					CFGTable.at(currentPro) = CFGstmt;
+
+
+				}
+				else if (con == 1) {
 					if (!flagForCorrectElseIf) {
 						CFGline.push_back(dummy);
 						CFGstmt.push_back(CFGline);
 						CFGTable.at(currentPro) = CFGstmt;
-					}
-				}
-			}
-
-
-		}
-		if (!flag) {
-			flagForClose = false;
-		}
-		else {
-			flagForClose = true;
-			flag = false;
-		}
-
-	}
-	else {
-		if (conditionstmt == 0 && stmt.size() != endloop && flagForNewProc == false) {  // normal statement
-			CFGline.push_back(stmtNo);
-			CFGstmt.push_back(CFGline);
-			CFGTable.at(currentPro) = CFGstmt;
-
-		}
-		else if (conditionstmt == 1) {
-			if (!flagForNewProc) {
-				parentStack.push(stmtNo);
-				conditionStack.push(conditionstmt);
-				CFGline.push_back(stmtNo);
-				CFGstmt.push_back(CFGline);
-				CFGTable.at(currentPro) = CFGstmt;
-			}
-			else {
-				parentStack.push(stmtNo);
-				conditionStack.push(conditionstmt);
-			}
-
-
-		}
-		else if (conditionstmt == 2) {
-			int parent = parentStack.top();
-			parentStack.push(parent);
-			conditionStack.push(conditionstmt);
-		}
-		else if (conditionstmt == 3) {
-			if (!flagForNewProc) {
-				parentStack.push(stmtNo);
-				conditionStack.push(conditionstmt);
-				CFGline.push_back(stmtNo);
-				CFGstmt.push_back(CFGline);
-				CFGTable.at(currentPro) = CFGstmt;
-			}
-			else {
-				parentStack.push(stmtNo);
-				conditionStack.push(conditionstmt);
-
-			}
-
-		}
-	}
-	flagForNewProc = false;
-	if (endloop > 0) {
-		int currentNo;
-		flagForClose = true;
-		for (int i = 0; i < endloop; i++) {
-			if (parentStack.size() == 0) {
-				while (closingStack.size() != 0) {
-					closingStack.pop();
-					clostingCondition.pop();
-				}
-				while (ifRecord.size() != 0) {
-					ifRecord.pop();
-				}
-				if (CFGTable.at(currentPro).size() == numOfStatement + 1) {
-
-				}
-				else {
-					CFGline.clear();
-					CFGline.push_back(dummy);
-					CFGstmt.push_back(CFGline);
-					CFGTable.at(currentPro) = CFGstmt;
-				}
-				flagForClose = false;
-				flagForCorrectElseIf = false;
-				flag = false;
-				flagNextLevelStart = false;
-				break;
-			}
-			int parent = parentStack.top();
-			parentStack.pop();
-			int con = conditionStack.top();
-			conditionStack.pop();
-			int index = CFGstmt.size();
-			if (con == 3) { // end while, set the current node back to its parent
-				if (closingStack.size() == 0) { // current node it the stmtNo
-					currentNo = stmtNo;
-				}
-				else if (clostingCondition.top() != 3) {
-					currentNo = stmtNo;
-					closingStack.pop();
-					clostingCondition.pop();
-				}
-				else {
-					currentNo = closingStack.top();
-					closingStack.pop();
-					clostingCondition.pop();
-				}
-				closingStack.push(parent);
-				clostingCondition.push(con);
-				if (index == stmtNo) {
-					CFGline.push_back(parent);
-					CFGstmt.push_back(CFGline);
-					CFGTable.at(currentPro) = CFGstmt;
-				}
-				else {
-					CFGline = CFGstmt.at(currentNo);
-					CFGline.push_back(parent);
-					CFGstmt.at(currentNo) = CFGline;
-					CFGTable.at(currentPro) = CFGstmt;
-				}
-			}
-			else if (con == 2) {
-
-				closingStack.push(stmtNo);
-				clostingCondition.push(con);
-				CFGline = CFGTable.at(currentPro).at(parent);
-				CFGline.push_back(stmtNo + 1);
-				CFGstmt.at(parent) = CFGline;
-				CFGTable.at(currentPro) = CFGstmt;
-
-
-			}
-			else if (con == 1) {
-				if (!flagForCorrectElseIf) {
-					CFGline.push_back(dummy);
-					CFGstmt.push_back(CFGline);
-					CFGTable.at(currentPro) = CFGstmt;
-					ifRecord.push(parent);
-				}
-				else {
-					CFGline = CFGTable.at(currentPro).at(parent);
-					if (CFGline.size() == 2 && (CFGline.at(0) != -1 && CFGline.at(1) != -1)) {
-						flagForCorrectElseIf = false;
+						ifRecord.push(parent);
 					}
 					else {
-						CFGline.push_back(stmtNo);
-						CFGstmt.at(parent) = CFGline;
-						CFGTable.at(currentPro) = CFGstmt;
-						flagForCorrectElseIf = false;
+						CFGline = CFGTable.at(currentPro).at(parent);
+						if (CFGline.size() == 2 && (CFGline.at(0) != -1 && CFGline.at(1) != -1)) {
+							flagForCorrectElseIf = false;
+						}
+						else {
+							CFGline.push_back(stmtNo);
+							CFGstmt.at(parent) = CFGline;
+							CFGTable.at(currentPro) = CFGstmt;
+							flagForCorrectElseIf = false;
+						}
+
 					}
 
+					closingStack.push(stmtNo);
+					clostingCondition.push(con);
+
+
 				}
-
-				closingStack.push(stmtNo);
-				clostingCondition.push(con);
-
-
 			}
 		}
+	}
+	catch (bad_alloc&ba) {
+		cout << "bad_alloc caught in CFG: " << ba.what() << endl;
 	}
 }
 
