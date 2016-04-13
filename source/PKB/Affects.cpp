@@ -55,7 +55,7 @@ void Affects::updateAffectsTable() {
 		}
 	}
 	catch (exception &e) {
-		cout << "Standard exception (for affects): " << e.what() << endl;
+	//	cout << "Standard exception (for updateAffectsTable): " << e.what() << endl;
 	}
 
 }
@@ -142,7 +142,7 @@ void Affects::updateAffectsTransitiveTable(int assign1) {
 		}
 	}
 	catch (exception &e) {
-		cout << "Standard exception (updateAffectsTransitiveTable): " << e.what() << endl;
+	//	cout << "Standard exception (for updateAffectsTransitiveTable): " << e.what() << endl;
 	}
 
 }

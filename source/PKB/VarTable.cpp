@@ -127,7 +127,7 @@ vector<string> VarTable::getUsedWithType(string type, string value) {
 
 bool VarTable::getModifiesBooleanWithType(string firstPerimeter, string secondPerimeter) {
 	bool finalResult;
-	if (VarTable::is_number(firstPerimeter)){
+	if (VarTable::is_number(firstPerimeter)) {
 		finalResult = VarTable::isModifiesStmt(firstPerimeter, secondPerimeter);
 	}
 	else {
@@ -479,6 +479,7 @@ bool VarTable::isModifiesAssign(string firstPerimeter, string secondPerimeter) {
 }
 
 bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
+	cout << firstPerimeter << ", " << secondPerimeter << endl;
 	// firstPerimeter = statementNumber; secondPerimeter = variable
 	bool result;
 	vector<int> tempVector = Modifies::getModifiesTable(secondPerimeter);
@@ -491,6 +492,7 @@ bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
 		istringstream(firstPerimeter) >> numbValue;
 
 		for (int i = 0; i < tempVector.size(); i++) {
+			cout << tempVector[i] << " :: " << numbValue << endl;
 			if (tempVector[i] == numbValue) {
 				result = true;
 				break;
@@ -711,7 +713,7 @@ bool VarTable::isUsesIfs(string firstPerimeter, string secondPerimeter) {
 	bool result = false;
 	int numbValue;
 	istringstream(firstPerimeter) >> numbValue;
-	vector<int> ans =ifsTable.at(secondPerimeter);
+	vector<int> ans = ifsTable.at(secondPerimeter);
 	if (ans.size() > 0) {
 		for (int i = 0; i < ans.size(); i++) {
 			if (ans.at(i) == numbValue) {
@@ -787,7 +789,7 @@ bool VarTable::is_number(const std::string& s)
 vector<string> VarTable::convertIntToString(vector<int> temp) {
 	vector<string> result;
 	if (!temp.empty()) {
-		for(int i = 0; i < temp.size(); i++) {
+		for (int i = 0; i < temp.size(); i++) {
 			result.push_back(to_string(temp.at(i)));
 		}
 	}

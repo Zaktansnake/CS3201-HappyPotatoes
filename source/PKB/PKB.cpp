@@ -37,7 +37,7 @@ stack<int> ifStmtNum, afterElseStmtNum;
 bool firstTime, firstLine;
 static int stmtLine = 0, afterElseStartNum = 0; // ifParentStmtNum -> very first "if" stmtNum
 static string tempLine;
-	
+
 static void procedure();
 static void stmtLst();
 static void assign();
@@ -74,7 +74,7 @@ void PKB::create(string fileName) {
 		}
 	}
 	catch (exception &e) {
-		cout << "Standard exception (for create): " << e.what() << endl;
+		//cout << "Standard exception (for getLine): " << e.what() << endl;
 	}
 
 	myFile.close();
@@ -83,13 +83,12 @@ void PKB::create(string fileName) {
 		PKB::updateTables();
 	}
 	catch (exception &e) {
-		cout << "Standard exception (for update tables): " << e.what() << endl;
+		//cout << "Standard exception (for update tables): " << e.what() << endl;
 	}
-	
+
 }
 
 void findMethod(string lineFromSample) {
-
 	str = lineFromSample;
 	if (str.find("{") != std::string::npos) {
 		str = trim(str.erase(str.size() - 1));
@@ -125,12 +124,12 @@ void findMethod(string lineFromSample) {
 		}
 		procedure();
 		stmtTable::setProcedure(str, stmtLine);
-		CFG::addRoot(str,stmtLine);
+		CFG::addRoot(str, stmtLine);
 	}
 	else if (word.compare("if") == 0 || word.compare("else") == 0 || word.compare("call") == 0 || word.compare("while") == 0) {
 		stmtLst();
 		stmtTable::addStmtTable(str, stmtLine);
-		CFG::addNextNode(stmtLine,str);
+		CFG::addNextNode(stmtLine, str);
 		ProcTable::setProcStmtNum(procname, stmtLine);
 	}
 	else if (word.compare("}") == 0 || str.find("}") != std::string::npos) {
@@ -281,7 +280,7 @@ static void stmt(int num) {
 void assign() {
 	vector<string> v;
 	string lineWithVar = str;
-	string tempLine;
+	string tempLine = "";
 	int ln = str.length() - 1;
 
 	for (int n = 0; n <= ln; n++) {
@@ -344,10 +343,10 @@ void PKB::updateTables() {
 }
 
 void PKB::updateAllTables() {
-    CFG::reverCFG();
+	CFG::reverCFG();
 	std::vector<std::tuple<string, string, int>> AllCallsStmt = ProcTable::getCallsTable();
 	int allCallsStmtSize = AllCallsStmt.size() - 1;
-	for (int i = allCallsStmtSize; i >= 0 ; i--) {
+	for (int i = allCallsStmtSize; i >= 0; i--) {
 		string procB = get<1>(AllCallsStmt[i]);
 		int tempStmtLine = get<2>(AllCallsStmt[i]);
 
@@ -390,7 +389,7 @@ vector<int> getAllParents(vector<int> v) {
 	while (v.size() != 0) {
 		toReturn.push_back(v.at(0));
 		v = pare.getParent(v.at(0));
-		
+
 	}
 	return toReturn;
 }
@@ -419,49 +418,55 @@ void stmtLineForPattern(vector<string> line) {
 }
 
 void detectRightBracket() {
-	int currentParentLine = 0;
-	pair<string, int> temp = bracstack.top();
-	int tempStmtNum = stmtLine;
+	try {
+		int currentParentLine = 0;
+		pair<string, int> temp = bracstack.top();
+		int tempStmtNum = stmtLine;
 
-	if (temp.second > 0 && temp.second != 0) {
-		currentParentLine = temp.second; // if stmtNum 
-	}
-
-	if (temp.second > 0) {
-		vector<string> tempArrayListLeft = VarTable::findVariableLeft(temp.second, tempStmtNum);
-		for (int i = 0; i < tempArrayListLeft.size(); i++) {
-			VarTable::addDataToModifies(tempArrayListLeft[i], temp.second);
+		if (temp.second > 0 && temp.second != 0) {
+			currentParentLine = temp.second; // if stmtNum 
 		}
 
-		vector<string> tempArrayListRight = VarTable::findVariableRight(temp.second, tempStmtNum);
-		for (int i = 0; i < tempArrayListRight.size(); i++) {
-			VarTable::addDataToUses(tempArrayListRight[i], temp.second);
-		}
-	} else {
-		if (ifStmtNum.size() > 0 && afterElseStmtNum.size() > 0) {
-			int currentIfStmtNum = ifStmtNum.top(); // current parent of "if" stmtNum
-			int currentElseFirstStartNum = afterElseStmtNum.top(); //current "else" first start num
-			vector<string> tempArrayListLeft = VarTable::findVariableLeft(currentElseFirstStartNum, tempStmtNum);
-			vector<string> tempArrayListRight = VarTable::findVariableRight(currentElseFirstStartNum, tempStmtNum);
-			if (tempArrayListLeft.size() > 0 && tempArrayListRight.size() > 0) {
-				for (int i = 0; i < tempArrayListLeft.size(); i++) {
-					if (currentParentLine != 0) {
-						VarTable::addDataToModifies(tempArrayListLeft[i], currentParentLine);
-					}
-					VarTable::addDataToModifies(tempArrayListLeft[i], currentIfStmtNum);
-				}
-
-				for (int i = 0; i < tempArrayListRight.size(); i++) {
-					if (currentParentLine != 0) {
-						VarTable::addDataToUses(tempArrayListRight[i], currentParentLine);
-					}
-					VarTable::addDataToUses(tempArrayListRight[i], currentIfStmtNum);
-				}
+		if (temp.second > 0) {
+			vector<string> tempArrayListLeft = VarTable::findVariableLeft(temp.second, tempStmtNum);
+			for (int i = 0; i < tempArrayListLeft.size(); i++) {
+				VarTable::addDataToModifies(tempArrayListLeft[i], temp.second);
 			}
 
-			ifStmtNum.pop();
-			afterElseStmtNum.pop();
+			vector<string> tempArrayListRight = VarTable::findVariableRight(temp.second, tempStmtNum);
+			for (int i = 0; i < tempArrayListRight.size(); i++) {
+				VarTable::addDataToUses(tempArrayListRight[i], temp.second);
+			}
 		}
+		else {
+			if (ifStmtNum.size() > 0 && afterElseStmtNum.size() > 0) {
+				int currentIfStmtNum = ifStmtNum.top(); // current parent of "if" stmtNum
+				int currentElseFirstStartNum = afterElseStmtNum.top(); //current "else" first start num
+				vector<string> tempArrayListLeft = VarTable::findVariableLeft(currentElseFirstStartNum, tempStmtNum);
+				vector<string> tempArrayListRight = VarTable::findVariableRight(currentElseFirstStartNum, tempStmtNum);
+				if (tempArrayListLeft.size() > 0 && tempArrayListRight.size() > 0) {
+					for (int i = 0; i < tempArrayListLeft.size(); i++) {
+						if (currentParentLine != 0) {
+							VarTable::addDataToModifies(tempArrayListLeft[i], currentParentLine);
+						}
+						VarTable::addDataToModifies(tempArrayListLeft[i], currentIfStmtNum);
+					}
+
+					for (int i = 0; i < tempArrayListRight.size(); i++) {
+						if (currentParentLine != 0) {
+							VarTable::addDataToUses(tempArrayListRight[i], currentParentLine);
+						}
+						VarTable::addDataToUses(tempArrayListRight[i], currentIfStmtNum);
+					}
+				}
+
+				ifStmtNum.pop();
+				afterElseStmtNum.pop();
+			}
+		}
+	}
+	catch (exception &e) {
+	//	cout << "Standard exception (for detect bracket error): " << e.what() << endl;
 	}
 }
 
@@ -494,60 +499,55 @@ bool PKB::is_number(const std::string& s)
 }
 
 void getProgramLine(string lineFromSource) {
-	try {
-		if (lineFromSource.compare("") != 0) {
-			// found ";" "{" "}"
-			if (lineFromSource.find_last_of("{") != std::string::npos) {
-				if (lineFromSource.find("}") != std::string::npos) {
-					if (lineFromSource.find("else") != std::string::npos) {
-						findMethod(lineFromSource);
-					}
-					else {
-						std::size_t found;
-						if (lineFromSource.find("while") != std::string::npos) {
-							found = lineFromSource.find("while");
-						}
-						else if (lineFromSource.find("if") != std::string::npos) {
-							found = lineFromSource.find("if");
-						}
-						string normalLine = lineFromSource.substr(found);
-						findMethod("}");
-						findMethod(normalLine);
-					}
+	if (lineFromSource.compare("") != 0) {
+		// found ";" "{" "}"
+		if (lineFromSource.find_last_of("{") != std::string::npos) {
+			if (lineFromSource.find("}") != std::string::npos) {
+				if (lineFromSource.find("else") != std::string::npos) {
+					findMethod(lineFromSource);
 				}
 				else {
-					tempLine += lineFromSource;
-					findMethod(tempLine);
-					tempLine = "";
-				}
-			}
-			else if (lineFromSource.find("}") != std::string::npos) {
-				if (lineFromSource.find(";") != std::string::npos) {
-					std::size_t foundSemiColon = lineFromSource.find(";");
-					string normalLine = lineFromSource.substr(0, foundSemiColon + 1);
-					string bracket = lineFromSource.substr(foundSemiColon + 1);
-					bracket.erase(std::remove(bracket.begin(), bracket.end(), ' '), bracket.end());
+					std::size_t found;
+					if (lineFromSource.find("while") != std::string::npos) {
+						found = lineFromSource.find("while");
+					}
+					else if (lineFromSource.find("if") != std::string::npos) {
+						found = lineFromSource.find("if");
+					}
+					string normalLine = lineFromSource.substr(found);
+					findMethod("}");
 					findMethod(normalLine);
-					findMethod(bracket);
-				}
-				else if (lineFromSource.find("else") != std::string::npos) {
-					findMethod(lineFromSource);
-				}
-				else {
-					findMethod(lineFromSource);
 				}
 			}
-			else if (lineFromSource.find(";") != std::string::npos) {
-				// calls or normal assignment statement
+			else {
+				tempLine += lineFromSource;
+				findMethod(tempLine);
+				tempLine = "";
+			}
+		}
+		else if (lineFromSource.find("}") != std::string::npos) {
+			if (lineFromSource.find(";") != std::string::npos) {
+				std::size_t foundSemiColon = lineFromSource.find(";");
+				string normalLine = lineFromSource.substr(0, foundSemiColon + 1);
+				string bracket = lineFromSource.substr(foundSemiColon + 1);
+				bracket.erase(std::remove(bracket.begin(), bracket.end(), ' '), bracket.end());
+				findMethod(normalLine);
+				findMethod(bracket);
+			}
+			else if (lineFromSource.find("else") != std::string::npos) {
 				findMethod(lineFromSource);
 			}
 			else {
-				tempLine = lineFromSource + " ";
+				findMethod(lineFromSource);
 			}
 		}
-	}
-	catch (exception &e) {
-		cout << "Standard exception (for getProgramLine): " << e.what() << endl;
+		else if (lineFromSource.find(";") != std::string::npos) {
+			// calls or normal assignment statement
+			findMethod(lineFromSource);
+		}
+		else {
+			tempLine = lineFromSource + " ";
+		}
 	}
 
 }

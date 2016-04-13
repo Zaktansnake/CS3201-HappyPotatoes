@@ -98,7 +98,6 @@ void CFG::addRoot(string procedure, int stmtNo) {
 
 void CFG::addNextNode(int stmtNo, string stmt) {
 	try {
-
 		numOfStatement = stmtNo;
 		CFGline.clear();
 		int parentForElseIf = -1;
@@ -336,15 +335,15 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 					while (ifRecord.size() != 0) {
 						ifRecord.pop();
 					}
-				//	if (CFGTable.at(currentPro).size() == numOfStatement + 1) {
+					/*if (CFGTable.at(currentPro).size() == numOfStatement + 1) {
 
-				//	}
-				//	else {
-				//		CFGline.clear();
-				//		CFGline.push_back(dummy);
-					//	CFGstmt.push_back(CFGline);
-				//		CFGTable.at(currentPro) = CFGstmt;
-				//	}
+					}
+					else {
+						CFGline.clear();
+						CFGline.push_back(dummy);
+						CFGstmt.push_back(CFGline);
+						CFGTable.at(currentPro) = CFGstmt;
+					}*/
 					flagForClose = false;
 					flagForCorrectElseIf = false;
 					flag = false;
@@ -366,9 +365,15 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 						clostingCondition.pop();
 					}
 					else {
-						currentNo = closingStack.top();
-						closingStack.pop();
-						clostingCondition.pop();
+						if (closingStack.size() == 0) {
+
+						}
+						else {
+							currentNo = closingStack.top();
+							closingStack.pop();
+							clostingCondition.pop();
+						}
+						
 					}
 					closingStack.push(parent);
 					clostingCondition.push(con);
@@ -378,10 +383,19 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 						CFGTable.at(currentPro) = CFGstmt;
 					}
 					else {
-						CFGline = CFGstmt.at(currentNo);
-						CFGline.push_back(parent);
-						CFGstmt.at(currentNo) = CFGline;
-						CFGTable.at(currentPro) = CFGstmt;
+						
+							if (currentNo >= CFGstmt.size()) {
+
+							}
+							else {
+								CFGline = CFGstmt.at(currentNo);
+								CFGline.push_back(parent);
+								CFGstmt.at(currentNo) = CFGline;
+								CFGTable.at(currentPro) = CFGstmt;
+							}
+							
+						
+							
 					}
 				}
 				else if (con == 2) {
@@ -397,10 +411,13 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 				}
 				else if (con == 1) {
 					if (!flagForCorrectElseIf) {
-						CFGline.push_back(dummy);
-						CFGstmt.push_back(CFGline);
-						CFGTable.at(currentPro) = CFGstmt;
-						ifRecord.push(parent);
+						
+							CFGline.push_back(dummy);
+							CFGstmt.push_back(CFGline);
+							CFGTable.at(currentPro) = CFGstmt;
+							ifRecord.push(parent);
+						
+						
 					}
 					else {
 						CFGline = CFGTable.at(currentPro).at(parent);
@@ -424,8 +441,8 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 			}
 		}
 	}
-	catch (bad_alloc&ba) {
-		cout << "bad_alloc caught in CFG: " << ba.what() << endl;
+	catch (exception &e) {
+	//	cout << "Standard exception (for CFG): " << e.what() << endl;
 	}
 }
 

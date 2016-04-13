@@ -18,7 +18,7 @@ namespace UnitTesting
 	public:
 		TEST_METHOD(CFG)
 		{
-			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source06.txt");
 
 			string result;
 			string expectedResult;
