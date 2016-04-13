@@ -161,7 +161,7 @@ bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<str
 			smatch match = *next;
 			string word = match.str(0);
 			if (word == "stmt" || word == "assign" || word == "while" || word == "variable"
-				|| word == "constant" || word == "prog_line") {
+				|| word == "constant" || word == "prog_line" || word == "procedure" || word == "if") {
 				if (!typeSelected) {
 					type = word;
 					typeSelected = true;
