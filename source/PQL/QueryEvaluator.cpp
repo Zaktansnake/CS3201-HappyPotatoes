@@ -25,7 +25,6 @@ QueriesAnswerStorage QAS;
 
 vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 {
-	cout << "asfasdfas" << endl;
 	QAS.clear();
 	clear();
 	bool HasResults = false;
@@ -34,7 +33,7 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 		HasResults = assessParseResult(mustPr); //add a storage check
 	}
 	catch (exception&e) {
-		cout << e.what() << endl;
+		//cout << e.what() << endl;
 	}
 	if (SelectBool == true) {
 		vector<string> BooleanResults;
@@ -99,6 +98,7 @@ vector<string> QueryEvaluator::GetAllOfTheNotStored() {
 		else {
 			Result = Result;
 		}
+
 		for (int k = 0; k < Result.size(); k++) {
 			string ToBeMatch = Result.at(k);
 			if (ReturnResult.size() == 0) {
@@ -111,6 +111,7 @@ vector<string> QueryEvaluator::GetAllOfTheNotStored() {
 			}
 		}
 	}
+
 	return ReturnResult;
 }
 
@@ -118,6 +119,7 @@ bool QueryEvaluator::SelectNotStored() {
 	vector<pair<string, string>> sv = QAS.GetSelectParameter();
 	for (int i = 0; i < sv.size(); i++) {
 		string name = sv.at(i).first;
+
 		unordered_map<string, int> m = QAS.GetTable();
 		if (QAS.HasKey(name) == 1) {
 			return false;
@@ -187,6 +189,7 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 		ResultsExist.push_back(DoWithClause(WithClauses));
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
 	}
+
 	return ReturnResultsExist(ResultsExist);
 }
 
@@ -468,10 +471,8 @@ bool QueryEvaluator::GetAnswerForBothWith(string left, string right) {
 	}
 	else {
 		vector<string> RightResults = GetAllOfWithClause(RightType);
-		cout << RightResults.size() << endl;
 		int pos1 = QAS.GetResultTablePos(RightName);
 		vector<string> LeftResults = GetAllOfWithClause(LeftType);
-		cout << LeftResults.size() << endl;
 		int pos2 = QAS.GetResultTablePos(LeftName);
 		vector<string> ToBePushed;
 		for (int i = 0; i < RightResults.size(); i++) {
@@ -636,7 +637,6 @@ bool QueryEvaluator::GetResultsForBothSynonym(string P1, string P2, char P1Type
 	}
 	else {
 		vector<string> P1Results = GetAll(P1Type);
-		cout << P1Results.size() << endl;
 		if (ResultsTable.size() == 0) {
 			for (int i = 0; i < P1Results.size(); i++) {
 				string P1Col = P1Results.at(i);
@@ -894,8 +894,6 @@ bool QueryEvaluator::GetResultsForSecondSynonym(string P1, string P2, char P1Typ
 		}
 		else {
 			Results = GetAllSecondSynonymFromPKB(P1, P2, P1Type, P2Type, ClauseType);
-			cout << "results" << endl;
-			cout << Results.size() << endl;
 			if (Results.size() == 0) {
 				return false;
 			}
@@ -990,9 +988,7 @@ vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, 
 		results = ProcTable::getProcWithType("PROC", RemoveQuotations(P1));
 	}
 	else if (clausesType == "Modifies") {
-		cout << P2Type << endl;
 		results = VarTable::getModifiesWithType(GetStringType(P1Type), RemoveQuotations(P1));
-		
 	}
 	else if (clausesType == "Parent") {
 		results = stmtTable::getChildWithType(GetStringType(P2Type), P1);
@@ -1023,7 +1019,6 @@ vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, c
 	vector<string> results;
 	if (clausesType == "Follows") {
 		return results = stmtTable::getFollowFanWithType(GetStringType(P1Type), P2);
-		
 	}
 	else if (clausesType == "Follows*") {
 		results = stmtTable::getFollowFanStarWithType(GetStringType(P1Type), P2);
@@ -1067,7 +1062,6 @@ bool QueryEvaluator::CheckIsResultsFromPkb(string P1, string P2, char P1Type,
 	bool results;
 	if (clausesType == "Follows") {
 		results = stmtTable::isFollow(ChangeStringToInt(P1), ChangeStringToInt(P2));
-	
 	}
 	else if (clausesType == "Follows*") {
 		results = stmtTable::isFollowStar(ChangeStringToInt(P1), ChangeStringToInt(P2));

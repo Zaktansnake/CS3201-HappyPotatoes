@@ -34,17 +34,13 @@ void TestWrapper::evaluate(std::string query, std::list<std::string>& results) {
 	querySentence = query.substr(pos, query.size() - pos);
 
 	ParseResult generatedParseResult = ParseResult::generateParseResult(declarationSentence, querySentence);
-	cout << "after gernerate parse results"<<endl;
 	if (generatedParseResult.getSelectParameter().size()==0) {
 		vector<string> NoResults;
 		results = results;
 	}
 	else {
 		QueryEvaluator evaluator;
-		cout << "I am here4" << endl;
-		// store the answers to the query in the results list (it is initially empty)
 		std::vector<std::string> resultsEvaluated = evaluator.startEvaluator(generatedParseResult);
-		// each result must be a string.
 		results = std::list<std::string>(resultsEvaluated.begin(), resultsEvaluated.end());
 	}
 }

@@ -101,7 +101,7 @@ void findMethod(string lineFromSample) {
 
 	if (str.compare("") != 0) {
 		iss >> word;
-		oss << iss.rdbuf(); 
+		oss << iss.rdbuf();
 	}
 
 	if (firstLine) {
@@ -230,7 +230,7 @@ static void stmt(int num) {
 		}
 
 		break;
-	case 1: 
+	case 1:
 		stmtLine--;
 		if (v.size() <= 3) {
 			if (v.size() == 3) {
@@ -258,7 +258,7 @@ static void stmt(int num) {
 			cout << "Error: Structure. else" << endl;
 			PKB::abort();
 		}
-	case 2: 
+	case 2:
 		if (v[2].compare("{") == 0) {
 			VarTable::addDataToUses(v[1], stmtLine);
 			ProcTable::setProcUsesVar(procname, v[1]);
@@ -424,7 +424,7 @@ void detectRightBracket() {
 		int tempStmtNum = stmtLine;
 
 		if (temp.second > 0 && temp.second != 0) {
-			currentParentLine = temp.second; 
+			currentParentLine = temp.second;
 		}
 
 		if (temp.second > 0) {
@@ -440,8 +440,8 @@ void detectRightBracket() {
 		}
 		else {
 			if (ifStmtNum.size() > 0 && afterElseStmtNum.size() > 0) {
-				int currentIfStmtNum = ifStmtNum.top(); 
-				int currentElseFirstStartNum = afterElseStmtNum.top(); 
+				int currentIfStmtNum = ifStmtNum.top();
+				int currentElseFirstStartNum = afterElseStmtNum.top();
 				vector<string> tempArrayListLeft = VarTable::findVariableLeft(currentElseFirstStartNum, tempStmtNum);
 				vector<string> tempArrayListRight = VarTable::findVariableRight(currentElseFirstStartNum, tempStmtNum);
 				if (tempArrayListLeft.size() > 0 && tempArrayListRight.size() > 0) {
@@ -466,7 +466,7 @@ void detectRightBracket() {
 		}
 	}
 	catch (exception &e) {
-	//	cout << "Standard exception (for detect bracket error): " << e.what() << endl;
+		//	cout << "Standard exception (for detect bracket error): " << e.what() << endl;
 	}
 }
 

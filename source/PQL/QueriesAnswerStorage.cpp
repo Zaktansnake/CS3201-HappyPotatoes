@@ -19,14 +19,13 @@ using namespace std;
 
 std::unordered_map<std::string, int> QueriesAnswerStorage::ClausesParameterPositionInTable;
 vector<vector<string > > QueriesAnswerStorage::ResultsTable;
-vector<pair<std::string,std::string > > QueriesAnswerStorage::SelectParameter;
+vector<pair<std::string, std::string > > QueriesAnswerStorage::SelectParameter;
 vector<string> QueriesAnswerStorage::NoClause;
 
 
 
 void QueriesAnswerStorage::SetSelect(vector<string> sv)
 {
-	cout << "I am setting select" << endl;
 	for (int index = 0; index < sv.size(); index++) {
 		string s = sv.at(index);
 		stringstream ss(s);
@@ -42,7 +41,6 @@ void QueriesAnswerStorage::SetSelect(vector<string> sv)
 		apair.first = result.at(0);
 		apair.second = result.at(1);
 		SelectParameter.push_back(apair);
-		cout << "i finish setting select" << endl;
 	}
 }
 
@@ -75,28 +73,24 @@ vector<pair<std::string, std::string>> QueriesAnswerStorage::GetSelectParameter(
 
 
 void QueriesAnswerStorage::SetTable(string s)
-{	
-	cout << "setting table" << endl;
+{
 	if (HasKey(s) != true) {
-		cout << "there is no key" << endl;
 		if (ClausesParameterPositionInTable.size() == 0) {
 			ClausesParameterPositionInTable[s] = ClausesParameterPositionInTable.size();
 		}
 		else {
 			ClausesParameterPositionInTable[s] = ClausesParameterPositionInTable.size();
 		}
-		cout << "set tabled" << endl;
-		cout << s << endl;
 	}
 	else {
 		return;
 	}
 }
-unordered_map <string,int> QueriesAnswerStorage::GetTable() {
+unordered_map <string, int> QueriesAnswerStorage::GetTable() {
 	return ClausesParameterPositionInTable;
 }
 bool QueriesAnswerStorage::HasKey(string s)
-{	
+{
 
 	unordered_map<string, int>::iterator it;
 	it = ClausesParameterPositionInTable.find(s);
@@ -104,26 +98,17 @@ bool QueriesAnswerStorage::HasKey(string s)
 		return true;
 	}
 	else {
-		cout << "there is no key in clause parametner" << endl;
 		return false;
 	}
 }
 //Merge The result table. Result, remove duplicate 
 vector<string> QueriesAnswerStorage::MergeResults()
-{	
-	for (auto it = ClausesParameterPositionInTable.begin(); it != ClausesParameterPositionInTable.end(); ++it) {
-		cout << "all key 4" << endl;
-		std::cout << " " << it->first << ":" << it->second<<endl;
-	}
+{
 	vector<string> MergeResults;
 	vector<int> Position;
 	//find the col that has the answer for the select
 	for (int index = 0; index < SelectParameter.size(); index++) {
 		pair<string, string> pair = SelectParameter.at(index);
-		for (auto it = ClausesParameterPositionInTable.begin(); it != ClausesParameterPositionInTable.end(); ++it) {
-			cout << "all key 5" << endl;
-			std::cout << " " << it->first << ":" << it->second<<endl;
-		}
 		if (HasKey(pair.first) == true) {
 			cout << "select match with pos" << endl;
 			cout << ClausesParameterPositionInTable[pair.first] << endl;
@@ -132,8 +117,6 @@ vector<string> QueriesAnswerStorage::MergeResults()
 	}
 	for (int index = 0; index < Position.size(); index++) {
 		int Col = Position.at(index);
-		cout << "Pos" << endl;
-		cout << Col << endl;
 		for (int j = 0; j < ResultsTable.size(); j++) {
 			vector<string> Row = ResultsTable.at(j);
 			string Ans = Row.at(Col);
