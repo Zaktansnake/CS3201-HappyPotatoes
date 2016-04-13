@@ -19,13 +19,9 @@ using namespace std;
 
 
 vector<pair<int, string>> varTableLeftInPair;
-
 vector<pair<int, string>> varTableRightInPair;
-
 map<string, vector<int>> whileTable;
-
 map<string, vector<int>> ifsTable;
-
 map<int, string> assignTable;
 
 vector<string> allVariables;
@@ -57,7 +53,7 @@ vector<string> VarTable::getModifiesWithType(string type, string value) {
 	if (type.compare("PROC") == 0) {
 		finalResult = ProcTable::getProcModifiesVar(value);
 	}
-	else if (type.compare("VAR") == 0) {
+	else if (type.compare("STMT") == 0) {
 		finalResult = VarTable::getModifiesVariable(value);
 	}
 
@@ -92,7 +88,7 @@ vector<string> VarTable::getUsesWithType(string type, string value) {
 	if (type.compare("PROC") == 0) {
 		finalResult = ProcTable::getProcUsesVar(value);
 	}
-	else if (type.compare("VAR") == 0) {
+	else if (type.compare("STMT") == 0) {
 		finalResult = VarTable::getUsesVariable(value);
 	}
 
@@ -324,6 +320,7 @@ vector<int> VarTable::getAllAssign() {
 }
 
 
+
 void VarTable::addDataToModifies(string varName, int stmtLine) {
 	addToVarTable(1, varName, stmtLine);
 	Modifies::addModifiesTable(varName, stmtLine);
@@ -471,7 +468,6 @@ bool VarTable::isModifiesStmt(string firstPerimeter, string secondPerimeter) {
 		istringstream(firstPerimeter) >> numbValue;
 
 		for (int i = 0; i < tempVector.size(); i++) {
-			cout << tempVector[i] << " :: " << numbValue << endl;
 			if (tempVector[i] == numbValue) {
 				result = true;
 				break;

@@ -89,79 +89,86 @@ void PKB::create(string fileName) {
 }
 
 void findMethod(string lineFromSample) {
-	str = lineFromSample;
-	if (str.find("{") != std::string::npos) {
-		str = trim(str.erase(str.size() - 1));
-		if (str.find("{") == std::string::npos) {
-			str = str + " {";
+
+	try {
+
+		str = lineFromSample;
+		if (str.find("{") != std::string::npos) {
+			str = trim(str.erase(str.size() - 1));
+			if (str.find("{") == std::string::npos) {
+				str = str + " {";
+			}
 		}
-	}
 
-	istringstream iss(trim(str));
+		istringstream iss(trim(str));
 
-	if (str.compare("") != 0) {
-		iss >> word;
-		oss << iss.rdbuf();
-	}
-
-	if (firstLine) {
-		if (word.compare("procedure") != 0) {
-			cout << "Error: Structure. (procedure)" << endl;
-			PKB::abort();
+		if (str.compare("") != 0) {
+			iss >> word;
+			oss << iss.rdbuf();
 		}
-		firstLine = false;
-		firstTime = false;
-	}
 
-	if (word.compare("procedure") == 0) {
-		if (!firstTime && stmtLine > 0) {
-			if (!bracstack.empty()) {
-				cout << "Error: Structure. (backStack problem)" << endl;
+		if (firstLine) {
+			if (word.compare("procedure") != 0) {
+				cout << "Error: Structure. (procedure)" << endl;
 				PKB::abort();
 			}
-			afterElseStartNum = 0;
-			stmtLine--;
+			firstLine = false;
+			firstTime = false;
 		}
-		procedure();
-		stmtTable::setProcedure(str, stmtLine);
-		CFG::addRoot(str, stmtLine);
-	}
-	else if (word.compare("if") == 0 || word.compare("else") == 0 || word.compare("call") == 0 || word.compare("while") == 0) {
-		stmtLst();
-		stmtTable::addStmtTable(str, stmtLine);
-		CFG::addNextNode(stmtLine, str);
-		ProcTable::setProcStmtNum(procname, stmtLine);
-	}
-	else if (word.compare("}") == 0 || str.find("}") != std::string::npos) {
-		vector<string> ans;
-		if (str.find("else") != std::string::npos) {
-			stmt(1);
+
+		if (word.compare("procedure") == 0) {
+			if (!firstTime && stmtLine > 0) {
+				if (!bracstack.empty()) {
+					cout << "Error: Structure. (backStack problem)" << endl;
+					PKB::abort();
+				}
+				afterElseStartNum = 0;
+				stmtLine--;
+			}
+			procedure();
+			stmtTable::setProcedure(str, stmtLine);
+			CFG::addRoot(str, stmtLine);
+		}
+		else if (word.compare("if") == 0 || word.compare("else") == 0 || word.compare("call") == 0 || word.compare("while") == 0) {
+			stmtLst();
 			stmtTable::addStmtTable(str, stmtLine);
 			CFG::addNextNode(stmtLine, str);
+			ProcTable::setProcStmtNum(procname, stmtLine);
 		}
-		else {
-			stmtLine--;
-			string lineWithVar = str;
-			int ln = str.length() - 1;
-			for (int n = 0; n <= ln; n++) {
-				string letter(1, lineWithVar[n]);
-				if (letter.compare("}") == 0) {
-					detectRightBracket();
-					bracstack.pop();
-					stmtTable::addStmtTable(letter, stmtLine);
-					CFG::addNextNode(stmtLine, letter);
+		else if (word.compare("}") == 0 || str.find("}") != std::string::npos) {
+			vector<string> ans;
+			if (str.find("else") != std::string::npos) {
+				stmt(1);
+				stmtTable::addStmtTable(str, stmtLine);
+				CFG::addNextNode(stmtLine, str);
+			}
+			else {
+				stmtLine--;
+				string lineWithVar = str;
+				int ln = str.length() - 1;
+				for (int n = 0; n <= ln; n++) {
+					string letter(1, lineWithVar[n]);
+					if (letter.compare("}") == 0) {
+						detectRightBracket();
+						bracstack.pop();
+						stmtTable::addStmtTable(letter, stmtLine);
+						CFG::addNextNode(stmtLine, letter);
+					}
 				}
 			}
 		}
-	}
-	else {
-		assign();
-		stmtTable::addStmtTable(str, stmtLine);
-		CFG::addNextNode(stmtLine, str);
-		ProcTable::setProcStmtNum(procname, stmtLine);
-	}
+		else {
+			assign();
+			stmtTable::addStmtTable(str, stmtLine);
+			CFG::addNextNode(stmtLine, str);
+			ProcTable::setProcStmtNum(procname, stmtLine);
+		}
 
-	stmtLine++;
+		stmtLine++;
+	}
+	catch (exception &e) {
+		//cout << "Standard exception (for findMethod): " << e.what() << endl;
+	}
 }
 
 void procedure() {
@@ -347,6 +354,7 @@ void PKB::updateAllTables() {
 	std::vector<std::tuple<string, string, int>> AllCallsStmt = ProcTable::getCallsTable();
 	int allCallsStmtSize = AllCallsStmt.size() - 1;
 	for (int i = allCallsStmtSize; i >= 0; i--) {
+		string procA = get<0>(AllCallsStmt[i]);
 		string procB = get<1>(AllCallsStmt[i]);
 		int tempStmtLine = get<2>(AllCallsStmt[i]);
 
@@ -356,16 +364,20 @@ void PKB::updateAllTables() {
 				vector<string> tempModifies = ProcTable::getProcModifiesVar(procB);
 				for (int i = 0; i < tempModifies.size(); i++) {
 					VarTable::addDataToModifies(tempModifies[i], tempStmtLine);
+					ProcTable::setProcModifiesVar(procA, tempModifies[i]);
 					if (getAllParent[j] != 0) {
 						VarTable::addDataToModifies(tempModifies[i], getAllParent[j]);
+						ProcTable::setProcModifiesVar(procA, tempModifies[i]);
 					}
 				}
 
 				vector<string> tempUses = ProcTable::getProcUsesVar(procB);
 				for (int i = 0; i < tempUses.size(); i++) {
 					VarTable::addDataToUses(tempUses[i], tempStmtLine);
+					ProcTable::setProcUsesVar(procA, tempUses[i]);
 					if (getAllParent[j] != 0) {
 						VarTable::addDataToUses(tempUses[i], getAllParent[j]);
+						ProcTable::setProcUsesVar(procA, tempUses[i]);
 					}
 				}
 			}

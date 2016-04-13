@@ -28,6 +28,7 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 	QAS.clear();
 	clear();
 	bool HasResults = false;
+
 	try {
 
 		HasResults = assessParseResult(mustPr); //add a storage check
@@ -35,6 +36,7 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 	catch (exception&e) {
 		//cout << e.what() << endl;
 	}
+
 	if (SelectBool == true) {
 		vector<string> BooleanResults;
 		if (HasResults == true) {
@@ -45,7 +47,6 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 		}
 	}
 	else {
-		
 		if (HasResults == true) {
 			if (NoClause) {
 				return QAS.GetNoClause();
@@ -98,7 +99,6 @@ vector<string> QueryEvaluator::GetAllOfTheNotStored() {
 		else {
 			Result = Result;
 		}
-
 		for (int k = 0; k < Result.size(); k++) {
 			string ToBeMatch = Result.at(k);
 			if (ReturnResult.size() == 0) {
@@ -111,7 +111,6 @@ vector<string> QueryEvaluator::GetAllOfTheNotStored() {
 			}
 		}
 	}
-
 	return ReturnResult;
 }
 
@@ -119,13 +118,12 @@ bool QueryEvaluator::SelectNotStored() {
 	vector<pair<string, string>> sv = QAS.GetSelectParameter();
 	for (int i = 0; i < sv.size(); i++) {
 		string name = sv.at(i).first;
-
 		unordered_map<string, int> m = QAS.GetTable();
 		if (QAS.HasKey(name) == 1) {
 			return false;
 		}
 	}
-	
+
 	if (QAS.GetResultsTable().size() == 0) {
 		return false;
 	}
@@ -146,7 +144,7 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 
 
 	QAS.SetSelect(SelectParameterVector);
-	if (SelectParameterVector.at(0) == "BOOLEAN"){
+	if (SelectParameterVector.at(0) == "BOOLEAN") {
 		SelectBool = true;
 	}
 	vector<bool> ResultsExist;
@@ -176,7 +174,7 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 	}
 	else if ((ClausesVector.size() != 0) && ((WithClauses.size() == 0) && (PS.size() == 0))) {
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
-		
+
 	}
 	else if ((PS.size() != 0) && ((WithClauses.size() == 0) && (ClausesVector.size() == 0))) {
 		ResultsExist.push_back(DoPatterns(PS));
@@ -189,7 +187,6 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 		ResultsExist.push_back(DoWithClause(WithClauses));
 		ResultsExist.push_back(DoNormalClause(ClausesVector));
 	}
-
 	return ReturnResultsExist(ResultsExist);
 }
 
@@ -250,7 +247,7 @@ vector<string> QueryEvaluator::CheckPattern(string type, string name, string P1,
 		results = PatternTable::getPatternWhileNum(P1);
 	}
 	else if (type == "assign") {
-		results = PatternTable::getPatternAssignNum(P1, P2);
+		results = PatternTable::getPatternAssignNum(RemoveQuotations(P1), RemoveQuotations(P2));
 	}
 	else {
 		results = PatternTable::getPatternIfsNum(P1);
@@ -285,7 +282,7 @@ bool QueryEvaluator::CheckWith(With with) {
 		return GetAnswerForLeftWith(with.getLeftOfEqualSign(), with.getRightOfEqualSign());
 	}
 	else {
-	
+
 		if (with.getLeftOfEqualSign() == with.getRightOfEqualSign()) {
 			return true;
 		}
@@ -531,7 +528,6 @@ bool QueryEvaluator::DoNormalClause(vector<Clause> ClausesVector) {
 		ResultsExist = CheckSynonym(firstParameter, secondParameter, firstParameterType,
 			secondParameterType, clauseType);
 		if (ResultsExist == true) {
-
 			continue;
 		}
 		else {
@@ -543,6 +539,7 @@ bool QueryEvaluator::DoNormalClause(vector<Clause> ClausesVector) {
 
 bool QueryEvaluator::CheckSynonym(string firstParameter, string secondParameter,
 	char firstParameterType, char secondParameterType, string clauseType) {
+
 	bool HasResults = false;
 	if ((IsSynonym(firstParameter[0])) && (IsSynonym(secondParameter[0]))) {
 		HasResults = GetResultsForBothSynonym(firstParameter, secondParameter,
@@ -621,7 +618,7 @@ bool QueryEvaluator::GetResultsForBothSynonym(string P1, string P2, char P1Type
 			string ColElement = Row.at(Pos2);
 			if (ResultsTable.size() != 0) {
 				vector<string> temp = GetAllFirstSynonymFromPKB(P1, ColElement, P1Type, P2Type, ClauseType);
-				if (temp.size()!=0) {
+				if (temp.size() != 0) {
 					HasResults = true;
 				}
 				for (int j = 0; j < temp.size(); j++) {
@@ -759,7 +756,7 @@ bool QueryEvaluator::GetResultsForFirstSynonym(string P1, string P2, char P1Type
 	}
 	else {
 
-		if (QAS.HasKey(P1)==true) {
+		if (QAS.HasKey(P1) == true) {
 			int Pos1 = QAS.GetResultTablePos(P1);
 			for (int i = 0; i < ResultsTable.size(); i++) {
 				vector<string> Row = ResultsTable.at(i);
@@ -796,7 +793,7 @@ bool QueryEvaluator::GetResultsForFirstSynonym(string P1, string P2, char P1Type
 						vector<string > Row = ResultsTable.at(j);
 						Row.push_back(s);
 						NewResultsTable.push_back(Row);
-					
+
 					}
 				}
 				//same as below
@@ -908,7 +905,7 @@ bool QueryEvaluator::GetResultsForSecondSynonym(string P1, string P2, char P1Typ
 					QAS.SetResultTable(NewResultsTable);
 					return true;
 				}
-				
+
 				else {
 					for (int i = 0; i < Results.size(); i++) {
 						string s = Results.at(i);
@@ -943,7 +940,6 @@ vector<string> QueryEvaluator::GetAll(char Type) {
 	}
 	else if (Type == 'v') {
 		return VarTable::getAllWithType(GetStringType(Type), "");
-
 	}
 	else if (Type == 's') {
 		return VarTable::getAllWithType(GetStringType(Type), "");
@@ -953,19 +949,15 @@ vector<string> QueryEvaluator::GetAll(char Type) {
 	}
 	else if (Type == 'w') {
 		return VarTable::getAllWithType(GetStringType(Type), "");
-		//return VarTable::getAllWhile();
 	}
 	else if (Type == 'a') {
 		return VarTable::getAllWithType(GetStringType(Type), "");
-		//return VarTable::getAllAssign();
 	}
 	else if (Type == 'c') {
 		return ConstantTable::getAllConstantValues();
-		//return ConstantTable::getAllConstantValues();
 	}
 	else if (Type == 'l') {
 		return VarTable::getAllWithType(GetStringType(Type), "");
-		//return VarTable::getAllStmt();
 	}
 	else {
 		return Results;
@@ -975,6 +967,7 @@ vector<string> QueryEvaluator::GetAll(char Type) {
 vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, char P1Type,
 	char P2Type, string clausesType) { // check if there is a quotation mark, if there is will need to remove
 	vector<string> results;
+
 	if (clausesType == "Follows") {
 		results = stmtTable::getFollowWithType(GetStringType(P2Type), P1);
 	}
@@ -982,10 +975,13 @@ vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, 
 		results = stmtTable::getFollowStarWithType(GetStringType(P2Type), P1);
 	}
 	else if (clausesType == "Uses") {
-		results = VarTable::getUsesWithType(GetStringType(P2Type), RemoveQuotations(P1));
+		results = VarTable::getUsesWithType(GetStringType(P1Type), RemoveQuotations(P1));
 	}
 	else if (clausesType == "Calls") {
 		results = ProcTable::getProcWithType("PROC", RemoveQuotations(P1));
+	}
+	else if (clausesType == "Calls*") {
+		results = ProcTable::getProcTransitiveWithType("PROC", RemoveQuotations(P1));
 	}
 	else if (clausesType == "Modifies") {
 		results = VarTable::getModifiesWithType(GetStringType(P1Type), RemoveQuotations(P1));
@@ -1003,10 +999,10 @@ vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, 
 		results = CFG::getNextStarString(ChangeStringToInt(P1));
 	}
 	else if (clausesType == "Affects") {
-		results = Affects::getAffectsLeft(P1);
+		results = Affects::getAffectsRight(P1);
 	}
 	else if (clausesType == "Affects*") {
-		results = Affects::getAffectsTransitiveLeft(P1);
+		results = Affects::getAffectsTransitiveRight(P1);
 	}
 	else {
 		return results;
@@ -1017,6 +1013,7 @@ vector<string> QueryEvaluator::GetAllSecondSynonymFromPKB(string P1, string P2, 
 vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, char P1Type,
 	char P2Type, string clausesType) { // check if there is a quotation mark, if there is will need to remove
 	vector<string> results;
+
 	if (clausesType == "Follows") {
 		return results = stmtTable::getFollowFanWithType(GetStringType(P1Type), P2);
 	}
@@ -1028,6 +1025,9 @@ vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, c
 	}
 	else if (clausesType == "Calls") {
 		results = ProcTable::getParentProcWithType(GetStringType(P1Type), RemoveQuotations(P2));
+	}
+	else if (clausesType == "Calls*") {
+		results = ProcTable::getParentProcTransitiveWithType(GetStringType(P1Type), RemoveQuotations(P2));
 	}
 	else if (clausesType == "Modifies") {
 		results = VarTable::getModifiedWithType(GetStringType(P1Type), RemoveQuotations(P2));
@@ -1045,10 +1045,10 @@ vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, c
 		results = CFG::getPrevStarString(ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Affects") {
-		results = Affects::getAffectsRight(P2);
+		results = Affects::getAffectsLeft(P2);
 	}
 	else if (clausesType == "Affects*") {
-		results = Affects::getAffectsTransitiveRight(P2);
+		results = Affects::getAffectsTransitiveLeft(P2);
 	}
 	else {
 		return results;
@@ -1058,8 +1058,8 @@ vector<string> QueryEvaluator::GetAllFirstSynonymFromPKB(string P1, string P2, c
 
 bool QueryEvaluator::CheckIsResultsFromPkb(string P1, string P2, char P1Type,
 	char P2Type, string clausesType) { // check if there is a quotation mark, if there is will need to remove
-
 	bool results;
+
 	if (clausesType == "Follows") {
 		results = stmtTable::isFollow(ChangeStringToInt(P1), ChangeStringToInt(P2));
 	}
@@ -1088,10 +1088,10 @@ bool QueryEvaluator::CheckIsResultsFromPkb(string P1, string P2, char P1Type,
 		results = CFG::isNext(ChangeStringToInt(P1), ChangeStringToInt(P2));
 	}
 	else if (clausesType == "Affects") {
-		results = Affects::isAffects(P1,P2);
+		results = Affects::isAffects(P1, P2);
 	}
 	else if (clausesType == "Affects*") {
-		results = Affects::isAffectsTransitive(P1,P2);
+		results = Affects::isAffectsTransitive(P1, P2);
 	}
 	else {
 		return results;
@@ -1128,6 +1128,7 @@ string QueryEvaluator::GetStringType(char c) {
 		return "";
 	}
 }
+
 bool QueryEvaluator::CheckTempResultSize(vector<string> v) {
 	if (v.size() == 0) {
 		return false;
@@ -1201,7 +1202,7 @@ vector<string> QueryEvaluator::GetP2Blank(string clausesType) {
 		//return allstmt
 	}
 	else if (clausesType == "Follows*") {
-		
+
 		return VarTable::getAllWithType("STMT", "");
 		//return allstmt
 	}
@@ -1379,7 +1380,3 @@ QueryEvaluator::QueryEvaluator()
 QueryEvaluator::~QueryEvaluator()
 {
 }
-
-
-
-

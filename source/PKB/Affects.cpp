@@ -187,13 +187,6 @@ std::vector<string> Affects::getAffectsTransitiveRight(string aff1) {
 			if (it != AffectsTransitiveTable.end()) {
 				finalResult = it->second;
 			}
-			else {
-				Affects::updateAffectsTransitiveTable(a1);
-				it = AffectsTransitiveTable.find(a1);
-				if (it != AffectsTransitiveTable.end()) {
-					finalResult = it->second;
-				}
-			}
 		}
 		else {
 			Affects::updateAffectsTransitiveTable(a1);
@@ -219,13 +212,6 @@ std::vector<string> Affects::getAffectsTransitiveLeft(string aff2) {
 			it = AffectsTransitiveReverseTable.find(a2);
 			if (it != AffectsTransitiveReverseTable.end()) {
 				finalResult = it->second;
-			}
-			else {
-				Affects::updateAffectsTransitiveTable(a2);
-				it = AffectsTransitiveReverseTable.find(a2);
-				if (it != AffectsTransitiveReverseTable.end()) {
-					finalResult = it->second;
-				}
 			}
 		}
 		else {
