@@ -23,21 +23,21 @@ template <> struct hash<std::pair<string, string>> {
 	}
 };
 
-map<string, int> ProcMap;  // procName, index of the procName in the map
-vector<string> ProcIndex;  // store the procedures
+map<string, int> ProcMap;  
+vector<string> ProcIndex; 
 map<string, vector<int>> ProcStmtLineNum;
-map<string, vector<string>> ProcWithModifies; // string -> procedure, vector<string> -> list of variables
-map<string, vector<string>> ProcWithUses; // string -> procedure, vector<string> -> list of variables
-map<string, vector<string>> ModifiesWithProc; // string -> variable, vector<string> -> procedure
-map<string, vector<string>> UsesWithProc; // string -> variable, vector<string> -> procedure
-std::vector<std::tuple<string, string, int>> tempCallsTable;  // string -> mainProcedure, string -> procedure, int -> stmtLine
-std::unordered_set<std::pair<string, string>> tempCallsSet; // string -> mainProcedure, string -> procedure
+map<string, vector<string>> ProcWithModifies; 
+map<string, vector<string>> ProcWithUses; 
+map<string, vector<string>> ModifiesWithProc; 
+map<string, vector<string>> UsesWithProc; 
+std::vector<std::tuple<string, string, int>> tempCallsTable;  
+std::unordered_set<std::pair<string, string>> tempCallsSet; 
 std::map<string, vector<string>> CallsMap;
 std::map<string, vector<string>> CallsReverseMap;
 std::map<string, vector<string>> CallsTransitiveMap;
 std::map<string, vector<string>> CallsReverseTransitiveMap;
 
-vector<string> findPositionProcModifies(string variable); // return a list of procedures based on variable
+vector<string> findPositionProcModifies(string variable); 
 vector<string> findPositionProcUses(string procName);
 
 
@@ -96,7 +96,6 @@ vector<string> ProcTable::getProcWithType(string type, string value) {
 }
 
 vector<string> ProcTable::getParentProcWithType(string type, string value) {
-	// calls (_, proc2)
 	vector<string> finalResult = ProcTable::getParentProcedure(value);
 	vector<int> ans, ansAll, tempAns;
 	std::vector<int> v_intersection;
@@ -141,7 +140,6 @@ vector<string> ProcTable::getParentProcWithType(string type, string value) {
 }
 
 vector<string> ProcTable::getProcTransitiveWithType(string type, string value) {
-	// calls* (proc1, _)
 	vector<string> finalResult = ProcTable::getNextProcedureTransitive(value);
 	vector<int> ans, ansAll, tempAns;
 	std::vector<int> v_intersection;
@@ -186,7 +184,6 @@ vector<string> ProcTable::getProcTransitiveWithType(string type, string value) {
 }
 
 vector<string> ProcTable::getParentProcTransitiveWithType(string type, string value) {
-	// calls (_, proc2)
 	vector<string> finalResult = ProcTable::getParentProcedureTransitive(value);
 	vector<int> ans, ansAll, tempAns;
 	std::vector<int> v_intersection;
@@ -247,8 +244,8 @@ void ProcTable::updateProcWithModAndUses() {
 
 	for (auto itr = tempCallsSet.begin(); itr != tempCallsSet.end(); ++itr) {
 		pair<string, string> tempSet = *itr;
-		string procA = tempSet.first; // parent
-		string procB = tempSet.second; // child
+		string procA = tempSet.first; 
+		string procB = tempSet.second; 
 
 		CallsMap[procA].push_back(procB);
 		CallsReverseMap[procB].push_back(procA);
@@ -285,9 +282,8 @@ void ProcTable::addTableData(string procName) {
    ProcTable pt;
    int index = pt.findPosition(procName);
 
-   // index = -1 means there is no same proc name in the table
    if (index == -1) {
-	   index = ProcIndex.size();   // set the index be the size of vertor
+	   index = ProcIndex.size();  
 	   ProcMap.insert(pair<string, int>(procName, index)); 
 	   ProcIndex.push_back(procName);
    }
@@ -313,21 +309,17 @@ std::vector<std::tuple<string, string, int>> getCallsTable() {
 	return tempCallsTable;
 }
 
-// add Modifies variables based on procName
 void ProcTable::setProcModifiesVar(string procedure, string variable) {
 	ProcWithModifies[procedure].push_back(variable);
 	ModifiesWithProc[variable].push_back(procedure);
 }
 
-// return a list of variable based on procName
 vector<string> ProcTable::getProcModifiesVar(string procName) {
 	vector<string> ans = ProcWithModifies[procName];
 	return ans;
 }
 
-// return a list of procName based on variable
 vector<string> ProcTable::getModifiesProc(string secondPerimeter) {
-	// secondPerimeter = variable
 	vector<string> ans = ModifiesWithProc[secondPerimeter];
 	if (!ans.empty()) {
 		sort(ans.begin(), ans.end());
@@ -337,7 +329,6 @@ vector<string> ProcTable::getModifiesProc(string secondPerimeter) {
 }
 
 bool ProcTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
-	// firstPerimeter = procedure; secondPerimeter = variable
 	bool result = false;
 	vector<string> tempVector = ProcTable::getProcModifiesVar(firstPerimeter);
 
@@ -356,7 +347,6 @@ bool ProcTable::isModifiesProc(string firstPerimeter, string secondPerimeter) {
 }
 
 
-// add Uses variables based on procName
 void ProcTable::setProcUsesVar(string procedure, string variable) {
 	if (!PKB::is_number(variable)) {
 		ProcWithUses[procedure].push_back(variable);
@@ -364,15 +354,12 @@ void ProcTable::setProcUsesVar(string procedure, string variable) {
 	}
 }
 
-// return a list of variable based on procName
 vector<string> ProcTable::getProcUsesVar(string procName) {
 	vector<string> ans = ProcWithUses[procName];
 	return ans;
 }
 
-// return a list of procName based on variable
 vector<string> ProcTable::getUsesProc(string secondPerimeter) {
-	// secondPerimeter = variable
 	vector<string> ans = UsesWithProc[secondPerimeter];
 	if (!ans.empty()) {
 		sort(ans.begin(), ans.end());
@@ -382,7 +369,6 @@ vector<string> ProcTable::getUsesProc(string secondPerimeter) {
 }
 
 bool ProcTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
-	// firstPerimeter = procedure; secondPerimeter = variable
 	bool result = false;
 	vector<string> tempVector = ProcTable::getProcUsesVar(firstPerimeter);
 
@@ -404,7 +390,6 @@ bool ProcTable::isUsesProc(string firstPerimeter, string secondPerimeter) {
 
 
 vector<string> ProcTable::getNextProcedure(string proc1) {
-	// (proc1, _)
 	vector<string> ans = CallsMap[proc1];
 
 	if (!ans.empty()) {
@@ -420,7 +405,6 @@ vector<string> ProcTable::getNextProcedureTransitive(string proc1) {
 }
 
 vector<string> ProcTable::getParentProcedure(string proc2) {
-	// (_, proc2)
 	vector<string> ans = CallsReverseMap[proc2];
 	
 	if (!ans.empty()) {
@@ -479,7 +463,6 @@ int ProcTable::getProcTableSize() {
 	return ProcMap.size();
 }
 
-// return the index of the procName in the map
 int ProcTable::findPosition(string procName) {
 	map<string, int>::iterator iter;
 	iter = ProcMap.find(procName);
@@ -492,7 +475,6 @@ int ProcTable::findPosition(string procName) {
 	}
 }
 
-// return true if procName alr in the table otherwise, false
 bool ProcTable::isContains(string name) {
 	map<string, int>::iterator iter;
 	int index;
@@ -536,7 +518,7 @@ void ProcTable::updateCallsTransitive() {
 		}
 	}
 	catch (exception &e) {
-		cout << "Standard exception: " << e.what() << endl;
+	//	cout << "Standard exception: " << e.what() << endl;
 	}
 }
 
@@ -562,12 +544,10 @@ void ProcTable::updateParentProcTransitive() {
 		}
 	}
 	catch (exception &e) {
-		cout << "Standard exception: " << e.what() << endl;
+	//	cout << "Standard exception: " << e.what() << endl;
 	}
 }
 
-
-// Convert vector<int> to vector<string>
 vector<string> ProcTable::convertIntToString(vector<int> temp) {
 	vector<string> result;
 	if (!temp.empty()) {

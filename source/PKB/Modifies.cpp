@@ -23,7 +23,6 @@ Modifies::Modifies() {
 Modifies::~Modifies() {
 }
 
-// refStmtLine -> when update Modifies Table
 void Modifies::addModifiesTable(string varName, int stmtLine) {
 	int index;
 	if (ModifiesMap.size() > 0) {
@@ -63,7 +62,6 @@ vector<string> Modifies::getModVariables(string stmtLine) {
 	return ans;
 }
 
-// return the index of the varName in the map
 int Modifies::findPosition(string varName) {
 	map<string, int>::iterator iter;
 	iter = ModifiesMap.find(varName);
@@ -75,8 +73,6 @@ int Modifies::findPosition(string varName) {
 		return -1;
 	}
 }
-
-// return true if procName alr in the table otherwise, false
 bool Modifies::isContains(string varName) {
 	if (ModifiesMap.size() > 0) {
 		if (ModifiesMap.count(varName)) {
@@ -92,7 +88,7 @@ bool Modifies::isContains(string varName) {
 }
 
 int insertToMap(string varName) {
-	int index = ModifiesMap.size();   // set the index be the size of vertor
+	int index = ModifiesMap.size();  
 	ModifiesMap.insert(pair<string, int>(varName, index));
 	return index;
 }

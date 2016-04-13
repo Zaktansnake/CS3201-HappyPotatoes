@@ -100,8 +100,8 @@ void findMethod(string lineFromSample) {
 	istringstream iss(trim(str));
 
 	if (str.compare("") != 0) {
-		iss >> word; // get the first word
-		oss << iss.rdbuf(); // get the remain words
+		iss >> word;
+		oss << iss.rdbuf(); 
 	}
 
 	if (firstLine) {
@@ -216,7 +216,7 @@ static void stmt(int num) {
 	vector<string> v = splitTheString(str);
 
 	switch (num) {
-	case 0: // if
+	case 0:
 		if (v[2].compare("then") == 0 && (v[3].compare("{")) == 0) {
 			VarTable::addDataToUses(v[1], stmtLine);
 			VarTable::addDataToIfsTable(v[1], stmtLine);
@@ -230,7 +230,7 @@ static void stmt(int num) {
 		}
 
 		break;
-	case 1: // else
+	case 1: 
 		stmtLine--;
 		if (v.size() <= 3) {
 			if (v.size() == 3) {
@@ -258,7 +258,7 @@ static void stmt(int num) {
 			cout << "Error: Structure. else" << endl;
 			PKB::abort();
 		}
-	case 2: // while
+	case 2: 
 		if (v[2].compare("{") == 0) {
 			VarTable::addDataToUses(v[1], stmtLine);
 			ProcTable::setProcUsesVar(procname, v[1]);
@@ -271,7 +271,7 @@ static void stmt(int num) {
 		}
 
 		break;
-	case 3: // call
+	case 3:
 		calls(str, stmtLine);
 		break;
 	}
@@ -424,7 +424,7 @@ void detectRightBracket() {
 		int tempStmtNum = stmtLine;
 
 		if (temp.second > 0 && temp.second != 0) {
-			currentParentLine = temp.second; // if stmtNum 
+			currentParentLine = temp.second; 
 		}
 
 		if (temp.second > 0) {
@@ -440,8 +440,8 @@ void detectRightBracket() {
 		}
 		else {
 			if (ifStmtNum.size() > 0 && afterElseStmtNum.size() > 0) {
-				int currentIfStmtNum = ifStmtNum.top(); // current parent of "if" stmtNum
-				int currentElseFirstStartNum = afterElseStmtNum.top(); //current "else" first start num
+				int currentIfStmtNum = ifStmtNum.top(); 
+				int currentElseFirstStartNum = afterElseStmtNum.top(); 
 				vector<string> tempArrayListLeft = VarTable::findVariableLeft(currentElseFirstStartNum, tempStmtNum);
 				vector<string> tempArrayListRight = VarTable::findVariableRight(currentElseFirstStartNum, tempStmtNum);
 				if (tempArrayListLeft.size() > 0 && tempArrayListRight.size() > 0) {
@@ -474,24 +474,22 @@ void PKB::abort() {
 	exit(-1);
 }
 
-// trim from start
 static inline std::string &ltrim(std::string &s) {
 	s.erase(s.begin(), std::find_if(s.begin(), s.end(), std::not1(std::ptr_fun<int, int>(std::isspace))));
 	return s;
 }
 
-// trim from end
 static inline std::string &rtrim(std::string &s) {
 	s.erase(std::find_if(s.rbegin(), s.rend(), std::not1(std::ptr_fun<int, int>(std::isspace))).base(), s.end());
 	return s;
 }
 
-// trim from both ends
+
 static inline std::string &trim(std::string &s) {
 	return ltrim(rtrim(s));
 }
 
-// check string is a number
+
 bool PKB::is_number(const std::string& s)
 {
 	return !s.empty() && std::find_if(s.begin(),
@@ -500,7 +498,6 @@ bool PKB::is_number(const std::string& s)
 
 void getProgramLine(string lineFromSource) {
 	if (lineFromSource.compare("") != 0) {
-		// found ";" "{" "}"
 		if (lineFromSource.find_last_of("{") != std::string::npos) {
 			if (lineFromSource.find("}") != std::string::npos) {
 				if (lineFromSource.find("else") != std::string::npos) {
@@ -542,7 +539,6 @@ void getProgramLine(string lineFromSource) {
 			}
 		}
 		else if (lineFromSource.find(";") != std::string::npos) {
-			// calls or normal assignment statement
 			findMethod(lineFromSource);
 		}
 		else {

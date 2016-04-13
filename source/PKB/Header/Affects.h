@@ -11,8 +11,8 @@ class Affects
 {
 public:
 
-	static void updateAffectsTable();
-	static void updateAffectsTransitiveTable(int assign);
+	static void updateAffectsTable(); // return a list of integers based on procedure
+	static void updateAffectsTransitiveTable(int assign);	
 
 	static std::vector<string> Affects::getAffectsRight(string aff1);
 	static std::vector<string> Affects::getAffectsLeft(string aff2);

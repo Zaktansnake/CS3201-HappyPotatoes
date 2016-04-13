@@ -35,7 +35,6 @@ void Affects::updateAffectsTable() {
 		vector<int> allAssign = VarTable::getAllAssign();
 		vector<int>::iterator itrTemp, itrTemp2;
 		for (map<string, vector<int>>::iterator ii = allProcStmtNum.begin(); ii != allProcStmtNum.end(); ++ii) {
-			// return a list of integers based on procedure
 			vector <int> inVect = (*ii).second;
 			std::vector<int> v_intersection;
 			std::set_intersection(inVect.begin(), inVect.end(),
@@ -67,7 +66,6 @@ bool Affects::verifyAffectRelationship(int aff1, int aff2) {
 	string a2 = std::to_string(aff2);
 
 	if (CFG::isNextStar(aff1, aff2)) {
-		// First, get modifies; Second, get uses
 		vector<string> u1 = VarTable::getModifiesVariable(a1);
 		vector<string> u2 = VarTable::getUsesVariable(a1);
 		vector<string> u3 = VarTable::getUsesVariable(a2);

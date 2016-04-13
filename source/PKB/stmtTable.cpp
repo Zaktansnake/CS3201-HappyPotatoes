@@ -15,10 +15,8 @@ static int nestLevel = 0;
 bool flagForNextLevel = false;
 bool loopFlag;
 int loopStatus;
-// bool elseFlag = false;
-// bool ifFlag = false;
 int endLoopNo = 0;
-bool isFirstElse = false;  // the first stmtNo after else do not have follow
+bool isFirstElse = false; 
 std::vector<int> stmtLst;
 int conditionStmtTable;
 Follows follow;
@@ -34,10 +32,10 @@ enum stmtType {
 	WHILE
 };
 
-// get reference to procedure table
+
 static stmtTable* getFollowTable();
 
-//add data
+
 void stmtTable::setProcedure(string stmtLine, int stmtNo) {
 	if (stmtLine.find("procedure ") != string::npos) {
 		if (startAndEndOfProcedure.size() == 0) {
@@ -54,7 +52,7 @@ void stmtTable::setProcedure(string stmtLine, int stmtNo) {
 	}
 }
 
-// add data to stmtTable
+
 void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 	stmtLine.erase(std::remove(stmtLine.begin(), stmtLine.end(), '\t'), stmtLine.end());
 	size_t endpos = stmtLine.find_last_not_of(" ");
@@ -65,30 +63,24 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 	if (string::npos != endpos) {
 		stmtLine = stmtLine.substr(startpos);
 	}
-	// check if it is a condition stmt
+
 	if (stmtLine.compare("{") != 0) {
 		bool isCon = isCondition(stmtLine);
 		loopFlag = false;
-		//ifFlag = false;
-		//elseFlag = false;
 
 		if (isCon) {
 			switch (conditionStmtTable) {
 			case IF:
 				flagForNextLevel = true;
-				//	ifFlag = true;
-				//	elseFlag = false;
+
 				break;
 			case ELSE:
 				flagForNextLevel = false;
-				//	ifFlag = false;
-				//	elseFlag = true;
-				//	stmtNo --;
+
 				break;
 			case WHILE:
 				flagForNextLevel = true;
-				//	ifFlag = false;
-				//	elseFlag = false;
+
 				break;
 			}
 
@@ -111,7 +103,7 @@ void stmtTable::addStmtTable(string stmtLine, int stmtNo) {
 			nestLevel++;
 		}
 
-		// count the number of '}' --> one } means one condition loop end and minus the number of } from the nest level
+
 		if (endLoopNo > 0 && conditionStmtTable != 2) {
 			nestLevel = nestLevel - endLoopNo;
 			if (nestLevel < 0) {
@@ -127,7 +119,7 @@ void stmtTable::addFollowTable(string stmtLine, int stmtNo, int nestLvl) {
 void stmtTable::addParentTable(string stmtLine, int stmtNo, int nestLvl) {
 	parent.setParent(stmtLine,stmtNo,nestLvl, loopFlag, endLoopNo, conditionStmtTable);
 }
-//-------------------------------------get answer of follow
+
 
 std::vector<string> stmtTable::getFollowWithType(string type, string stmtNo) {
 	int stmt = atoi(stmtNo.c_str());
@@ -365,7 +357,6 @@ std::vector<string> stmtTable::getFollowFanStarForIf(int stmtNo) {
 
 
 
-// get data from parent
 
 std::vector<string> stmtTable::getParentWithType(string type, string stmtNo) {
 	int stmt = atoi(stmtNo.c_str());
@@ -532,8 +523,6 @@ std::vector<string> stmtTable::getChildStarForIf(int stmtNo) {
 
 
 
-
-// check condition
 bool isCondition(string stmtLine) {
 	if (stmtLine.find("if") != std::string::npos) {
 		conditionStmtTable = 1;
