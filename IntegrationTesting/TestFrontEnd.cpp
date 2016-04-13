@@ -110,7 +110,7 @@ namespace IntegrationTesting
 
 		TEST_METHOD(CFG)
 		{
-			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source05.txt");
+			Parser::parse("..\\UnitTesting\\TestParser\\Sample-Source06.txt");
 
 			string result;
 			string expectedResult;
@@ -163,7 +163,7 @@ namespace IntegrationTesting
 			//test get prev*
 
 			result.clear();
-			expectedResult = "20";
+			expectedResult = "2021";
 			actual = CFG::getPrevStar(21);
 			for (std::vector<int>::iterator it = actual.begin(); it != actual.end(); ++it) {
 				result.append(std::to_string(*it));

@@ -10,7 +10,7 @@
 
 using namespace std;
 
-map<string, int> UsesMap; // variable name
+map<string, int> UsesMap;
 map<int, vector<int>> UsesTable;
 
 map<int, vector<string>> varTableRight;
@@ -67,7 +67,6 @@ vector<string> Uses::getUseVariables(string stmtLine) {
 
 
 
-// return the index of the varName in the map
 int Uses::findPosition(string varName) {
 	map<string, int>::iterator iter;
 	iter = UsesMap.find(varName);
@@ -95,7 +94,7 @@ bool Uses::isContains(string varName) {
 }
 
 int insertToUsesMap(string varName) {
-	int index = UsesMap.size();   // set the index be the size of vertor
+	int index = UsesMap.size(); 
 	UsesMap.insert(pair<string, int>(varName, index));
 	return index;
 }

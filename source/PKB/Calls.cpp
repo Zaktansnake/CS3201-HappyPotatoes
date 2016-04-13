@@ -18,7 +18,6 @@ std::unordered_set< std::pair<string, string>> CallsSet;
 
 void Calls::setCallProcedure(string mainProcedure, string procedure, int stmtLine) {
 	if (CallsTable.size() > 0) {
-		// check whether there is a recrusive call
 		for (int i = 0; i < CallsTable.size(); i++) {
 			string procA = get<0>(CallsTable[i]);
 			string procB = get<1>(CallsTable[i]);

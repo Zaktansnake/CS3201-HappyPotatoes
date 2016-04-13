@@ -68,7 +68,7 @@ namespace UnitTesting
 			Assert::AreEqual(result, string("[s1.stmt#][v2.varName][s2,stmt]"));
 		}
 
-		TEST_METHOD(testParsingNormalClauses) {
+		TEST_METHOD(testParsingNormalClauses1) {
 			unordered_map<string, string> declarationTable{ { "s1","stmt" },{ "s2","stmt" },{ "v2","variable" } };
 			string querySentence = "Select <s1.stmt#,   v2.varName,s2   > such that Uses (5, \"y\") and Follows (3, 4) such that Modifies (s1,v2) and Affects* (2,s2)";
 			ClauseSet normalClauses = ParseResult::parseNormalClauses(querySentence, declarationTable);
@@ -100,6 +100,33 @@ namespace UnitTesting
 			Assert::AreEqual(clauseType, string("Modifiessv"));
 			Assert::AreEqual(firstParam, string("s1"));
 			Assert::AreEqual(secondParam, string("v2"));
+		}
+
+		TEST_METHOD(testParsingNormalClauses2) {
+			unordered_map<string, string> declarationTable{ { "lol","procedure" },{ "jack","procedure" },{ "joke","procedure" } };
+			string querySentence = "Select BOOLEAN such that Calls (\"bread\", \"butter\") and Calls* (lol, \"haha\") such that Calls (jack,joke)";
+			ClauseSet normalClauses = ParseResult::parseNormalClauses(querySentence, declarationTable);
+			Clause resultClause = normalClauses[0];
+			string clauseType = resultClause.getClauseOperation();
+			string firstParam = resultClause.getFirstParameter();
+			string secondParam = resultClause.getSecondParameter();
+			Assert::AreEqual(clauseType, string("Callspp"));
+			Assert::AreEqual(firstParam, string("\"bread\""));
+			Assert::AreEqual(secondParam, string("\"butter\""));
+			resultClause = normalClauses[1];
+			clauseType = resultClause.getClauseOperation();
+			firstParam = resultClause.getFirstParameter();
+			secondParam = resultClause.getSecondParameter();
+			Assert::AreEqual(clauseType, string("Calls*pp"));
+			Assert::AreEqual(firstParam, string("lol"));
+			Assert::AreEqual(secondParam, string("\"haha\""));
+			resultClause = normalClauses[2];
+			clauseType = resultClause.getClauseOperation();
+			firstParam = resultClause.getFirstParameter();
+			secondParam = resultClause.getSecondParameter();
+			Assert::AreEqual(clauseType, string("Callspp"));
+			Assert::AreEqual(firstParam, string("jack"));
+			Assert::AreEqual(secondParam, string("joke"));
 		}
 
 		TEST_METHOD(testParsingPattern) {

@@ -27,7 +27,6 @@ vector<string> ConstantTable::getAllConstantValues() {
 	return ConstantTable::convertIntToString(ConstantList);
 }
 
-// refStmtLine -> when update Modifies Table
 void ConstantTable::setConstantValue(string constantValue, int stmtLine) {
 
 	int temp = atoi(constantValue.c_str());
@@ -53,7 +52,6 @@ void ConstantTable::setConstantValue(string constantValue, int stmtLine) {
 	ConstantList.erase(unique(ConstantList.begin(), ConstantList.end()), ConstantList.end());
 }
 
-// return the index of the varName in the map
 int ConstantTable::findPosition(int constantValue) {
 	map<int, int>::iterator iter;
 	iter = ConstantMap.find(constantValue);
@@ -65,7 +63,7 @@ int ConstantTable::findPosition(int constantValue) {
 	}
 }
 
-// return true if procName alr in the table otherwise, false
+
 bool ConstantTable::isContains(int constantValue) {
 	if (ConstantMap.size() > 0) {
 		if (ConstantMap.count(constantValue)) {
@@ -95,12 +93,12 @@ std::vector<int> ConstantTable::getConstantValue(string constantValue) {
 
 int insertToConstantMap(string constantValue) {
 	int temp = atoi(constantValue.c_str());
-	int index = ConstantMap.size();   // set the index be the size of vertor
+	int index = ConstantMap.size();   
 	ConstantMap.insert(pair<int, int>(temp, index));
 	return index;
 }
 
-// Convert vector<int> to vector<string>
+
 vector<string> ConstantTable::convertIntToString(vector<int> temp) {
 	vector<string> result;
 	if (!temp.empty()) {

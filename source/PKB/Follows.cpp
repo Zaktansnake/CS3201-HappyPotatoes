@@ -8,17 +8,17 @@
 
 using namespace std;
 
-std::vector<std::vector<int> > levelList; //store stmtNo based on nesting level number from 1 to n
-std::vector<std::vector<int> > ansList; //store ans for stmtNo 1 to end
-std::vector<int> stmtRecord; // record all the nesting level in order
+std::vector<std::vector<int> > levelList; 
+std::vector<std::vector<int> > ansList; 
+std::vector<int> stmtRecord; 
 std::vector<int> positionInLevelList;
 std::vector<int> stmtListTable;
 std::map<int,string> stmtString;
 std::stack<int> stackforCondition;
-std::map<int, int> stmtlistMap; // store the stmtlist especially for if-else for all stmtline
+std::map<int, int> stmtlistMap; 
 Parent pa;
 
-static int stmtListNo = 1;  // same level same stmtList, change with loop
+static int stmtListNo = 1;
 
 bool isSameStmtList(int s1, int s2);
 
@@ -27,8 +27,6 @@ Follows::Follows() {
 Follows::~Follows() {
 }
 
-// if ifFlag = true and elseFlag = true --> in else statement
-// if ifFlag = true and elseFlag = flase --> in if then statement
 void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag, int endLoopNo, int conditions) {
 	if (stmtLine.size() != endLoopNo && conditions != 2) {
         stmtRecord.push_back(nestLvl);
@@ -45,15 +43,11 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 	}
 	
 	std::vector<int> temp;
-	if (conditions != 0) { // if stmtment
+	if (conditions != 0) {
 	   int num = stmtNo + 1;
 	   stmtlistMap.insert(pair<int, int> (num, -1));
 	}
-//	else if (conditions == 2) {
-//		int num = stmtNo + 1;
-//		stmtlistMap.insert(pair<int, int>(num, -1));
-//	}
-	
+
 	if (loopFlag) {
 		
 		    int i = stmtNo + 1;
@@ -61,33 +55,29 @@ void Follows::setFollow(string stmtLine, int stmtNo, int nestLvl, bool loopFlag,
 	}
 	int size = stmtLine.size();
 	if (stmtLine.size() != endLoopNo && conditions != 2) {
-	//	if (elseFlag == false) {    // else { is not count as one stmt line
+
           stmtString.insert(std::pair<int,string>(stmtNo,stmtLine));
-	//	}
-        // begin of table, levelList is empty
+
 		if (levelList.empty()) {
 			temp.push_back(stmtNo);
 			levelList.push_back(temp);
-		//	positionInLevelList.push_back(0);
 			temp.clear();
 		}
-		else {  // if the level list is not empty
-			if (levelList.size() <= nestLvl) {    // if levellist size is smaller than nestlevel, means, this is new level
+		else { 
+			if (levelList.size() <= nestLvl) { 
 				temp.push_back(stmtNo);
 				levelList.push_back(temp);
-		//		positionInLevelList.push_back(0);
 
 			}
 			else {
 				temp = levelList.at(nestLvl);
 				temp.push_back(stmtNo);
 				levelList.at(nestLvl) = temp;
-		//		positionInLevelList.push_back(levelList.at(nestLvl).size());
 			}
 		}
 		stmtListTable.push_back(stmtListNo);
 	}
-	if (loopFlag && endLoopNo == 0) {  // this is a loop node
+	if (loopFlag && endLoopNo == 0) {  
 		stmtListNo++;
 	}
 	else if (endLoopNo > 0) {
@@ -128,13 +118,13 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 	if (stmtNo >= stmtRecord.size()) {
 		return ans;
 	}
-	int level = stmtRecord.at(stmtNo-1); // get the nesting level of the vector
+	int level = stmtRecord.at(stmtNo-1);
 	if (level > levelList.size()) {
 		cout << "Error. Wrong stmtRecord." << endl;
 		PKB::abort();
 	}
 	std::vector<int> temp = levelList.at(level);
-	int position = positionInLevelList.at(stmtNo-1)+1; // get the position in the levellist
+	int position = positionInLevelList.at(stmtNo-1)+1; 
 	int postPos;
 	if (temp.size() > position) {
        postPos = temp.at(position);
@@ -145,28 +135,6 @@ std::vector<int> Follows::getFollow(int stmtNo) {
 
 	   }
 	}
-	
-	/*for (int i = 0; i < temp.size(); i++) {
-		if (temp.at(i) == stmtNo) {
-			if (i == temp.size() - 1) {
-				return ans;
-			}
-			else {
-				if (isSameStmtList(stmtNo, temp.at(i + 1))) {
-					if (stmtNo != temp.at(i + 1)) {
-                        ans.push_back(temp.at(i+1));
-					}
-                    
-				}
-				else {
-					return ans;
-				}
-			     
-				return ans;
-			}
-			break;
-		}
-	}*/
 	return ans;
 }
 
@@ -176,13 +144,13 @@ std::vector<int> Follows::getFollowFan(int stmtNo) {
 	if (stmtNo >= stmtRecord.size()) {
 		return ans;
 	}
-	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
+	int level = stmtRecord.at(stmtNo - 1); 
 	if (level > levelList.size()) {
 		cout << "Error. Wrong stmtRecord." << endl;
 		PKB::abort();
 	}
 	std::vector<int> temp = levelList.at(level);
-	int position = positionInLevelList.at(stmtNo - 1) - 1; // get the position in the levellist
+	int position = positionInLevelList.at(stmtNo - 1) - 1; 
 	int postPos;
 	if (temp.size() > position) {
 		postPos = temp.at(position);
@@ -202,13 +170,13 @@ std::vector<int> Follows::getFollowFanStar(int stmtNo) {
 	if (stmtNo >= stmtRecord.size()) {
 		return ans;
 	}
-	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
+	int level = stmtRecord.at(stmtNo - 1); 
 	if (level > levelList.size()) {
 		cout << "Error. Wrong stmtRecord." << endl;
 		PKB::abort();
 	}
 	std::vector<int> temp = levelList.at(level);
-	int position = positionInLevelList.at(stmtNo - 1); // get the position in the levellist
+	int position = positionInLevelList.at(stmtNo - 1); 
 	int postPos;
 	if (temp.size() > position) {
 		for (int i = 0; i < position; i++) {
@@ -230,13 +198,13 @@ std::vector<int> Follows::getFollowStar(int stmtNo) {
 	if (stmtNo >= stmtRecord.size()) {
 		return ans;
 	}
-	int level = stmtRecord.at(stmtNo - 1); // get the nesting level of the vector
+	int level = stmtRecord.at(stmtNo - 1); 
 	if (level > levelList.size()) {
 		cout << "Error. Wrong stmtRecord." << endl;
 		PKB::abort();
 	}
 	std::vector<int> temp = levelList.at(level);
-	int position = positionInLevelList.at(stmtNo - 1) + 1; // get the position in the levellist
+	int position = positionInLevelList.at(stmtNo - 1) + 1; 
 	int postPos;
 	if (temp.size() > position) {
 		for (int i = position; i < temp.size(); i++) {
@@ -560,18 +528,6 @@ bool isSameStmtList(int s1, int s2) {
 		
 	}
 	return false;
-//	if (parentS1.size() == 0 && parentS2.size() == 0) {
-//	    return true;
-//	}
-//	else if (parentS1.size() != parentS2.size()) {
-//		return false;
-//	}
-//	else if (parentS1.at(0) == parentS2.at(0)) {
-//		return true;
-//	}
-//	else {
-//		return false;
-//	}
 }
 
 void Follows::PrintProcTable() {
