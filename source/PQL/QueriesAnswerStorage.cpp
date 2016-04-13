@@ -100,9 +100,7 @@ bool QueriesAnswerStorage::HasKey(string s)
 
 	unordered_map<string, int>::iterator it;
 	it = ClausesParameterPositionInTable.find(s);
-	cout << it->first << endl;
 	if (it != ClausesParameterPositionInTable.end()) {
-		cout << "there is key in clause parametner" << endl;
 		return true;
 	}
 	else {

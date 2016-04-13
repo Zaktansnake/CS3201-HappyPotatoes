@@ -108,12 +108,12 @@ const string patternCl = "(?:pattern" + space + patternCond + ")";
 // the following regex is for parsing of pattern clauses
 const string patternClAnother = "(?:pattern" + space + pattern + ")";
 
-const string resultCl = "(?:" + TUPLE + "|BOOLEAN)";
+const string resultCl = "(?:BOOLEAN|" + TUPLE + ")";
 const string selectOnly = space + "Select" + space + resultCl + space;
 const string suchthatOnly = space + relRef + space;
 const string patternOnly = space + patternClAnother + space;
 const string withOnly = space + attrCompare + space;
-const string selectClause = space + "Select" + space + resultCl + space + "(?:" + suchthatCl + "|" + withCl + "|" + patternCl + space + ")*";
+const string selectClause = space + "Select" + space + resultCl + space + "(?:(?:" + suchthatCl + "|" + withCl + "|" + patternCl + ")" + space + ")*";
 
 const regex declarationChecking(declar);
 const regex declarationParsing(declarPar);
@@ -133,19 +133,17 @@ const regex queryWordParsingWith(REF);
 ParseResult ParseResult::generateParseResult(string declarationSentence, string querySentence) {
 	unordered_map<string, string> declarationTable;
 	bool correct = ParseResult::checkAndParseDeclaration(declarationSentence, declarationTable);
-	cout << "I am here" << endl;
+
 	if (!correct) {
-		cout << "I am here 1" << endl;
 		return ParseResult();
 	}
-	cout << "I am here 2" << endl;
-	return ParseResult::checkAndParseQuery(querySentence, declarationTable);
+
+	ParseResult result = ParseResult::checkAndParseQuery(querySentence, declarationTable);
+	return result;
 }
 
 bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<string, string>& declarationTable) {
-	declarationTable.clear();
 	if (!regex_match(declaration, declarationChecking)) {
-		cout << "148" << endl;
 		signalErrorAndStop();
 		return false;	// declaration with syntax error
 	}
@@ -172,13 +170,12 @@ bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<str
 			smatch match = *next;
 			string word = match.str(0);
 			if (word == "stmt" || word == "assign" || word == "while" || word == "variable"
-				|| word == "constant" || word == "prog_line") {
+				|| word == "constant" || word == "prog_line" || word=="procedure" || word=="if") {
 				if (!typeSelected) {
 					type = word;
 					typeSelected = true;
 				}
 				else {
-					cout << "181" << endl;
 					signalErrorAndStop();
 					return false;
 				}
@@ -186,7 +183,6 @@ bool ParseResult::checkAndParseDeclaration(string declaration, unordered_map<str
 			// the word being checked is not a keyword
 			else {
 				if (declarationTable[word] != "") {	// the synonym has already been used
-					cout << "189" << endl;
 					signalErrorAndStop();
 					return false;
 				}
@@ -920,7 +916,8 @@ WithSet ParseResult::parseWith(string query, unordered_map<string, string>& decl
 bool ParseResult::checkWholeQuery(string query) {
 	// query with syntax error
 	if (!regex_match(query, queryChecking)) return false;
-	else return true;
+	cout << "whole query correct" << endl;
+	return true;
 }
 
 ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, string>& declarationTable) {
@@ -929,31 +926,29 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 	PatternSet patterns;
 	WithSet withClauses;
 
-	cout << "928" << endl;
+	cout << query << endl;
 	bool correct = ParseResult::checkWholeQuery(query);
-	if (!correct) {
-		cout << "931" << endl;
-		signalErrorAndStop();
-		cout << "signal" << endl;
 
+	if (correct) cout << "correct" << endl;
+	else cout << "not correct" << endl;
+
+	if (!correct) {
+		signalErrorAndStop();
 		return ParseResult();
 	}
-	
+
 	selectParameter = ParseResult::parseSelect(query, declarationTable);
 	if (selectParameter.empty()) return ParseResult();
-	cout << "line938" << endl;
+
 	clauses = ParseResult::parseNormalClauses(query, declarationTable);
-	cout << "line940" << endl;
 	// if normal clauses contain grammar error, return empty ParseResult
 	if (clauses.size() != 0) {
 		if (clauses.front().getClauseOperation() == "dummy") {
-			cout << "950" << endl;
 			signalErrorAndStop();
-			cout << "signal2" << endl;
 			return ParseResult();
 		}
 	}
-	
+
 	patterns = ParseResult::parsePattern(query, declarationTable);
 
 	// using size() function to check if the object is empty before accessing the front of object
@@ -975,7 +970,6 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 	// if every component in ParseResult object is syntactically and grammatically correct
 	return ParseResult(selectParameter, clauses, patterns, withClauses);
 
-	cout << "I am here 3" << endl;
 	// if every component in ParseResult object is syntactically and grammatically correct
 	return ParseResult(selectParameter, clauses, patterns, withClauses);
 }
