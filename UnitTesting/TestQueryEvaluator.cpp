@@ -28,69 +28,6 @@ namespace UnitTesting
 			Assert::AreEqual(result, false);
 		}
 
-		TEST_METHOD(TestGetStringType) {
-			QueryEvaluator QE;
-			string result;
-			string answer = "CONSTANT";
-			char c = 'C';
-			result = QE.GetStringType(c);
-			Assert::AreEqual(result, answer);
-
-			result.clear();
-			answer = "VAR";
-			c = 'V';
-			result = QE.GetStringType(c);
-			Assert::AreEqual(result, answer);
-
-			result.clear();
-			answer = "ASSIGN";
-			c = 'A';
-			result = QE.GetStringType(c);
-			Assert::AreEqual(result, answer);
-
-			result.clear();
-			answer = "PROC";
-			c = 'P';
-			result = QE.GetStringType(c);
-			Assert::AreEqual(result, answer);
-
-			result.clear();
-			answer = "IF";
-			c = 'I';
-			result = QE.GetStringType(c);
-			Assert::AreEqual(result, answer);
-
-			result.clear();
-			answer = "WHILE";
-			c = 'W';
-			result = QE.GetStringType(c);
-			Assert::AreEqual(result, answer);
-
-			result.clear();
-			answer = "STMT";
-			c = 'L';
-			result = QE.GetStringType(c);
-			Assert::AreEqual(result, answer);
-
-			result.clear();
-			answer = "";
-			c = 'M';
-			result = QE.GetStringType(c);
-			Assert::AreEqual(result, answer);
-		}
-
-		TEST_METHOD(TestCheckTempResultSize) {
-			QueryEvaluator QE;
-			bool result;
-			vector<string> v;
-			result = QE.CheckTempResultSize(v);
-			Assert::AreEqual(result, false);
-
-			v.push_back("1");
-			result = QE.CheckTempResultSize(v);
-			Assert::AreEqual(result, true);
-		}
-
 		TEST_METHOD(TestIsSynonym) {
 			QueryEvaluator QE;
 			char c = '0';
@@ -137,17 +74,6 @@ namespace UnitTesting
 			test = "This string does not have a quotation";
 			result = QE.HaveQuotation(test);
 			Assert::AreEqual(result, false);
-		}
-
-		TEST_METHOD(TestSplitString) {
-			QueryEvaluator QE;
-			string test = "Hi.There";
-			pair<string, string> answer;
-			answer.first = "Hi";
-			answer.second = "There";
-			pair<string, string> result = QE.SplitString(test);
-			Assert::AreEqual(result.first, answer.first);
-			Assert::AreEqual(result.second, answer.second);
 		}
 	};
 }
