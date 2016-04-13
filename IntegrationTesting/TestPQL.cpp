@@ -25,7 +25,7 @@ namespace IntegrationTesting
 			/* Test 2 */
 			string declaration = "while w1;";
 			string query = "Select w1 such that Uses(w1,\"x\") and Modifies(w1,\"x\")";
-			result = "57920";
+			result = "12";
 			
 			string expectedResult;
 			ParseResult generatedParseResult = ParseResult::generateParseResult(declaration, query);
@@ -349,7 +349,7 @@ namespace IntegrationTesting
 			/* Test 26 */
 			string declaration = "while w1; variable v1;";
 			string query = "Select w1 such that Uses (1, v1)";
-			result.append("57920");
+			result.append("");
 
 			ParseResult generatedParseResult = ParseResult::generateParseResult(declaration, query);
 			QueryEvaluator evaluator;
@@ -371,7 +371,7 @@ namespace IntegrationTesting
 			/* Test 27 */
 			string declaration = "variable v1;";
 			string query = "Select v1 such that Uses (1, v1)";
-			result.append("IRomeoabbetacchArLiechArliedeltaij1kklleftoSCarrighttmpwidthxx1");
+			result.append("");
 
 			ParseResult generatedParseResult = ParseResult::generateParseResult(declaration, query);
 			QueryEvaluator evaluator;
