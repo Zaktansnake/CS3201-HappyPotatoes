@@ -110,13 +110,12 @@ vector<string> QueriesAnswerStorage::MergeResults()
 	for (int index = 0; index < SelectParameter.size(); index++) {
 		pair<string, string> pair = SelectParameter.at(index);
 		if (HasKey(pair.first) == true) {
-			cout << "select match with pos" << endl;
-			cout << ClausesParameterPositionInTable[pair.first] << endl;
 			Position.push_back(ClausesParameterPositionInTable[pair.first]);
 		}
 	}
 	for (int index = 0; index < Position.size(); index++) {
 		int Col = Position.at(index);
+	
 		for (int j = 0; j < ResultsTable.size(); j++) {
 			vector<string> Row = ResultsTable.at(j);
 			string Ans = Row.at(Col);
