@@ -221,7 +221,6 @@ ParameterSet ParseResult::parseSelect(string query, unordered_map<string, string
 		else {
 			// the synonym is not declared
 			if (declarationTable[*it] == "") {
-				cout << "228" << endl;
 				signalErrorAndStop();
 				return ParameterSet();
 			}
@@ -916,7 +915,6 @@ WithSet ParseResult::parseWith(string query, unordered_map<string, string>& decl
 bool ParseResult::checkWholeQuery(string query) {
 	// query with syntax error
 	if (!regex_match(query, queryChecking)) return false;
-	cout << "whole query correct" << endl;
 	return true;
 }
 
@@ -926,11 +924,7 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 	PatternSet patterns;
 	WithSet withClauses;
 
-	cout << query << endl;
 	bool correct = ParseResult::checkWholeQuery(query);
-
-	if (correct) cout << "correct" << endl;
-	else cout << "not correct" << endl;
 
 	if (!correct) {
 		signalErrorAndStop();
