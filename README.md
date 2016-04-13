@@ -1,6 +1,4 @@
-========================================================================
-    STATIC LIBRARY : Happy Potatoes SPA Project Overview
-========================================================================
+STATIC LIBRARY : Happy Potatoes SPA Project Overview
 
 HOW TO COMPILE:
 1. Open CS3201-HappyPotatoes > EmptyGeneralTesting.sln
@@ -26,8 +24,3 @@ SPA.vcxproj.filters
     and the filters. This association is used in the IDE to show grouping of files with
     similar extensions under a specific node (for e.g. ".cpp" files are associated with the
     "Source Files" filter).
-
-/////////////////////////////////////////////////////////////////////////////
-Other notes:
-
-/////////////////////////////////////////////////////////////////////////////
