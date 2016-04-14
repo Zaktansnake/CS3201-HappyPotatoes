@@ -171,9 +171,10 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 						parent = ifRecord.top();
 						ifRecord.pop();
 						parentStack.push(parent);
+						conditionStack.push(1);
 					}
 
-					conditionStack.push(1);
+					
 					flagForCorrectElseIf = true;
 					flag = true;
 
@@ -318,40 +319,41 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 					flagNextLevelStart = false;
 					break;
 				}
-				int parent = parentStack.top();
-				parentStack.pop();
-				int con = conditionStack.top();
-				conditionStack.pop();
-				int index = CFGstmt.size();
-				if (con == 3) { 
-					if (closingStack.size() == 0) { 
-						currentNo = stmtNo;
-					}
-					else if (clostingCondition.top() != 3) {
-						currentNo = stmtNo;
-						closingStack.pop();
-						clostingCondition.pop();
-					}
-					else {
+				if (parentStack.size() > 0 && conditionStack.size() >= 0) {
+					int parent = parentStack.top();
+					parentStack.pop();
+					int con = conditionStack.top();
+					conditionStack.pop();
+					int index = CFGstmt.size();
+					if (con == 3) {
 						if (closingStack.size() == 0) {
-
+							currentNo = stmtNo;
 						}
-						else {
-							currentNo = closingStack.top();
+						else if (clostingCondition.top() != 3) {
+							currentNo = stmtNo;
 							closingStack.pop();
 							clostingCondition.pop();
 						}
-						
-					}
-					closingStack.push(parent);
-					clostingCondition.push(con);
-					if (index == stmtNo) {
-						CFGline.push_back(parent);
-						CFGstmt.push_back(CFGline);
-						CFGTable.at(currentPro) = CFGstmt;
-					}
-					else {
-						
+						else {
+							if (closingStack.size() == 0) {
+
+							}
+							else {
+								currentNo = closingStack.top();
+								closingStack.pop();
+								clostingCondition.pop();
+							}
+
+						}
+						closingStack.push(parent);
+						clostingCondition.push(con);
+						if (index == stmtNo) {
+							CFGline.push_back(parent);
+							CFGstmt.push_back(CFGline);
+							CFGTable.at(currentPro) = CFGstmt;
+						}
+						else {
+
 							if (currentNo >= CFGstmt.size()) {
 
 							}
@@ -361,47 +363,49 @@ void CFG::addNextNode(int stmtNo, string stmt) {
 								CFGstmt.at(currentNo) = CFGline;
 								CFGTable.at(currentPro) = CFGstmt;
 							}
-			
+
+						}
 					}
-				}
-				else if (con == 2) {
+					else if (con == 2) {
 
-					closingStack.push(stmtNo);
-					clostingCondition.push(con);
-					CFGline = CFGTable.at(currentPro).at(parent);
-					CFGline.push_back(stmtNo + 1);
-					CFGstmt.at(parent) = CFGline;
-					CFGTable.at(currentPro) = CFGstmt;
+						closingStack.push(stmtNo);
+						clostingCondition.push(con);
+						CFGline = CFGTable.at(currentPro).at(parent);
+						CFGline.push_back(stmtNo + 1);
+						CFGstmt.at(parent) = CFGline;
+						CFGTable.at(currentPro) = CFGstmt;
 
 
-				}
-				else if (con == 1) {
-					if (!flagForCorrectElseIf) {
-						
+					}
+					else if (con == 1) {
+						if (!flagForCorrectElseIf) {
+
 							CFGline.push_back(dummy);
 							CFGstmt.push_back(CFGline);
 							CFGTable.at(currentPro) = CFGstmt;
 							ifRecord.push(parent);
-					}
-					else {
-						CFGline = CFGTable.at(currentPro).at(parent);
-						if (CFGline.size() == 2 && (CFGline.at(0) != -1 && CFGline.at(1) != -1)) {
-							flagForCorrectElseIf = false;
 						}
 						else {
-							CFGline.push_back(stmtNo);
-							CFGstmt.at(parent) = CFGline;
-							CFGTable.at(currentPro) = CFGstmt;
-							flagForCorrectElseIf = false;
+							CFGline = CFGTable.at(currentPro).at(parent);
+							if (CFGline.size() == 2 && (CFGline.at(0) != -1 && CFGline.at(1) != -1)) {
+								flagForCorrectElseIf = false;
+							}
+							else {
+								CFGline.push_back(stmtNo);
+								CFGstmt.at(parent) = CFGline;
+								CFGTable.at(currentPro) = CFGstmt;
+								flagForCorrectElseIf = false;
+							}
+
 						}
 
+						closingStack.push(stmtNo);
+						clostingCondition.push(con);
+
+
 					}
-
-					closingStack.push(stmtNo);
-					clostingCondition.push(con);
-
-
 				}
+				
 			}
 		}
 	}

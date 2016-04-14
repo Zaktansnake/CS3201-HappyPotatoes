@@ -223,13 +223,18 @@ ParameterSet ParseResult::parseSelect(string query, unordered_map<string, string
 	}
 	vector<string>::iterator it;
 	for (it = word.begin(); it != word.end(); ++it) {
+
 		if ((*it == "procName" || *it == "varName" || *it == "value" || *it == "stmt#") && it != word.begin()) {
 			*(prev(it)) += "." + *it;
 			*it = "dummy";
 		}
 		else {
+			if (*it == "BOOLEAN") {
+				declarationTable[*it] = "dummy";
+			}
+
 			// the synonym is not declared
-			if (declarationTable[*it] == "") {
+			if (*it != "BOOLEAN" && declarationTable[*it] == "") {
 				signalErrorAndStop();
 				return ParameterSet();
 			}
@@ -269,6 +274,7 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 
 	for (it1 = normalClausePhrase.begin(); it1 != normalClausePhrase.end(); ++it1) {
 		string currentPhrase = *it1;
+
 		next = sregex_iterator(currentPhrase.begin(), currentPhrase.end(), queryWordParsingNormalClause);
 		while (next != end) {
 			smatch match = *next;
@@ -287,7 +293,6 @@ ClauseSet ParseResult::parseNormalClauses(string query, unordered_map<string, st
 
 		for (it = word.begin(); it != word.end(); it++) {
 			current = *it;
-
 			if (*it == "Modifies" || *it == "Uses" || *it == "Calls" || *it == "Calls*" || *it == "Parent" ||
 				*it == "Parent*" || *it == "Follows" || *it == "Follows*" || *it == "Next" || *it == "Next*" ||
 				*it == "Affects" || *it == "Affects*") {
@@ -865,7 +870,6 @@ WithSet ParseResult::parseWith(string query, unordered_map<string, string>& decl
 }
 
 bool ParseResult::checkWholeQuery(string query) {
-
 	if (!regex_match(query, queryChecking)) {
 		return false;
 	}
@@ -879,7 +883,6 @@ ParseResult ParseResult::checkAndParseQuery(string query, unordered_map<string, 
 	WithSet withClauses;
 
 	bool correct = ParseResult::checkWholeQuery(query);
-
 	if (!correct) {
 		signalErrorAndStop();
 		return ParseResult();

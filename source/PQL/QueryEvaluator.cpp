@@ -40,15 +40,19 @@ vector<string> QueryEvaluator::startEvaluator(ParseResult mustPr)
 	if (SelectBool == true) {
 		vector<string> BooleanResults;
 		if (HasResults == true) {
-			BooleanResults.push_back("True");
+			 BooleanResults.push_back("true");
 		}
 		else {
-			BooleanResults.push_back("");
+			 BooleanResults.push_back("false");
 		}
+		return BooleanResults;
 	}
 	else {
 		if (HasResults == true) {
 			if (NoClause) {
+				return QAS.GetNoClause();
+			}
+			if (BlankBlankButNoClause == true) {
 				return QAS.GetNoClause();
 			}
 			else if (SelectNotStored()) {
@@ -144,7 +148,7 @@ bool QueryEvaluator::assessClauses(std::vector<Clause> ClausesVector, std::vecto
 
 
 	QAS.SetSelect(SelectParameterVector);
-	if (SelectParameterVector.at(0) == "BOOLEAN") {
+	if (SelectParameterVector.at(0) == "BOOLEAN,dummy") {
 		SelectBool = true;
 	}
 	vector<bool> ResultsExist;
@@ -526,7 +530,7 @@ bool QueryEvaluator::DoNormalClause(vector<Clause> ClausesVector) {
 		Parameter2 secondParameter = clauses.getSecondParameter();
 		char firstLetter = clausesOperation.at(0);
 		ResultsExist = CheckSynonym(firstParameter, secondParameter, firstParameterType,
-			secondParameterType, clauseType);
+			secondParameterType, clauseType,ClausesVector);
 		if (ResultsExist == true) {
 			continue;
 		}
@@ -538,12 +542,17 @@ bool QueryEvaluator::DoNormalClause(vector<Clause> ClausesVector) {
 }
 
 bool QueryEvaluator::CheckSynonym(string firstParameter, string secondParameter,
-	char firstParameterType, char secondParameterType, string clauseType) {
+	char firstParameterType, char secondParameterType, string clauseType,vector<Clause>CV) {
 
 	bool HasResults = false;
 	if ((IsSynonym(firstParameter[0])) && (IsSynonym(secondParameter[0]))) {
 		HasResults = GetResultsForBothSynonym(firstParameter, secondParameter,
 			firstParameterType, secondParameterType, clauseType);
+	}
+	else if ((firstParameter[0] == '_')&&secondParameter[0] == '_') {
+		vector<pair<string,string>> SP = QAS.GetSelectParameter();
+		HasResults = GetResultsForBlankBlank
+		(firstParameterType,secondParameterType,CV,clauseType,SP);
 	}
 	else if (IsSynonym(firstParameter[0])) {
 		HasResults = GetResultsForFirstSynonym(firstParameter, secondParameter,
@@ -1195,6 +1204,106 @@ bool QueryEvaluator::IsSynonym(char c) {
 	return false;
 }
 
+bool QueryEvaluator::GetResultsForBlankBlank(char type1, char type2,vector<Clause> CV,
+	string ct,vector<pair<string,string> > SP) {
+	bool HasResults = false;
+	if (CV.size() == 1) {
+		BlankBlankButNoClause = true;
+	}
+	if (BlankBlankButNoClause == true) {
+		vector<string> P1Results = GetAll(type1);
+		for (int i = 0; i < P1Results.size(); i++) {
+			vector<string> P2Results = GetResultsAllBlankBlank(ct, P1Results.at(i));
+			if (P2Results.size() != 0) {
+
+				for (int i = 0; i < SP.size(); i++) {
+					pair<string, string> pair = SP.at(i);
+					string type = pair.second;
+					vector<string> Result;
+					if (type == "stmt") {
+						Result = GetAll('s');
+					}
+					else if (type == "while") {
+						Result = GetAll('w');
+					}
+					else if (type == "assign") {
+						Result = GetAll('a');
+					}
+					else if (type == "if") {
+						Result = GetAll('i');
+					}
+					else if (type == "variable") {
+						Result = GetAll('v');
+					}
+					else if (type == "constant") {
+						Result = GetAll('c');
+					}
+					else if (type == "procedure") {
+						Result = GetAll('p');
+					}
+					else if (type == "prog_line") {
+						Result = GetAll('s');
+					}
+					else {
+						Result = Result;
+					}
+					if (Result.size() == 0) {
+						return false;
+					}
+					HasResults = true;
+					QAS.SetNoClause(Result);
+				}
+			}
+			break;
+		}
+	}
+	return HasResults;
+}
+vector<string> QueryEvaluator::GetResultsAllBlankBlank(string clausesType,string P1) {
+	vector<string> results;
+	
+
+	if (clausesType == "Follows") {
+		results = stmtTable::getFollowWithType("STMT", P1);
+	}
+	else if (clausesType == "Follows*") {
+		results = stmtTable::getFollowStarWithType("STMT", P1);
+	}
+	else if (clausesType == "Uses") {
+		results = VarTable::getUsesWithType("STMT", RemoveQuotations(P1));
+	}
+	else if (clausesType == "Calls") {
+		results = ProcTable::getProcWithType("PROC", RemoveQuotations(P1));
+	}
+	else if (clausesType == "Calls*") {
+		results = ProcTable::getProcTransitiveWithType("PROC", RemoveQuotations(P1));
+	}
+	else if (clausesType == "Modifies") {
+		results = VarTable::getModifiesWithType("STMT", RemoveQuotations(P1));
+	}
+	else if (clausesType == "Parent") {
+		results = stmtTable::getChildWithType("STMT", P1);
+	}
+	else if (clausesType == "Parent*") {
+		results = stmtTable::getChildStarWithType("STMT", P1);
+	}
+	else if (clausesType == "Next") {
+		results = CFG::getNextString(ChangeStringToInt(P1));
+	}
+	else if (clausesType == "Next*") {
+		results = CFG::getNextStarString(ChangeStringToInt(P1));
+	}
+	else if (clausesType == "Affects") {
+		results = Affects::getAffectsRight(P1);
+	}
+	else if (clausesType == "Affects*") {
+		results = Affects::getAffectsTransitiveRight(P1);
+	}
+	else {
+		return results;
+	}
+	return results;
+}
 vector<string> QueryEvaluator::GetP2Blank(string clausesType) {
 	vector<string> results;
 	if (clausesType == "Follows") {

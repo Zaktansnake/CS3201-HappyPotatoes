@@ -5,6 +5,7 @@
 class QueryEvaluator
 {
 public:
+	bool BlankBlankButNoClause = false;
 	vector<string> GetAllOfTheNotStored();
 	vector<string> startEvaluator(ParseResult mustPr);
 	bool SelectBool = false;
@@ -25,7 +26,7 @@ public:
 		PatternSet PS, vector<With> WithClauses);
 	bool assessParseResult(ParseResult pr);
 	bool IsSynonym(char c);
-	bool CheckSynonym(string, string, char, char, string);
+	bool CheckSynonym(string, string, char, char, string,vector<Clause>);
 	bool GetResultsForBothSynonym(string, string, char, char, string);
 	bool GetResultsForFirstSynonym(string, string, char, char, string);
 	bool GetResultsForSecondSynonym(string, string, char, char, string);
@@ -43,8 +44,9 @@ public:
 	bool DoWithClause(vector<With> W);
 	bool ReturnResultsExist(vector<bool> RE);
 	bool DoPatterns(PatternSet);
+	bool GetResultsForBlankBlank(char type1, char type2, vector<Clause> CV,string, vector<pair<string,string>>);
 	vector<string> CheckPattern(string type, string name, string P1, string p2, string p3);
-
+	vector<string> GetResultsAllBlankBlank(string ct,string P1);
 	// constructors
 	QueryEvaluator();
 	~QueryEvaluator();
