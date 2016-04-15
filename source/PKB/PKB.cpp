@@ -344,13 +344,13 @@ static void calls(string str, int stmtLine) {
 void PKB::updateTables() {
 	VarTable::updateModifiesUsesTables();
 	ProcTable::updateProcCallsTables();
+	CFG::reverCFG();
 	PKB::updateAllTables();
 	PatternTable::updatePatternTable();
 	Affects::updateAffectsTable();
 }
 
 void PKB::updateAllTables() {
-	CFG::reverCFG();
 	std::vector<std::tuple<string, string, int>> AllCallsStmt = ProcTable::getCallsTable();
 	int allCallsStmtSize = AllCallsStmt.size() - 1;
 	for (int i = allCallsStmtSize; i >= 0; i--) {
@@ -510,10 +510,12 @@ bool PKB::is_number(const std::string& s)
 
 void getProgramLine(string lineFromSource) {
 	if (lineFromSource.compare("") != 0) {
-		if (lineFromSource.find_last_of("{") != std::string::npos) {
+		if (lineFromSource.find_last_of("{") != std::string::npos) { // found
 			if (lineFromSource.find("}") != std::string::npos) {
 				if (lineFromSource.find("else") != std::string::npos) {
-					findMethod(lineFromSource);
+					// } else {
+					findMethod("}");
+					findMethod("else {");
 				}
 				else {
 					std::size_t found;
@@ -529,9 +531,17 @@ void getProgramLine(string lineFromSource) {
 				}
 			}
 			else {
-				tempLine += lineFromSource;
-				findMethod(tempLine);
-				tempLine = "";
+
+				if (lineFromSource.find("else") != std::string::npos) {
+					// else {
+					findMethod("else {");
+				}
+				else {
+					tempLine += lineFromSource;
+					findMethod(tempLine);
+					tempLine = "";
+				}
+
 			}
 		}
 		else if (lineFromSource.find("}") != std::string::npos) {
@@ -542,9 +552,6 @@ void getProgramLine(string lineFromSource) {
 				bracket.erase(std::remove(bracket.begin(), bracket.end(), ' '), bracket.end());
 				findMethod(normalLine);
 				findMethod(bracket);
-			}
-			else if (lineFromSource.find("else") != std::string::npos) {
-				findMethod(lineFromSource);
 			}
 			else {
 				findMethod(lineFromSource);
