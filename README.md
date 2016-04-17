@@ -1,3 +1,4 @@
+# CS3201 Happy Potatoes Mini-SPA Tool
 STATIC LIBRARY : Happy Potatoes SPA Project Overview
 
 HOW TO COMPILE:
