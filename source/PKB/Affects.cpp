@@ -231,43 +231,41 @@ std::vector<string> Affects::getAffectsTransitiveLeft(string aff2) {
 bool Affects::isAffects(string aff1, string aff2) {
 	int a1 = std::stoi(aff1);
 	int a2 = std::stoi(aff2);
-
-	vector<int> ans = AffectsTable[a1];
-	if (!ans.empty()) {
-		for (vector<int>::iterator it = ans.begin(); it != ans.end(); ++it) {
-			if (a2 == *it) {
-				return true;
+	vector<int> ans;
+	map<int, vector<int>>::iterator it;
+	it = AffectsTable.find(a1);
+	if (it != AffectsTable.end()) {
+		ans = it->second;
+	}
+	if (ans.size() > 0) {
+		std::vector<int>::iterator position = std::find(ans.begin(), ans.end(), a2);
+		if (position != ans.end()) {
+			return true;
 			}
+		else {
+			return false;
 		}
-		return false;
 	}
 	return false;
 }
 
 bool Affects::isAffectsTransitive(string aff1, string aff2) {
-
 	int a1 = std::stoi(aff1);
 	int a2 = std::stoi(aff2);
-
-	vector<int> ans = AffectsTransitiveTable[a1];
-	if (!ans.empty()) {
-		for (vector<int>::iterator it = ans.begin(); it != ans.end(); ++it) {
-			if (a2 == *it) {
-				return true;
-			}
-		}
+	vector<int> ans;
+	map<int, vector<int>>::iterator it;
+	it = AffectsTransitiveTable.find(a1);
+	if (it != AffectsTransitiveTable.end()) {
+		ans = it->second;
 	}
-	else {
-		Affects::updateAffectsTransitiveTable(a1);
-		ans = AffectsTransitiveTable[a1];
-		if (!ans.empty()) {
-			for (vector<int>::iterator it = ans.begin(); it != ans.end(); ++it) {
-				if (a2 == *it) {
-					return true;
-				}
-			}
+	if (ans.size() > 0) {
+		std::vector<int>::iterator position = std::find(ans.begin(), ans.end(), a2);
+		if (position != ans.end()) {
+			return true;
 		}
-
+		else {
+			return false;
+		}
 	}
 	return false;
 }

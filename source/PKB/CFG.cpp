@@ -8,11 +8,14 @@
 
 using namespace std;
 
-static int dummy = -2, prevStmtNum;
+static int dummy = -2, prevStmtNum, tempElseNum;
 map<int, vector<int>> CFGTable;
+map<int, vector<int>> CFGReverseTable;
+map<int, vector<int>> CFGTransitiveTable;
+map<int, vector<int>> CFGReverseTransitiveTable;
 stack<pair<string, int>> openBracket; // string -> {; int -> currentStmtLine
 stack<int> ifNumStack, beforeElseNumStack, whileNumStack;
-bool elseStatus;
+bool elseStatus, whileStatus;
 
 void checkBackBracket(int stmtNum);
 int setConditions(string stmtLine);
@@ -30,12 +33,26 @@ void CFG::addRoot(string procedure, int stmtNo) {
 		prevStmtNum = 0;
 		openBracket.push(make_pair("{", -1));
 
+		vector<int> tempResult;
 		map<int, vector<int>>::iterator it;
-		it = CFGTable.find(stmtNo);
+		it = CFGTable.find(tempElseNum);
 		if (it != CFGTable.end()) {
-			cout << "blahblahblah" << endl;
-			CFGTable.erase(it);
+			tempResult = it->second;
+			std::vector<int>::iterator itr = find(tempResult.begin(), tempResult.end(), stmtNo + 1);
+			if (itr != tempResult.end()) {
+				if (tempResult.size() == 1) {
+					CFGTable.erase(it);
+				}
+				else {
+					std::vector<int>::iterator position = std::find(tempResult.begin(), tempResult.end(), stmtNo+1);
+					if (position != tempResult.end()) { // == myVector.end() means the element was not found
+						tempResult.erase(position);
+						CFGTable[tempElseNum] = tempResult;
+					}
+				}
+			}
 		}
+		tempElseNum = 0;
 	}
 }
 
@@ -48,8 +65,9 @@ void CFG::addNextNode(int stmtNum, string stmtLine) {
 				prevStmtNum = stmtNum;
 			}
 			else {
-				cout << "44 :: " << prevStmtNum << " :: " << stmtNum << " :: " << stmtNum << endl;
+				cout << "55 :: " << prevStmtNum << " :: " << stmtNum << " :: " << stmtNum << endl;
 				CFGTable[prevStmtNum].push_back(stmtNum);
+				CFGReverseTable[stmtNum].push_back(prevStmtNum);
 				prevStmtNum = stmtNum;
 			}
 		}
@@ -61,8 +79,9 @@ void CFG::addNextNode(int stmtNum, string stmtLine) {
 				prevStmtNum = stmtNum;
 			}
 			else {
-				cout << "57 :: " << prevStmtNum << " :: " << stmtNum << " :: " << stmtNum << endl;
+				cout << "68 :: " << prevStmtNum << " :: " << stmtNum << " :: " << stmtNum << endl;
 				CFGTable[prevStmtNum].push_back(stmtNum);
+				CFGReverseTable[stmtNum].push_back(prevStmtNum);
 				prevStmtNum = stmtNum;
 			}
 		}
@@ -77,8 +96,9 @@ void CFG::addNextNode(int stmtNum, string stmtLine) {
 					prevStmtNum = 0;
 				}
 				if (prevStmtNum > 0) {
-					cout << "73 :: " << prevStmtNum << " :: " << stmtNum << " :: " << stmtNum << endl;
+					cout << "84 :: " << prevStmtNum << " :: " << stmtNum << " :: " << stmtNum << endl;
 					CFGTable[prevStmtNum].push_back(stmtNum);
+					CFGReverseTable[stmtNum].push_back(prevStmtNum);
 					prevStmtNum = stmtNum;
 				}
 			}
@@ -86,12 +106,15 @@ void CFG::addNextNode(int stmtNum, string stmtLine) {
 		else if (setConditions(trimString(stmtLine)) == 3) {
 			// while
 			openBracket.push(make_pair("{", 3));
+			whileStatus = true;
+			cout << "104 --- whileStatus :: " << whileStatus << " , " << stmtNum << endl;
 			if (prevStmtNum == 0) {
 				prevStmtNum = stmtNum;
 			}
 			else {
-				cout << "86 :: " << prevStmtNum << " :: " << stmtNum << " :: " << stmtNum << endl;
+				cout << "97 :: " << prevStmtNum << " :: " << stmtNum << " :: " << stmtNum << endl;
 				CFGTable[prevStmtNum].push_back(stmtNum);
+				CFGReverseTable[stmtNum].push_back(prevStmtNum);
 				prevStmtNum = stmtNum;
 			}
 			whileNumStack.push(stmtNum);
@@ -105,10 +128,17 @@ void CFG::addNextNode(int stmtNum, string stmtLine) {
 					elseStatus = true;
 				}
 			}
+
+			if (whileNumStack.size() > 0) {
+				whileStatus = true;
+			}
 		}
 	}
 	catch (exception &e) {
 		cout << "Standard exception (for CFG): " << e.what() << endl;
+	}
+	catch (const std::out_of_range& oor) {
+		cout << "out of range" << endl;
 	}
 }
 
@@ -118,10 +148,10 @@ void checkBackBracket(int stmtNum) {
 	if (temp.second == 1) {
 		//if
 		int ifStmt = ifNumStack.top();
-		cout << "66 :: " << ifStmt << " :: " << stmtNum + 1 << " :: " << stmtNum << endl;
+		cout << "128 :: " << ifStmt << " :: " << stmtNum + 1 << " :: " << stmtNum << endl;
 		CFGTable[ifStmt].push_back(stmtNum + 1);
+		CFGReverseTable[stmtNum+1].push_back(ifStmt);
 		ifNumStack.pop();
-		cout << "beforeElseNumStack.push() :: " << stmtNum << endl;
 		beforeElseNumStack.push(stmtNum);
 		elseStatus = true;
 		openBracket.pop();
@@ -129,21 +159,40 @@ void checkBackBracket(int stmtNum) {
 	else if (temp.second == 2) {
 		// else
 		int elseNum = beforeElseNumStack.top();
+		cout << "whileStatus :: " << whileStatus << endl;
+		cout << "elseNum :: " << elseNum << endl;
 		openBracket.pop();
 		if (openBracket.size() > 0) {
 			temp = openBracket.top();
-			cout << "136 :: " << temp.second << endl;
+			cout << "142 :: " << temp.second << endl;
 			if (temp.second > 0) {
 				if (temp.second == 3) {
 					// is inside while
 					whileStmt = whileNumStack.top();
-					cout << "141 :: " << elseNum << " :: " << whileStmt << " :: " << stmtNum << endl;
+					cout << "147 :: " << elseNum << " :: " << whileStmt << " :: " << stmtNum << endl;
 					CFGTable[elseNum].push_back(whileStmt);
+					CFGReverseTable[whileStmt].push_back(elseNum);
+				}
+				else if(temp.second == 1) {
+					cout << "168 :: " << whileStmt << endl;
+					if (whileStatus) {
+						map<int, vector<int>>::iterator it;
+						it = CFGTable.find(elseNum);
+						if (it == CFGTable.end()) {
+							whileStmt = whileNumStack.top();
+							cout << "174 :: " << elseNum << " :: " << whileStmt << " :: " << stmtNum + 1 << endl;
+							CFGTable[elseNum].push_back(whileStmt);
+							CFGReverseTable[whileStmt].push_back(elseNum);
+							tempElseNum = elseNum;
+						}
+					}
 				}
 			}
 			else {
-				cout << "138 :: " << elseNum << " :: " << stmtNum + 1 << " :: " << stmtNum << endl;
+				cout << "157 :: " << elseNum << " :: " << stmtNum + 1 << " :: " << stmtNum << endl;
 				CFGTable[elseNum].push_back(stmtNum+1);
+				CFGReverseTable[stmtNum+1].push_back(elseNum);
+				tempElseNum = elseNum;
 			}
 		}
 		beforeElseNumStack.pop();
@@ -152,16 +201,17 @@ void checkBackBracket(int stmtNum) {
 	else if (temp.second == 3) {
 		// while
 		whileStmt = whileNumStack.top();
-		cout << "158 :: " << prevStmtNum << " :: " << whileStmt << endl;
+		cout << "163 :: " << prevStmtNum << " :: " << whileStmt << endl;
 		CFGTable[prevStmtNum].push_back(whileStmt);
+		CFGReverseTable[whileStmt].push_back(prevStmtNum);
 		prevStmtNum = whileStmt;
 		whileNumStack.pop();
 		openBracket.pop();
+		whileStatus = false;
 	}
 	else {
-		cout << "165 :: " << prevStmtNum << " :: " << temp.second << endl;
+		cout << "170 :: " << prevStmtNum << " :: " << temp.second << endl;
 		//CFGTable[prevStmtNum].push_back(temp.second);
-		prevStmtNum = temp.second;
 		openBracket.pop();
 	}
 }
@@ -203,55 +253,96 @@ string trimString(string stmt) {
 
 vector<int> CFG::getNext(int stmtNo) {
 	vector<int> result;
-	return result;
-}
-
-vector<int> CFG::getPrev(int stmtNo) {
-	vector<int>result;
-	return result;
-}
-
-bool CFG::isNext(int stmtNo1, int stmtNo2) {
-	return false;
-}
-
-bool CFG::isNextStar(int s1, int s2) {
-	return false;
-}
-
-vector<int> CFG::getNextStar(int stmtNo) {
-	vector<int> ans;
-	return ans;
-}
-
-vector<int> CFG::getPrevStar(int stmtNo) {
-	vector<int> ans;
-	return ans;
-}
-
-vector<string> CFG::getNextString(int stmtNo) {
-	vector<int> result;
 	map<int, vector<int>>::iterator it;
 	it = CFGTable.find(stmtNo);
 	if (it != CFGTable.end()) {
 		result = it->second;
 	}
-	return CFG::convertIntToString(result);
-}
-
-vector<string> CFG::getPrevString(int stmtNo) {
-	vector<string>result;
 	return result;
 }
 
+vector<int> CFG::getPrev(int stmtNo) {
+	vector<int>result;
+	map<int, vector<int>>::iterator it;
+	it = CFGReverseTable.find(stmtNo);
+	if (it != CFGReverseTable.end()) {
+		result = it->second;
+	}
+	return result;
+}
+
+bool CFG::isNext(int stmtNo1, int stmtNo2) {
+	vector<int> ans;
+	map<int, vector<int>>::iterator it;
+	it = CFGTable.find(stmtNo1);
+	if (it != CFGTable.end()) {
+		ans = it->second;
+	}
+	if (ans.size() > 0) {
+		std::vector<int>::iterator position = std::find(ans.begin(), ans.end(), stmtNo2);
+		if (position != ans.end()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+
+bool CFG::isNextStar(int stmtNo1, int stmtNo2) {
+	vector<int> ans;
+	map<int, vector<int>>::iterator it;
+	it = CFGTransitiveTable.find(stmtNo1);
+	if (it != CFGTransitiveTable.end()) {
+		ans = it->second;
+	}
+	if (ans.size() > 0) {
+		std::vector<int>::iterator position = std::find(ans.begin(), ans.end(), stmtNo2);
+		if (position != ans.end()) {
+			return true;
+		}
+		else {
+			return false;
+		}
+	}
+	return false;
+}
+
+vector<int> CFG::getNextStar(int stmtNo) {
+	vector<int>result;
+	map<int, vector<int>>::iterator it;
+	it = CFGTransitiveTable.find(stmtNo);
+	if (it != CFGTransitiveTable.end()) {
+		result = it->second;
+	}
+	return result;
+}
+
+vector<int> CFG::getPrevStar(int stmtNo) {
+	vector<int>result;
+	map<int, vector<int>>::iterator it;
+	it = CFGReverseTransitiveTable.find(stmtNo);
+	if (it != CFGReverseTransitiveTable.end()) {
+		result = it->second;
+	}
+	return result;
+}
+
+vector<string> CFG::getNextString(int stmtNo) {
+	return CFG::convertIntToString(CFG::getNext(stmtNo));
+}
+
+vector<string> CFG::getPrevString(int stmtNo) {
+	return CFG::convertIntToString(CFG::getPrev(stmtNo));
+}
+
 vector<string> CFG::getNextStarString(int stmtNo) {
-	vector<string> ans;
-	return ans;
+	return CFG::convertIntToString(CFG::getNextStar(stmtNo));
 }
 
 vector<string> CFG::getPrevStarString(int stmtNo) {
-	vector<string> ans;
-	return ans;
+	return CFG::convertIntToString(CFG::getPrevStar(stmtNo));
 }
 
 

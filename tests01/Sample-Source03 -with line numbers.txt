@@ -116,8 +116,8 @@ procedure Third {
 					}
 				}
 83				q=r+s+t;
-84				t=u+v;}
-			else {
+84				t=u+v;
+			} else {
 85				q=r+s+t;}
 		}
 	}
