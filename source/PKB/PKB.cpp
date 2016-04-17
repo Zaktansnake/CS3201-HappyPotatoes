@@ -342,9 +342,13 @@ static void calls(string str, int stmtLine) {
 }
 
 void PKB::updateTables() {
+
+	CFG::printCFGTable();
+
+
 	VarTable::updateModifiesUsesTables();
 	ProcTable::updateProcCallsTables();
-	CFG::reverCFG();
+	//CFG::reverCFG();
 	PKB::updateAllTables();
 	PatternTable::updatePatternTable();
 	Affects::updateAffectsTable();

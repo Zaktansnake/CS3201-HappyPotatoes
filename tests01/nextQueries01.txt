@@ -508,3 +508,8 @@ prog_line n;
 Select n such that Next(102,n)
 none
 5000
+103 - comment
+prog_line n;
+Select n such that Next(103,n)
+none
+5000

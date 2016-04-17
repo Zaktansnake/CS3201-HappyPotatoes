@@ -14,7 +14,7 @@ public:
 
 	static void CFG::addRoot (string root, int stmtNo);
 	static void CFG::addNextNode (int stmtNo, string stmt);
-	static void CFG::reverCFG ();
+	static void CFG::reverCFG();
 
 	
 	static vector<int> getNext (int stmtNo);
@@ -28,10 +28,11 @@ public:
 	static vector<string> getPrevString(int stmtNo);
 	static vector<string> getNextStarString(int stmtNo);
 	static vector<string> getPrevStarString(int stmtNo);
+
+
+	static void printCFGTable();
 	
 private : 
-    bool checkConditions (string stmt);
-	void countCloseLoop (string stmt);
-	
 
+	static std::vector<string> convertIntToString(vector<int> temp);
 };
