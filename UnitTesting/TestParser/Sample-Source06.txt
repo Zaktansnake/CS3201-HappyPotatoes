@@ -22,11 +22,11 @@ procedure ABC {
 				x = x+ 1;
 			}
 		}
-else   {
+		else   {
 			call Init; 
 		} 
 	}
-else {
+	else {
 		call Init; 
 	}
 }

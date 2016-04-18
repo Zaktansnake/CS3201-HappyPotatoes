@@ -1,122 +1,122 @@
 1 - comment
 prog_line n;
 Select n such that Next(1,n)
-none
+2
 5000
 2 - comment
 prog_line n;
 Select n such that Next(2,n)
-none
+3
 5000
 3 - comment
 prog_line n;
 Select n such that Next(3,n)
-none
+4
 5000
 4 - comment
 prog_line n;
 Select n such that Next(4,n)
-none
+25,5
 5000
 5 - comment
 prog_line n;
 Select n such that Next(5,n)
-none
+12,6
 5000
 6 - comment
 prog_line n;
 Select n such that Next(6,n)
-none
+7
 5000
 7 - comment
 prog_line n;
 Select n such that Next(7,n)
-none
+5,8
 5000
 8 - comment
 prog_line n;
 Select n such that Next(8,n)
-none
+9
 5000
 9 - comment
 prog_line n;
 Select n such that Next(9,n)
-none
+10,7
 5000
 10 - comment
 prog_line n;
 Select n such that Next(10,n)
-none
+11
 5000
 11 - comment
 prog_line n;
 Select n such that Next(11,n)
-none
+9
 5000
 12 - comment
 prog_line n;
 Select n such that Next(12,n)
-none
+13
 5000
 13 - comment
 prog_line n;
 Select n such that Next(13,n)
-none
+14
 5000
 14 - comment
 prog_line n;
 Select n such that Next(14,n)
-none
+15,24
 5000
 15 - comment
 prog_line n;
 Select n such that Next(15,n)
-none
+16
 5000
 16 - comment
 prog_line n;
 Select n such that Next(16,n)
-none
+17,20
 5000
 17 - comment
 prog_line n;
 Select n such that Next(17,n)
-none
+18
 5000
 18 - comment
 prog_line n;
 Select n such that Next(18,n)
-none
+19
 5000
 19 - comment
 prog_line n;
 Select n such that Next(19,n)
-none
+12
 5000
 20 - comment
 prog_line n;
 Select n such that Next(20,n)
-none
+21,23
 5000
 21 - comment
 prog_line n;
 Select n such that Next(21,n)
-none
+22
 5000
 22 - comment
 prog_line n;
 Select n such that Next(22,n)
-none
+20
 5000
 23 - comment
 prog_line n;
 Select n such that Next(23,n)
-none
+12
 5000
 24 - comment
 prog_line n;
 Select n such that Next(24,n)
-none
+12
 5000
 25 - comment
 prog_line n;
@@ -126,7 +126,7 @@ none
 26 - comment
 prog_line n;
 Select n such that Next(26,n)
-none
+27,28
 5000
 27 - comment
 prog_line n;
@@ -136,27 +136,27 @@ none
 28 - comment
 prog_line n;
 Select n such that Next(28,n)
-none
+29,38
 5000
 29 - comment
 prog_line n;
 Select n such that Next(29,n)
-none
+30
 5000
 30 - comment
 prog_line n;
 Select n such that Next(30,n)
-none
+31,34
 5000
 31 - comment
 prog_line n;
 Select n such that Next(31,n)
-none
+32
 5000
 32 - comment
 prog_line n;
 Select n such that Next(32,n)
-none
+33
 5000
 33 - comment
 prog_line n;
@@ -166,17 +166,17 @@ none
 34 - comment
 prog_line n;
 Select n such that Next(34,n)
-none
+35,37
 5000
 35 - comment
 prog_line n;
 Select n such that Next(35,n)
-none
+36
 5000
 36 - comment
 prog_line n;
 Select n such that Next(36,n)
-none
+34
 5000
 37 - comment
 prog_line n;
@@ -191,105 +191,10 @@ none
 39 - comment
 prog_line n;
 Select n such that Next(39,n)
-none
+40
 5000
 40 - comment
 prog_line n;
 Select n such that Next(40,n)
-none
-5000
-41 - comment
-prog_line n;
-Select n such that Next(41,n)
-none
-5000
-42 - comment
-prog_line n;
-Select n such that Next(42,n)
-none
-5000
-43 - comment
-prog_line n;
-Select n such that Next(43,n)
-none
-5000
-44 - comment
-prog_line n;
-Select n such that Next(44,n)
-none
-5000
-45 - comment
-prog_line n;
-Select n such that Next(45,n)
-none
-5000
-46 - comment
-prog_line n;
-Select n such that Next(46,n)
-none
-5000
-47 - comment
-prog_line n;
-Select n such that Next(47,n)
-none
-5000
-48 - comment
-prog_line n;
-Select n such that Next(48,n)
-none
-5000
-49 - comment
-prog_line n;
-Select n such that Next(49,n)
-none
-5000
-50 - comment
-prog_line n;
-Select n such that Next(50,n)
-none
-5000
-51 - comment
-prog_line n;
-Select n such that Next(51,n)
-none
-5000
-52 - comment
-prog_line n;
-Select n such that Next(52,n)
-none
-5000
-53 - comment
-prog_line n;
-Select n such that Next(53,n)
-none
-5000
-54 - comment
-prog_line n;
-Select n such that Next(54,n)
-none
-5000
-55 - comment
-prog_line n;
-Select n such that Next(55,n)
-none
-5000
-56 - comment
-prog_line n;
-Select n such that Next(56,n)
-none
-5000
-57 - comment
-prog_line n;
-Select n such that Next(57,n)
-none
-5000
-58 - comment
-prog_line n;
-Select n such that Next(58,n)
-none
-5000
-59 - comment
-prog_line n;
-Select n such that Next(59,n)
-none
+39
 5000

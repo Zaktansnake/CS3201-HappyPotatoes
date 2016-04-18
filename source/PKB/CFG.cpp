@@ -1,5 +1,7 @@
 #include "./Header/CFG.h"
-#include "Header/Parent.h"
+#include <cstdio>
+#include <cstdlib>
+#include <iostream>
 #include <string>
 #include <map>
 #include <vector>
@@ -11,11 +13,10 @@ using namespace std;
 static int dummy = -2, prevStmtNum, tempElseNum;
 map<int, vector<int>> CFGTable;
 map<int, vector<int>> CFGReverseTable;
-map<int, vector<int>> CFGTransitiveTable;
-map<int, vector<int>> CFGReverseTransitiveTable;
 stack<pair<string, int>> openBracket; // string -> {; int -> currentStmtLine
 stack<int> ifNumStack, beforeElseNumStack, whileNumStack;
 bool elseStatus, whileStatus;
+static int numOfStatement;
 
 void checkBackBracket(int stmtNum);
 int setConditions(string stmtLine);
@@ -57,7 +58,7 @@ void CFG::addRoot(string procedure, int stmtNo) {
 }
 
 void CFG::addNextNode(int stmtNum, string stmtLine) {
-
+	numOfStatement = stmtNum;
 	try {
 		if (setConditions(trimString(stmtLine)) == 0) {
 			// normal assign
@@ -291,41 +292,104 @@ bool CFG::isNext(int stmtNo1, int stmtNo2) {
 }
 
 bool CFG::isNextStar(int stmtNo1, int stmtNo2) {
-	vector<int> ans;
-	map<int, vector<int>>::iterator it;
-	it = CFGTransitiveTable.find(stmtNo1);
-	if (it != CFGTransitiveTable.end()) {
-		ans = it->second;
-	}
-	if (ans.size() > 0) {
-		std::vector<int>::iterator position = std::find(ans.begin(), ans.end(), stmtNo2);
-		if (position != ans.end()) {
-			return true;
-		}
-		else {
+	try {
+		if (stmtNo1 > numOfStatement || stmtNo2 > numOfStatement) {
 			return false;
 		}
+
+		bool* visited = new bool[CFGTable.size()]();
+		stack <int> stack;
+		bool ans = false;
+		bool goBackItSelf = false;
+		stack.push(stmtNo1);
+
+		vector<int> tempResult;
+		map<int, vector<int>>::iterator itr;
+		itr = CFGTable.find(tempElseNum);
+		if (itr != CFGTable.end()) {
+			tempResult = itr->second;
+			std::vector<int>::iterator it;
+			while (!stack.empty()) {
+				int top = stack.top();
+				stack.pop();
+				visited[top] = true;
+				for (it = tempResult.begin(); it != tempResult.end(); it++) {
+					if (*it == stmtNo2) {
+						if (goBackItSelf == false) {
+							goBackItSelf = true;
+							return true;
+						}
+					}
+					if (!visited[*it]) {
+						stack.push(*it);
+						if (*it == stmtNo2) {
+							ans = true;
+							return ans;
+						}
+					}
+				}
+			}
+		}
+		return ans;
+	}
+	catch (exception &e) {
+		//cout << "Standard exception (for findMethod): " << e.what() << endl;
+	}
+	catch (const std::out_of_range& oor) {
+		// cout << "out of range""<<endl;
 	}
 	return false;
 }
 
 vector<int> CFG::getNextStar(int stmtNo) {
-	vector<int>result;
-	map<int, vector<int>>::iterator it;
-	it = CFGTransitiveTable.find(stmtNo);
-	if (it != CFGTransitiveTable.end()) {
-		result = it->second;
+	vector<int>ans;
+	try {
+		bool* visited = new bool[CFGTable.size()]();
+		stack <int> stack;
+		bool goBackItSelf = false;
+
+		if (stmtNo > numOfStatement) {
+			return ans;
+		}
+		stack.push(stmtNo);
+
+		vector<int> tempResult;
+		map<int, vector<int>>::iterator itr;
+		itr = CFGTable.find(tempElseNum);
+		if (itr != CFGTable.end()) {
+			tempResult = itr->second;
+			std::vector<int>::iterator it;
+			while (!stack.empty()) {
+				int top = stack.top();
+				stack.pop();
+				visited[top] = true;
+				for (it = tempResult.begin(); it != tempResult.end(); it++) {
+					if (*it == stmtNo) {
+						if (goBackItSelf == false) {
+							ans.push_back(*it);
+							goBackItSelf = true;
+						}
+					}
+					if (!visited[*it]) {
+						stack.push(*it);
+						ans.push_back(*it);
+					}
+				}
+			}
+		}
+		return ans;
 	}
-	return result;
+	catch (exception &e) {
+		cout << "Standard exception (for findMethod): " << e.what() << endl;
+	}
+	catch (const std::out_of_range& oor) {
+		cout << "out of range" << endl;
+	}
 }
 
 vector<int> CFG::getPrevStar(int stmtNo) {
 	vector<int>result;
-	map<int, vector<int>>::iterator it;
-	it = CFGReverseTransitiveTable.find(stmtNo);
-	if (it != CFGReverseTransitiveTable.end()) {
-		result = it->second;
-	}
+	
 	return result;
 }
 
